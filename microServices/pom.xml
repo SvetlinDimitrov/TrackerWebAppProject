@@ -9,7 +9,9 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>nutrivoltamin</module>
+        <module>vitamin</module>
+        <module>electrolyte</module>
+        <module>macronutrient</module>
     </modules>
 
     <properties>
