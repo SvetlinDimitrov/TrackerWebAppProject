@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mysql-db-record:
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: record
+    volumes:
+      - recordVolume:/var/lib/mysql
+
+  mysql-db-nutriton:
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: nutrition
+    volumes:
+      - nutritionVolume:/var/lib/mysql
+
+volumes:
+  recordVolume:
+  nutritionVolume:

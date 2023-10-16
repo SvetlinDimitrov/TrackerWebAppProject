@@ -12,6 +12,8 @@
         <module>vitamin</module>
         <module>electrolyte</module>
         <module>macronutrient</module>
+        <module>record</module>
+        <module>nutrition</module>
     </modules>
 
     <properties>
