@@ -1,0 +1,37 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: nutrition
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:3307/nutritionIntake
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:12345}
+
+clients:
+  vitamin:
+    name: vitaminClient
+    domainUrl: http://localhost:8083
+    retrieve-data:
+      url: /api/vitamin
+  electrolyte:
+    name: electrolyteClient
+    domainUrl: http://localhost:8081
+    retrieve-data:
+      url: /api/electrolyte
+  macronutrient:
+    name: macronutrientClient
+    domainUrl: http://localhost:8082
+    retrieve-data:
+      url: /api/macronutrient
+
+

@@ -1,4 +1,4 @@
-package org.record.exeptions;
+package org.nutrition.exceptions;
 
 import lombok.Getter;
 import org.springframework.validation.FieldError;
@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class RecordCreationException extends Exception{
-    List<String> errorMessages;
+public class NutritionCreateException extends Exception{
+    List<String> errors = new ArrayList<>();
 
-    public RecordCreationException(List<FieldError> errorMessages) {
+    public NutritionCreateException(List<FieldError> errors) {
         super();
-        this.errorMessages = errorMessages.stream()
+        this.errors = errors.stream()
                 .map(error -> error.getField() + " : " + error.getDefaultMessage())
                 .collect(Collectors.toList());
     }

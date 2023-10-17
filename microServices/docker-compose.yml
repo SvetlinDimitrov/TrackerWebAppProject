@@ -19,7 +19,7 @@ services:
       - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: nutrition
+      MYSQL_DATABASE: nutritionIntake
     volumes:
       - nutritionVolume:/var/lib/mysql
 

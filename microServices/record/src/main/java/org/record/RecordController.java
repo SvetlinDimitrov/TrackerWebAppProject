@@ -24,7 +24,7 @@ public class RecordController {
 
     private final RecordServiceImp recordService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/all/{userId}")
     public ResponseEntity<List<RecordView>> getAllRecords(@PathVariable(value = "userId") Long userId) {
         List<RecordView> records = recordService.getAllViewsByUserId(userId);
         return new ResponseEntity<>(records, HttpStatus.OK);
@@ -36,43 +36,19 @@ public class RecordController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    /*
-    //TODO: PUT IT TO NUTRITION SERVICE
-    @PatchMapping("/edit/{day}")
-    public ResponseEntity<NutritionIntakeView> changeNutrientByRecordDay(@Valid @RequestBody NutrientChangeDto dto,
-                                                                         BindingResult result,
-                                                                         @PathVariable Long day,
-                                                                         Principal principal) throws IncorrectNutrientChangeException, RecordNotFoundException {
-        if(result.hasErrors()){
-            throw new IncorrectNutrientChangeException(result.getFieldErrors());
-        }
-
-        String mail = principal.getName();
-        UserEntity user = userServiceImp.findByEmail(mail);
-
-        NutritionIntakeView changedNutrient = recordService.updateRecordById(day , dto , user);
-        return new ResponseEntity<>(changedNutrient , HttpStatus.CREATED);
-    }
-
-     */
-
 
     @PostMapping("/{userId}")
-    public ResponseEntity<RecordView> createNewRecord(@Valid RecordCreateDto recordCreateDto,
+    public ResponseEntity<HttpStatus> createNewRecord(@Valid @RequestBody RecordCreateDto recordCreateDto,
                                                       BindingResult result,
                                                       @PathVariable(value = "userId") Long userId) throws RecordCreationException {
 
         if(result.hasErrors()){
-            throw new RecordCreationException(
-                    result.getFieldErrors()
-                            .stream()
-                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                            .collect(Collectors.toList()));
+            throw new RecordCreationException(result.getFieldErrors());
         }
 
-        RecordView view = recordService.addNewRecordByUserId(userId , recordCreateDto);
+        recordService.addNewRecordByUserId(userId , recordCreateDto);
 
-        return new ResponseEntity<>(view, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
@@ -85,6 +61,8 @@ public class RecordController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+
 
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<ErrorResponse> catchRecordNotFoundException(RecordNotFoundException e) {
