@@ -1,5 +1,9 @@
 server:
-  port: 8083
+  port: 0
 spring:
   application:
     name: vitamin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}

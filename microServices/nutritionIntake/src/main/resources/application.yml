@@ -1,9 +1,9 @@
 server:
-  port: 8085
+  port: 0
 
 spring:
   application:
-    name: nutrition
+    name: nutritionIntake
   jpa:
     defer-datasource-initialization: true
     hibernate:
@@ -17,21 +17,36 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:12345}
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+logging:
+  level:
+    feign=DEBUG:
+    com:
+      netflix:
+        discovery=DEBUG:
+    feign:
+      RetryableException=DEBUG:
+
 clients:
   vitamin:
-    name: vitaminClient
-    domainUrl: http://localhost:8083
+    name: vitamin
+    domainUrl: http://vitamin
     retrieve-data:
       url: /api/vitamin
   electrolyte:
-    name: electrolyteClient
-    domainUrl: http://localhost:8081
+    name: electrolyte
+    domainUrl: http://electrolyte
     retrieve-data:
       url: /api/electrolyte
   macronutrient:
-    name: macronutrientClient
-    domainUrl: http://localhost:8082
+    name: macronutrient
+    domainUrl: http://macronutrient
     retrieve-data:
       url: /api/macronutrient
+
 
 

@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 0
 
 spring:
   application:
@@ -17,9 +17,14 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:12345}
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
 clients:
   nutritionIntake:
-    name: nutritionIntakeClient
-    domainUrl: http://localhost:8085
+    name: nutritionIntake
+    domainUrl: http://nutritionIntake
     retrieve-data:
       url: /api/nutritionIntake/{recordId}

@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Component
-@FeignClient(name = "${clients.macronutrient.name}",
-        url = "${clients.macronutrient.domainUrl}")
+@FeignClient(name = "${clients.macronutrient.name}")
 public interface MacronutrientClient {
 
     @GetMapping(path = "${clients.macronutrient.retrieve-data.url}")
