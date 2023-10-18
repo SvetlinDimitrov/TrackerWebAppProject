@@ -15,6 +15,7 @@
         <module>record</module>
         <module>nutritionIntake</module>
         <module>discover-service</module>
+        <module>gateway-service</module>
     </modules>
 
     <properties>

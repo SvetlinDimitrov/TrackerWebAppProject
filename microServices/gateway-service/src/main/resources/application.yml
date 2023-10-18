@@ -1,0 +1,25 @@
+server:
+  port: 8080
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: electrolyte
+          uri: lb://electrolyte
+          predicates:
+            - Path=/electrolyte/**
+          filters:
+            - RewritePath=/electrolyte(/?.*), /api/electrolyte$1
+
+
+
+
