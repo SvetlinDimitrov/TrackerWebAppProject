@@ -16,6 +16,7 @@
         <module>nutritionIntake</module>
         <module>discover-service</module>
         <module>gateway-service</module>
+        <module>auth-service</module>
     </modules>
 
     <properties>

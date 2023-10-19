@@ -23,6 +23,18 @@ services:
     volumes:
       - nutritionVolume:/var/lib/mysql
 
+  mysql-db-user:
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: users
+    volumes:
+      - userVolume:/var/lib/mysql
+
 volumes:
   recordVolume:
   nutritionVolume:
+  userVolume:

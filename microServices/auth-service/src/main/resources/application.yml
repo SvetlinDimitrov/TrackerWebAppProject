@@ -1,0 +1,24 @@
+server:
+  port: 0
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:3307/users
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:12345}
+  application:
+    name: authentication
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+jwt:
+  secret: topSecret12345

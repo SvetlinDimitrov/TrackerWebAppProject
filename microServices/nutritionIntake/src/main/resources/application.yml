@@ -34,17 +34,14 @@ logging:
 clients:
   vitamin:
     name: vitamin
-    domainUrl: http://vitamin
     retrieve-data:
       url: /api/vitamin
   electrolyte:
     name: electrolyte
-    domainUrl: http://electrolyte
     retrieve-data:
       url: /api/electrolyte
   macronutrient:
     name: macronutrient
-    domainUrl: http://macronutrient
     retrieve-data:
       url: /api/macronutrient
 
