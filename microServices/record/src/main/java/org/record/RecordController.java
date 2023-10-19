@@ -24,7 +24,7 @@ public class RecordController {
 
     private final RecordServiceImp recordService;
 
-    @GetMapping("/all/{userId}")
+    @GetMapping("/all/user/{userId}")
     public ResponseEntity<List<RecordView>> getAllRecords(@PathVariable(value = "userId") Long userId) {
         List<RecordView> records = recordService.getAllViewsByUserId(userId);
         return new ResponseEntity<>(records, HttpStatus.OK);
@@ -37,7 +37,7 @@ public class RecordController {
     }
 
 
-    @PostMapping("/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<HttpStatus> createNewRecord(@Valid @RequestBody RecordCreateDto recordCreateDto,
                                                       BindingResult result,
                                                       @PathVariable(value = "userId") Long userId) throws RecordCreationException {
@@ -52,7 +52,7 @@ public class RecordController {
     }
 
 
-    @DeleteMapping("/{userId}/{recordId}")
+    @DeleteMapping("/{recordId}/user/{userId}")
     public ResponseEntity<HttpStatus> deleteRecord(@PathVariable Long recordId,
                                                    @PathVariable Long userId) throws RecordNotFoundException {
 

@@ -7,6 +7,9 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+ribbon:
+  eureka:
+    enabled: true
 spring:
   application:
     name: gateway
@@ -19,6 +22,35 @@ spring:
             - Path=/electrolyte/**
           filters:
             - RewritePath=/electrolyte(/?.*), /api/electrolyte$1
+
+        - id: vitamin
+          uri: lb://vitamin
+          predicates:
+            - Path=/vitamin/**
+          filters:
+            - RewritePath=/vitamin(/?.*), /api/vitamin$1
+
+        - id: macronutrient
+          uri: lb://macronutrient
+          predicates:
+            - Path=/macronutrient/**
+          filters:
+            - RewritePath=/macronutrient(/?.*), /api/macronutrient$1
+
+        - id: record
+          uri: lb://record
+          predicates:
+            - Path=/record/**
+          filters:
+            - RewritePath=/record(/?.*), /api/record$1
+
+        - id: nutritionIntake
+          uri: lb://nutritionIntake
+          predicates:
+            - Path=/nutrition/**
+          filters:
+            - RewritePath=/nutrition(/?.*), /api/nutritionIntake$1
+
 
 
 

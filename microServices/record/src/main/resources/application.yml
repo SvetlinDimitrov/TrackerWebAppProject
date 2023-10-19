@@ -25,6 +25,5 @@ eureka:
 clients:
   nutritionIntake:
     name: nutritionIntake
-    domainUrl: http://nutritionIntake
     retrieve-data:
       url: /api/nutritionIntake/{recordId}
