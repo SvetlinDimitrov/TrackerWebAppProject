@@ -51,7 +51,8 @@ spring:
           filters:
             - RewritePath=/nutrition(/?.*), /api/nutritionIntake$1
 
-
+properties:
+  jwt-secret-keyWord: topSecret12345
 
 
 

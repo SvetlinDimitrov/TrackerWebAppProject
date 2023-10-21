@@ -7,14 +7,12 @@ import org.record.exeptions.RecordNotFoundException;
 import org.record.model.dtos.ErrorResponse;
 import org.record.model.dtos.RecordCreateDto;
 import org.record.model.dtos.RecordView;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 
 @RestController

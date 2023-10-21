@@ -1,34 +1,40 @@
 package org.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.auth.exceptions.WrongUserCredentialsException;
 import org.auth.model.dto.EditUserDto;
 import org.auth.model.dto.LoginUserDto;
 import org.auth.model.dto.RegisterUserDto;
 import org.auth.model.dto.UserView;
 import org.auth.model.entity.User;
 import org.auth.model.enums.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.auth.util.UserValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp {
 
     private final UserRepository userRepository;
+    private final UserValidator validator;
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterUserDto userDto) {
-
+        User user = userDto.toUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User with email "+ email+ " does not exist"));
-    }
-    public boolean login(LoginUserDto userDto) {
-        Optional<User> entity = userRepository.findByEmail(userDto.getEmail());
-        return entity.isPresent() && passwordEncoder.matches(userDto.getPassword(), entity.get().getPassword());
+    public UserView login(LoginUserDto userDto) throws WrongUserCredentialsException {
+        if (validator.validateTheLoginCredentials.test(userDto)) {
+            User user = userRepository
+                    .findByEmail(userDto.getEmail())
+                    .orElseThrow(WrongUserCredentialsException::new);
+            if(passwordEncoder.matches(userDto.getPassword() , user.getPassword())){
+                return new UserView(user);
+            }
+        }
+        throw new WrongUserCredentialsException();
     }
 
     public UserView getUserViewById(Long userId) {
@@ -40,36 +46,31 @@ public class UserServiceImp {
     public void editUserEntity(EditUserDto userDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
 
-        if (userDto.getUsername() != null && userDto.getUsername().length() > 4 && !userDto.getUsername().isBlank()) {
+        if (validator.validUsernameChange.test(userDto)) {
             user.setUsername(userDto.getUsername());
         }
-        if (userDto.getKilograms() != null) {
+        if (validator.validKilogramsChange.test(userDto)) {
             user.setKilograms(userDto.getKilograms());
         }
-        if (userDto.getWorkoutState() != null) {
+        if (validator.validWorkoutStateChange.test(userDto)) {
             user.setWorkoutState(userDto.getWorkoutState());
         }
-        if (userDto.getHeight() != null) {
+        if (validator.validHeightChange.test(userDto)) {
             user.setHeight(userDto.getHeight());
         }
-        if (userDto.getGender() != null) {
+        if (validator.validGenderChange.test(userDto)) {
             user.setGender(userDto.getGender());
         }
-        if (userDto.getAge() != null) {
+        if (validator.validAgeChange.test(userDto)) {
             user.setAge(userDto.getAge());
         }
 
-        fillUserWithCompleteDetails(user);
+        if (validator.validateFullRegistration.test(user)) {
+            user.setUserDetails(UserDetails.COMPLETED);
+        }
+
+        userRepository.saveAndFlush(user);
     }
 
-    private void fillUserWithCompleteDetails(User entity) {
-        if (entity.getKilograms() != null &&
-                entity.getWorkoutState() != null &&
-                entity.getGender() != null &&
-                entity.getHeight() != null &&
-                entity.getAge() != null) {
-            entity.setUserDetails(UserDetails.COMPLETED);
-        }
-        userRepository.save(entity);
-    }
+
 }

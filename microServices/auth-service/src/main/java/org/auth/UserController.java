@@ -1,84 +1,66 @@
 package org.auth;
-
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.auth.exceptions.WrongUserCredentialsException;
-import org.auth.model.dto.EditUserDto;
-import org.auth.model.dto.LoginUserDto;
-import org.auth.model.dto.RegisterUserDto;
-import org.auth.model.dto.UserView;
-import org.auth.model.entity.User;
+import org.auth.model.dto.*;
 import org.auth.security.JwtUtil;
-import org.auth.security.UserDetailsImp;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import java.security.Principal;
+
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/nutritionApi/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final JwtUtil jwtUtil;
     private final UserServiceImp userServiceImp;
 
 
-    @PostMapping("/register")
-    public ResponseEntity<String> createUserAccount(@Valid @RequestBody RegisterUserDto userDto,
+    @PostMapping(path = "/register" , consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createUserAccount(@RequestBody @Valid RegisterUserDto registerUserDto,
                                                     BindingResult result) throws WrongUserCredentialsException {
+
         if(result.hasErrors()){
             throw new WrongUserCredentialsException(result.getFieldErrors());
         }
-
-        userServiceImp.register(userDto);
+        userServiceImp.register(registerUserDto);
 
         return new ResponseEntity<>("Successfuly created account" , HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login (@Valid @RequestBody LoginUserDto userDto,
-                                         BindingResult result) throws WrongUserCredentialsException {
+    public ResponseEntity<JwtTokenView> login (LoginUserDto userDto) throws WrongUserCredentialsException {
 
-        if(!userServiceImp.login(userDto)){
-            result.addError(new FieldError("username_password", "password" , "wrong username or password"));
-        }
+        UserView userView = userServiceImp.login(userDto);
 
-        if(result.hasErrors()){
-            throw new WrongUserCredentialsException(result.getFieldErrors());
-        }
-        Long userID = userServiceImp.findByEmail(userDto.getEmail()).getId();
-
-        return new ResponseEntity<>(jwtUtil.createJwtToken(userID) , HttpStatus.OK);
+        return new ResponseEntity<>(jwtUtil.createJwtToken(userView) , HttpStatus.OK);
     }
 
 
-    @GetMapping("/details")
-    public ResponseEntity<UserView> getUserDetails(Principal principal){
-        String email = principal.getName();
-        UserView userView = new UserView(userServiceImp.findByEmail(email));
+    @GetMapping("/details/{userId}")
+    public ResponseEntity<UserView> getUserDetails(@PathVariable Long userId){
+        UserView userView = userServiceImp.getUserViewById(userId);
         return new ResponseEntity<>(userView, HttpStatus.OK);
     }
 
-    @PatchMapping("/details")
-    public ResponseEntity<UserView> editUserProfile(Principal principal,
-                                                    @RequestBody EditUserDto userDto){
+    @PatchMapping("/edit/{userId}")
+    public ResponseEntity<UserView> editUserProfile(@RequestBody EditUserDto userDto ,
+                                                    @PathVariable Long userId){
 
-
-        String email = principal.getName();
-        User user = userServiceImp.findByEmail(email);
-        Long userId = user.getId();
-
+        //TODO: CORECT THIS TO GET THE USERiD FROM THE JWT TOKEN AND THEN SEND NEW JWT TOKEN
         userServiceImp.editUserEntity(userDto , userId);
         UserView userView = userServiceImp.getUserViewById(userId);
-
-        UserDetailsImp.updateAuthorities();
 
         return new ResponseEntity<>(userView , HttpStatus.ACCEPTED);
 
     }
 
+    @ExceptionHandler(WrongUserCredentialsException.class)
+    public ResponseEntity<ErrorResponse> wrongCredentialsErrorCaught(WrongUserCredentialsException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getMessageWithErrors()), HttpStatus.BAD_REQUEST);
+    }
 }

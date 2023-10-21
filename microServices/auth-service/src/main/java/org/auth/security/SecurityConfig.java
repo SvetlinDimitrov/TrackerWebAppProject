@@ -23,34 +23,9 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .securityMatcher("/nutritionApi/**")
-                .authorizeHttpRequests(
-                        request -> request
-                                .requestMatchers(
-                                        "/nutritionApi/user/register",
-                                        "/nutritionApi/user/login",
-                                        "/nutritionApi/electrolyte",
-                                        "/nutritionApi/electrolyte/{name}",
-                                        "/nutritionApi/macronutrient",
-                                        "/nutritionApi/macronutrient/{name}",
-                                        "/nutritionApi/vitamin",
-                                        "/nutritionApi/vitamin/{name}"
-                                ).permitAll()
-                                .requestMatchers("/nutritionApi/records/**").hasRole(UserDetails.COMPLETED.name())
-                                .anyRequest().authenticated()
-                )
-
-//                ).logout(logout ->
-//                        logout
-//                                .logoutUrl("/logout")
-//                                .logoutSuccessUrl("/login?logout")
-//                                .invalidateHttpSession(true)
-//                                .deleteCookies("JSESSIONID")
-//                                .clearAuthentication(true)
-//                                .permitAll())
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
                 .build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
