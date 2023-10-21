@@ -51,6 +51,13 @@ spring:
           filters:
             - RewritePath=/nutrition(/?.*), /api/nutritionIntake$1
 
+        - id: authUser
+          uri: lb://authentication
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth(/?.*), /api/user$1
+
 properties:
   jwt-secret-keyWord: topSecret12345
 

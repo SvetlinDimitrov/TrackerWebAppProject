@@ -1,15 +1,16 @@
 package org.auth;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.auth.config.security.UserPrincipal;
 import org.auth.exceptions.WrongUserCredentialsException;
+import org.auth.config.security.JwtUtil;
 import org.auth.model.dto.*;
-import org.auth.security.JwtUtil;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -20,42 +21,41 @@ public class UserController {
     private final UserServiceImp userServiceImp;
 
 
-    @PostMapping(path = "/register" , consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createUserAccount(@RequestBody @Valid RegisterUserDto registerUserDto,
+    @PostMapping("/register")
+    public ResponseEntity<String> createUserAccount(@Valid @RequestBody RegisterUserDto registerUserDto,
                                                     BindingResult result) throws WrongUserCredentialsException {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new WrongUserCredentialsException(result.getFieldErrors());
         }
         userServiceImp.register(registerUserDto);
 
-        return new ResponseEntity<>("Successfuly created account" , HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfuly created account", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenView> login (LoginUserDto userDto) throws WrongUserCredentialsException {
+    public ResponseEntity<JwtTokenView> login(@RequestBody LoginUserDto userDto) throws WrongUserCredentialsException {
 
         UserView userView = userServiceImp.login(userDto);
 
-        return new ResponseEntity<>(jwtUtil.createJwtToken(userView) , HttpStatus.OK);
+        return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
     }
 
 
-    @GetMapping("/details/{userId}")
-    public ResponseEntity<UserView> getUserDetails(@PathVariable Long userId){
-        UserView userView = userServiceImp.getUserViewById(userId);
+    @GetMapping(path = "/details")
+    public ResponseEntity<UserView> getUserDetails(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        UserView userView = userServiceImp.getUserViewById(userPrincipal.getId());
         return new ResponseEntity<>(userView, HttpStatus.OK);
     }
 
-    @PatchMapping("/edit/{userId}")
-    public ResponseEntity<UserView> editUserProfile(@RequestBody EditUserDto userDto ,
-                                                    @PathVariable Long userId){
+    @PatchMapping("/edit")
+    public ResponseEntity<UserView> editUserProfile(@RequestBody EditUserDto userDto,
+                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        //TODO: CORECT THIS TO GET THE USERiD FROM THE JWT TOKEN AND THEN SEND NEW JWT TOKEN
-        userServiceImp.editUserEntity(userDto , userId);
-        UserView userView = userServiceImp.getUserViewById(userId);
+        userServiceImp.editUserEntity(userDto, userPrincipal.getId());
+        UserView userView = userServiceImp.getUserViewById(userPrincipal.getId());
 
-        return new ResponseEntity<>(userView , HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(userView, HttpStatus.ACCEPTED);
 
     }
 

@@ -1,4 +1,4 @@
-package org.auth.security;
+package org.auth.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.auth.UserRepository;
@@ -17,7 +17,6 @@ public class UserDetailsImp implements UserDetailsService {
 
         return userRepository.findByEmail(email)
                 .map(UserPrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException("user does not exist with email :" + email));
+                .orElseThrow(() -> new UsernameNotFoundException("user with email :" + email + " was not found"));
     }
-
 }

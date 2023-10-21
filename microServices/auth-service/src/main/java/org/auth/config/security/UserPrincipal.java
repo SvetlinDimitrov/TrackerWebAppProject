@@ -1,49 +1,33 @@
-package org.auth.security;
+package org.auth.config.security;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.auth.model.entity.User;
-import org.auth.model.enums.Gender;
-import org.auth.model.enums.WorkoutState;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
 
     private Long id;
     private String username;
-    private String email;
     private String password;
-    private BigDecimal kilograms;
-    private BigDecimal height;
-    private Integer age;
-    private WorkoutState workoutState;
-    private Gender gender;
-    private org.auth.model.enums.UserDetails userDetails = org.auth.model.enums.UserDetails.NOT_COMPLETED;
+    private List<GrantedAuthority> grantedAuthorityList;
 
     public UserPrincipal(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.email = user.getEmail();
         this.password = user.getPassword();
-        this.kilograms = user.getKilograms();
-        this.height = user.getHeight();
-        this.age = user.getAge();
-        this.workoutState = user.getWorkoutState();
-        this.gender = user.getGender();
-        this.userDetails = user.getUserDetails();
+        this.grantedAuthorityList = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getUserDetails().name()));
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return grantedAuthorityList;
     }
 
     @Override

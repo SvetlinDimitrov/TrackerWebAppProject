@@ -15,8 +15,6 @@ import org.auth.validations.NotUsedEmailConstraint;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegisterUserDto {
 
     @Size(min = 4)
