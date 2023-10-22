@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 public class JwtUtil {
 
     private final UserRepository userRepository;
+
     @Value("${properties.jwt-secret-keyWord}")
     private String secret;
 
@@ -28,10 +29,19 @@ public class JwtUtil {
 
         String token = JWT.create()
                 .withSubject(String.valueOf(user.getId()))
-                .withExpiresAt(Instant.now().plus(Duration.of(12, ChronoUnit.SECONDS)))
+                .withExpiresAt(Instant.now().plus(Duration.of(12, ChronoUnit.HOURS)))
+                .withClaim("id" , user.getId())
+                .withClaim("username", user.getUsername())
+                .withClaim("email", user.getEmail())
+                .withClaim("kilograms", user.getKilograms() != null ? user.getKilograms().toEngineeringString() : null)
+                .withClaim("height", user.getHeight() != null ? user.getHeight().toEngineeringString() : null)
+                .withClaim("workoutState", user.getWorkoutState() != null ? user.getWorkoutState().name() : null)
+                .withClaim("gender", user.getGender() != null ? user.getGender().name() : null)
+                .withClaim("userDetails", user.getUserDetails().name())
+                .withClaim("age", user.getAge() != null ? user.getAge() : null)
                 .sign(Algorithm.HMAC256(secret));
 
-        return new JwtTokenView(token , Instant.now().plus(Duration.of(12, ChronoUnit.HOURS)).toString());
+        return new JwtTokenView(token, Instant.now().plus(Duration.of(12, ChronoUnit.HOURS)).toString());
     }
 
     public DecodedJWT decodeToken(String token) {
@@ -43,7 +53,7 @@ public class JwtUtil {
     public UserPrincipal convert(DecodedJWT token) {
         return userRepository.findById(Long.parseLong(token.getSubject()))
                 .map(UserPrincipal::new)
-                .orElseThrow( () -> new UsernameNotFoundException("No suck  user exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("No suck  user exist"));
 
     }
 }

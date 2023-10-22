@@ -1,16 +1,14 @@
 package org.record;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.record.exeptions.RecordCreationException;
 import org.record.exeptions.RecordNotFoundException;
 import org.record.model.dtos.ErrorResponse;
-import org.record.model.dtos.RecordCreateDto;
 import org.record.model.dtos.RecordView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -22,9 +20,10 @@ public class RecordController {
 
     private final RecordServiceImp recordService;
 
-    @GetMapping("/all/user/{userId}")
-    public ResponseEntity<List<RecordView>> getAllRecords(@PathVariable(value = "userId") Long userId) {
-        List<RecordView> records = recordService.getAllViewsByUserId(userId);
+    @GetMapping("/all")
+    public ResponseEntity<List<RecordView>> getAllRecords(@RequestHeader("X-ViewUser") String userToken) {
+
+        List<RecordView> records = recordService.getAllViewsByUserId(userToken);
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
@@ -35,26 +34,20 @@ public class RecordController {
     }
 
 
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<HttpStatus> createNewRecord(@Valid @RequestBody RecordCreateDto recordCreateDto,
-                                                      BindingResult result,
-                                                      @PathVariable(value = "userId") Long userId) throws RecordCreationException {
+    @PostMapping
+    public ResponseEntity<HttpStatus> createNewRecord(@RequestHeader("X-ViewUser") String userToken) throws RecordCreationException {
 
-        if(result.hasErrors()){
-            throw new RecordCreationException(result.getFieldErrors());
-        }
-
-        recordService.addNewRecordByUserId(userId , recordCreateDto);
+        recordService.addNewRecordByUserId(userToken);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
-    @DeleteMapping("/{recordId}/user/{userId}")
+    @DeleteMapping("/{recordId}")
     public ResponseEntity<HttpStatus> deleteRecord(@PathVariable Long recordId,
-                                                   @PathVariable Long userId) throws RecordNotFoundException {
+                                                   @RequestHeader("X-ViewUser") String userToken) throws RecordNotFoundException {
 
-        recordService.deleteById(recordId, userId);
+        recordService.deleteById(recordId, userToken);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

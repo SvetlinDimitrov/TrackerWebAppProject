@@ -2,6 +2,7 @@ package org.vitamin;
 
 import lombok.RequiredArgsConstructor;
 import org.vitamin.model.dtos.ErrorResponse;
+import org.vitamin.model.dtos.UserView;
 import org.vitamin.model.dtos.VitaminView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

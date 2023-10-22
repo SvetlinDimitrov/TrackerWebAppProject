@@ -1,5 +1,6 @@
 package org.auth;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.auth.exceptions.WrongUserCredentialsException;
 import org.auth.model.dto.EditUserDto;
@@ -19,6 +20,7 @@ public class UserServiceImp {
     private final UserRepository userRepository;
     private final UserValidator validator;
     private final PasswordEncoder passwordEncoder;
+    private final Gson gson;
 
     public void register(RegisterUserDto userDto) {
         User user = userDto.toUser();
@@ -43,7 +45,9 @@ public class UserServiceImp {
                 .orElseThrow();
     }
 
-    public void editUserEntity(EditUserDto userDto, Long userId) {
+    public UserView editUserEntity(EditUserDto userDto, String userToken) {
+        Long userId = gson.fromJson(userToken, UserView.class).getId();
+
         User user = userRepository.findById(userId).orElseThrow();
 
         if (validator.validUsernameChange.test(userDto)) {
@@ -70,6 +74,7 @@ public class UserServiceImp {
         }
 
         userRepository.saveAndFlush(user);
+        return new UserView(user);
     }
 
 

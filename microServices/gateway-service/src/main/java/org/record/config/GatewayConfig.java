@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GatewayConfig {
+
     @Bean
     public GlobalFilter customGlobalFilter() {
         return new AuthenticationFilter();

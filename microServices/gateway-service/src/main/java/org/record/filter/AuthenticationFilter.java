@@ -1,25 +1,24 @@
 package org.record.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import org.springframework.beans.factory.annotation.Value;
+import com.auth0.jwt.interfaces.Claim;
+import com.google.gson.Gson;
+import org.record.config.JwtUtil;
+import org.record.model.UserView;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Component
 public class AuthenticationFilter implements GlobalFilter, Ordered {
-
-    @Value("${properties.jwt-secret-keyWord}")
-    private String secret;
 
     @Override
     public int getOrder() {
@@ -29,15 +28,41 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String errorMessage = isAuthenticated(exchange);
-
-        if (errorMessage == null || isAuthRequested(exchange)) {
+        if (isAuthRequested(exchange)) {
             return chain.filter(exchange);
         } else {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange
-                    .getResponse()
-                    .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(errorMessage.getBytes())));
+            try {
+                Map<String, Claim> claimMap = new JwtUtil().extractAndVerifyToken(exchange.getRequest().getHeaders());
+
+                UserView user = UserView.builder()
+                        .id(claimMap.get("id").asLong())
+                        .username(claimMap.get("username").asString())
+                        .email(claimMap.get("email").asString())
+                        .kilograms(claimMap.get("kilograms").asString())
+                        .height(claimMap.get("height").asString())
+                        .workoutState(claimMap.get("workoutState").asString())
+                        .gender(claimMap.get("gender").asString())
+                        .userDetails(claimMap.get("userDetails").asString())
+                        .age(claimMap.get("age").asInt())
+                        .build();
+
+                Gson gson = new Gson();
+
+                ServerHttpRequest request = exchange.getRequest()
+                        .mutate()
+                        .header("X-ViewUser", gson.toJson(user))
+                        .build();
+
+
+                return chain.filter(exchange.mutate().request(request).build());
+            } catch (Exception e) {
+                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                return exchange
+                        .getResponse()
+                        .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(
+                                e.getMessage() != null ? e.getMessage().getBytes() : "Something went wrong".getBytes())));
+            }
+
         }
     }
 
@@ -45,32 +70,5 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         return Stream.of("/auth/login", "/auth/register")
                 .anyMatch(path -> path.equals(exchange.getRequest().getPath().toString())) &&
                 exchange.getRequest().getMethod().equals(HttpMethod.POST);
-    }
-
-    private String isAuthenticated(ServerWebExchange exchange) {
-        HttpHeaders headers = exchange.getRequest().getHeaders();
-
-        if (headers.containsKey(HttpHeaders.AUTHORIZATION)) {
-
-            String token = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-
-            if(token != null && token.startsWith("Bearer ")){
-
-                token = token.substring(7);
-                try {
-                    verifyToken(token);
-                    return null;
-                } catch (Exception e) {
-                    return e.getMessage();
-                }
-            }
-        }
-        return "You are not authenticated .Go to /auth/register and /auth/login and get your token";
-    }
-
-    private void verifyToken(String token) {
-        JWT.require(Algorithm.HMAC256(secret))
-                .build()
-                .verify(token);
     }
 }

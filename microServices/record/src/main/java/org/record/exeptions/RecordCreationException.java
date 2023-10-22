@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 public class RecordCreationException extends Exception{
     List<String> errorMessages;
 
-    public RecordCreationException(List<FieldError> errorMessages) {
+    public RecordCreationException(List<String> errorMessages) {
         super();
-        this.errorMessages = errorMessages.stream()
-                .map(error -> error.getField() + " : " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+        this.errorMessages = errorMessages;
     }
 }

@@ -50,10 +50,9 @@ public class UserController {
 
     @PatchMapping("/edit")
     public ResponseEntity<UserView> editUserProfile(@RequestBody EditUserDto userDto,
-                                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
+                                                    @RequestHeader("X-ViewUser") String userToken) {
 
-        userServiceImp.editUserEntity(userDto, userPrincipal.getId());
-        UserView userView = userServiceImp.getUserViewById(userPrincipal.getId());
+        UserView userView = userServiceImp.editUserEntity(userDto, userToken);
 
         return new ResponseEntity<>(userView, HttpStatus.ACCEPTED);
 

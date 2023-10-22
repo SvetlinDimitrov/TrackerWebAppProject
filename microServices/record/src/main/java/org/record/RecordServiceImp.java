@@ -1,14 +1,19 @@
 package org.record;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.record.client.NutritionIntakeClient;
 import org.record.client.NutritionIntakeCreateDto;
 import org.record.client.NutritionIntakeView;
+import org.record.exeptions.RecordCreationException;
 import org.record.exeptions.RecordNotFoundException;
 import org.record.model.dtos.RecordCreateDto;
 import org.record.model.dtos.RecordView;
+import org.record.model.dtos.UserView;
 import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
+import org.record.model.enums.WorkoutState;
+import org.record.utils.RecordValidator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,11 +27,12 @@ public class RecordServiceImp {
 
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
+    private final Gson gson;
 
-    public List<RecordView> getAllViewsByUserId(Long userId) {
+    public List<RecordView> getAllViewsByUserId(String userToken) {
         return recordRepository.findAll()
                 .stream()
-                .filter(record -> record.getUserId().equals(userId))
+                .filter(record -> record.getUserId().equals(getUserId(userToken).getId()))
                 .map(record -> {
                     List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient.getAllNutritionIntakesWithRecordId(record.getId());
                     return new RecordView(record.getId(),
@@ -50,7 +56,19 @@ public class RecordServiceImp {
                 .orElseThrow(() -> new RecordNotFoundException(day.toString()));
     }
 
-    public void addNewRecordByUserId(Long userId, RecordCreateDto recordCreateDto) {
+    public void addNewRecordByUserId(String userToken) throws RecordCreationException {
+        UserView user = getUserId(userToken);
+
+        RecordCreateDto recordCreateDto = RecordCreateDto
+                .builder()
+                .age(user.getAge())
+                .height(new BigDecimal(user.getHeight()))
+                .kilograms(new BigDecimal(user.getKilograms()))
+                .gender(Gender.valueOf(user.getGender()))
+                .workoutState(WorkoutState.valueOf(user.getWorkoutState()))
+                .build();
+
+        RecordValidator.validateRecord(recordCreateDto);
 
         Record record = new Record();
 
@@ -58,7 +76,7 @@ public class RecordServiceImp {
         BigDecimal caloriesPerDay = getCaloriesPerDay(recordCreateDto, BMR);
 
         record.setDailyCalories(caloriesPerDay);
-        record.setUserId(userId);
+        record.setUserId(user.getId());
 
         recordRepository.saveAndFlush(record);
 
@@ -73,8 +91,8 @@ public class RecordServiceImp {
         recordRepository.saveAndFlush(record);
     }
 
-    public void deleteById(Long recordId, Long userId) throws RecordNotFoundException {
-        Record record = recordRepository.findByIdAndUserId(recordId, userId)
+    public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {
+        Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .orElseThrow(() -> new RecordNotFoundException(recordId.toString()));
 
         nutritionIntakeClient.deleteNutritionIntakesWithRecordId(recordId);
@@ -108,5 +126,8 @@ public class RecordServiceImp {
                     .subtract(new BigDecimal("4.330").add(new BigDecimal(recordCreateDto.getAge())));
         }
         return BMR;
+    }
+    private UserView getUserId(String userToken) {
+        return gson.fromJson(userToken, UserView.class);
     }
 }
