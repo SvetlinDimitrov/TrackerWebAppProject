@@ -27,3 +27,15 @@ clients:
     name: nutritionIntake
     retrieve-data:
       url: /api/nutritionIntake/{recordId}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}

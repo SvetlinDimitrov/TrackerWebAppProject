@@ -22,14 +22,17 @@ eureka:
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
 
-logging:
-  level:
-    feign=DEBUG:
-    com:
-      netflix:
-        discovery=DEBUG:
-    feign:
-      RetryableException=DEBUG:
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
 
 clients:
   vitamin:
@@ -44,6 +47,7 @@ clients:
     name: macronutrient
     retrieve-data:
       url: /api/macronutrient
+
 
 
 

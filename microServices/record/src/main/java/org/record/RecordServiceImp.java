@@ -80,15 +80,10 @@ public class RecordServiceImp {
 
         recordRepository.saveAndFlush(record);
 
-        record.setDailyIntakeIds(
-                nutritionIntakeClient.createNutritionIntakesWithRecordId(record.getId(),
-                                new NutritionIntakeCreateDto(recordCreateDto.gender, caloriesPerDay, recordCreateDto.getWorkoutState()))
-                        .stream()
-                        .map(NutritionIntakeView::getId)
-                        .collect(Collectors.toList())
-        );
-
-        recordRepository.saveAndFlush(record);
+        nutritionIntakeClient.createNutritionIntakesWithRecordId(record.getId() ,
+                new NutritionIntakeCreateDto(Gender.valueOf(user.getGender()) ,
+                        record.getDailyCalories() ,
+                        WorkoutState.valueOf(user.getWorkoutState())));
     }
 
     public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {

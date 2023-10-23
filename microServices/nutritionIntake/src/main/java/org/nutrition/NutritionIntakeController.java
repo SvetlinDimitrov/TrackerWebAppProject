@@ -26,7 +26,7 @@ public class NutritionIntakeController {
 
     private final NutrientIntakeService nutrientIntakeService;
 
-    @GetMapping("/record/{recordId}")
+    @GetMapping("/{recordId}")
     public ResponseEntity<List<NutritionIntakeView>> getAllNutritionByRecord(@PathVariable Long recordId) throws RecordNotFoundException {
 
         List<NutritionIntakeView> intakeViews = nutrientIntakeService.getAllNutritionIntakeByRecordId(recordId);
@@ -34,7 +34,7 @@ public class NutritionIntakeController {
         return new ResponseEntity<>(intakeViews, HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping("/record/{recordId}")
+    @PostMapping("/{recordId}")
     public ResponseEntity<List<NutritionIntakeView>> createNutritionIntakes(@PathVariable Long recordId,
                                                              @Valid @RequestBody NutritionIntakeCreateDto nutritionIntakeCreateDto,
                                                              BindingResult result) throws NutritionCreateException {
@@ -47,7 +47,7 @@ public class NutritionIntakeController {
         return new ResponseEntity<>(views,HttpStatusCode.valueOf(201));
     }
 
-    @DeleteMapping("/record/{recordId}")
+    @DeleteMapping("/{recordId}")
     public ResponseEntity<HttpStatus> deleteNutritionIntakes(@PathVariable Long recordId) throws RecordNotFoundException {
 
         nutrientIntakeService.deleteNutritionIntakesByRecordId(recordId);
@@ -55,7 +55,7 @@ public class NutritionIntakeController {
         return new ResponseEntity<>(HttpStatus.valueOf(204));
     }
 
-    @PatchMapping("/record/{recordId}")
+    @PatchMapping("/{recordId}")
     public ResponseEntity<NutritionIntakeView> changeNutritionIntake(@PathVariable Long recordId,
                                                                      @Valid @RequestBody NutritionIntakeChangeDto changeDto,
                                                                      BindingResult result) throws IncorrectNutrientChangeException, NutrientNameNotFoundException {

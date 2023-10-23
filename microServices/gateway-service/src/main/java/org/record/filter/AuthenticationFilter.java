@@ -34,41 +34,32 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             try {
                 Map<String, Claim> claimMap = new JwtUtil().extractAndVerifyToken(exchange.getRequest().getHeaders());
 
-                UserView user = UserView.builder()
-                        .id(claimMap.get("id").asLong())
-                        .username(claimMap.get("username").asString())
-                        .email(claimMap.get("email").asString())
-                        .kilograms(claimMap.get("kilograms").asString())
-                        .height(claimMap.get("height").asString())
-                        .workoutState(claimMap.get("workoutState").asString())
-                        .gender(claimMap.get("gender").asString())
-                        .userDetails(claimMap.get("userDetails").asString())
-                        .age(claimMap.get("age").asInt())
-                        .build();
+                UserView user = getUserViewFromJwtToken(claimMap);
+
+                if ((claimMap.get("userDetails").asString().equals("NOT_COMPLETED") &&
+                        (exchange.getRequest().getURI().getPath().contains("nutrition") || exchange.getRequest().getURI().getPath().contains("record")))) {
+                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                    return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap("You must be fully registered".getBytes())));
+                }
 
                 Gson gson = new Gson();
 
-                ServerHttpRequest request = exchange.getRequest()
-                        .mutate()
-                        .header("X-ViewUser", gson.toJson(user))
-                        .build();
-
+                ServerHttpRequest request = exchange.getRequest().mutate().header("X-ViewUser", gson.toJson(user)).build();
 
                 return chain.filter(exchange.mutate().request(request).build());
             } catch (Exception e) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange
-                        .getResponse()
-                        .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(
-                                e.getMessage() != null ? e.getMessage().getBytes() : "Something went wrong".getBytes())));
+                return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(e.getMessage() != null ? e.getMessage().getBytes() : "Something went wrong".getBytes())));
             }
 
         }
     }
 
+    private UserView getUserViewFromJwtToken(Map<String, Claim> claimMap) {
+        return UserView.builder().id(claimMap.get("id").asLong()).username(claimMap.get("username").asString()).email(claimMap.get("email").asString()).kilograms(claimMap.get("kilograms").asString()).height(claimMap.get("height").asString()).workoutState(claimMap.get("workoutState").asString()).gender(claimMap.get("gender").asString()).userDetails(claimMap.get("userDetails").asString()).age(claimMap.get("age").asInt()).build();
+    }
+
     private boolean isAuthRequested(ServerWebExchange exchange) {
-        return Stream.of("/auth/login", "/auth/register")
-                .anyMatch(path -> path.equals(exchange.getRequest().getPath().toString())) &&
-                exchange.getRequest().getMethod().equals(HttpMethod.POST);
+        return Stream.of("/auth/login", "/auth/register").anyMatch(path -> path.equals(exchange.getRequest().getPath().toString())) && exchange.getRequest().getMethod().equals(HttpMethod.POST);
     }
 }

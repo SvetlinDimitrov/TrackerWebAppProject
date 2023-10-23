@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface NutritionIntakeRepository extends JpaRepository<NutritionIntake, Long> {
     List<NutritionIntake> findAllByRecordId(Long recordId);
 
+
     long deleteAllByRecordId(Long recordId);
 
     Optional<NutritionIntake> findByRecordIdAndNutrientName(Long recordId , String name);

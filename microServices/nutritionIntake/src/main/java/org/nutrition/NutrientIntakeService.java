@@ -14,6 +14,7 @@ import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,16 +58,16 @@ public class NutrientIntakeService {
                 .map(this::toNutritionIntakeView)
                 .collect(Collectors.toList());
     }
-
-    @Modifying
+    @Transactional
     public void deleteNutritionIntakesByRecordId(Long recordId) throws RecordNotFoundException {
+
         long numberOfDeletedEntities = repository.deleteAllByRecordId(recordId);
 
         if(numberOfDeletedEntities == 0){
             throw new RecordNotFoundException("There is no entities with the given record id:" + recordId);
         }
     }
-    @Modifying
+    @Transactional
     public NutritionIntakeView changeNutritionIntake(Long recordId, NutritionIntakeChangeDto changeDto) throws NutrientNameNotFoundException {
 
         NutritionIntake nutritionIntake = repository.findByRecordIdAndNutrientName(recordId, changeDto.getNutritionName())

@@ -49,12 +49,12 @@ public class UserController {
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity<UserView> editUserProfile(@RequestBody EditUserDto userDto,
+    public ResponseEntity<JwtTokenView> editUserProfile(@RequestBody EditUserDto userDto,
                                                     @RequestHeader("X-ViewUser") String userToken) {
 
         UserView userView = userServiceImp.editUserEntity(userDto, userToken);
 
-        return new ResponseEntity<>(userView, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
 
     }
 
