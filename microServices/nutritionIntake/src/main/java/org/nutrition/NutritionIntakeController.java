@@ -34,27 +34,6 @@ public class NutritionIntakeController {
         return new ResponseEntity<>(intakeViews, HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping("/{recordId}")
-    public ResponseEntity<List<NutritionIntakeView>> createNutritionIntakes(@PathVariable Long recordId,
-                                                             @Valid @RequestBody NutritionIntakeCreateDto nutritionIntakeCreateDto,
-                                                             BindingResult result) throws NutritionCreateException {
-        if (result.hasErrors()) {
-            throw new NutritionCreateException(result.getFieldErrors());
-        }
-
-        List<NutritionIntakeView> views = nutrientIntakeService.create(nutritionIntakeCreateDto, recordId);
-
-        return new ResponseEntity<>(views,HttpStatusCode.valueOf(201));
-    }
-
-    @DeleteMapping("/{recordId}")
-    public ResponseEntity<HttpStatus> deleteNutritionIntakes(@PathVariable Long recordId) throws RecordNotFoundException {
-
-        nutrientIntakeService.deleteNutritionIntakesByRecordId(recordId);
-
-        return new ResponseEntity<>(HttpStatus.valueOf(204));
-    }
-
     @PatchMapping("/{recordId}")
     public ResponseEntity<NutritionIntakeView> changeNutritionIntake(@PathVariable Long recordId,
                                                                      @Valid @RequestBody NutritionIntakeChangeDto changeDto,
@@ -72,11 +51,6 @@ public class NutritionIntakeController {
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<ErrorResponse> catchRecordNotFoundException(RecordNotFoundException e) {
         return new ResponseEntity<>(new ErrorResponse(List.of(e.getMessage())), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NutritionCreateException.class)
-    public ResponseEntity<ErrorResponse> catchNutritionCreateException(NutritionCreateException e) {
-        return new ResponseEntity<>(new ErrorResponse(e.getErrors()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IncorrectNutrientChangeException.class)

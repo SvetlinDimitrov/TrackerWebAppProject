@@ -14,6 +14,7 @@ import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.utils.RecordValidator;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,6 +28,8 @@ public class RecordServiceImp {
 
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
+    private final KafkaTemplate<String , NutritionIntakeCreateDto> nutritionCreateProducer;
+    private final KafkaTemplate<String , Long> nutritionDeleteProducer;
     private final Gson gson;
 
     public List<RecordView> getAllViewsByUserId(String userToken) {
@@ -80,17 +83,20 @@ public class RecordServiceImp {
 
         recordRepository.saveAndFlush(record);
 
-        nutritionIntakeClient.createNutritionIntakesWithRecordId(record.getId() ,
-                new NutritionIntakeCreateDto(Gender.valueOf(user.getGender()) ,
-                        record.getDailyCalories() ,
-                        WorkoutState.valueOf(user.getWorkoutState())));
+        NutritionIntakeCreateDto intakeCreateDto = new NutritionIntakeCreateDto(
+                record.getId(),
+                Gender.valueOf(user.getGender()),
+                record.getDailyCalories(),
+                WorkoutState.valueOf(user.getWorkoutState()));
+
+        nutritionCreateProducer.send("recordCreation" , intakeCreateDto);
     }
 
     public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {
         Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .orElseThrow(() -> new RecordNotFoundException(recordId.toString()));
 
-        nutritionIntakeClient.deleteNutritionIntakesWithRecordId(recordId);
+        nutritionDeleteProducer.send("recordDeletion" , record.getId());
 
         recordRepository.delete(record);
     }

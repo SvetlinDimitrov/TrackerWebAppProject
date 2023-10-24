@@ -14,11 +14,4 @@ public interface NutritionIntakeClient {
     @GetMapping(path = "${clients.nutritionIntake.retrieve-data.url}")
     List<NutritionIntakeView> getAllNutritionIntakesWithRecordId(@PathVariable("recordId") Long recordId);
 
-    @PostMapping(path = "${clients.nutritionIntake.retrieve-data.url}")
-    List<NutritionIntakeView> createNutritionIntakesWithRecordId(@PathVariable("recordId") Long recordId ,
-                                                                 @RequestBody NutritionIntakeCreateDto nutritionIntakeCreateDto);
-
-    @DeleteMapping(path = "${clients.nutritionIntake.retrieve-data.url}")
-    List<NutritionIntakeView> deleteNutritionIntakesWithRecordId(@PathVariable("recordId") Long recordId);
-
 }

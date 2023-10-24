@@ -13,6 +13,7 @@ import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +33,18 @@ public class NutrientIntakeService {
     private final ElectrolyteClient electrolyteClient;
     private final MacronutrientClient macronutrientClient;
 
+    @KafkaListener(
+            groupId = "createNutrition",
+            topics = "recordCreation",
+            containerFactory = "kafkaListenerContainerFactoryCreationTopic"
+    )
+    public List<NutritionIntakeView> create(NutritionIntakeCreateDto createDto) {
 
-    public List<NutritionIntakeView> create(NutritionIntakeCreateDto createDto, Long recordId) {
         List<NutritionIntake> nutritionIntakeEntities = new ArrayList<>();
 
-        fillAllVitaminsRecords(createDto.getGender(), recordId, nutritionIntakeEntities);
-        fillAllElectrolytesRecords(createDto.getGender(), recordId, nutritionIntakeEntities);
-        fillAllMacronutrientRecords(createDto, recordId, nutritionIntakeEntities);
+        fillAllVitaminsRecords(createDto.getGender(), createDto.getRecordId(), nutritionIntakeEntities);
+        fillAllElectrolytesRecords(createDto.getGender(), createDto.getRecordId(), nutritionIntakeEntities);
+        fillAllMacronutrientRecords(createDto, createDto.getRecordId(), nutritionIntakeEntities);
 
         repository.saveAllAndFlush(nutritionIntakeEntities);
 
@@ -58,14 +64,15 @@ public class NutrientIntakeService {
                 .map(this::toNutritionIntakeView)
                 .collect(Collectors.toList());
     }
+
+    @KafkaListener(
+            groupId = "deleteNutrition",
+            topics = "recordDeletion",
+            containerFactory = "kafkaListenerContainerFactoryDeletionTopic"
+    )
     @Transactional
-    public void deleteNutritionIntakesByRecordId(Long recordId) throws RecordNotFoundException {
-
-        long numberOfDeletedEntities = repository.deleteAllByRecordId(recordId);
-
-        if(numberOfDeletedEntities == 0){
-            throw new RecordNotFoundException("There is no entities with the given record id:" + recordId);
-        }
+    public void deleteNutritionIntakesByRecordId(Long recordId){
+       repository.deleteAllByRecordId(recordId);
     }
     @Transactional
     public NutritionIntakeView changeNutritionIntake(Long recordId, NutritionIntakeChangeDto changeDto) throws NutrientNameNotFoundException {

@@ -1,6 +1,5 @@
 package org.record.client;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,12 +13,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class NutritionIntakeCreateDto {
 
-    @NotNull
+    private Long recordId;
     private Gender gender;
-
-    @NotNull
     private BigDecimal caloriesPerDay;
-
-    @NotNull
     private WorkoutState workoutState;
+
 }

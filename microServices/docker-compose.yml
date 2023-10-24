@@ -1,6 +1,40 @@
 version: '3.8'
 
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+  broker:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+      - kafka_logs:/var/lib/kafka/logs
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
   mysql-db-record:
     restart: always
     image: mysql:latest
@@ -11,7 +45,6 @@ services:
       MYSQL_DATABASE: record
     volumes:
       - recordVolume:/var/lib/mysql
-
   mysql-db-nutriton:
     restart: always
     image: mysql:latest
@@ -22,7 +55,6 @@ services:
       MYSQL_DATABASE: nutritionIntake
     volumes:
       - nutritionVolume:/var/lib/mysql
-
   mysql-db-user:
     restart: always
     image: mysql:latest
@@ -33,8 +65,12 @@ services:
       MYSQL_DATABASE: users
     volumes:
       - userVolume:/var/lib/mysql
-
 volumes:
   recordVolume:
   nutritionVolume:
   userVolume:
+  kafkaData:
+  zookeeper_data:
+  zookeeper_log:
+  kafka_data:
+  kafka_logs:
