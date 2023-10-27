@@ -10,7 +10,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST:localhost}:3308/users
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3308}/users
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:12345}
   application:
@@ -18,7 +18,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
 management:
   endpoints:
     web:
@@ -29,7 +29,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+      endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans
 
 properties:
   jwt-secret-keyWord: topSecret12345

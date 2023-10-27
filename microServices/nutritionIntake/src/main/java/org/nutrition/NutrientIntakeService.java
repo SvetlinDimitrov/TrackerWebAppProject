@@ -12,8 +12,7 @@ import org.nutrition.model.dtos.NutritionIntakeView;
 import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +32,8 @@ public class NutrientIntakeService {
     private final ElectrolyteClient electrolyteClient;
     private final MacronutrientClient macronutrientClient;
 
-    @KafkaListener(
-            groupId = "createNutrition",
-            topics = "recordCreation",
-            containerFactory = "kafkaListenerContainerFactoryCreationTopic"
-    )
-    public List<NutritionIntakeView> create(NutritionIntakeCreateDto createDto) {
+    @RabbitListener(queues = "recordCreation")
+    public void create(NutritionIntakeCreateDto createDto) {
 
         List<NutritionIntake> nutritionIntakeEntities = new ArrayList<>();
 
@@ -46,11 +41,7 @@ public class NutrientIntakeService {
         fillAllElectrolytesRecords(createDto.getGender(), createDto.getRecordId(), nutritionIntakeEntities);
         fillAllMacronutrientRecords(createDto, createDto.getRecordId(), nutritionIntakeEntities);
 
-        repository.saveAllAndFlush(nutritionIntakeEntities);
-
-        return nutritionIntakeEntities.stream()
-                .map(this::toNutritionIntakeView)
-                .collect(Collectors.toList());
+        repository.saveAll(nutritionIntakeEntities);
 
     }
 
@@ -65,11 +56,7 @@ public class NutrientIntakeService {
                 .collect(Collectors.toList());
     }
 
-    @KafkaListener(
-            groupId = "deleteNutrition",
-            topics = "recordDeletion",
-            containerFactory = "kafkaListenerContainerFactoryDeletionTopic"
-    )
+    @RabbitListener(queues = "recordDeletion")
     @Transactional
     public void deleteNutritionIntakesByRecordId(Long recordId){
        repository.deleteAllByRecordId(recordId);

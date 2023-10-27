@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+  mysql-db-record:
+    container_name: mysql-db-record
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: record
+    volumes:
+      - recordVolume:/var/lib/mysql
+  mysql-db-nutriton:
+    container_name: mysql-db-nutriton
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: nutritionIntake
+    volumes:
+      - nutritionVolume:/var/lib/mysql
+  mysql-db-user:
+    container_name: mysql-db-user
+    restart: always
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: users
+    volumes:
+      - userVolume:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+  discovery-service:
+    container_name: discovery-service
+    build:
+      context: ../discover-service/.
+    ports:
+      - "8761:8761"
+    depends_on:
+      - zipkin
+    environment:
+      ZIPKIN_HOST: zipkin
+  auth-service:
+    container_name: auth-service
+    restart: always
+    build:
+      context: ../auth-service/.
+    ports:
+      - "10000:10000"
+    depends_on:
+      - mysql-db-user
+      - discovery-service
+    environment:
+      DB_HOST: mysql-db-user
+      EUREKA_HOST: discovery-service
+      ZIPKIN_HOST: zipkin
+volumes:
+  recordVolume:
+  nutritionVolume:
+  userVolume:
+  rabbitmq:

@@ -6,7 +6,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
 management:
   endpoints:
     web:
@@ -17,5 +17,5 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+      endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans
 

@@ -2,6 +2,8 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
 server:
   port: 8761
 management:
@@ -14,4 +16,4 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+      endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans

@@ -8,6 +8,7 @@
     <artifactId>microServices</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>vitamin</module>
         <module>electrolyte</module>
