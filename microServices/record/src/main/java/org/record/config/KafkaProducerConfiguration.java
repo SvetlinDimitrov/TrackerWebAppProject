@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.record.client.NutritionIntakeCreateDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -19,6 +20,10 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaProducerConfiguration {
+
+    @Value("${spring.kafka.bootstrap-servers}")
+    public String servers;
+
     @Bean
     public NewTopic recordCreationTopic() {
         return TopicBuilder.name("record-creation")
@@ -35,7 +40,7 @@ public class KafkaProducerConfiguration {
     public KafkaTemplate<String, NutritionIntakeCreateDto> kafkaTemplateCreation() {
 
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
@@ -46,7 +51,7 @@ public class KafkaProducerConfiguration {
     public KafkaTemplate<String, Long> kafkaTemplateDeletion() {
 
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
 
