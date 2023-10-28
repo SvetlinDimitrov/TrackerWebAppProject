@@ -14,7 +14,6 @@ import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.utils.RecordValidator;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,7 +27,6 @@ public class RecordServiceImp {
 
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
-    private final RabbitTemplate rabbitTemplate;
     private final Gson gson;
 
     public List<RecordView> getAllViewsByUserId(String userToken) {
@@ -88,17 +86,17 @@ public class RecordServiceImp {
                 record.getDailyCalories(),
                 WorkoutState.valueOf(user.getWorkoutState()));
 
-        rabbitTemplate.convertAndSend(
-                "record-exchange",
-                "creation-key",
-                intakeCreateDto);
+//        rabbitTemplate.convertAndSend(
+//                "record-exchange",
+//                "creation-key",
+//                intakeCreateDto);
     }
 
     public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {
         Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .orElseThrow(() -> new RecordNotFoundException(recordId.toString()));
 
-        rabbitTemplate.convertAndSend("record-exchange" , "deletion-key" , recordId);
+//        rabbitTemplate.convertAndSend("record-exchange" , "deletion-key" , recordId);
 
         recordRepository.delete(record);
     }

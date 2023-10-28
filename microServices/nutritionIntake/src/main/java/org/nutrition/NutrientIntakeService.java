@@ -12,7 +12,6 @@ import org.nutrition.model.dtos.NutritionIntakeView;
 import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class NutrientIntakeService {
     private final ElectrolyteClient electrolyteClient;
     private final MacronutrientClient macronutrientClient;
 
-    @RabbitListener(queues = "recordCreation")
+//    @RabbitListener(queues = "recordCreation")
     public void create(NutritionIntakeCreateDto createDto) {
 
         List<NutritionIntake> nutritionIntakeEntities = new ArrayList<>();
@@ -56,7 +55,7 @@ public class NutrientIntakeService {
                 .collect(Collectors.toList());
     }
 
-    @RabbitListener(queues = "recordDeletion")
+//    @RabbitListener(queues = "recordDeletion")
     @Transactional
     public void deleteNutritionIntakesByRecordId(Long recordId){
        repository.deleteAllByRecordId(recordId);
