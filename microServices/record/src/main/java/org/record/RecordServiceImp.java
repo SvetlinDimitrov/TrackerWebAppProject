@@ -1,7 +1,7 @@
 package org.record;
 
 import com.google.gson.Gson;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.record.client.NutritionIntakeClient;
 import org.record.client.NutritionIntakeCreateDto;
 import org.record.client.NutritionIntakeView;
@@ -14,6 +14,10 @@ import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.utils.RecordValidator;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,12 +25,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RecordServiceImp {
 
 
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
+    private final KafkaTemplate<String , NutritionIntakeCreateDto> kafkaTemplateCreation;
+    private final KafkaTemplate<String , Long> kafkaTemplateDeletion;
     private final Gson gson;
 
     public List<RecordView> getAllViewsByUserId(String userToken) {
@@ -86,17 +92,27 @@ public class RecordServiceImp {
                 record.getDailyCalories(),
                 WorkoutState.valueOf(user.getWorkoutState()));
 
-//        rabbitTemplate.convertAndSend(
-//                "record-exchange",
-//                "creation-key",
-//                intakeCreateDto);
+        Message<NutritionIntakeCreateDto> message = MessageBuilder
+                .withPayload(intakeCreateDto)
+                .setHeader(KafkaHeaders.TOPIC, "record-creation")
+                .build();
+
+        kafkaTemplateCreation
+                .send(message);
     }
 
     public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {
         Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .orElseThrow(() -> new RecordNotFoundException(recordId.toString()));
 
-//        rabbitTemplate.convertAndSend("record-exchange" , "deletion-key" , recordId);
+
+        Message<Long> message = MessageBuilder
+                .withPayload(recordId)
+                .setHeader(KafkaHeaders.TOPIC, "record-deletion")
+                .build();
+
+        kafkaTemplateDeletion
+                .send(message);
 
         recordRepository.delete(record);
     }
