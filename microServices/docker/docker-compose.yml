@@ -4,11 +4,10 @@ services:
   rabbitmq:
     container_name: rabbitmq
     image: "rabbitmq:3-management"
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
-    environment:
-      RABBITMQ_MANAGEMENT_HTTP_AUTH: "none"
     volumes:
       - rabbitMQ-data:/var/lib/rabbitmq
   zipkin:
@@ -60,6 +59,102 @@ services:
       - zipkin
     ports:
       - "8761:8761"
+  gateway-service:
+    build:
+      context: ../gateway-service/.
+    container_name: gateway-service
+    environment:
+      ZIPKIN_URL: zipkin
+      EUREKA_HOST: discovery-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zipkin
+      - discovery-service
+  auth-service:
+    build:
+      context: ../auth-service/.
+    container_name: auth-service
+    environment:
+      DB_HOST: mysql-db-user
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+    depends_on:
+      - zipkin
+      - mysql-db-user
+      - gateway-service
+      - discovery-service
+  vitamin-service:
+    build:
+      context: ../vitamin/.
+    container_name: vitamin-service
+    environment:
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+    depends_on:
+      - zipkin
+      - discovery-service
+      - gateway-service
+  electrolyte-service:
+    build:
+      context: ../electrolyte/.
+    container_name: electrolyte-service
+    environment:
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+    depends_on:
+      - zipkin
+      - discovery-service
+      - gateway-service
+  macronutrient-service:
+    build:
+      context: ../macronutrient/.
+    container_name: macronutrient-service
+    environment:
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+
+    depends_on:
+      - zipkin
+      - discovery-service
+      - gateway-service
+  record-service:
+    build:
+      context: ../record/.
+    container_name: record-service
+    environment:
+      DB_HOST: mysql-db-record
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - zipkin
+      - mysql-db-user
+      - gateway-service
+      - discovery-service
+      - rabbitmq
+  nutrition-intake-service:
+    build:
+      context: ../nutritionIntake/.
+    container_name: nutrition-intake-service
+    environment:
+      DB_HOST: mysql-db-nutriton
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-service
+      ZIPKIN_URL: zipkin
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - zipkin
+      - mysql-db-user
+      - gateway-service
+      - discovery-service
+      - rabbitmq
+      - record-service
+      - macronutrient-service
+      - vitamin-service
+      - electrolyte-service
 volumes:
   recordVolume:
   nutritionVolume:

@@ -16,9 +16,6 @@ spring:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/record
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:12345}
-  rabbitmq:
-    addresses: ${RABBITMQ_HOST:localhost}:5672
-
 eureka:
   client:
     serviceUrl:
