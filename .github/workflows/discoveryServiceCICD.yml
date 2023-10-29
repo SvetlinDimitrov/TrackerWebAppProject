@@ -15,7 +15,7 @@ on:
 
 jobs:
   discovery-service-cicd:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
     - name: checkout repo
