@@ -27,7 +27,7 @@ jobs:
       working-directory: ./microServices/discover-service
       run: |
         mvn test
-        mvn build
+        mvn install
 
     - name: Set the build project in artefact
       uses: actions/upload-artifact@v3
