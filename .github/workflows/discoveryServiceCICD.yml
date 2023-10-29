@@ -40,5 +40,8 @@ jobs:
         
     - name: Build and Push Docker Image
       run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app -f microServices/discover-service/Dockerfile .
+          ls
+          cd microServices/discover-service
+          ls
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app
