@@ -176,6 +176,32 @@ services:
       - macronutrient-service
       - vitamin-service
       - electrolyte-service
+  prometheus:
+    image: prom/prometheus:v2.37.1
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - record-service
+      - nutrition-intake-service
+  grafana:
+    image: grafana/grafana-oss:8.5.2
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    links:
+      - prometheus:prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    depends_on:
+      - prometheus
 volumes:
   recordVolume:
   nutritionVolume:
@@ -186,4 +212,5 @@ volumes:
   zookeeper-secrets:
   zookeeper-data:
   zookeeper-log:
+  grafana-data:
 
