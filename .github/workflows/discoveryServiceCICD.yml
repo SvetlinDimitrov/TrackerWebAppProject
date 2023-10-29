@@ -60,5 +60,8 @@ jobs:
         
       - name: Build and Push Docker Image
         run: |
+          echo "Dockerfile path: microServices/discover-service/Dockerfile"
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app -f microServices/discover-service/Dockerfile .
+          echo "Docker build completed."
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app
+          echo "Docker push completed."
