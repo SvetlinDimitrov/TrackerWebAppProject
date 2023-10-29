@@ -1,6 +1,7 @@
 package org.nutrition;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.nutrition.clients.electrolyte.ElectrolyteClient;
 import org.nutrition.clients.macronutrient.MacronutrientClient;
 import org.nutrition.clients.vitamin.VitaminClient;
@@ -12,7 +13,10 @@ import org.nutrition.model.dtos.NutritionIntakeView;
 import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +36,8 @@ public class NutrientIntakeService {
     private final ElectrolyteClient electrolyteClient;
     private final MacronutrientClient macronutrientClient;
 
-    @RabbitListener(queues = "recordCreation")
-    public void create(NutritionIntakeCreateDto createDto) {
-
+    @KafkaListener(topics = "record-creation", groupId = "group_one", containerFactory = "kafkaListenerCreation")
+    public void create(@Payload NutritionIntakeCreateDto createDto) {
         List<NutritionIntake> nutritionIntakeEntities = new ArrayList<>();
 
         fillAllVitaminsRecords(createDto.getGender(), createDto.getRecordId(), nutritionIntakeEntities);
@@ -42,7 +45,11 @@ public class NutrientIntakeService {
         fillAllMacronutrientRecords(createDto, createDto.getRecordId(), nutritionIntakeEntities);
 
         repository.saveAll(nutritionIntakeEntities);
-
+    }
+    @KafkaListener(topics = "record-deletion", groupId = "group_two", containerFactory = "kafkaListenerDeletion")
+    @Transactional
+    public void deleteNutritionIntakesByRecordId(@Payload Long recordId){
+        repository.deleteAllByRecordId(recordId);
     }
 
     public List<NutritionIntakeView> getAllNutritionIntakeByRecordId(Long recordId) throws RecordNotFoundException {
@@ -56,11 +63,7 @@ public class NutrientIntakeService {
                 .collect(Collectors.toList());
     }
 
-    @RabbitListener(queues = "recordDeletion")
-    @Transactional
-    public void deleteNutritionIntakesByRecordId(Long recordId){
-       repository.deleteAllByRecordId(recordId);
-    }
+
     @Transactional
     public NutritionIntakeView changeNutritionIntake(Long recordId, NutritionIntakeChangeDto changeDto) throws NutrientNameNotFoundException {
 

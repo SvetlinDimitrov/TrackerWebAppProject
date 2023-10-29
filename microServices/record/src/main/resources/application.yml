@@ -16,16 +16,12 @@ spring:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/record
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:12345}
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost:9092}
 eureka:
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
-
-clients:
-  nutritionIntake:
-    name: nutritionIntake
-    retrieve-data:
-      url: /api/nutritionIntake/{recordId}
 
 management:
   endpoints:
@@ -38,3 +34,10 @@ management:
   zipkin:
     tracing:
       endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans
+
+clients:
+  nutritionIntake:
+    name: nutritionIntake
+    retrieve-data:
+      url: /api/nutritionIntake/{recordId}
+
