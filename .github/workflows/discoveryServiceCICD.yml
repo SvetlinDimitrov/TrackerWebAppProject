@@ -6,7 +6,7 @@ name: discovery-service-CICD-pipeline
 on:
   push:
     paths:
-      - 'microServices/discover-service/*'  # Replace with the path to your folder
+      - 'microServices/discover-service' 
 
 jobs:
   discovery-service-ci:
@@ -60,5 +60,5 @@ jobs:
         
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app -f microServices/discover-service/.
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app -f microServices/discover-service/Dockerfile .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app
