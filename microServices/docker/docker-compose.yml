@@ -70,8 +70,7 @@ services:
     volumes:
       - userVolume:/var/lib/mysql
   discovery-service:
-    build:
-      context: ../discover-service/.
+    image: svetlindimitrov/discovery-service-tracker-app
     container_name: discovery-service
     environment:
       EUREKA_HOST: discovery-service
@@ -81,8 +80,7 @@ services:
     ports:
       - "8761:8761"
   gateway-service:
-    build:
-      context: ../gateway-service/.
+    image: svetlindimitrov/gateway-service-tracker-app
     container_name: gateway-service
     environment:
       ZIPKIN_URL: zipkin
@@ -93,9 +91,9 @@ services:
       - zipkin
       - discovery-service
   auth-service:
-    build:
-      context: ../auth-service/.
+    image: svetlindimitrov/auth-service-tracker-app
     container_name: auth-service
+    restart: always
     environment:
       DB_HOST: mysql-db-user
       DB_PORT: 3306
@@ -107,8 +105,7 @@ services:
       - gateway-service
       - discovery-service
   vitamin-service:
-    build:
-      context: ../vitamin/.
+    image: svetlindimitrov/vitamin-service-tracker-app
     container_name: vitamin-service
     environment:
       EUREKA_HOST: discovery-service
@@ -118,8 +115,7 @@ services:
       - discovery-service
       - gateway-service
   electrolyte-service:
-    build:
-      context: ../electrolyte/.
+    image: svetlindimitrov/electrolyte-service-tracker-app
     container_name: electrolyte-service
     environment:
       EUREKA_HOST: discovery-service
@@ -129,8 +125,7 @@ services:
       - discovery-service
       - gateway-service
   macronutrient-service:
-    build:
-      context: ../macronutrient/.
+    image: svetlindimitrov/macronutrient-service-tracker-app
     container_name: macronutrient-service
     environment:
       EUREKA_HOST: discovery-service
@@ -141,8 +136,8 @@ services:
       - discovery-service
       - gateway-service
   record-service:
-    build:
-      context: ../record/.
+    restart: always
+    image: svetlindimitrov/record-service-tracker-app
     container_name: record-service
     environment:
       DB_HOST: mysql-db-record
@@ -157,8 +152,8 @@ services:
       - discovery-service
       - broker
   nutrition-intake-service:
-    build:
-      context: ../nutritionIntake/.
+    restart: always
+    image: svetlindimitrov/nutrition-intake-tracker-app
     container_name: nutrition-intake-service
     environment:
       DB_HOST: mysql-db-nutriton
