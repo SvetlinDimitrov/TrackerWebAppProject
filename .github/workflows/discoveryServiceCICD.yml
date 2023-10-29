@@ -44,6 +44,5 @@ jobs:
         mvn test
         mvn install
         ls
-        cd microServices/discover-service
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-service-tracker-app
