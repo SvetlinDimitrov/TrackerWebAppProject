@@ -9,5 +9,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class ElectrolyteApplication {
     public static void main(String[] args) {
         SpringApplication.run(ElectrolyteApplication.class,args);
+
     }
 }

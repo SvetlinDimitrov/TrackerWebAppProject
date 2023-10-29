@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class NutrientIntakeService {
-
     private final NutritionIntakeRepository repository;
     private final VitaminClient vitaminClient;
     private final ElectrolyteClient electrolyteClient;
