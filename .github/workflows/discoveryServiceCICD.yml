@@ -4,6 +4,11 @@
 name: discovery-service-CICD-pipeline
 
 on:
+  workflow_dispatch:
+    inputs:
+      runWorkflow:
+        description: 'Run the workflow'
+        required: true
   push:
     paths:
       - 'microServices/discover-service/**' 
