@@ -1,4 +1,4 @@
-FROM openjdk
+FROM amazoncorretto:17
 
 WORKDIR /app
 
