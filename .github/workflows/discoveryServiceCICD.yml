@@ -6,7 +6,7 @@ name: discovery-service-CICD-pipeline
 on:
   push:
     paths:
-      - 'microServices/discover-service/*' 
+      - 'microServices/discover-service/**' 
 
 jobs:
   discovery-service-ci:
