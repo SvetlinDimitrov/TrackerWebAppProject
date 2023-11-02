@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -28,7 +29,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        if (isAuthRequested(exchange)) {
+        if (isAuthRequested(exchange) || nonAuthServices(exchange)) {
             return chain.filter(exchange);
         } else {
             try {
@@ -61,5 +62,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private boolean isAuthRequested(ServerWebExchange exchange) {
         return Stream.of("/auth/login", "/auth/register").anyMatch(path -> path.equals(exchange.getRequest().getPath().toString())) && exchange.getRequest().getMethod().equals(HttpMethod.POST);
+    }
+    private boolean nonAuthServices(ServerWebExchange exchange) {
+        return Stream.of("vitamin" , "macronutrient" , "electrolyte")
+                .anyMatch(paths -> (exchange.getRequest().getPath().toString()).contains(paths));
     }
 }
