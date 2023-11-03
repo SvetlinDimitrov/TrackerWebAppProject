@@ -1,4 +1,10 @@
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/UserAuth";
+import { useContext } from "react";
+
 const Header = () => {
+  const { userToken } = useContext(AuthContext);
+
   return (
     <>
       <section id="topbar" className="topbar d-flex align-items-center">
@@ -30,8 +36,9 @@ const Header = () => {
 
       <header id="header" className="header d-flex align-items-center">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-between">
-          <a href="index.html" className="logo d-flex align-items-center" />
+          <a href="index.html" className="logo d-flex align-items-center">
           <img src="assets/img/logo.png" alt="" />
+          </a>
           <h1>
             Impact<span>.</span>
           </h1>
@@ -39,33 +46,33 @@ const Header = () => {
           <nav id="navbar" className="navbar">
             <ul>
               <li>
-                <a href="#hero">Home</a>
+                <Link to={"/"}>Home</Link>
               </li>
-              <li>
-                <a href="#about">About</a>
-              </li>
-              <li>
-                <a href="#services">Services</a>
-              </li>
-              <li>
-                <a href="#portfolio">Portfolio</a>
-              </li>
-              <li>
-                <a href="#team">Team</a>
-              </li>
-              <li>
-                <a href="blog.html">Blog</a>
-              </li>
+              {userToken === "" ? (
+                <>
+                  <li>
+                    <Link to={"/register"}>Register</Link>
+                  </li>
+                  <li>
+                    <Link to={"/login"}>Login</Link>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Link to={"/logout"}>Logout</Link>
+                </li>
+              )}
+
               <li className="dropdown">
                 <a href="#">
-                  <span>Drop Down</span>{" "}
+                  <span>Services</span>{" "}
                   <i className="bi bi-chevron-down dropdown-indicator"></i>
                 </a>
                 <ul>
                   <li>
-                    <a href="#">Drop Down 1</a>
+                    <Link to={"/nutrientInfo"}>NutrientInfo</Link>
                   </li>
-                  <li className="dropdown">
+                  {/* <li className="dropdown">
                     <a href="#">
                       <span>Deep Drop Down</span>{" "}
                       <i className="bi bi-chevron-down dropdown-indicator"></i>
@@ -87,7 +94,7 @@ const Header = () => {
                         <a href="#">Deep Drop Down 5</a>
                       </li>
                     </ul>
-                  </li>
+                  </li> */}
                   <li>
                     <a href="#">Drop Down 2</a>
                   </li>
@@ -98,9 +105,6 @@ const Header = () => {
                     <a href="#">Drop Down 4</a>
                   </li>
                 </ul>
-              </li>
-              <li>
-                <a href="#contact">Contact</a>
               </li>
             </ul>
           </nav>
