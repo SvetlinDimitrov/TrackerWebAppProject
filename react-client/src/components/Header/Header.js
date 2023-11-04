@@ -37,7 +37,7 @@ const Header = () => {
       <header id="header" className="header d-flex align-items-center">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-between">
           <a href="index.html" className="logo d-flex align-items-center">
-          <img src="assets/img/logo.png" alt="" />
+            <img src="assets/img/logo.png" alt="" />
           </a>
           <h1>
             Impact<span>.</span>
@@ -58,9 +58,15 @@ const Header = () => {
                   </li>
                 </>
               ) : (
-                <li>
-                  <Link to={"/logout"}>Logout</Link>
-                </li>
+                <>
+                  <li>
+                    <Link to={"/logout"}>Logout</Link>
+                  </li>
+
+                  <li>
+                    <Link to={"/editUser"}>EditUser</Link>
+                  </li>
+                </>
               )}
 
               <li className="dropdown">

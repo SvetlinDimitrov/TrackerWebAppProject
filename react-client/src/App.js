@@ -12,27 +12,34 @@ import Login from "./components/RegisterLoginLogout/Login";
 import Register from "./components/RegisterLoginLogout/Register";
 import Error from "./components/Error/Error";
 import NutrientTemplate from "./components/Nutrients/NutrientTemplate";
+import EditUser from "./components/EditUser/EditUser";
+import NotificationProvider from "./context/Notification";
 
 function App() {
   return (
     <>
       <UserAuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/nutrientInfo" element={<NutrientInfo/>}>
-            <Route path=":nutrition/:nutritionType" element={<NutrientTemplate/>}/>
-          </Route>
-          <Route path="*" element={<Error />} />
-          <Route element={<UserAuthGuard />}>
-            <Route path="/logout" element={<Logout />} />
-          </Route>
-        </Routes>
-        <Footer />
+        <NotificationProvider>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/nutrientInfo" element={<NutrientInfo />}>
+              <Route
+                path=":nutrition/:nutritionType"
+                element={<NutrientTemplate />}
+              />
+            </Route>
+            <Route path="*" element={<Error />} />
+            <Route element={<UserAuthGuard />}>
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/editUser" element={<EditUser />} />
+            </Route>
+          </Routes>
+          <Footer />
+        </NotificationProvider>
       </UserAuthProvider>
-      
     </>
   );
 }
