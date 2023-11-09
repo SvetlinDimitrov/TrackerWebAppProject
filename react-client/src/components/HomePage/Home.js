@@ -21,16 +21,20 @@ const Home = () => {
 
   return (
     <div>
-      { (successfulMessage || failedMessage) && <div className={stylesNotification.overlay}></div>}
-      {successfulMessage && (
+      {(successfulMessage.flag || failedMessage.flag) && (
+        <div className={stylesNotification.overlay}></div>
+      )}
+      {successfulMessage.flag && (
         <SuccessMessage
+          message={successfulMessage.message}
           onClose={() => {
             setSuccessfulMessage(false);
           }}
         />
       )}
-      {failedMessage && (
+      {failedMessage.flag && (
         <FailedMessage
+          message={failedMessage.message}
           onClose={() => {
             setFailedMessage(false);
           }}

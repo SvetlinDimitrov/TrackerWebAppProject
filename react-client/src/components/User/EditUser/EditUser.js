@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/UserAuth";
-import { NotificationContext } from "../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
+import { NotificationContext } from "../../../context/Notification";
 
-import api from "../../util/api";
+import api from "../../../util/api";
 import styles from "./EditUser.module.css";
 
 const EditUser = () => {
-  const { userToken } = useContext(AuthContext);
+  const { userToken , loginUser } = useContext(AuthContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const [user, setUser] = useState({});
@@ -32,13 +32,14 @@ const EditUser = () => {
   const handleSubmit = async (e) => {
     await e.preventDefault();
     try {
-      await api.patch("/auth/edit", user, {
+      const response = await api.patch("/auth/edit", user, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
-      setSuccessfulMessage(true);
+      loginUser(response.data.token);
+      setSuccessfulMessage( {message:'Changes were made successfully!' , flag:true} );
       navigate("/");
     } catch (error) {
-      setFailedMessage(true);
+      setFailedMessage( {message:'Your has expired please login again!' , flag:true} );
       navigate("/logout");
     }
   };

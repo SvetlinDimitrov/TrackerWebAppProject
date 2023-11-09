@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import styles from "./NutritionTemplate.module.css";
-import api from "../../util/api";
+import api from "../../../util/api";
 
 const NutrientTemplate = () => {
   const { nutrition, nutritionType } = useParams();
@@ -19,6 +19,7 @@ const NutrientTemplate = () => {
 
         setNutritionTemplate(response.data);
       } catch (error) {
+        
         navigate("/error");
       }
     };

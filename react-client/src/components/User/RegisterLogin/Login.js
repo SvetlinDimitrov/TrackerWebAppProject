@@ -1,9 +1,9 @@
 import { useState , useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useForm } from "../../hooks/useForm";
-import { AuthContext } from "../../context/UserAuth";
-import api from "../../util/api";
+import { useForm } from "../../../hooks/useForm";
+import { AuthContext } from "../../../context/UserAuth";
+import api from "../../../util/api";
 
 import React from "react";
 import styles from "./LoginRegister.module.css";

@@ -1,13 +1,10 @@
-import React from "react";
-
 import styles from "./FailedMessage.module.css";
 
-
-const FailedMessage = ({ onClose }) => {
+const FailedMessage = ({ onClose , message}) => {
   return (
     <div className={styles.failedMessage}>
-      <p>Failed to make changes. Please try again.</p>
-      <button style={styles.failedMessageButton} onClick={onClose}>Close</button>
+      <p>{message}</p>
+      <button className={styles.failedMessageButton} onClick={onClose}>Close</button>
     </div>
   );
 };

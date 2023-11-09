@@ -102,7 +102,7 @@ const Header = () => {
                     </ul>
                   </li> */}
                   <li>
-                    <a href="#">Drop Down 2</a>
+                    <Link to={"/nutritionRecord"}>NutritionRecord</Link>
                   </li>
                   <li>
                     <a href="#">Drop Down 3</a>

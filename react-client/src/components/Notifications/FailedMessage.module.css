@@ -1,12 +1,13 @@
 .failedMessage {
-  background-color: #ff5733; /* Red background color */
-  color: white; /* White text color */
-  padding: 10px; /* Add some padding to the message */
-  border-radius: 5px; /* Rounded corners */
-  text-align: center; /* Center-align text */
-  position: fixed; /* Fixed position for notifications */
-  top: 20px; /* Position from the top */
-  right: 20px; /* Position from the right */
+  z-index: 99;
+  background-color: rgb(227, 6, 35); 
+  color: white; 
+  padding: 10px; 
+  border-radius: 5px; 
+  text-align: center; 
+  position: fixed; 
+  top: 20px; 
+  right: 20px; 
 }
 
 .failedMessageButton {
