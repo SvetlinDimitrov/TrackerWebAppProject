@@ -1,21 +1,18 @@
 package org.nutrition;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.nutrition.clients.electrolyte.ElectrolyteClient;
 import org.nutrition.clients.macronutrient.MacronutrientClient;
 import org.nutrition.clients.vitamin.VitaminClient;
 import org.nutrition.exceptions.NutrientNameNotFoundException;
 import org.nutrition.exceptions.RecordNotFoundException;
 import org.nutrition.model.dtos.NutritionIntakeChangeDto;
-import org.nutrition.model.dtos.NutritionIntakeCreateDto;
+import org.nutrition.model.dtos.RecordCreation;
 import org.nutrition.model.dtos.NutritionIntakeView;
 import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
 import org.nutrition.model.enums.WorkoutState;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +33,7 @@ public class NutrientIntakeService {
     private final MacronutrientClient macronutrientClient;
 
     @KafkaListener(topics = "record-creation", groupId = "group_one", containerFactory = "kafkaListenerCreation")
-    public void create(@Payload NutritionIntakeCreateDto createDto) {
+    public void create(@Payload RecordCreation createDto) {
         List<NutritionIntake> nutritionIntakeEntities = new ArrayList<>();
 
         fillAllVitaminsRecords(createDto.getGender(), createDto.getRecordId(), nutritionIntakeEntities);
@@ -73,7 +70,7 @@ public class NutrientIntakeService {
         repository.saveAndFlush(nutritionIntake);
 
         return toNutritionIntakeView(nutritionIntake);
-    }private void fillAllMacronutrientRecords(NutritionIntakeCreateDto createDto, Long recordId, List<NutritionIntake> nutritionIntakeEntities) {
+    }private void fillAllMacronutrientRecords(RecordCreation createDto, Long recordId, List<NutritionIntake> nutritionIntakeEntities) {
         macronutrientClient
                 .getAllMacronutrients()
                 .forEach(macro -> {

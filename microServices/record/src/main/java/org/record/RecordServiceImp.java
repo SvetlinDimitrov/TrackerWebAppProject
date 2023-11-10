@@ -2,9 +2,7 @@ package org.record;
 
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import org.record.client.NutritionIntakeClient;
-import org.record.client.NutritionIntakeCreateDto;
-import org.record.client.NutritionIntakeView;
+import org.record.client.*;
 import org.record.exeptions.RecordCreationException;
 import org.record.exeptions.RecordNotFoundException;
 import org.record.model.dtos.RecordCreateDto;
@@ -21,6 +19,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +27,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RecordServiceImp {
 
-
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
-    private final KafkaTemplate<String , NutritionIntakeCreateDto> kafkaTemplateCreation;
+    private final StorageClient storageClient;
+    private final KafkaTemplate<String , RecordCreation> kafkaTemplateCreation;
     private final KafkaTemplate<String , Long> kafkaTemplateDeletion;
     private final Gson gson;
 
@@ -40,11 +39,14 @@ public class RecordServiceImp {
                 .stream()
                 .filter(record -> record.getUserId().equals(getUserId(userToken).getId()))
                 .map(record -> {
+                    List<StorageView> allStorageWithRecordId = storageClient.getAllStorageWithRecordId(record.getId());
                     List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient.getAllNutritionIntakesWithRecordId(record.getId());
                     return new RecordView(record.getId(),
                             allNutritionIntakesWithRecordId,
+                            allStorageWithRecordId,
                             record.getDailyCalories(),
-                            record.getUserId());
+                            record.getUserId(),
+                            String.valueOf(record.getDate()));
                 })
                 .collect(Collectors.toList());
     }
@@ -53,11 +55,14 @@ public class RecordServiceImp {
 
         return recordRepository.findById(day)
                 .map(record -> {
+                    List<StorageView> allStorageWithRecordId = storageClient.getAllStorageWithRecordId(record.getId());
                     List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient.getAllNutritionIntakesWithRecordId(record.getId());
                     return new RecordView(record.getId(),
                             allNutritionIntakesWithRecordId,
+                            allStorageWithRecordId,
                             record.getDailyCalories(),
-                            record.getUserId());
+                            record.getUserId() ,
+                            String.valueOf(record.getDate()));
                 })
                 .orElseThrow(() -> new RecordNotFoundException(day.toString()));
     }
@@ -77,6 +82,7 @@ public class RecordServiceImp {
         RecordValidator.validateRecord(recordCreateDto);
 
         Record record = new Record();
+        record.setDate(LocalDate.now());
 
         BigDecimal BMR = getBmr(recordCreateDto);
         BigDecimal caloriesPerDay = getCaloriesPerDay(recordCreateDto, BMR);
@@ -86,13 +92,13 @@ public class RecordServiceImp {
 
         recordRepository.saveAndFlush(record);
 
-        NutritionIntakeCreateDto intakeCreateDto = new NutritionIntakeCreateDto(
+        RecordCreation intakeCreateDto = new RecordCreation(
                 record.getId(),
                 Gender.valueOf(user.getGender()),
                 record.getDailyCalories(),
                 WorkoutState.valueOf(user.getWorkoutState()));
 
-        Message<NutritionIntakeCreateDto> message = MessageBuilder
+        Message<RecordCreation> message = MessageBuilder
                 .withPayload(intakeCreateDto)
                 .setHeader(KafkaHeaders.TOPIC, "record-creation")
                 .build();
@@ -137,7 +143,7 @@ public class RecordServiceImp {
                     .add(new BigDecimal("4.799").multiply(recordCreateDto.getHeight()))
                     .subtract(new BigDecimal("5.677").add(new BigDecimal(recordCreateDto.getAge())));
         } else {
-            BMR = new BigDecimal("447.593 ")
+            BMR = new BigDecimal("447.593")
                     .add(new BigDecimal("9.247").multiply(recordCreateDto.getKilograms()))
                     .add(new BigDecimal("3.098").multiply(recordCreateDto.getHeight()))
                     .subtract(new BigDecimal("4.330").add(new BigDecimal(recordCreateDto.getAge())));

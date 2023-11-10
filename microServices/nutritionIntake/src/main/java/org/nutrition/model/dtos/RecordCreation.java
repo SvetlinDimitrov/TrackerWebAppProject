@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NutritionIntakeCreateDto {
+public class RecordCreation {
 
     private Long recordId;
     private Gender gender;

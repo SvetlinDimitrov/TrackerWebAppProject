@@ -4,7 +4,7 @@ package org.nutrition.config;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.nutrition.model.dtos.NutritionIntakeCreateDto;
+import org.nutrition.model.dtos.RecordCreation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +25,8 @@ public class KafkaReceiverConfiguration {
     public String servers;
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, NutritionIntakeCreateDto> kafkaListenerCreation(ConsumerFactory<String, NutritionIntakeCreateDto> consumerFactoryCreation) {
-        ConcurrentKafkaListenerContainerFactory<String, NutritionIntakeCreateDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, RecordCreation> kafkaListenerCreation(ConsumerFactory<String, RecordCreation> consumerFactoryCreation) {
+        ConcurrentKafkaListenerContainerFactory<String, RecordCreation> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryCreation);
         return factory;
     }
@@ -38,8 +38,8 @@ public class KafkaReceiverConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, NutritionIntakeCreateDto> consumerFactoryCreation() {
-        JsonDeserializer<NutritionIntakeCreateDto> deserializer = new JsonDeserializer<>(NutritionIntakeCreateDto.class);
+    public ConsumerFactory<String, RecordCreation> consumerFactoryCreation() {
+        JsonDeserializer<RecordCreation> deserializer = new JsonDeserializer<>(RecordCreation.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);

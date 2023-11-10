@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NutritionIntakeCreateDto {
+public class RecordCreation {
 
     private Long recordId;
     private Gender gender;
