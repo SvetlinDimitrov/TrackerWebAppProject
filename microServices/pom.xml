@@ -25,6 +25,7 @@
         <module>discover-service</module>
         <module>gateway-service</module>
         <module>auth-service</module>
+        <module>storage-service</module>
     </modules>
 
     <properties>
