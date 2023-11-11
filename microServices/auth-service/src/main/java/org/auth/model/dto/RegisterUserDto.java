@@ -1,18 +1,17 @@
 package org.auth.model.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+
 import org.auth.model.entity.User;
 import org.auth.model.enums.Gender;
 import org.auth.model.enums.WorkoutState;
 import org.auth.validations.NotUsedEmailConstraint;
 
-import java.math.BigDecimal;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Data
 public class RegisterUserDto {
@@ -35,7 +34,7 @@ public class RegisterUserDto {
     private BigDecimal height;
     private Integer age;
 
-    public User toUser (){
+    public User toUser() {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);

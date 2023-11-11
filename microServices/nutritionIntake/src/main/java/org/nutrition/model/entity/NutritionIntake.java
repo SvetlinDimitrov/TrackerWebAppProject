@@ -1,11 +1,15 @@
 package org.nutrition.model.entity;
-import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -19,6 +23,7 @@ public class NutritionIntake {
     private Long id;
     private String nutrientName;
     private String nutrientType;
+    @Builder.Default
     private BigDecimal dailyConsumed = BigDecimal.ZERO;
     private BigDecimal lowerBoundIntake;
     private BigDecimal upperBoundIntake;

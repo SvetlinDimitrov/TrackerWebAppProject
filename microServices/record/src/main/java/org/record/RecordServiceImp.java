@@ -1,10 +1,20 @@
 package org.record;
 
-import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
-import org.record.client.*;
-import org.record.exeptions.RecordCreationException;
-import org.record.exeptions.RecordNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.record.client.NutritionIntakeClient;
+import org.record.client.StorageClient;
+import org.record.client.dto.NutritionIntakeView;
+import org.record.client.dto.RecordCreation;
+import org.record.client.dto.StorageCreation;
+import org.record.client.dto.StorageDeletion;
+import org.record.client.dto.StorageView;
+import org.record.exceptions.RecordCreationException;
+import org.record.exceptions.RecordNotFoundException;
+import org.record.exceptions.UserNotFoundException;
 import org.record.model.dtos.RecordCreateDto;
 import org.record.model.dtos.RecordView;
 import org.record.model.dtos.UserView;
@@ -18,10 +28,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.gson.Gson;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -30,17 +39,25 @@ public class RecordServiceImp {
     private final RecordRepository recordRepository;
     private final NutritionIntakeClient nutritionIntakeClient;
     private final StorageClient storageClient;
-    private final KafkaTemplate<String , RecordCreation> kafkaTemplateCreation;
-    private final KafkaTemplate<String , Long> kafkaTemplateDeletion;
+    private final KafkaTemplate<String, RecordCreation> kafkaTemplateCreation;
+    private final KafkaTemplate<String, Long> kafkaTemplateDeletion;
+    private final KafkaTemplate<String, StorageCreation> kafkaTemplateStorageCreation;
+    private final KafkaTemplate<String, StorageDeletion> kafkaTemplateStorageDeletion;
     private final Gson gson;
 
-    public List<RecordView> getAllViewsByUserId(String userToken) {
-        return recordRepository.findAll()
+    public List<RecordView> getAllViewsByUserId(String userToken) throws UserNotFoundException {
+        List<Record> records = recordRepository
+                .findAllByUserId(getUserId(userToken).getId())
+                .orElseThrow(() -> new UserNotFoundException(
+                        getUserId(userToken).getUsername() + " does not have any records"));
+
+        return records
                 .stream()
-                .filter(record -> record.getUserId().equals(getUserId(userToken).getId()))
                 .map(record -> {
-                    List<StorageView> allStorageWithRecordId = storageClient.getAllStorageWithRecordId(record.getId());
-                    List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient.getAllNutritionIntakesWithRecordId(record.getId());
+                    List<StorageView> allStorageWithRecordId = storageClient
+                            .getAllStorageWithRecordId(record.getId());
+                    List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient
+                            .getAllNutritionIntakesWithRecordId(record.getId());
                     return new RecordView(record.getId(),
                             allNutritionIntakesWithRecordId,
                             allStorageWithRecordId,
@@ -51,23 +68,25 @@ public class RecordServiceImp {
                 .collect(Collectors.toList());
     }
 
-    public RecordView getViewByRecordId(Long day) throws RecordNotFoundException {
-
-        return recordRepository.findById(day)
+    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException {
+        return recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .map(record -> {
-                    List<StorageView> allStorageWithRecordId = storageClient.getAllStorageWithRecordId(record.getId());
-                    List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient.getAllNutritionIntakesWithRecordId(record.getId());
+                    List<StorageView> allStorageWithRecordId = storageClient
+                            .getAllStorageWithRecordId(record.getId());
+                    List<NutritionIntakeView> allNutritionIntakesWithRecordId = nutritionIntakeClient
+                            .getAllNutritionIntakesWithRecordId(record.getId());
                     return new RecordView(record.getId(),
                             allNutritionIntakesWithRecordId,
                             allStorageWithRecordId,
                             record.getDailyCalories(),
-                            record.getUserId() ,
+                            record.getUserId(),
                             String.valueOf(record.getDate()));
                 })
-                .orElseThrow(() -> new RecordNotFoundException(day.toString()));
+                .orElseThrow(() -> new RecordNotFoundException(
+                        "Record with id " + recordId + " not found in user records."));
     }
 
-    public void addNewRecordByUserId(String userToken) throws RecordCreationException {
+    public Long addNewRecordByUserId(String userToken) throws RecordCreationException {
         UserView user = getUserId(userToken);
 
         RecordCreateDto recordCreateDto = RecordCreateDto
@@ -105,12 +124,13 @@ public class RecordServiceImp {
 
         kafkaTemplateCreation
                 .send(message);
+
+        return record.getId();
     }
 
     public void deleteById(Long recordId, String userToken) throws RecordNotFoundException {
         Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken).getId())
                 .orElseThrow(() -> new RecordNotFoundException(recordId.toString()));
-
 
         Message<Long> message = MessageBuilder
                 .withPayload(recordId)
@@ -122,7 +142,6 @@ public class RecordServiceImp {
 
         recordRepository.delete(record);
     }
-
 
     private static BigDecimal getCaloriesPerDay(RecordCreateDto recordCreateDto, BigDecimal BMR) {
         return switch (recordCreateDto.workoutState) {
@@ -141,17 +160,50 @@ public class RecordServiceImp {
             BMR = new BigDecimal("88.362")
                     .add(new BigDecimal("13.397").multiply(recordCreateDto.getKilograms()))
                     .add(new BigDecimal("4.799").multiply(recordCreateDto.getHeight()))
-                    .subtract(new BigDecimal("5.677").add(new BigDecimal(recordCreateDto.getAge())));
+                    .subtract(new BigDecimal("5.677")
+                            .add(new BigDecimal(recordCreateDto.getAge())));
         } else {
             BMR = new BigDecimal("447.593")
                     .add(new BigDecimal("9.247").multiply(recordCreateDto.getKilograms()))
                     .add(new BigDecimal("3.098").multiply(recordCreateDto.getHeight()))
-                    .subtract(new BigDecimal("4.330").add(new BigDecimal(recordCreateDto.getAge())));
+                    .subtract(new BigDecimal("4.330")
+                            .add(new BigDecimal(recordCreateDto.getAge())));
         }
         return BMR;
+    }
+
+    public void createStorage(StorageCreation storageCreation, String userToken) throws RecordNotFoundException {
+        UserView user = getUserId(userToken);
+
+        recordRepository.findByIdAndUserId(storageCreation.getRecordId(), user.getId())
+                .orElseThrow(() -> new RecordNotFoundException(
+                        storageCreation.getRecordId().toString()));
+
+        Message<StorageCreation> message = MessageBuilder
+                .withPayload(storageCreation)
+                .setHeader(KafkaHeaders.TOPIC, "storage-creation")
+                .build();
+
+        kafkaTemplateStorageCreation.send(message);
+    }
+
+    public void deleteStorage(StorageDeletion storageDeletion, String userToken) throws RecordNotFoundException {
+        UserView user = getUserId(userToken);
+
+        recordRepository.findByIdAndUserId(storageDeletion.getRecordId(), user.getId())
+                .orElseThrow(() -> new RecordNotFoundException(
+                        storageDeletion.getRecordId().toString()));
+
+        Message<StorageDeletion> message = MessageBuilder
+                .withPayload(storageDeletion)
+                .setHeader(KafkaHeaders.TOPIC, "storage-deletion")
+                .build();
+
+        kafkaTemplateStorageDeletion.send(message);
     }
 
     private UserView getUserId(String userToken) {
         return gson.fromJson(userToken, UserView.class);
     }
+
 }

@@ -8,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> 
     </parent>
 
     <groupId>org.example</groupId>
@@ -26,6 +26,7 @@
         <module>gateway-service</module>
         <module>auth-service</module>
         <module>storage-service</module>
+        <module>food-service</module>
     </modules>
 
     <properties>

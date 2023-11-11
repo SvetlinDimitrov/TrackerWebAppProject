@@ -1,13 +1,13 @@
 package org.nutrition.clients.electrolyte;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.nutrition.clients.vitamin.PairView;
-
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.nutrition.clients.vitamin.PairView;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

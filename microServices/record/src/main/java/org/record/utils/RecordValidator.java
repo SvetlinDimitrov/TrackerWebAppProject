@@ -1,7 +1,7 @@
 package org.record.utils;
 
 
-import org.record.exeptions.RecordCreationException;
+import org.record.exceptions.RecordCreationException;
 import org.record.model.dtos.RecordCreateDto;
 
 import java.math.BigDecimal;

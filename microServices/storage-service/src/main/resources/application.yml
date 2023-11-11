@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 10000
 
 spring:
   application:
@@ -35,9 +35,9 @@ management:
     tracing:
       endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans
 
-#clients:
-#  nutritionIntake:
-#    name: nutritionIntake
-#    retrieve-data:
-#      url: /api/nutritionIntake/{recordId}
+clients:
+  food:
+    name: food
+    retrieve-data:
+      url: /api/food/{name}
 

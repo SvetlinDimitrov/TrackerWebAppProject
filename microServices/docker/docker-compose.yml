@@ -58,6 +58,17 @@ services:
       MYSQL_DATABASE: storage
     volumes:
       - storageVolume:/var/lib/mysql
+  mysql-db-food:
+    container_name: mysql-db-food
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3304:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: food
+    volumes:
+      - foodVolume:/var/lib/mysql
   mysql-db-nutriton:
     container_name: mysql-db-nutriton
     restart: always
@@ -220,4 +231,5 @@ volumes:
   zookeeper-log:
   grafana-data:
   storageVolume:
+  foodVolume:
 

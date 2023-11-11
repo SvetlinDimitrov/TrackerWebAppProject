@@ -1,16 +1,15 @@
 package org.nutrition;
 
-import org.nutrition.model.entity.NutritionIntake;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.nutrition.model.entity.NutritionIntake;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 @Repository
 public interface NutritionIntakeRepository extends JpaRepository<NutritionIntake, Long> {
-    List<NutritionIntake> findAllByRecordId(Long recordId);
+    Optional<List<NutritionIntake>> findAllByRecordId(Long recordId);
 
 
     long deleteAllByRecordId(Long recordId);
