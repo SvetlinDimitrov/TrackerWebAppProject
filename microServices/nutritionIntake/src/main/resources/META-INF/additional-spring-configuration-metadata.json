@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "clients.vitamin.name",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.vitamin.name'"
+  },
+  {
+    "name": "clients.vitamin.retrieve-data.url",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.vitamin.retrieve-data.url'"
+  },
+  {
+    "name": "clients.electrolyte.name",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.electrolyte.name'"
+  },
+  {
+    "name": "clients.macronutrient.name",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.macronutrient.name'"
+  },
+  {
+    "name": "clients.electrolyte.retrieve-data.url",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.electrolyte.retrieve-data.url'"
+  },
+  {
+    "name": "clients.macronutrient.retrieve-data.url",
+    "type": "java.lang.String",
+    "description": "A description for 'clients.macronutrient.retrieve-data.url'"
+  }
+]}

@@ -1,14 +1,20 @@
 package org.auth.model.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+
 import org.auth.model.enums.Gender;
 import org.auth.model.enums.UserDetails;
 import org.auth.model.enums.WorkoutState;
 
-import java.math.BigDecimal;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -25,6 +31,7 @@ public class User {
     private BigDecimal kilograms;
     private BigDecimal height;
     private Integer age;
+    private Boolean firstRecord;
     @Enumerated(EnumType.STRING)
     private WorkoutState workoutState;
     @Enumerated(EnumType.STRING)

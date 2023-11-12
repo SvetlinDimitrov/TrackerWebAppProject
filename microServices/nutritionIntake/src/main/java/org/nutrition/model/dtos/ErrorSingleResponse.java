@@ -2,12 +2,11 @@ package org.nutrition.model.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ErrorResponse {
+public class ErrorSingleResponse {
 
-    private List<String> errors;
+    private String errorMessage;
 
 }

@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthorizationFilter filter)
+        SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthorizationFilter filter)
                         throws Exception {
                 return httpSecurity
                                 .csrf(AbstractHttpConfigurer::disable)
@@ -25,18 +25,12 @@ public class SecurityConfig {
                                 .formLogin(AbstractHttpConfigurer::disable)
                                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .authorizeHttpRequests(
-                                                request -> request
-                                                                .requestMatchers(
-                                                                                "/api/user/register",
-                                                                                "/api/user/login")
-                                                                .permitAll()
-                                                                .anyRequest().permitAll())
+                                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
                                 .build();
         }
 
         @Bean
-        public PasswordEncoder passwordEncoder() {
+        PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
         }
 }

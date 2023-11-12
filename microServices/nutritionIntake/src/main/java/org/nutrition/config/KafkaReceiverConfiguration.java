@@ -39,11 +39,12 @@ public class KafkaReceiverConfiguration {
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, FoodView> kafkaListenerStorageFilling(ConsumerFactory<String, FoodView> consumerFactoryDeletion) {
+    ConcurrentKafkaListenerContainerFactory<String, FoodView> kafkaListenerStorageFillingRemoving(ConsumerFactory<String, FoodView> consumerFactoryDeletion) {
         ConcurrentKafkaListenerContainerFactory<String, FoodView> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryStorageFilling());
+        factory.setConsumerFactory(consumerFactoryStorageFillingRemoving());
         return factory;
     }
+
 
     @Bean
     ConsumerFactory<String, RecordCreation> consumerFactoryCreation() {
@@ -81,7 +82,7 @@ public class KafkaReceiverConfiguration {
     }
     
     @Bean
-    ConsumerFactory<String, FoodView> consumerFactoryStorageFilling() {
+    ConsumerFactory<String, FoodView> consumerFactoryStorageFillingRemoving() {
         JsonDeserializer<FoodView> deserializer = new JsonDeserializer<>(FoodView.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
@@ -90,7 +91,7 @@ public class KafkaReceiverConfiguration {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_storage_filling_1");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "kafkaListenerStorageFillingRemoving");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -99,5 +100,7 @@ public class KafkaReceiverConfiguration {
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
 
     }
+
+
 
 }

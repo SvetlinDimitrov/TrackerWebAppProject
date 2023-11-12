@@ -55,6 +55,13 @@ spring:
           filters:
             - RewritePath=/auth(/?.*), /api/user$1
 
+        - id: storage
+          uri: lb://storage
+          predicates:
+            - Path=/storage/**
+          filters:
+            - RewritePath=/storage(/?.*), /api/storage$1
+
 management:
   endpoints:
     web:
@@ -69,6 +76,8 @@ management:
 
 client:
   host: ${CLIENT_HOST:localhost}
+
+jwtSecret: ${JWT_SECRET:topSecret12345}
 
 
 

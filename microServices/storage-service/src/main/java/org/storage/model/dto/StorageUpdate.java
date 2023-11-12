@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RemoveFoodStorage {
+public class StorageUpdate {
 
     private String foodName;
     private Long recordId;

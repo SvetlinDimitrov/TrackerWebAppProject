@@ -10,6 +10,8 @@ import org.record.exceptions.UserNotFoundException;
 import org.record.model.dtos.ErrorResponse;
 import org.record.model.dtos.ErrorSingleResponse;
 import org.record.model.dtos.RecordView;
+import org.record.services.RecordKafkaService;
+import org.record.services.RecordServiceImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class RecordController {
 
     private final RecordServiceImp recordService;
+    private final RecordKafkaService recordKafkaService;
 
     @GetMapping("/all")
     public ResponseEntity<List<RecordView>> getAllRecords(@RequestHeader("X-ViewUser") String userToken)
@@ -48,19 +51,19 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseEntity<RecordView> createNewRecord(@RequestHeader("X-ViewUser") String userToken)
+    public ResponseEntity<HttpStatus> createNewRecord(@RequestHeader("X-ViewUser") String userToken)
             throws RecordCreationException, RecordNotFoundException {
 
-        Long recordId = recordService.addNewRecordByUserId(userToken);
+        recordKafkaService.addNewRecordByUserId(userToken);
 
-        return new ResponseEntity<>(recordService.getViewByRecordIdAndUserId(recordId, userToken), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{recordId}")
     public ResponseEntity<HttpStatus> deleteRecord(@PathVariable Long recordId,
             @RequestHeader("X-ViewUser") String userToken) throws RecordNotFoundException {
 
-        recordService.deleteById(recordId, userToken);
+        recordKafkaService.deleteById(recordId, userToken);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
@@ -69,14 +72,14 @@ public class RecordController {
     @PostMapping("/{recordId}/storage")
     public ResponseEntity<HttpStatus> createStorage(@RequestHeader("X-ViewUser") String userToken,
             @RequestParam String storageName, @PathVariable Long recordId) throws RecordNotFoundException {
-        recordService.createStorage(new StorageCreation(recordId, storageName), userToken);
+        recordKafkaService.createStorage(new StorageCreation(recordId, storageName), userToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/{recordId}/storage}")
+    @DeleteMapping("/{recordId}/storage")
     public ResponseEntity<HttpStatus> deleteStorage(@RequestHeader("X-ViewUser") String userToken,
             @RequestParam Long storageId, @PathVariable Long recordId) throws RecordNotFoundException {
-        recordService.deleteStorage(new StorageDeletion(storageId, recordId), userToken);
+        recordKafkaService.deleteStorage(new StorageDeletion(storageId, recordId), userToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

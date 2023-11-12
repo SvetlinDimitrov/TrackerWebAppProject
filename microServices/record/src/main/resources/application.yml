@@ -39,9 +39,9 @@ clients:
   nutritionIntake:
     name: nutritionIntake
     retrieve-data:
-      url: /api/nutritionIntake/{recordId}
+      url: /api/nutritionIntake
   storage:
     name: storage
     retrieve-data:
-      url: /api/storage/{recordId}
+      url: /api/storage
 

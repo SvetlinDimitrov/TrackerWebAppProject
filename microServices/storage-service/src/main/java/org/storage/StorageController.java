@@ -1,27 +1,35 @@
 package org.storage;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.storage.exception.FoodNameNotFoundException;
 import org.storage.exception.FoodNotFoundException;
 import org.storage.exception.StorageNotFoundException;
-import org.storage.model.dto.RemoveFoodStorage;
-import org.storage.model.dto.StorageFill;
+import org.storage.model.dto.StorageUpdate;
 import org.storage.model.dto.StorageView;
 import org.storage.model.errorResponses.ErrorResponse;
 import org.storage.model.errorResponses.FoodErrorResponse;
+import org.storage.services.StorageKafkaService;
+import org.storage.services.StorageService;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/api/storage")
+@RequestMapping(path = "/api/storage", headers = "X-ViewUser")
 public class StorageController {
 
     private final StorageService storageService;
+    private final StorageKafkaService storageKafkaService;
 
     @GetMapping
     public ResponseEntity<List<StorageView>> getAllStorages(@RequestParam Long recordId) {
@@ -30,26 +38,31 @@ public class StorageController {
     }
 
     @PatchMapping("/addFood")
-    public ResponseEntity<HttpStatus> addFoodToStorage(@RequestBody StorageFill dto)
+    public ResponseEntity<HttpStatus> addFoodToStorage(@RequestBody StorageUpdate dto)
             throws StorageNotFoundException, FoodNotFoundException {
-        storageService.addFood(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        storageKafkaService.addFood(dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/removeFood")
-    public ResponseEntity<HttpStatus> removeFoodFromStorage(@RequestBody RemoveFoodStorage dto)
-            throws StorageNotFoundException, FoodNotFoundException {
-        storageService.removeFoodFromStorage(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> removeFoodFromStorage(@RequestBody StorageUpdate dto)
+            throws StorageNotFoundException, FoodNameNotFoundException {
+        storageKafkaService.removeFoodFromStorage(dto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(StorageNotFoundException.class)
-    public ResponseEntity<ErrorResponse> catchMacroNotFoundError(StorageNotFoundException e) {
+    public ResponseEntity<ErrorResponse> catchStorageNotFoundError(StorageNotFoundException e) {
         return new ResponseEntity<>(e.getErrorResponse(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FoodNotFoundException.class)
-    public ResponseEntity<FoodErrorResponse> catchMacroNotFoundError(FoodNotFoundException e) {
+    public ResponseEntity<FoodErrorResponse> catchFoodNotFoundError(FoodNotFoundException e) {
         return new ResponseEntity<>(e.getErrorResponse(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FoodNameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> catchFoodNameNotFoundException(FoodNameNotFoundException e) {
+        return new ResponseEntity<>(new ErrorResponse(e.getErrorMessage()), HttpStatus.BAD_REQUEST);
     }
 }

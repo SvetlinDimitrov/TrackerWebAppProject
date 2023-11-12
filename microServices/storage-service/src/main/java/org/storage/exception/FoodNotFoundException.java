@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class FoodNotFoundException extends Exception {
 
-    private final FoodErrorResponse errorResponse;
+    private FoodErrorResponse errorResponse;
 
     public FoodNotFoundException(FoodErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
-
     }
+
 }
