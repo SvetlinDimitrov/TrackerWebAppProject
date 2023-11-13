@@ -18,11 +18,9 @@ public class NutrientIntakeService {
     private final NutritionIntakeRepository repository;
 
     public List<NutritionIntakeView> getAllNutritionIntakeByRecordId(Long recordId) throws RecordNotFoundException {
-        List<NutritionIntake> nutritionIntakes = repository.findAllByRecordId(recordId).get();
-        if (nutritionIntakes.isEmpty()) {
-            throw new RecordNotFoundException("No nutritionIntakes was found with id:" + recordId);
-        }
-        return nutritionIntakes
+        return repository
+                .findAllByRecordId(recordId)
+                .orElseThrow(() -> new RecordNotFoundException("No nutrition intake found for record id: " + recordId))
                 .stream()
                 .map(this::toNutritionIntakeView)
                 .collect(Collectors.toList());
