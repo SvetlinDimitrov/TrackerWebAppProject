@@ -1,7 +1,7 @@
 package org.auth.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -72,7 +72,7 @@ public class UserServiceImpTest {
              () -> userServiceImp.login(loginUserDto));
     }
 
-     @Test
+    @Test
     public void login_InvalidInput_ThrowsException2(){
         when(validator.validateTheLoginCredentials(loginUserDto)).thenReturn(true);
         when(userRepository.findByEmail(loginUserDto.getEmail())).thenReturn(Optional.empty());
