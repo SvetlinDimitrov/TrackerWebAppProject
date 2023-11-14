@@ -11,7 +11,7 @@ on:
         required: true
   push:
     paths:
-      - 'microServices/auth-service/**' 
+      - 'microServices/auth-server/**' 
 
 jobs:
   auth-service-cicd:
@@ -38,7 +38,7 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/auth-service
+      working-directory: ./microServices/auth-server
       run: |
         mvn test
         mvn install
