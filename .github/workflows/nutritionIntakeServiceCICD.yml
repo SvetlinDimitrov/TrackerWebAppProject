@@ -42,5 +42,5 @@ jobs:
       run: |
         mvn test
         mvn install
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutritionIntake-server-tracker-app .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nutritionIntake-server-tracker-app
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutrition_intake-server-tracker-app .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nutrition_intake-server-tracker-app
