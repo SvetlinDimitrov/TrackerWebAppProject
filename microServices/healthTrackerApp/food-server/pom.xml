@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>org.food</groupId>
-    <artifactId>food-service</artifactId>
+    <artifactId>food-server</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

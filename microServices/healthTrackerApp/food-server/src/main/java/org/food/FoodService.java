@@ -2,7 +2,6 @@ package org.food;
 
 import lombok.RequiredArgsConstructor;
 import org.food.domain.dtos.FoodView;
-import org.food.exeptions.FoodNotFoundException;
 import org.food.repository.FruitRepository;
 import org.springframework.stereotype.Service;
 

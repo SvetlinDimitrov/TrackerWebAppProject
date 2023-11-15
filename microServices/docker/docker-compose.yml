@@ -58,17 +58,6 @@ services:
       MYSQL_DATABASE: storage
     volumes:
       - storageVolume:/var/lib/mysql
-  mysql-db-food:
-    container_name: mysql-db-food
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3304:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: food
-    volumes:
-      - foodVolume:/var/lib/mysql
   mysql-db-nutriton:
     container_name: mysql-db-nutriton
     restart: always
@@ -91,108 +80,126 @@ services:
       MYSQL_DATABASE: users
     volumes:
       - userVolume:/var/lib/mysql
-  discovery-service:
-    image: svetlindimitrov/discovery-service-tracker-app
-    container_name: discovery-service
+  discovery-server:
+    image: svetlindimitrov/discovery-server-tracker-app
+    container_name: discovery-server
     environment:
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
     depends_on:
       - zipkin
     ports:
       - "8761:8761"
-  gateway-service:
-    image: svetlindimitrov/gateway-service-tracker-app
-    container_name: gateway-service
+  gateway-server:
+    image: svetlindimitrov/gateway-server-tracker-app
+    container_name: gateway-server
     environment:
       ZIPKIN_URL: zipkin
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
     ports:
       - "8080:8080"
     depends_on:
       - zipkin
-      - discovery-service
-  auth-service:
-    image: svetlindimitrov/auth-service-tracker-app
-    container_name: auth-service
+      - discovery-server
+  auth-server:
+    image: svetlindimitrov/auth-server-tracker-app
+    container_name: auth-server
     restart: always
     environment:
       DB_HOST: mysql-db-user
       DB_PORT: 3306
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
     depends_on:
       - zipkin
       - mysql-db-user
-      - gateway-service
-      - discovery-service
-  vitamin-service:
-    image: svetlindimitrov/vitamin-service-tracker-app
-    container_name: vitamin-service
+      - gateway-server
+      - discovery-server
+  vitamin-server:
+    image: svetlindimitrov/vitamin-server-tracker-app
+    container_name: vitamin-server
     environment:
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
     depends_on:
       - zipkin
-      - discovery-service
-      - gateway-service
-  electrolyte-service:
-    image: svetlindimitrov/electrolyte-service-tracker-app
-    container_name: electrolyte-service
+      - discovery-server
+      - gateway-server
+  electrolyte-server:
+    image: svetlindimitrov/electrolyte-server-tracker-app
+    container_name: electrolyte-server
     environment:
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
     depends_on:
       - zipkin
-      - discovery-service
-      - gateway-service
-  macronutrient-service:
-    image: svetlindimitrov/macronutrient-service-tracker-app
-    container_name: macronutrient-service
+      - discovery-server
+      - gateway-server
+  macronutrient-server:
+    image: svetlindimitrov/macronutrient-server-tracker-app
+    container_name: macronutrient-server
     environment:
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
 
     depends_on:
       - zipkin
-      - discovery-service
-      - gateway-service
-  record-service:
+      - discovery-server
+      - gateway-server
+  record-server:
     restart: always
-    image: svetlindimitrov/record-service-tracker-app
-    container_name: record-service
+    image: svetlindimitrov/record-server-tracker-app
+    container_name: record-server
     environment:
       DB_HOST: mysql-db-record
       DB_PORT: 3306
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
       KAFKA_HOST: broker:29092
     depends_on:
       - zipkin
       - mysql-db-user
-      - gateway-service
-      - discovery-service
+      - gateway-server
+      - discovery-server
       - broker
-  nutrition-intake-service:
+  storage-server:
     restart: always
-    image: svetlindimitrov/nutrition-intake-tracker-app
-    container_name: nutrition-intake-service
+    image: svetlindimitrov/storage-server-tracker-app
+    container_name: storage-server
+    environment:
+      DB_HOST: mysql-db-storage
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-server
+      ZIPKIN_URL: zipkin
+      KAFKA_HOST: broker:29092
+    depends_on:
+      - zipkin
+      - mysql-db-user
+      - gateway-server
+      - discovery-server
+      - broker
+      - record-server
+  nutrition_intake-server:
+    restart: always
+    image: svetlindimitrov/nutrition_intake-server-tracker-app
+    container_name: nutrition_intake-server
     environment:
       DB_HOST: mysql-db-nutriton
       DB_PORT: 3306
-      EUREKA_HOST: discovery-service
+      EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
       KAFKA_HOST: broker:29092
     depends_on:
       - zipkin
       - mysql-db-user
-      - gateway-service
-      - discovery-service
+      - gateway-server
+      - discovery-server
       - broker
-      - record-service
-      - macronutrient-service
-      - vitamin-service
-      - electrolyte-service
+      - record-server
+      - macronutrient-server
+      - vitamin-server
+      - electrolyte-server
+      - storage-server
   prometheus:
     image: prom/prometheus:v2.37.1
     container_name: prometheus
@@ -202,8 +209,8 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
-      - record-service
-      - nutrition-intake-service
+      - record-server
+      - nutrition_intake-server
   grafana:
     image: grafana/grafana-oss:8.5.2
     container_name: grafana
@@ -231,5 +238,4 @@ volumes:
   zookeeper-log:
   grafana-data:
   storageVolume:
-  foodVolume:
 

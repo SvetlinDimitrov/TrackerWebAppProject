@@ -3,7 +3,6 @@ package org.food;
 import lombok.RequiredArgsConstructor;
 import org.food.domain.dtos.ErrorResponse;
 import org.food.domain.dtos.FoodView;
-import org.food.exeptions.FoodNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

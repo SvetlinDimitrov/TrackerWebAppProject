@@ -21,7 +21,7 @@
         <module>record-server</module>
         <module>nutritionIntake-server</module>
         <module>storage-server</module>
-        <module>food-service</module>
+        <module>food-server</module>
     </modules>
 
     <properties>

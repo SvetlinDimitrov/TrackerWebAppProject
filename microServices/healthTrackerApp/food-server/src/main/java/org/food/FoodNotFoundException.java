@@ -1,4 +1,4 @@
-package org.food.exeptions;
+package org.food;
 
 import lombok.Getter;
 import org.food.domain.dtos.ErrorResponse;
