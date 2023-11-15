@@ -1,7 +1,7 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: macronutrient-service-CICD-pipeline
+name: macronutrient-server-CICD-pipeline
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
         required: true
   push:
     paths:
-      - 'microServices/macronutrient/**' 
+      - 'microServices/healthTrackerApp/macronutrient-server/**' 
 
 jobs:
   macronutrient-service-cicd:
@@ -38,7 +38,7 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/macronutrient
+      working-directory: ./microServices/healthTrackerApp/macronutrient-server
       run: |
         mvn test
         mvn install
