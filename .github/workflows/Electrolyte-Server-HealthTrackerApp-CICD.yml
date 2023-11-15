@@ -14,7 +14,7 @@ on:
       - 'microServices/healthTrackerApp/electrolyte-server/**' 
 
 jobs:
-  electrolyte-service-cicd:
+  electrolyte-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

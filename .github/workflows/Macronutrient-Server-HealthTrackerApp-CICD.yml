@@ -14,7 +14,7 @@ on:
       - 'microServices/healthTrackerApp/macronutrient-server/**' 
 
 jobs:
-  macronutrient-service-cicd:
+  macronutrient-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

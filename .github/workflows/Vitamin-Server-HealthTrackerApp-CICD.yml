@@ -14,7 +14,7 @@ on:
       - 'microServices/healthTrackerApp/vitamin-server/**' 
 
 jobs:
-  vitamin-service-cicd:
+  vitamin-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

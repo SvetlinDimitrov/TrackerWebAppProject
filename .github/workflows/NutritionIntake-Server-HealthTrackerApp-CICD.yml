@@ -14,7 +14,7 @@ on:
       - 'microServices/healthTrackerApp/nutritionIntake-server/**' 
 
 jobs:
-  nutritionIntake-service-cicd:
+  nutritionIntake-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

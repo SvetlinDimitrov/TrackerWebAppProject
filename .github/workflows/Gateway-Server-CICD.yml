@@ -14,7 +14,7 @@ on:
       - 'microServices/gateway-server/**' 
 
 jobs:
-  gateway-service-cicd:
+  gateway-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

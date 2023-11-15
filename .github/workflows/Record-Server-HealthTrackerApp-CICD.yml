@@ -14,7 +14,7 @@ on:
       - 'microServices/healthTrackerApp/record-server/**' 
 
 jobs:
-  record-service-cicd:
+  record-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

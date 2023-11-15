@@ -14,7 +14,7 @@ on:
       - 'microServices/auth-server/**' 
 
 jobs:
-  auth-service-cicd:
+  auth-server-cicd:
     runs-on: ubuntu-latest
     
     steps:

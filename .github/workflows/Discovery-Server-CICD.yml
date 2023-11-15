@@ -14,7 +14,7 @@ on:
       - 'microServices/discovery-server/**' 
 
 jobs:
-  discovery-service-cicd:
+  discovery-server-cicd:
     runs-on: ubuntu-latest
     
     steps:
