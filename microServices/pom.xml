@@ -16,10 +16,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>discover-service</module>
-        <module>gateway-service</module>
+        <module>discovery-server</module>
+        <module>gateway-server</module>
         <module>auth-server</module>
-        <module>health</module>
+        <module>healthTrackerApp</module>
     </modules>
 
     <properties>
