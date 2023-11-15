@@ -141,7 +141,16 @@ services:
     environment:
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
-
+    depends_on:
+      - zipkin
+      - discovery-server
+      - gateway-server
+  food-server:
+    image: svetlindimitrov/food-server-tracker-app
+    container_name: food-server
+    environment:
+      EUREKA_HOST: discovery-server
+      ZIPKIN_URL: zipkin
     depends_on:
       - zipkin
       - discovery-server
