@@ -1,7 +1,7 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: record-service-CICD-pipeline
+name: record-server-CICD-pipeline
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
         required: true
   push:
     paths:
-      - 'microServices/record/**' 
+      - 'microServices/healthTrackerApp/record-server/**' 
 
 jobs:
   record-service-cicd:
@@ -38,9 +38,9 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/record
+      working-directory: ./microServices/healthTrackerApp/record-server
       run: |
         mvn test
         mvn install
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/record-service-tracker-app .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/record-service-tracker-app
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/record-server-tracker-app .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/record-server-tracker-app
