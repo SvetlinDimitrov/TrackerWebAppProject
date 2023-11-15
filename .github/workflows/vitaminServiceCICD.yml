@@ -1,7 +1,7 @@
 # This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: vitamin-service-CICD-pipeline
+name: vitamin-server-CICD-pipeline
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
         required: true
   push:
     paths:
-      - 'microServices/vitamin/**' 
+      - 'microServices/healthTrackerApp/vitamin-server/**' 
 
 jobs:
   vitamin-service-cicd:
@@ -38,9 +38,9 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/vitamin
+      working-directory: ./microServices/healthTrackerApp/vitamin-server
       run: |
         mvn test
         mvn install
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/vitamin-service-tracker-app .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/vitamin-service-tracker-app
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/vitamin-server-tracker-app .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/vitamin-server-tracker-app
