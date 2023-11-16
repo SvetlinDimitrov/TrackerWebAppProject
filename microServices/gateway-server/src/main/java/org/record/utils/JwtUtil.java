@@ -17,8 +17,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 @Component
 public class JwtUtil {
 
-    @Value("${jwtSecret}")
-    private String secret;
+    private final String secret = "topSecret12345";
 
     public Optional<UserView> verifyAndExtractUser(HttpHeaders headers) {
         try {

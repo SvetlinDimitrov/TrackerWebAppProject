@@ -18,6 +18,7 @@ public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private BigDecimal dailyCalories = BigDecimal.ZERO;
     private BigDecimal dailyConsumedCalories = BigDecimal.ZERO;
     private Long userId;

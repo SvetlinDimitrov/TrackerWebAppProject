@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -23,6 +25,11 @@ public class FoodController {
     @GetMapping
     public ResponseEntity<List<FoodView>> getAllFoods (){
         return new ResponseEntity<>(foodService.getAllFoods() , HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<FoodView>> getAllFoodsByListNames (@RequestParam(name = "foodNames") List<String> foodNames) throws FoodNotFoundException{
+        return new ResponseEntity<>(foodService.getAllFoodsByListNames(foodNames) , HttpStatus.OK);
     }
 
     @GetMapping("/{foodName}")

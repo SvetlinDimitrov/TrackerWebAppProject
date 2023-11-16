@@ -1,6 +1,8 @@
 server:
   port: 8080
 eureka:
+  instance:
+    hostname: ${EUREKA_HOST:localhost}
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
@@ -73,11 +75,6 @@ management:
   zipkin:
     tracing:
       endpoint: http://${ZIPKIN_URL:localhost}:9411/api/v2/spans
-
-client:
-  host: ${CLIENT_HOST:localhost}
-
-jwtSecret: ${JWT_SECRET:topSecret12345}
 
 
 

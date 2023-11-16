@@ -2,6 +2,7 @@ package org.record.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 import org.record.RecordRepository;
 import org.record.client.dto.NutritionIntakeView;
@@ -65,6 +66,17 @@ public abstract class AbstractRecordService {
                 .dailyCaloriesToConsume(record.getDailyCalories())
                 .userID(record.getUserId())
                 .date(String.valueOf(record.getDate()))
+                .name(record.getName())
                 .build();
+    }
+
+    protected String generateRandomNumbers(int num) {
+        Random rand = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            int randomNum = rand.nextInt(100);  
+            sb.append(randomNum);
+        }
+        return sb.toString();
     }
 }

@@ -106,6 +106,7 @@ services:
     container_name: auth-server
     restart: always
     environment:
+      KAFKA_HOST: broker:29092
       DB_HOST: mysql-db-user
       DB_PORT: 3306
       EUREKA_HOST: discovery-server
@@ -115,6 +116,7 @@ services:
       - mysql-db-user
       - gateway-server
       - discovery-server
+      - broker
   vitamin-server:
     image: svetlindimitrov/vitamin-server-tracker-app
     container_name: vitamin-server

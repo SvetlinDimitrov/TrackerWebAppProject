@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.storage.StorageRepository;
+import org.storage.client.FoodClient;
 import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Storage;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class StorageService {
 
     private final StorageRepository storageRepository;
+    private final FoodClient foodClient;
 
     public List<StorageView> getAllByRecordId(Long recordId) {
         return storageRepository.findAllByRecordId(recordId)
@@ -25,6 +27,13 @@ public class StorageService {
     }
 
     private StorageView toStorageView(Storage entity) {
-        return new StorageView(entity.getId(), entity.getRecordId(), entity.getName(), entity.getFoodNames());
+        StorageView storageView = new StorageView();
+        storageView.setId(entity.getId());
+        storageView.setRecordId(entity.getRecordId());
+        storageView.setName(entity.getName());
+        storageView.setFoods(foodClient.getAllFoodsByListNames(entity.getFoodNames()));
+        storageView.setRecordId(entity.getRecordId());
+        
+        return storageView;
     }
 }

@@ -24,5 +24,6 @@ public class RecordView {
     private BigDecimal dailyCaloriesToConsume;
     private BigDecimal dailyConsumedCalories;
     private Long userID;
+    private String name;
     private String date;
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import org.record.filter.AuthenticationFilter;
 import org.record.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +16,7 @@ import com.google.gson.Gson;
 @Configuration
 public class GatewayConfig {
 
-    @Value("${client.host}")
-    private String clientHost;
+    private String clientHost = "localhost";
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -31,7 +29,7 @@ public class GatewayConfig {
     @Bean
     CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        String hosts = String.format("http://%s:[*]", clientHost);
+        String hosts = String.format("http://%s:[*]" , clientHost);
         corsConfig.setAllowedOriginPatterns(List.of(hosts));
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");

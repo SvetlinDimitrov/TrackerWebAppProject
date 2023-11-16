@@ -10,6 +10,6 @@ import lombok.Data;
 public class StorageView {
     private Long id;
     private Long recordId;
-    private List<String> foods;
+    private List<FoodView> foods;
     private String name;
 }

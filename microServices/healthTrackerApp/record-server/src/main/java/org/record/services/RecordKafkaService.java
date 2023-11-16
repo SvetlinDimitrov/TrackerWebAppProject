@@ -49,9 +49,9 @@ public class RecordKafkaService extends AbstractRecordService {
     }
 
     @KafkaListener(topics = "user-first-creation", groupId = "group_user_creation_1", containerFactory = "kafkaListenerUserFirstCreation")
-    public void addNewRecordByUserId(String userToken) throws RecordCreationException {
+    public void addNewRecordByUserId(String userToken , String name) throws RecordCreationException {
         UserView user = getUserId(userToken);
-        
+
         RecordValidator.validateRecord(user);
 
         RecordCreateDto recordCreateDto = RecordCreateDto
@@ -62,9 +62,15 @@ public class RecordKafkaService extends AbstractRecordService {
                 .gender(Gender.valueOf(user.getGender()))
                 .workoutState(WorkoutState.valueOf(user.getWorkoutState()))
                 .build();
-
+        
         Record record = new Record();
         record.setDate(LocalDate.now());
+
+        if(name == null || name == userToken || name.isBlank()){
+            record.setName("Default" + generateRandomNumbers(4));
+        }else{
+            record.setName(name);
+        }
 
         BigDecimal BMR = getBmr(recordCreateDto);
         BigDecimal caloriesPerDay = getCaloriesPerDay(recordCreateDto, BMR);
