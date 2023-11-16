@@ -105,7 +105,7 @@ const Header = () => {
                     <Link to={"/nutritionRecord"}>NutritionRecord</Link>
                   </li>
                   <li>
-                    <a href="#">Drop Down 3</a>
+                    <Link to={"/foodSection"}>FoodSection</Link>
                   </li>
                   <li>
                     <a href="#">Drop Down 4</a>

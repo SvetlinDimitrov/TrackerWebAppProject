@@ -1,0 +1,46 @@
+.mainContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.containerInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #fff;
+  border: 2px solid #00b050;
+  width: 30%;
+  margin-bottom: 10px;
+}
+
+.selectValue {
+  width: 95%;
+  height: 30px;
+  text-align: center;
+  font-size: 15px;
+  border: 2px solid #00b050;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  padding: 0px;
+}
+
+.heading {
+  font-size: 2em;
+  font-weight: bold;
+  color: #00b050;
+  text-align: center;
+  margin: 10px;
+}
+
+.paragraph {
+  font-size: 1.2em;
+  color: #00b050;
+  text-align: center;
+  margin: 10px;
+}

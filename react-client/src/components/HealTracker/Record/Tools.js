@@ -1,12 +1,11 @@
-import { arc, pie, selectAll, easeLinear, scaleLinear } from "d3";
-import { useLayoutEffect, useContext } from "react";
-import { Link } from "react-router-dom";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { NutritionRecordContext } from "../../../context/NutritionRecordContext";
+import { arc, easeLinear, pie, scaleLinear, selectAll } from "d3";
+import { useLayoutEffect } from "react";
+import { Link } from "react-router-dom";
+import { calcAverageValue } from "../../../util/RecordUtils";
 
-export function Gauge({ width, height, type }) {
-  const { record } = useContext(NutritionRecordContext);
+export function Gauge({ width, height, type , data}) {
   const diameter = width / 2 + height / 2;
   const centerX = width / 2;
   const centerY = height / 2;
@@ -19,11 +18,13 @@ export function Gauge({ width, height, type }) {
   let averageValue = null;
 
   if (type === "Vitamin") {
-    averageValue = record.vitaminAveragePrecented;
+    averageValue = calcAverageValue(data, type);
   } else if (type === "Electrolyte") {
-    averageValue = record.electrolyteAveragePrecented;
+    averageValue = calcAverageValue(data, type);
+  } else if (type === "Macronutrient") {
+    averageValue = calcAverageValue(data, type);
   } else {
-    averageValue = record.macronutrientAveragePrecented;
+    averageValue = (data.dailyConsumedCalories / data.dailyCaloriesToConsume) * 100 ;
   }
 
   const pieData = pie()([averageValue, 100 - averageValue]);

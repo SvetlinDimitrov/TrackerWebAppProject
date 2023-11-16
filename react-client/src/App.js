@@ -16,6 +16,7 @@ import EditUser from "./components/User/EditUser/EditUser";
 import NotificationProvider from "./context/Notification";
 import NutritionRecordProvider from "./context/NutritionRecordContext";
 import NutritionRecordTemplate from "./components/HealTracker/Record/NutritionRecordTemplate";
+import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
 function App() {
   return (
     <>
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/editUser" element={<EditUser />} />
                 <Route path="/nutritionRecord" element={<NutritionRecordTemplate />} />
+                <Route path="/foodSection" element={<FoodSection />} />
               </Route>
             </Routes>
             <Footer />
