@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.storage.StorageRepository;
+import org.storage.client.FoodClient;
 import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Storage;
 
@@ -19,6 +20,9 @@ public class StorageServiceTest {
     
     @Mock
     private StorageRepository storageRepository;
+
+    @Mock
+    private FoodClient foodClient;
 
     @InjectMocks
     private StorageService storageService;
@@ -30,7 +34,7 @@ public class StorageServiceTest {
         StorageView storageView = createStorageView(recordId);
 
         when(storageRepository.findAllByRecordId(recordId)).thenReturn(List.of(storage));
-        
+        when(foodClient.getAllFoodsByListNames(storage.getFoodNames())).thenReturn(List.of());
         List<StorageView> result =storageService.getAllByRecordId(recordId);
 
         assertEquals(result, List.of(storageView));
@@ -47,6 +51,7 @@ public class StorageServiceTest {
         StorageView view = new StorageView();
         view.setName("test");
         view.setRecordId(recordId);
+        view.setFoods(List.of());
         return view;
     }
 }

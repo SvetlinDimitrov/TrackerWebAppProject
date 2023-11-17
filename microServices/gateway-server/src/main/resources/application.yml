@@ -64,6 +64,13 @@ spring:
           filters:
             - RewritePath=/storage(/?.*), /api/storage$1
 
+        - id: food
+          uri: lb://food
+          predicates:
+            - Path=/food/**
+          filters:
+            - RewritePath=/food(/?.*), /api/food$1
+
 management:
   endpoints:
     web:
