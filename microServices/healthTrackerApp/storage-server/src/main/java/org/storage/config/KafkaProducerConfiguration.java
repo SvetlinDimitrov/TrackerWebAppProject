@@ -13,8 +13,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.storage.client.FoodView;
+import org.storage.model.enums.KafkaProducerTopics;
 
 @Configuration
 @EnableKafka
@@ -25,23 +24,23 @@ public class KafkaProducerConfiguration {
 
     @Bean
     NewTopic recordCreationTopic() {
-        return TopicBuilder.name("storage-filling")
+        return TopicBuilder.name(KafkaProducerTopics.STORAGE_FILLING.name())
                 .build();
     }
 
     @Bean
     NewTopic recordDeletionTopic() {
-        return TopicBuilder.name("storage-removing")
+        return TopicBuilder.name(KafkaProducerTopics.STORAGE_REMOVING.name())
                 .build();
     }
 
     @Bean
-    KafkaTemplate<String, FoodView> kafkaTemplateCreation() {
+    KafkaTemplate<String, String> kafkaTemplateCreation() {
 
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }

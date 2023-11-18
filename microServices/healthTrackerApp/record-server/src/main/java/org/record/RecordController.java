@@ -51,13 +51,13 @@ public class RecordController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createNewRecord(@RequestHeader("X-ViewUser") String userToken,
+    public ResponseEntity<RecordView> createNewRecord(@RequestHeader("X-ViewUser") String userToken,
             @RequestParam(required = false) String name)
             throws RecordCreationException, RecordNotFoundException {
 
-        recordKafkaService.addNewRecordByUserId(userToken , name);
+        RecordView recordView = recordService.addNewRecordByUserId(userToken , name);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(recordView , HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{recordId}")

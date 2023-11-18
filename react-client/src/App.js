@@ -14,15 +14,16 @@ import Error from "./components/Error/Error";
 import NutrientTemplate from "./components/HealTracker/Nutrients/NutrientTemplate";
 import EditUser from "./components/User/EditUser/EditUser";
 import NotificationProvider from "./context/Notification";
-import NutritionRecordProvider from "./context/NutritionRecordContext";
+import RecordContextProvider from "./context/RecordContext";
 import NutritionRecordTemplate from "./components/HealTracker/Record/NutritionRecordTemplate";
 import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
+import HealthTracker from "./components/HealTracker/HealthTracker";
 function App() {
   return (
     <>
       <UserAuthProvider>
         <NotificationProvider>
-          <NutritionRecordProvider>
+          <RecordContextProvider>
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -35,15 +36,20 @@ function App() {
                 />
               </Route>
               <Route path="*" element={<Error />} />
+              <Route path="/editUser" element={<EditUser />} />
+              <Route path="/logout" element={<Logout />} />
               <Route element={<UserAuthGuard />}>
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/editUser" element={<EditUser />} />
-                <Route path="/nutritionRecord" element={<NutritionRecordTemplate />} />
                 <Route path="/foodSection" element={<FoodSection />} />
+                <Route path="/health-tracker" element={<HealthTracker />}>
+                  <Route
+                    path="record/:recordId"
+                    element={<NutritionRecordTemplate />}
+                  />
+                </Route>
               </Route>
             </Routes>
             <Footer />
-          </NutritionRecordProvider>
+          </RecordContextProvider>
         </NotificationProvider>
       </UserAuthProvider>
     </>

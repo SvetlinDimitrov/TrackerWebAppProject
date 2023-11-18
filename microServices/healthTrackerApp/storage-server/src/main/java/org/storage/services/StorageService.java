@@ -25,6 +25,18 @@ public class StorageService {
                 .collect(Collectors.toList());
 
     }
+    
+    public List<StorageView> recordFirstCreation(Long recordID) {
+        List<Storage> storageEntities = List.of(new Storage("First Meal", recordID),
+                        new Storage("Second Meal", recordID),
+                        new Storage("Third Meal", recordID),
+                        new Storage("Snacks", recordID));
+
+        storageRepository.saveAllAndFlush(storageEntities);
+        return storageEntities.stream()
+                .map(this::toStorageView)
+                .toList();
+    }
 
     private StorageView toStorageView(Storage entity) {
         StorageView storageView = new StorageView();

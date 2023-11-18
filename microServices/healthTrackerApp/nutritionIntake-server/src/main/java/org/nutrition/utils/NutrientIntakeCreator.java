@@ -3,11 +3,13 @@ package org.nutrition.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.nutrition.clients.electrolyte.ElectrolyteClient;
 import org.nutrition.clients.macronutrient.MacronutrientClient;
 import org.nutrition.clients.vitamin.VitaminClient;
+import org.nutrition.exceptions.NutritionCreateException;
 import org.nutrition.model.dtos.RecordCreation;
 import org.nutrition.model.entity.NutritionIntake;
 import org.nutrition.model.enums.Gender;
@@ -40,19 +42,27 @@ public class NutrientIntakeCreator {
                 .getAllMacronutrients()
                 .forEach(macro -> {
                     BigDecimal lowerBoundIntake = inactiveState(createDto.getWorkoutState())
-                            ? createDto.getCaloriesPerDay().multiply(BigDecimal.valueOf(macro.getInactiveState()))
-                            : createDto.getCaloriesPerDay().multiply(BigDecimal.valueOf(macro.getActiveState()));
+                            ? createDto.getCaloriesPerDay().multiply(
+                                    BigDecimal.valueOf(macro.getInactiveState()))
+                            : createDto.getCaloriesPerDay().multiply(
+                                    BigDecimal.valueOf(macro.getActiveState()));
 
                     BigDecimal upperBoundIntake = inactiveState(createDto.getWorkoutState())
-                            ? createDto.getCaloriesPerDay().multiply(BigDecimal.valueOf(macro.getInactiveState()))
-                            : createDto.getCaloriesPerDay().multiply(BigDecimal.valueOf(macro.getActiveState()));
+                            ? createDto.getCaloriesPerDay().multiply(
+                                    BigDecimal.valueOf(macro.getInactiveState()))
+                            : createDto.getCaloriesPerDay().multiply(
+                                    BigDecimal.valueOf(macro.getActiveState()));
 
                     if (macro.getName().equals("Fat")) {
-                        upperBoundIntake = (upperBoundIntake.divide(new BigDecimal("9"), RoundingMode.HALF_UP));
-                        lowerBoundIntake = (lowerBoundIntake.divide(new BigDecimal("9"), RoundingMode.HALF_UP));
+                        upperBoundIntake = (upperBoundIntake.divide(new BigDecimal("9"),
+                                RoundingMode.HALF_UP));
+                        lowerBoundIntake = (lowerBoundIntake.divide(new BigDecimal("9"),
+                                RoundingMode.HALF_UP));
                     } else {
-                        upperBoundIntake = (upperBoundIntake.divide(new BigDecimal("4"), RoundingMode.HALF_UP));
-                        lowerBoundIntake = (lowerBoundIntake.divide(new BigDecimal("4"), RoundingMode.HALF_UP));
+                        upperBoundIntake = (upperBoundIntake.divide(new BigDecimal("4"),
+                                RoundingMode.HALF_UP));
+                        lowerBoundIntake = (lowerBoundIntake.divide(new BigDecimal("4"),
+                                RoundingMode.HALF_UP));
                     }
                     NutritionIntake nutritionIntake = createNutrition(macro.getName(),
                             "Macronutrient",
@@ -65,13 +75,16 @@ public class NutrientIntakeCreator {
                 });
     }
 
-    private void fillAllVitaminsRecords(Gender gender, Long recordId, List<NutritionIntake> nutritionIntakeEntities) {
+    private void fillAllVitaminsRecords(Gender gender, Long recordId,
+            List<NutritionIntake> nutritionIntakeEntities) {
         vitaminClient
                 .getAllVitamins()
                 .forEach(vitamin -> {
-                    BigDecimal lowerBoundIntake = gender.equals(Gender.MALE) ? vitamin.getMaleLowerBoundIntake()
+                    BigDecimal lowerBoundIntake = gender.equals(Gender.MALE)
+                            ? vitamin.getMaleLowerBoundIntake()
                             : vitamin.getFemaleLowerBoundIntake();
-                    BigDecimal upperBoundIntake = gender.equals(Gender.MALE) ? vitamin.getMaleHigherBoundIntake()
+                    BigDecimal upperBoundIntake = gender.equals(Gender.MALE)
+                            ? vitamin.getMaleHigherBoundIntake()
                             : vitamin.getFemaleHigherBoundIntake();
                     nutritionIntakeEntities.add(
                             createNutrition(
@@ -89,9 +102,11 @@ public class NutrientIntakeCreator {
         electrolyteClient
                 .getAllElectrolytes()
                 .forEach(electrolyte -> {
-                    BigDecimal lowerBoundIntake = gender.equals(Gender.MALE) ? electrolyte.getMaleLowerBoundIntake()
+                    BigDecimal lowerBoundIntake = gender.equals(Gender.MALE)
+                            ? electrolyte.getMaleLowerBoundIntake()
                             : electrolyte.getFemaleLowerBoundIntake();
-                    BigDecimal upperBoundIntake = gender.equals(Gender.MALE) ? electrolyte.getMaleHigherBoundIntake()
+                    BigDecimal upperBoundIntake = gender.equals(Gender.MALE)
+                            ? electrolyte.getMaleHigherBoundIntake()
                             : electrolyte.getFemaleHigherBoundIntake();
                     nutritionIntakeEntities.add(
                             createNutrition(electrolyte.getName(),
@@ -120,4 +135,22 @@ public class NutrientIntakeCreator {
                 .dailyConsumed(BigDecimal.ZERO)
                 .build();
     }
+
+    public RecordCreation validateNutritionIntake(Long recordId, Gender gender, BigDecimal caloriesPerDay,
+            WorkoutState workoutState) throws NutritionCreateException {
+        List<String> errors = new ArrayList<>();
+        if (recordId < 0) {
+            errors.add("Record id cannot be negative");
+        }
+        if (caloriesPerDay.compareTo(BigDecimal.ZERO) < 0) {
+            errors.add("Calories per day cannot be negative");
+        }
+        if (!errors.isEmpty()) {
+            throw new NutritionCreateException(errors);
+        }
+        return new RecordCreation(recordId, gender, caloriesPerDay,
+                workoutState);
+
+    }
+
 }

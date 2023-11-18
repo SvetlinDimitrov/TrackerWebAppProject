@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,9 +33,15 @@ public class StorageController {
     private final StorageKafkaService storageKafkaService;
 
     @GetMapping
-    public ResponseEntity<List<StorageView>> getAllStorages(@RequestParam Long recordId) {
+    public ResponseEntity<List<StorageView>> getAllStorages(@RequestParam (required = true) Long recordId) {
         List<StorageView> allByRecordId = storageService.getAllByRecordId(recordId);
         return new ResponseEntity<>(allByRecordId, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<List<StorageView>> firstCreationOfRecord(@RequestParam (required = true) Long recordId) {
+        List<StorageView> allByRecordId = storageService.recordFirstCreation(recordId);
+        return new ResponseEntity<>(allByRecordId, HttpStatus.CREATED);
     }
 
     @PatchMapping("/addFood")

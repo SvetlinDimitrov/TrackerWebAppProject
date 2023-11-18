@@ -10,9 +10,9 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     volumes:
-      - zookeeper-data:/var/lib/zookeeper/data
-      - zookeeper-log:/var/lib/zookeeper/log
-      - zookeeper-secrets:/etc/zookeeper/secrets
+      - ./kafka/zookeeper/zookeeper-data:/var/lib/zookeeper/data
+      - ./kafka/zookeeper/zookeeper-log:/var/lib/zookeeper/log
+      - ./kafka/zookeeper/zookeeper-secrets:/etc/zookeeper/secrets
   broker:
     image: confluentinc/cp-kafka:7.0.1
     container_name: broker
@@ -29,8 +29,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     volumes:
-      - kafka-secrets:/etc/kafka/secrets
-      - kafka-data:/var/lib/kafka/data
+      - ./kafka/broker/kafka-secrets:/etc/kafka/secrets
+      - ./kafka/broker/kafka-data:/var/lib/kafka/data
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -46,7 +46,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: record
     volumes:
-      - recordVolume:/var/lib/mysql
+      - ./health-tracker-app-data/record-data:/var/lib/mysql
   mysql-db-storage:
     container_name: mysql-db-storage
     restart: always
@@ -57,7 +57,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: storage
     volumes:
-      - storageVolume:/var/lib/mysql
+      - ./health-tracker-app-data/storage-data:/var/lib/mysql
   mysql-db-nutriton:
     container_name: mysql-db-nutriton
     restart: always
@@ -68,7 +68,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: nutritionIntake
     volumes:
-      - nutritionVolume:/var/lib/mysql
+      - ./health-tracker-app-data/nutrition-data:/var/lib/mysql
   mysql-db-user:
     container_name: mysql-db-user
     restart: always
@@ -79,7 +79,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: users
     volumes:
-      - userVolume:/var/lib/mysql
+      - ./user-data:/var/lib/mysql
   discovery-server:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
@@ -218,7 +218,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus-data:/prometheus
     depends_on:
       - record-server
       - nutrition_intake-server
@@ -231,22 +232,9 @@ services:
     links:
       - prometheus:prometheus
     volumes:
-      - grafana-data:/var/lib/grafana
+      - ./grafana/grafana-data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=password
     depends_on:
       - prometheus
-volumes:
-  recordVolume:
-  nutritionVolume:
-  userVolume:
-  rabbitMQ-data:
-  kafka-secrets:
-  kafka-data:
-  zookeeper-secrets:
-  zookeeper-data:
-  zookeeper-log:
-  grafana-data:
-  storageVolume:
-

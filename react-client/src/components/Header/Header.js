@@ -3,7 +3,7 @@ import { AuthContext } from "../../context/UserAuth";
 import { useContext } from "react";
 
 const Header = () => {
-  const { userToken } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <>
@@ -48,7 +48,7 @@ const Header = () => {
               <li>
                 <Link to={"/"}>Home</Link>
               </li>
-              {userToken === "" ? (
+              {user === undefined || user.tokenInfo === undefined ? (
                 <>
                   <li>
                     <Link to={"/register"}>Register</Link>
@@ -101,11 +101,12 @@ const Header = () => {
                       </li>
                     </ul>
                   </li> */}
-                  <li>
-                    <Link to={"/nutritionRecord"}>NutritionRecord</Link>
-                  </li>
+               
                   <li>
                     <Link to={"/foodSection"}>FoodSection</Link>
+                  </li>
+                  <li>
+                    <Link to={"/health-tracker"}>HealthTracker</Link>
                   </li>
                   <li>
                     <a href="#">Drop Down 4</a>

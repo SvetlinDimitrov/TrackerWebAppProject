@@ -1,52 +1,67 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../../context/UserAuth";
 import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
+import { validatedUserToken } from "../../../util/UserUtils";
 
 import api from "../../../util/api";
 import styles from "./EditUser.module.css";
 
 const EditUser = () => {
-  const { userToken , loginUser } = useContext(AuthContext);
+  const { user, loginUser } = useContext(AuthContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
-  const [user, setUser] = useState({});
+  const [currentUser, setCurrentUser] = useState(user.userData);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get("/auth/details", {
-          headers: { Authorization: `Bearer ${userToken}` },
-        });
-
-        setUser(response.data);
-      } catch (error) {
-        navigate("/logout");
-      }
-    };
-
-    fetchData();
-  }, [navigate, userToken]);
+  const validatedUser = validatedUserToken(user);
 
   const handleSubmit = async (e) => {
     await e.preventDefault();
+
     try {
-      const response = await api.patch("/auth/edit", user, {
-        headers: { Authorization: `Bearer ${userToken}` },
+      const responseUserToken = await api.patch("/auth/edit", currentUser, {
+        headers: { Authorization: `Bearer ${user.tokenInfo.token}` },
       });
-      loginUser(response.data.token);
-      setSuccessfulMessage( {message:'Changes were made successfully!' , flag:true} );
+
+      const newUserTokenInfo = responseUserToken.data;
+
+      const userDataResponse = await api.get("/auth/details", {
+        headers: { Authorization: `Bearer ${newUserTokenInfo.token}` },
+      });
+
+      const userData = {
+        userData: userDataResponse.data,
+        tokenInfo: newUserTokenInfo,
+      };
+
+      loginUser(userData);
+
+      await setSuccessfulMessage({
+        message: "Changes were made successfully!",
+        flag: true,
+      });
+
       navigate("/");
     } catch (error) {
-      setFailedMessage( {message:'Your has expired please login again!' , flag:true} );
-      navigate("/logout");
+      setFailedMessage({
+        message: "Something went wrong try again later!",
+        flag: true,
+      });
+      navigate("/");
     }
   };
 
+  if (validatedUser === "dateExpired") {
+    setFailedMessage({
+      message: "Your token has expired please login again!",
+      flag: true,
+    });
+    navigate("/logout");
+    return;
+  } 
   return (
     <>
-      {user.id !== undefined ? (
+      {currentUser !== undefined ? (
         <div className={styles.body}>
           <div className={styles.container}>
             <h1 className={styles.title}>Edit User Settings</h1>
@@ -59,9 +74,9 @@ const EditUser = () => {
                   name="username"
                   minLength="4"
                   required
-                  value={user.username ? user.username : ""}
+                  value={currentUser.username ? currentUser.username : ""}
                   onChange={(e) =>
-                    setUser({ ...user, username: e.target.value })
+                    setCurrentUser({ ...currentUser, username: e.target.value })
                   }
                 />
               </div>
@@ -74,9 +89,12 @@ const EditUser = () => {
                   name="kilograms"
                   step="0.01"
                   min="5"
-                  value={user.kilograms || ""}
+                  value={+currentUser.kilograms || ""}
                   onChange={(e) =>
-                    setUser({ ...user, kilograms: e.target.value })
+                    setCurrentUser({
+                      ...currentUser,
+                      kilograms: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -88,8 +106,10 @@ const EditUser = () => {
                   name="height"
                   step="0.01"
                   min="0.5"
-                  value={user.height || ""}
-                  onChange={(e) => setUser({ ...user, height: e.target.value })}
+                  value={+currentUser.height || ""}
+                  onChange={(e) =>
+                    setCurrentUser({ ...currentUser, height: e.target.value })
+                  }
                 />
               </div>
               <div className={styles.formGroup}>
@@ -97,9 +117,14 @@ const EditUser = () => {
                 <select
                   id="workoutState"
                   name="workoutState"
-                  value={user.workoutState ? user.workoutState : ""}
+                  value={
+                    currentUser.workoutState ? currentUser.workoutState : ""
+                  }
                   onChange={(e) =>
-                    setUser({ ...user, workoutState: e.target.value })
+                    setCurrentUser({
+                      ...currentUser,
+                      workoutState: e.target.value,
+                    })
                   }
                 >
                   <option value="">Choose Workout State</option>
@@ -115,8 +140,10 @@ const EditUser = () => {
                 <select
                   id="gender"
                   name="gender"
-                  value={user.gender ? user.gender : ""}
-                  onChange={(e) => setUser({ ...user, gender: e.target.value })}
+                  value={currentUser.gender ? currentUser.gender : ""}
+                  onChange={(e) =>
+                    setCurrentUser({ ...currentUser, gender: e.target.value })
+                  }
                 >
                   <option value="">Choose Gender</option>
                   <option value="MALE">Male</option>
@@ -131,8 +158,10 @@ const EditUser = () => {
                   name="age"
                   step="1"
                   min="1"
-                  value={user.age || ""}
-                  onChange={(e) => setUser({ ...user, age: e.target.value })}
+                  value={+currentUser.age || ""}
+                  onChange={(e) =>
+                    setCurrentUser({ ...currentUser, age: e.target.value })
+                  }
                 />
               </div>
               <button className={styles.submitButton}>Save Changes</button>

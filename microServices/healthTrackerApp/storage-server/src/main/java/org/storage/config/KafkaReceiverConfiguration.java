@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +12,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.storage.model.dto.RecordCreation;
-import org.storage.model.dto.StorageCreation;
-import org.storage.model.dto.StorageDeletion;
 
 @Configuration
 @EnableKafka
@@ -26,43 +21,39 @@ public class KafkaReceiverConfiguration {
     public String servers;
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, RecordCreation> kafkaListenerCreation(
-            ConsumerFactory<String, RecordCreation> consumerFactoryCreation) {
-        ConcurrentKafkaListenerContainerFactory<String, RecordCreation> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerCreation(
+            ConsumerFactory<String, String> consumerFactoryCreation) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryCreation);
         return factory;
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, Long> kafkaListenerDeletion(
-            ConsumerFactory<String, Long> consumerFactoryDeletion) {
-        ConcurrentKafkaListenerContainerFactory<String, Long> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerDeletion(
+            ConsumerFactory<String, String> consumerFactoryDeletion) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryDeletion);
         return factory;
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, StorageCreation> kafkaListenerSingleCreation(
-            ConsumerFactory<String, StorageCreation> consumerFactoryStorageCreationByName) {
-        ConcurrentKafkaListenerContainerFactory<String, StorageCreation> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerSingleCreation(
+            ConsumerFactory<String, String> consumerFactoryStorageCreationByName) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryStorageCreationByName);
         return factory;
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, StorageDeletion> kafkaListenerSingleDeletion(
-            ConsumerFactory<String, StorageDeletion> consumerFactoryStorageSingleDeletion) {
-        ConcurrentKafkaListenerContainerFactory<String, StorageDeletion> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerSingleDeletion(
+            ConsumerFactory<String, String> consumerFactoryStorageSingleDeletion) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryStorageSingleDeletion);
         return factory;
     }
 
     @Bean
-    ConsumerFactory<String, RecordCreation> consumerFactoryCreation() {
-        JsonDeserializer<RecordCreation> deserializer = new JsonDeserializer<>(RecordCreation.class);
-        deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(true);
+    ConsumerFactory<String, String> consumerFactoryCreation() {
 
         Map<String, Object> config = new HashMap<>();
 
@@ -71,14 +62,14 @@ public class KafkaReceiverConfiguration {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
 
     }
 
     @Bean
-    ConsumerFactory<String, Long> consumerFactoryDeletion() {
+    ConsumerFactory<String, String> consumerFactoryDeletion() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
@@ -86,19 +77,14 @@ public class KafkaReceiverConfiguration {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new LongDeserializer());
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
 
     }
 
     @Bean
-    ConsumerFactory<String, StorageCreation> consumerFactoryStorageCreationByName() {
-        JsonDeserializer<StorageCreation> deserializer = new JsonDeserializer<>(StorageCreation.class);
-        deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(true);
-
+    ConsumerFactory<String, String> consumerFactoryStorageCreationByName() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
@@ -106,19 +92,14 @@ public class KafkaReceiverConfiguration {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
 
     }
 
     @Bean
-    ConsumerFactory<String, StorageDeletion> consumerFactoryStorageSingleDeletion() {
-        JsonDeserializer<StorageDeletion> deserializer = new JsonDeserializer<>(StorageDeletion.class);
-        deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(true);
-
+    ConsumerFactory<String, String> consumerFactoryStorageSingleDeletion() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
@@ -126,9 +107,9 @@ public class KafkaReceiverConfiguration {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
 
     }
 

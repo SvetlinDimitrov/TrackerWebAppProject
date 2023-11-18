@@ -1,0 +1,28 @@
+.containerInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    border: 2px solid #00b050;
+    width: 500px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .containerInfo_Heading_CloseButton{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 90%;
+    margin-bottom: 10px;
+  }
+  .containerInfo_Heading_CloseButton_Button{
+    background-color: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }

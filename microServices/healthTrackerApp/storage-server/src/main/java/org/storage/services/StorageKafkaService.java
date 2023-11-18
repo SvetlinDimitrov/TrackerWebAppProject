@@ -4,10 +4,6 @@ import java.util.List;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.storage.StorageRepository;
@@ -21,6 +17,9 @@ import org.storage.model.dto.StorageCreation;
 import org.storage.model.dto.StorageDeletion;
 import org.storage.model.dto.StorageUpdate;
 import org.storage.model.entity.Storage;
+import org.storage.model.enums.KafkaProducerTopics;
+
+import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,33 +27,35 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StorageKafkaService {
 
-    private final KafkaTemplate<String, FoodView> kafkaTemplateFood;
+    private final KafkaTemplate<String, String> kafkaTemplateFood;
     private final FoodClient foodClient;
     private final StorageRepository storageRepository;
+    private Gson gson = new Gson();
 
-    @KafkaListener(topics = "record-creation", groupId = "group_three", containerFactory = "kafkaListenerCreation")
-    public void recordFirstCreation(@Payload RecordCreation recordCreationDto) {
-        storageRepository.saveAllAndFlush(
-                List.of(new Storage("First Meal", recordCreationDto.getRecordId()),
-                        new Storage("Second Meal", recordCreationDto.getRecordId()),
-                        new Storage("Third Meal", recordCreationDto.getRecordId()),
-                        new Storage("Snacks", recordCreationDto.getRecordId())));
-    }
-
-    @KafkaListener(topics = "record-deletion", groupId = "group_four", containerFactory = "kafkaListenerDeletion")
+ 
+    @KafkaListener(topics = "RECORD_DELETION", groupId = "group_four", containerFactory = "kafkaListenerDeletion")
     @Transactional
-    public void recordDeletion(@Payload Long recordId) {
+    public void recordDeletion(String jsonToken) {
+
+        Long recordId = gson.fromJson(jsonToken, Long.class);
+
         storageRepository.deleteAllByRecordId(recordId);
     }
 
-    @KafkaListener(topics = "storage-creation", groupId = "group_storage_single_creation_one", containerFactory = "kafkaListenerSingleCreation")
-    public void createStorage(@Payload StorageCreation dto) {
+    @KafkaListener(topics = "STORAGE_CREATION", groupId = "group_storage_single_creation_one", containerFactory = "kafkaListenerSingleCreation")
+    public void createStorage(String jsonToken) {
+
+        StorageCreation dto = gson.fromJson(jsonToken, StorageCreation.class);
+
         storageRepository.saveAndFlush(new Storage(dto.getStorageName(), dto.getRecordId()));
     }
 
     @Transactional
-    @KafkaListener(topics = "storage-deletion", groupId = "group_storage_single_deletion_one", containerFactory = "kafkaListenerSingleDeletion")
-    public void deleteStorage(@Payload StorageDeletion dto) {
+    @KafkaListener(topics = "STORAGE_DELETION", groupId = "group_storage_single_deletion_one", containerFactory = "kafkaListenerSingleDeletion")
+    public void deleteStorage(String jsonToken) {
+
+        StorageDeletion dto = gson.fromJson(jsonToken, StorageDeletion.class);
+
         storageRepository.deleteByIdAndRecordId(dto.getStorageId(), dto.getRecordId());
     }
 
@@ -81,13 +82,9 @@ public class StorageKafkaService {
         FoodView foodByName = foodClient.getFoodByName(dto.getFoodName());
         foodByName.setRecordId(dto.getRecordId());
 
-        Message<FoodView> message = MessageBuilder
-                .withPayload(foodByName)
-                .setHeader(KafkaHeaders.TOPIC, "storage-removing")
-                .build();
+        String jsonToken = gson.toJson(foodByName);
 
-        kafkaTemplateFood
-                .send(message);
+        kafkaTemplateFood.send(KafkaProducerTopics.STORAGE_REMOVING.name(), jsonToken);
     }
 
     public void addFood(StorageUpdate dto) throws StorageNotFoundException, FoodNotFoundException {
@@ -98,17 +95,16 @@ public class StorageKafkaService {
 
         try {
             FoodView foodByName = foodClient.getFoodByName(dto.getFoodName());
+
             entity.getFoodNames()
                     .add(foodByName.getName());
+
             foodByName.setRecordId(dto.getRecordId());
 
-            Message<FoodView> message = MessageBuilder
-                    .withPayload(foodByName)
-                    .setHeader(KafkaHeaders.TOPIC, "storage-filling")
-                    .build();
+            String jsonToken = gson.toJson(foodByName);
 
             kafkaTemplateFood
-                    .send(message);
+                    .send(KafkaProducerTopics.STORAGE_FILLING.name(), jsonToken);
 
             storageRepository.save(entity);
         } catch (RuntimeException e) {

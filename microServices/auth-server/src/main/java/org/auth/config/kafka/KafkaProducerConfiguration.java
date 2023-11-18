@@ -24,7 +24,7 @@ public class KafkaProducerConfiguration {
 
     @Bean
     NewTopic recordCreationTopic() {
-        return TopicBuilder.name("user-first-creation")
+        return TopicBuilder.name("USER_FIRST_CREATION")
                 .build();
     }
 

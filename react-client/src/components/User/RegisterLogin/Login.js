@@ -1,8 +1,9 @@
-import { useState , useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useForm } from "../../../hooks/useForm";
+import { RecordContext } from "../../../context/RecordContext";
 import { AuthContext } from "../../../context/UserAuth";
+import { useForm } from "../../../hooks/useForm";
 import api from "../../../util/api";
 
 import React from "react";
@@ -21,13 +22,35 @@ const initValues = {
 const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { loginUser } = useContext(AuthContext)
+  const { loginUser } = useContext(AuthContext);
+  const { setRecords } = useContext(RecordContext);
 
   const submitHandler = async (values) => {
     try {
-      if (error === '') {
-        const response = await api.post("/auth/login", values);
-        loginUser(response.data.token);
+      if (error === "") {
+        const userTokenResponse = await api.post("/auth/login", values);
+
+        const userToken = userTokenResponse.data.token;
+        const newUserTokenInfo = userTokenResponse.data;
+
+        const userDataResponse = await api.get("/auth/details", {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+
+        const userData = {
+          userData: userDataResponse.data,
+          tokenInfo: newUserTokenInfo,
+        };
+        loginUser(userData);
+
+        if (userDataResponse.data.userDetails === "COMPLETED") {
+          const allRecordsResponse = await api.get("/record/all", {
+            headers: { Authorization: `Bearer ${userToken}` },
+          });
+
+          const allRecords = allRecordsResponse.data;
+          setRecords(allRecords);
+        }
         navigate("/");
       }
     } catch (error) {
@@ -75,8 +98,8 @@ const Login = () => {
           }}
           required
         />
-      
-          {error !== "" && <p>{error}</p>}
+
+        {error !== "" && <p>{error}</p>}
 
         <button className={styles.button}>Login</button>
       </form>

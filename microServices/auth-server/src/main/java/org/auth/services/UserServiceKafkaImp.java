@@ -1,7 +1,6 @@
 package org.auth.services;
 
 import org.auth.UserRepository;
-import org.auth.config.security.JwtUtil;
 import org.auth.model.dto.EditUserDto;
 import org.auth.model.dto.RegisterUserDto;
 import org.auth.model.dto.UserView;
@@ -9,9 +8,6 @@ import org.auth.model.entity.User;
 import org.auth.model.enums.UserDetails;
 import org.auth.util.UserValidator;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,12 +42,7 @@ public class UserServiceKafkaImp extends AbstractUserService {
 
             String token = gson.toJson(new UserView(user));
 
-            Message<String> message = MessageBuilder
-                    .withPayload(token)
-                    .setHeader(KafkaHeaders.TOPIC, "user-first-creation")
-                    .build();
-
-            kafkaTemplate.send(message);
+            kafkaTemplate.send("USER_FIRST_CREATION", token);
         }
 
     }
@@ -85,12 +76,7 @@ public class UserServiceKafkaImp extends AbstractUserService {
 
             String token = gson.toJson(new UserView(user));
 
-            Message<String> message = MessageBuilder
-                    .withPayload(token)
-                    .setHeader(KafkaHeaders.TOPIC, "user-first-creation")
-                    .build();
-
-            kafkaTemplate.send(message);
+            kafkaTemplate.send("USER_FIRST_CREATION", token);
         }
 
         userRepository.saveAndFlush(user);
