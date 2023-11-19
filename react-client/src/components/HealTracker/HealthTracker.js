@@ -1,25 +1,41 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import DetailsOfRecord from "./Record/DetailsOfRecord";
 import styles from "./HeathTracker.module.css";
 
 import { NotificationContext } from "../../context/Notification";
 import { AuthContext } from "../../context/UserAuth";
+import SuccessMessage from "../Notifications/SuccessfulMessage";
+import FailedMessage from "../Notifications/FailedMessage";
+import stylesNotification from "../Notifications/SuccessfulMessage.module.css";
 
 import api from "../../util/api";
+import SelectRecordDetails from "./Record/SelectRecordDetails";
+import CreateRecord from "./Record/CreateRecord";
+import SelectRecord from "./Record/SelectRecord";
+import DeleteRecord from "./Record/DeleteRecord";
+import FoodSection from "./Record/FoodSection/FoodSection";
 
 const HealthTracker = () => {
   const [records, setRecords] = useState(undefined);
-  const [selectedRecord, setSelectedRecord] = useState(-1);
+  const [selectedRecord, setSelectedRecord] = useState(undefined);
+  const [feature, selectedFeature] = useState("");
+  const location = useLocation();
   const { user } = useContext(AuthContext);
-  const { setFailedMessage } = useContext(NotificationContext);
+  const {
+    setFailedMessage,
+    setSuccessfulMessage,
+    failedMessage,
+    successfulMessage,
+  } = useContext(NotificationContext);
   const navigate = useNavigate();
+  const userToken = user.tokenInfo.token;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.get("/record/all", {
-          headers: { Authorization: `Bearer ${user.tokenInfo.token}` },
+          headers: { Authorization: `Bearer ${userToken}` },
         });
         setRecords(response.data);
       } catch (error) {
@@ -32,15 +48,8 @@ const HealthTracker = () => {
       }
     };
     fetchData();
-  }, []);
-
-  const selectRecordIndex = (index) => {
-    setSelectedRecord(+index);
-  };
-
-  const selectPathName = (pathName) => {
-    navigate(pathName);
-  };
+    setSelectedRecord(undefined);
+  }, [navigate, setFailedMessage, userToken, location]);
 
   if (!records) {
     return <div id="preloader"></div>;
@@ -48,54 +57,64 @@ const HealthTracker = () => {
 
   return (
     <>
-      <div className={styles.main_container}>
-        <div className={styles.container}>
-          <h2 className={styles.container_header}>
-            Select record for more details
-          </h2>
-          <FaHeart className={styles.container_icon} />
-          <p className={styles.container_text}>
-            Choose a record from the dropdown:
-          </p>
-          <select
-            onChange={(e) => selectRecordIndex(parseInt(e.target.value, 10))}
-            defaultValue="-1"
-            className={styles.choose_RecordContainer_selectValue}
-          >
-            <option value="-1">Choose Record</option>
-            {records.map((record, index) => {
-              return (
-                <option value={record.id} key={index}>
-                  {record.name.substring(0, 70)}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+      {(successfulMessage.flag || failedMessage.flag) && (
+        <div className={stylesNotification.overlay}></div>
+      )}
+      {successfulMessage.flag && (
+        <SuccessMessage
+          message={successfulMessage.message}
+          onClose={() => {
+            setSuccessfulMessage(false);
+          }}
+        />
+      )}
+      {failedMessage.flag && (
+        <FailedMessage
+          message={failedMessage.message}
+          onClose={() => {
+            setFailedMessage(false);
+          }}
+        />
+      )}
 
-        {selectedRecord !== -1 && (
-          <div className={styles.container}>
-            <h2 className={styles.container_header}>
-              Select record for more details
-            </h2>
-            <FaHeart className={styles.container_icon} />
-            <p className={styles.container_text}>
-              Choose a record from the dropdown:
-            </p>
-            <select
-              onChange={(e) => selectPathName(e.target.value)}
-              defaultValue=""
-              className={styles.choose_RecordContainer_selectValue}
-            >
-              <option value="/health-tracker">Choose Record</option>
-              <option value={`/health-tracker/record/${selectedRecord}`}>
-                Record Detail Information
-              </option>
-            </select>
-          </div>
+      <div className={styles.main_container}>
+        <CreateRecord
+          userToken={userToken}
+          setFailedMessage={setFailedMessage}
+          setSuccessfulMessage={setSuccessfulMessage}
+        />
+        <SelectRecord
+          records={records}
+          selectedRecord={selectedRecord}
+          setSelectedRecord={setSelectedRecord}
+        />
+
+        {selectedRecord && (
+          <SelectRecordDetails
+            selectedRecord={selectedRecord}
+            feature={feature}
+            selectedFeature={selectedFeature}
+          />
+        )}
+        {selectedRecord && (
+          <DeleteRecord
+            selectedRecord={selectedRecord}
+            userToken={userToken}
+            setSuccessfulMessage={setSuccessfulMessage}
+            setFailedMessage={setFailedMessage}
+          />
+        )}
+        {selectedRecord && (
+          <FoodSection
+            selectedRecord={selectedRecord}
+            userToken={userToken}
+          />
         )}
       </div>
-      <Outlet />
+
+      {feature === "details" && selectedRecord && (
+        <DetailsOfRecord record={selectedRecord} />
+      )}
     </>
   );
 };

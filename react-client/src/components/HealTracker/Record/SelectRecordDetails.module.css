@@ -1,0 +1,19 @@
+.sectionContainer {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    margin: auto;
+  }
+  
+  .section {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .section:hover {
+    background-color: #f0f0f0;
+  }

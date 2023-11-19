@@ -88,3 +88,47 @@
   align-items: center;
   z-index: 9999;
 }
+.foodDetails {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 100%;
+  max-height: 150px; /* adjust this value as needed */
+  overflow-y: auto;
+}
+
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  height: 40px;
+  font-size: small;
+  border-bottom: 1px solid #ddd;
+}
+.foodItemDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.foodItem:last-child {
+  border-bottom: none;
+}
+.addButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+.totalCount {
+  display:block;
+  width: 85%;
+  margin-top: 10px;
+  font-size: small;
+  text-align: right;
+}

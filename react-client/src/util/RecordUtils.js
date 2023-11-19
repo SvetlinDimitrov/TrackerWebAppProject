@@ -41,8 +41,8 @@ export const getRecordById = (allRecords, id) => {
   return allRecords.find((record) => record.id === id);
 };
 
-export const getStorageById = (allRecords, recordId, storageId) => {
-  return getRecordById(allRecords, recordId).storageViews.find(
+export const getStorageById = (record, storageId) => {
+  return record.storageViews.find(
     (storage) => storage.id === storageId
   );
 };
