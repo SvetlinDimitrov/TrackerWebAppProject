@@ -1,22 +1,16 @@
 package org.storage.client;
 
-import java.util.List;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.storage.config.FoodFeignConfiguration;
+import org.storage.model.entity.Food;
 
 @Component
-@FeignClient(name = "food" , configuration = FoodFeignConfiguration.class)
+@FeignClient(name = "food")
 public interface FoodClient {
 
     @GetMapping(path = "/api/food/{name}")
-    FoodView getFoodByName(@PathVariable("name") String name);
-
-    @GetMapping(path = "/api/food/list")
-    List<FoodView> getAllFoodsByListNames(@RequestParam("foodNames") List<String> foodNames);
+    Food getFoodByName(@PathVariable("name") String name);
 
 }

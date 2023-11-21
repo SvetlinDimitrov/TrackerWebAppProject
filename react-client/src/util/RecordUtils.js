@@ -42,7 +42,11 @@ export const getRecordById = (allRecords, id) => {
 };
 
 export const getStorageById = (record, storageId) => {
-  return record.storageViews.find(
-    (storage) => storage.id === storageId
-  );
+  return record.storageViews.find((storage) => {
+    return storage.id === +storageId;
+  });
+};
+
+export const getTotalFoodCaloriesFromStorage = (storage) => {
+  return storage.foods.reduce((total, food) => total + food.calories, 0);
 };

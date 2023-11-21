@@ -44,6 +44,7 @@ const DeleteRecord = ({
         flag: true,
       });
     }
+
     setPopupVisible(false);
   };
   return (

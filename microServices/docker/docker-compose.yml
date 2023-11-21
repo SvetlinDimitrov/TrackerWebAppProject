@@ -46,29 +46,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: record
     volumes:
-      - ./health-tracker-app-data/record-data:/var/lib/mysql
-  mysql-db-storage:
-    container_name: mysql-db-storage
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3305:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: storage
-    volumes:
-      - ./health-tracker-app-data/storage-data:/var/lib/mysql
-  mysql-db-nutriton:
-    container_name: mysql-db-nutriton
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: nutritionIntake
-    volumes:
-      - ./health-tracker-app-data/nutrition-data:/var/lib/mysql
+      - record-data:/var/lib/mysql
   mysql-db-user:
     container_name: mysql-db-user
     restart: always
@@ -79,7 +57,18 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: users
     volumes:
-      - ./user-data:/var/lib/mysql
+      - user-data:/var/lib/mysql
+  mysql-db-storage:
+    container_name: mysql-db-storage
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3305:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: users
+    volumes:
+      - storage-data:/var/lib/mysql
   discovery-server:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
@@ -173,44 +162,6 @@ services:
       - gateway-server
       - discovery-server
       - broker
-  storage-server:
-    restart: always
-    image: svetlindimitrov/storage-server-tracker-app
-    container_name: storage-server
-    environment:
-      DB_HOST: mysql-db-storage
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
-    depends_on:
-      - zipkin
-      - mysql-db-user
-      - gateway-server
-      - discovery-server
-      - broker
-      - record-server
-  nutrition_intake-server:
-    restart: always
-    image: svetlindimitrov/nutrition_intake-server-tracker-app
-    container_name: nutrition_intake-server
-    environment:
-      DB_HOST: mysql-db-nutriton
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
-    depends_on:
-      - zipkin
-      - mysql-db-user
-      - gateway-server
-      - discovery-server
-      - broker
-      - record-server
-      - macronutrient-server
-      - vitamin-server
-      - electrolyte-server
-      - storage-server
   prometheus:
     image: prom/prometheus:v2.37.1
     container_name: prometheus
@@ -222,7 +173,6 @@ services:
       - ./prometheus/prometheus-data:/prometheus
     depends_on:
       - record-server
-      - nutrition_intake-server
   grafana:
     image: grafana/grafana-oss:8.5.2
     container_name: grafana
@@ -238,3 +188,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=password
     depends_on:
       - prometheus
+volumes:
+  user-data:
+  storage-data:
+  record-data:

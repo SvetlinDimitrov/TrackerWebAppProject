@@ -1,26 +1,33 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import DetailsOfRecord from "./Record/DetailsOfRecord";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./HeathTracker.module.css";
+import DetailsOfRecord from "./Record/DetailsOfRecord";
 
 import { NotificationContext } from "../../context/Notification";
 import { AuthContext } from "../../context/UserAuth";
-import SuccessMessage from "../Notifications/SuccessfulMessage";
 import FailedMessage from "../Notifications/FailedMessage";
+import SuccessMessage from "../Notifications/SuccessfulMessage";
 import stylesNotification from "../Notifications/SuccessfulMessage.module.css";
 
 import api from "../../util/api";
-import SelectRecordDetails from "./Record/SelectRecordDetails";
 import CreateRecord from "./Record/CreateRecord";
-import SelectRecord from "./Record/SelectRecord";
 import DeleteRecord from "./Record/DeleteRecord";
 import FoodSection from "./Record/FoodSection/FoodSection";
+import SelectRecord from "./Record/SelectRecord";
+import SelectRecordDetails from "./Record/SelectRecordDetails";
+import CreateStorage from "./Storage/CreateStorage";
+import DeleteStorage from "./Storage/DeleteStorage";
 
 const HealthTracker = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [records, setRecords] = useState(undefined);
   const [selectedRecord, setSelectedRecord] = useState(undefined);
+  const [selectedStorage, setSelectedStorage] = useState(undefined);
+
   const [feature, selectedFeature] = useState("");
-  const location = useLocation();
+
   const { user } = useContext(AuthContext);
   const {
     setFailedMessage,
@@ -28,7 +35,7 @@ const HealthTracker = () => {
     failedMessage,
     successfulMessage,
   } = useContext(NotificationContext);
-  const navigate = useNavigate();
+
   const userToken = user.tokenInfo.token;
 
   useEffect(() => {
@@ -105,9 +112,30 @@ const HealthTracker = () => {
           />
         )}
         {selectedRecord && (
+          <CreateStorage
+            userToken={userToken}
+            setFailedMessage={setFailedMessage}
+            setSuccessfulMessage={setSuccessfulMessage}
+            selectedRecord={selectedRecord}
+          />
+        )}
+        {selectedRecord && (
           <FoodSection
             selectedRecord={selectedRecord}
+            selectedStorage={selectedStorage}
+            setSelectedStorage={setSelectedStorage}
             userToken={userToken}
+            setSuccessfulMessage={setSuccessfulMessage}
+            setFailedMessage={setFailedMessage}
+          />
+        )}
+        {selectedRecord && selectedStorage && (
+          <DeleteStorage
+            selectedRecord={selectedRecord}
+            userToken={userToken}
+            setSuccessfulMessage={setSuccessfulMessage}
+            setFailedMessage={setFailedMessage}
+            selectedStorage={selectedStorage}
           />
         )}
       </div>

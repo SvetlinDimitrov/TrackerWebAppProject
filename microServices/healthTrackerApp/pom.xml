@@ -16,12 +16,11 @@
 
     <modules>
         <module>vitamin-server</module>
-        <module>electrolyte-server</module>
+        <module>mineral-server</module>
         <module>macronutrient-server</module>
         <module>record-server</module>
-        <module>nutritionIntake-server</module>
-        <module>storage-server</module>
         <module>food-server</module>
+        <module>storage-server</module>
     </modules>
 
     <properties>

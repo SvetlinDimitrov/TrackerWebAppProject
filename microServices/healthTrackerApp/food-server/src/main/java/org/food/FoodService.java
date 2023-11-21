@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.food.domain.dtos.FoodView;
-import org.food.repository.FruitRepository;
+import org.food.repositories.FruitRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

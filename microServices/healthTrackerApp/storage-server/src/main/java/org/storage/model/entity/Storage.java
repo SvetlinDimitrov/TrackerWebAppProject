@@ -1,34 +1,41 @@
 package org.storage.model.entity;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.HashMap;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "storages")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Storage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String name;
+    private BigDecimal consumedCalories;
 
-    @Column
     private Long recordId;
 
-    @ElementCollection
-    private List<String> foodNames;
+    private String name;
 
-    public Storage(String name, Long recordId) {
+    @ElementCollection
+    private HashMap<String, Food> foods;
+
+    public Storage(String name , Long recordId) {
         this.name = name;
         this.recordId = recordId;
-        this.foodNames = new ArrayList<>();
+        this.foods = new HashMap<>();
     }
 }
