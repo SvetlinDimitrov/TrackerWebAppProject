@@ -2,22 +2,23 @@ package org.storage.model.entity;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Storage {
 
     @Id
@@ -31,11 +32,15 @@ public class Storage {
     private String name;
 
     @ElementCollection
-    private HashMap<String, Food> foods;
+    @CollectionTable(name = "storage_foods", joinColumns = @JoinColumn(name = "storage_id"))
+    @MapKeyColumn(name = "food_name")
+    @Column(name = "food")
+    private Map<String, Food> foods;
 
-    public Storage(String name , Long recordId) {
+    public Storage(String name, Long recordId) {
         this.name = name;
         this.recordId = recordId;
+        consumedCalories = BigDecimal.ZERO;
         this.foods = new HashMap<>();
     }
 }

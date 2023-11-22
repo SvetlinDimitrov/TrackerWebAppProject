@@ -15,12 +15,12 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: electrolyte
-          uri: lb://electrolyte
+        - id: mineral
+          uri: lb://mineral
           predicates:
-            - Path=/electrolyte/**
+            - Path=/mineral/**
           filters:
-            - RewritePath=/electrolyte(/?.*), /api/electrolyte$1
+            - RewritePath=/mineral(/?.*), /api/mineral$1
 
         - id: vitamin
           uri: lb://vitamin

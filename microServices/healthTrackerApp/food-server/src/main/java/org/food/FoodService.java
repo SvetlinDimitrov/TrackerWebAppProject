@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.food.domain.dtos.FoodView;
-import org.food.repositories.FruitRepository;
+import org.food.repositories.FoodRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -14,25 +13,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FoodService {
 
-    private final FruitRepository fruitRepository;
+    private final FoodRepository foodRepository;
 
-    public List<FoodView> getAllFoods() {
-        return fruitRepository.getAllFoods()
+    public List<Food> getAllFoods() {
+        return foodRepository.getAllFoods()
                 .stream()
-                .map(FoodView::new)
                 .collect(Collectors.toList());
     }
 
-    public FoodView getFoodByName(String foodName) throws FoodNotFoundException {
-        return fruitRepository
+    public Food getFoodByName(String foodName) throws FoodNotFoundException {
+        return foodRepository
                 .getByName(foodName)
-                .map(FoodView::new)
                 .orElseThrow(
-                        () -> new FoodNotFoundException(foodName + " does not exist.", fruitRepository.getAllNames()));
+                        () -> new FoodNotFoundException(foodName + " does not exist.", foodRepository.getAllNames()));
     }
 
-    public List<FoodView> getAllFoodsByListNames(List<String> foodNames) throws FoodNotFoundException {
-        List<FoodView> foodsToReturn = new ArrayList<>();
+    public List<Food> getAllFoodsByListNames(List<String> foodNames) throws FoodNotFoundException {
+        List<Food> foodsToReturn = new ArrayList<>();
 
         for (String foodName : foodNames) {
             foodsToReturn.add(getFoodByName(foodName));

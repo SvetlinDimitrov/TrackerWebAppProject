@@ -1,9 +1,9 @@
 package org.macronutrient.model.entity;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class Pair {
 

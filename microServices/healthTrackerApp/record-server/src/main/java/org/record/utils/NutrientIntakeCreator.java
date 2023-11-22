@@ -1,4 +1,4 @@
-package org.record.services;
+package org.record.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,9 +28,22 @@ public class NutrientIntakeCreator {
 
         Map<String, NutritionIntake> nutritionIntakeEntities = new HashMap<>();
 
-        fillAllVitaminsRecords(gender, nutritionIntakeEntities);
-        fillAllMineralsRecords(gender, nutritionIntakeEntities);
-        fillAllMacronutrientRecords(gender, caloriesPerDay, workoutState, nutritionIntakeEntities);
+        fillAllVitaminsRecords(
+                gender,
+                nutritionIntakeEntities);
+        fillAllMineralsRecords(
+                gender,
+                nutritionIntakeEntities);
+        fillAllMacronutrientRecords(
+                gender,
+                caloriesPerDay,
+                workoutState,
+                nutritionIntakeEntities);
+        fillMacroTypes(
+                nutritionIntakeEntities,
+                nutritionIntakeEntities.get("Fat").getLowerBoundIntake(),
+                caloriesPerDay,
+                gender);
 
         return nutritionIntakeEntities;
     }
@@ -110,7 +123,7 @@ public class NutrientIntakeCreator {
                             : mineral.getFemaleHigherBoundIntake();
 
                     NutritionIntake nutrient = createNutrition(mineral.getName(),
-                            "Electrolyte",
+                            "Mineral",
                             mineral.getMeasure(),
                             lowerBoundIntake,
                             upperBoundIntake);
@@ -394,4 +407,75 @@ public class NutrientIntakeCreator {
                         .inactiveState(0.35)
                         .build());
     }
+
+    private void fillMacroTypes(
+            Map<String, NutritionIntake> nutritionIntakeEntities,
+            BigDecimal fat,
+            BigDecimal totalCalories,
+            Gender gender) {
+
+        NutritionIntake saturatedFat = NutritionIntake.builder()
+                .nutrientName("SaturatedFat")
+                .nutrientType("Fat")
+                .measurement("grams (g)")
+                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
+                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(saturatedFat.getNutrientName(), saturatedFat);
+
+        NutritionIntake monoFat = NutritionIntake.builder()
+                .nutrientName("MonounsaturatedFat")
+                .nutrientType("Fat")
+                .measurement("grams (g)")
+                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.15))))
+                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.2))))
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(monoFat.getNutrientName(), monoFat);
+
+        NutritionIntake polyFat = NutritionIntake.builder()
+                .nutrientName("PolyunsaturatedFat")
+                .nutrientType("Fat")
+                .measurement("grams (g)")
+                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.05))))
+                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(polyFat.getNutrientName(), polyFat);
+
+        NutritionIntake transFat = NutritionIntake.builder()
+                .nutrientName("TransFat")
+                .nutrientType("Fat")
+                .measurement("grams (g)")
+                .lowerBoundIntake(BigDecimal.ZERO)
+                .upperBoundIntake(BigDecimal.ZERO)
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(transFat.getNutrientName(), transFat);
+
+        NutritionIntake sugarCarbs = NutritionIntake.builder()
+                .nutrientName("Sugar")
+                .nutrientType("Carbohydrates")
+                .measurement("grams (g)")
+                .lowerBoundIntake(totalCalories
+                        .multiply(BigDecimal.valueOf(0.05).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP)))
+                .upperBoundIntake(totalCalories
+                        .multiply(BigDecimal.valueOf(0.1).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP)))
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(sugarCarbs.getNutrientName(), sugarCarbs);
+
+        NutritionIntake fiberCarbs = NutritionIntake.builder()
+                .nutrientName("Fiber")
+                .nutrientType("Carbohydrates")
+                .measurement("grams (g)")
+                .lowerBoundIntake(gender == Gender.MALE ? BigDecimal.valueOf(38) : BigDecimal.valueOf(25))
+                .upperBoundIntake(gender == Gender.MALE ? BigDecimal.valueOf(38) : BigDecimal.valueOf(25))
+                .dailyConsumed(BigDecimal.ZERO)
+                .build();
+        nutritionIntakeEntities.put(fiberCarbs.getNutrientName(), fiberCarbs);
+
+    }
+
 }

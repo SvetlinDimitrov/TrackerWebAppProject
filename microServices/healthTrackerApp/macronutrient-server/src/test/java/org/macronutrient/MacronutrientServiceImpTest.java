@@ -11,8 +11,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.macronutrient.model.dtos.MacronutrientView;
-import org.macronutrient.model.dtos.PairView;
 import org.macronutrient.model.entity.Macronutrient;
 import org.macronutrient.model.entity.Pair;
 import org.mockito.InjectMocks;
@@ -29,7 +27,6 @@ public class MacronutrientServiceImpTest {
     private MacronutrientServiceImp macronutrientServiceImp;
 
     private final List<Macronutrient> macronutrientList = new ArrayList<>();
-    private final List<MacronutrientView> macronutrientListViews = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -180,57 +177,27 @@ public class MacronutrientServiceImpTest {
                         .activeState(0.25)
                         .inactiveState(0.15)
                         .build()));
-
-        Macronutrient entity = macronutrientList.get(0);
-        macronutrientListViews.add(
-                MacronutrientView.builder()
-                        .name(entity.getName())
-                        .description(entity.getDescription())
-                        .activeState(entity.getActiveState())
-                        .inactiveState(entity.getInactiveState())
-                        .functions(entity.getFunctions().stream().map(PairView::new).toList())
-                        .sources(entity.getSources().stream().map(PairView::new).toList())
-                        .types(entity.getTypes().stream().map(PairView::new).toList())
-                        .dietaryConsiderations(
-                                entity.getDietaryConsiderations().stream()
-                                        .map(PairView::new).toList())
-                        .build());
-        Macronutrient entity2 = macronutrientList.get(1);
-        macronutrientListViews.add(
-                MacronutrientView.builder()
-                        .name(entity2.getName())
-                        .description(entity2.getDescription())
-                        .activeState(entity2.getActiveState())
-                        .inactiveState(entity2.getInactiveState())
-                        .functions(entity2.getFunctions().stream().map(PairView::new).toList())
-                        .sources(entity2.getSources().stream().map(PairView::new).toList())
-                        .types(entity2.getTypes().stream().map(PairView::new).toList())
-                        .dietaryConsiderations(
-                                entity2.getDietaryConsiderations().stream()
-                                        .map(PairView::new).toList())
-                        .build());
     }
 
     @Test 
-    public void getAllMacrosView_ValidInput_CorrectlyTransformToViews() {
+    public void getAllMacros_ValidInput_CorrectlyReturnsMacros() {
         
         when(macronutrientRepository.getAllMacronutrient()).thenReturn(macronutrientList);
         
-        List<MacronutrientView> result = macronutrientServiceImp.getAllMacrosView();
+        List<Macronutrient> result = macronutrientServiceImp.getAllMacros();
 
-        assertEquals(macronutrientListViews, result);
+        assertEquals(macronutrientList, result);
     }
 
     @Test
-    public void getMacronutrientByName_ValidInput_CorrectlyTransformToView() throws MacronutrientNotFoundException {
+    public void getMacronutrientByName_ValidInput_CorrectlyReturnsMacros() throws MacronutrientNotFoundException {
         Macronutrient entity = macronutrientList.get(0);
-        MacronutrientView view = macronutrientListViews.get(0);
 
         when(macronutrientRepository.getMacronutrientByName(entity.getName())).thenReturn(Optional.of(entity));
 
-        MacronutrientView result = macronutrientServiceImp.getMacroViewByName(entity.getName());
+        Macronutrient result = macronutrientServiceImp.getMacroByName(entity.getName());
 
-        assertEquals(view, result);
+        assertEquals(macronutrientList.get(0), result);
     }
 
     @Test
@@ -239,7 +206,7 @@ public class MacronutrientServiceImpTest {
         when(macronutrientRepository.getMacronutrientByName(invalidName)).thenReturn(Optional.empty());
 
         assertThrows(MacronutrientNotFoundException.class,
-                () -> macronutrientServiceImp.getMacroViewByName(invalidName));
+                () -> macronutrientServiceImp.getMacroByName(invalidName));
     }
 
     @Test

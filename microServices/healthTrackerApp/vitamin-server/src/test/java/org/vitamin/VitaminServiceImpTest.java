@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.vitamin.model.dtos.PairView;
-import org.vitamin.model.dtos.VitaminView;
 import org.vitamin.model.entity.Pair;
 import org.vitamin.model.entity.Vitamin;
 
@@ -30,7 +28,6 @@ public class VitaminServiceImpTest {
     private VitaminServiceImp vitaminService;
 
     private final List<Vitamin> vitamins = new ArrayList<>();
-    private final List<VitaminView> vitaminViews = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -111,65 +108,46 @@ public class VitaminServiceImpTest {
                         .femaleHigherBoundIntake(new BigDecimal("800"))
                         .measure("international units (IU)")
                         .build()));
-        vitaminViews.add(VitaminView.builder()
-				.name(vitamins.get(0).getName())
-				.description(vitamins.get(0).getDescription())
-				.functions(vitamins.get(0).getFunctions().stream().map(PairView::new).toList())
-				.sources(vitamins.get(0).getSources().stream().map(PairView::new).toList())
-				.maleHigherBoundIntake(vitamins.get(0).getMaleHigherBoundIntake())
-				.maleLowerBoundIntake(vitamins.get(0).getMaleLowerBoundIntake())
-				.femaleHigherBoundIntake(vitamins.get(0).getFemaleHigherBoundIntake())
-				.femaleLowerBoundIntake(vitamins.get(0).getFemaleLowerBoundIntake())
-				.measure(vitamins.get(0).getMeasure())
-				.build());
-        vitaminViews.add(VitaminView.builder()
-                .name(vitamins.get(1).getName())
-                .description(vitamins.get(1).getDescription())
-                .functions(vitamins.get(1).getFunctions().stream().map(PairView::new).toList())
-                .sources(vitamins.get(1).getSources().stream().map(PairView::new).toList())
-                .maleHigherBoundIntake(vitamins.get(1).getMaleHigherBoundIntake())
-                .maleLowerBoundIntake(vitamins.get(1).getMaleLowerBoundIntake())
-                .femaleHigherBoundIntake(vitamins.get(1).getFemaleHigherBoundIntake())
-                .femaleLowerBoundIntake(vitamins.get(1).getFemaleLowerBoundIntake())
-                .measure(vitamins.get(1).getMeasure())
-                .build());
     }
 
     @Test
-    public void getVitamins_ValidEntities_ReturnsCorrectlyTransformedViews() {
+    public void getVitamins_ValidEntities_ReturnsCorrectly() {
+
         when(vitaminRepository.getVitamins()).thenReturn(vitamins);
 
-        List<VitaminView> actual = 
+        List<Vitamin> actual = 
         vitaminService.getVitamins();
 
-        assertEquals(vitaminViews, actual);
+        assertEquals(vitamins, actual);
     }
 
     @Test 
-    public void getVitaminViewByName_ValidName_ReturnsCorrectlyTransformedView() throws VitaminNotFoundException {
+    public void getVitaminByName_ValidName_ReturnsCorrectly() throws VitaminNotFoundException {
         when(vitaminRepository.getVitaminByName("A"))
         .thenReturn(Optional.ofNullable(vitamins.get(0)));
 
-        VitaminView actual = 
-        vitaminService.getVitaminViewByName("A");
+        Vitamin actual = 
+        vitaminService.getVitaminByName("A");
 
-        assertEquals(vitaminViews.get(0), actual);
+        assertEquals(vitamins.get(0), actual);
     }
+
     @Test
-    public void getVitaminViewByName_InvalidName_ThrowsVitaminNotFoundException() {
+    public void getVitaminByName_InvalidName_ThrowsVitaminNotFoundException() {
         
         when(vitaminRepository.getVitaminByName("C"))
         .thenReturn(Optional.empty());
 
        assertThrows(VitaminNotFoundException.class,
-        () -> vitaminService.getVitaminViewByName("C"));
+        () -> vitaminService.getVitaminByName("C"));
     }
+
     @Test
-    public void getAllVitaminsNames_ValidEntities_ReturnsCorrectlyTransformedViews() {
+    public void getAllVitaminNames_ValidEntities_ReturnsCorrectlyTransformedViews() {
         when(vitaminRepository.getAllVitaminsNames()).thenReturn(List.of("A", "D"));
 
         List<String> actual = 
-        vitaminService.getAllVitaminsNames();
+        vitaminService.getAllVitaminNames();
 
         assertEquals(List.of("A", "D"), actual);
     }

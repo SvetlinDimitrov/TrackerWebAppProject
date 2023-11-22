@@ -1,11 +1,12 @@
 package org.macronutrient.model.entity;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.util.List;
 
-@Data
+import lombok.Builder;
+import lombok.Getter;
+
+
+@Getter
 @Builder
 public class Macronutrient {
 

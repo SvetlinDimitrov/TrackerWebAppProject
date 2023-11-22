@@ -3,15 +3,13 @@ package org.record.model.entity;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Embeddable
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Getter
 @Builder
 public class NutritionIntake {
 
@@ -21,5 +19,5 @@ public class NutritionIntake {
     private BigDecimal lowerBoundIntake = BigDecimal.ZERO;
     private BigDecimal upperBoundIntake = BigDecimal.ZERO;
     private String measurement;
-        
+
 }

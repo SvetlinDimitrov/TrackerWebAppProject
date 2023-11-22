@@ -2,8 +2,7 @@ package org.food;
 
 import java.util.List;
 
-import org.food.domain.dtos.ErrorResponse;
-import org.food.domain.dtos.FoodView;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,17 +22,17 @@ public class FoodController {
     private final FoodService foodService;
 
     @GetMapping
-    public ResponseEntity<List<FoodView>> getAllFoods (){
+    public ResponseEntity<List<Food>> getAllFoods (){
         return new ResponseEntity<>(foodService.getAllFoods() , HttpStatus.OK);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<FoodView>> getAllFoodsByListNames (@RequestParam(name = "foodNames") List<String> foodNames) throws FoodNotFoundException{
+    public ResponseEntity<List<Food>> getAllFoodsByListNames (@RequestParam(name = "foodNames") List<String> foodNames) throws FoodNotFoundException{
         return new ResponseEntity<>(foodService.getAllFoodsByListNames(foodNames) , HttpStatus.OK);
     }
 
     @GetMapping("/{foodName}")
-    public ResponseEntity<FoodView> getFoodByName(@PathVariable String foodName) throws FoodNotFoundException {
+    public ResponseEntity<Food> getFoodByName(@PathVariable String foodName) throws FoodNotFoundException {
         return new ResponseEntity<>(foodService.getFoodByName(foodName) , HttpStatus.OK);
     }
 

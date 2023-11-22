@@ -2,14 +2,10 @@ package org.record.client.dto;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
 public class MineralDto {
 
@@ -19,6 +15,5 @@ public class MineralDto {
     private BigDecimal maleHigherBoundIntake;
     private BigDecimal femaleLowerBoundIntake;
     private BigDecimal femaleHigherBoundIntake;
-    
 
 }

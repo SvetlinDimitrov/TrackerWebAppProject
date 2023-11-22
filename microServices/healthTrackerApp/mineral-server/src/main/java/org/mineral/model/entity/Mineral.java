@@ -1,12 +1,12 @@
 package org.mineral.model.entity;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
 @Builder
 public class Mineral {
 

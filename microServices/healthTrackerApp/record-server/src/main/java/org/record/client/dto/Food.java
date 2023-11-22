@@ -48,5 +48,11 @@ public class Food {
     private BigDecimal Carbohydrates;
     private BigDecimal Protein;
     private BigDecimal Fat;
+    private BigDecimal Fiber;
+    private BigDecimal TransFat;
+    private BigDecimal SaturatedFat;
+    private BigDecimal Sugar;
+    private BigDecimal PolyunsaturatedFat;
+    private BigDecimal MonounsaturatedFat;
 
 }

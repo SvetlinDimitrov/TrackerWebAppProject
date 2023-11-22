@@ -2,7 +2,7 @@ server:
   port: 11000
 spring:
   application:
-    name: electrolyte
+    name: mineral
 eureka:
   client:
     serviceUrl:

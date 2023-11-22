@@ -4,32 +4,29 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.record.client.dto.User;
 import org.record.exceptions.RecordCreationException;
-import org.record.model.dtos.UserView;
 
 public class RecordValidator {
 
-    public static void validateRecord(UserView dto) throws RecordCreationException {
+    public static void validateRecord(User dto) throws RecordCreationException {
         List<String> errors = new ArrayList<>();
 
         if (dto.getAge() == null || dto.getAge() < 0) {
             errors.add("age must not be null");
         }
-        if (dto.getGender() == null || dto.getGender().isBlank()) {
+        if (dto.getGender() == null) {
             errors.add("gender must be selected");
         }
         if (dto.getHeight() == null ||
-                dto.getHeight().isBlank() ||
-                new BigDecimal(dto.getHeight()).compareTo(new BigDecimal(0)) < 0) {
+                dto.getHeight().compareTo(new BigDecimal(0)) < 0) {
             errors.add("height must not be null or negative");
         }
         if (dto.getKilograms() == null ||
-                dto.getKilograms().isBlank() ||
-                new BigDecimal(dto.getKilograms()).compareTo(new BigDecimal(0)) < 0) {
+                dto.getKilograms().compareTo(new BigDecimal(0)) < 0) {
             errors.add("kilograms must not be null or negative");
         }
-        if (dto.getWorkoutState() == null ||
-                dto.getWorkoutState().isBlank()) {
+        if (dto.getWorkoutState() == null) {
             errors.add("workOut state must not be null");
         }
 

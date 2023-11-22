@@ -1,12 +1,14 @@
 package org.vitamin.model.entity;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Builder
 public class Vitamin {
 

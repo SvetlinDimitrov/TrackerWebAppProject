@@ -1,4 +1,4 @@
-package org.electrolyte;
+package org.mineral;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,15 +8,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mineral.MineralNotFoundException;
-import org.mineral.MineralRepository;
-import org.mineral.MineralServiceImp;
-import org.mineral.model.dtos.MineralView;
-import org.mineral.model.dtos.PairView;
 import org.mineral.model.entity.Mineral;
 import org.mineral.model.entity.Pair;
 import org.mockito.InjectMocks;
@@ -33,7 +27,6 @@ public class MineralServiceImpImpTest {
     private MineralServiceImp mineralServiceImp;
 
     private final List<Mineral> mineralList = new ArrayList<>();
-    private final List<MineralView> mineralViews = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -163,56 +156,29 @@ public class MineralServiceImpImpTest {
                         .femaleHigherBoundIntake(new BigDecimal("4700"))
                         .measure("milligrams (mg)")
                         .build()));
-        mineralViews.add(MineralView.builder()
-                .name(mineralList.get(0).getName())
-                .description(mineralList.get(0).getDescription())
-                .functions(mineralList.get(0).getFunctions().stream().map(PairView::new).toList())
-                .sources(mineralList.get(0).getSources().stream().map(PairView::new).toList())
-                .healthConsiderations(
-                        mineralList.get(0).getHealthConsiderations().stream().map(PairView::new).toList())
-                .maleHigherBoundIntake(mineralList.get(0).getMaleHigherBoundIntake())
-                .maleLowerBoundIntake(mineralList.get(0).getMaleLowerBoundIntake())
-                .femaleHigherBoundIntake(mineralList.get(0).getFemaleHigherBoundIntake())
-                .femaleLowerBoundIntake(mineralList.get(0).getFemaleLowerBoundIntake())
-                .measure(mineralList.get(0).getMeasure())
-                .build());
-        mineralViews.add(MineralView.builder()
-                .name(mineralList.get(1).getName())
-                .description(mineralList.get(1).getDescription())
-                .functions(mineralList.get(1).getFunctions().stream().map(PairView::new).toList())
-                .sources(mineralList.get(1).getSources().stream().map(PairView::new).toList())
-                .healthConsiderations(
-                        mineralList.get(1).getHealthConsiderations().stream().map(PairView::new).toList())
-                .maleHigherBoundIntake(mineralList.get(1).getMaleHigherBoundIntake())
-                .maleLowerBoundIntake(mineralList.get(1).getMaleLowerBoundIntake())
-                .femaleHigherBoundIntake(mineralList.get(1).getFemaleHigherBoundIntake())
-                .femaleLowerBoundIntake(mineralList.get(1).getFemaleLowerBoundIntake())
-                .measure(mineralList.get(1).getMeasure())
-                .build());
-
     }
 
-//     @Test
-//     public void getAllViewMins_ValidInput_ReturnsCorrectlyConvertedViews() {
-//         when(mineralRepository.getAllMineralNames()).thenReturn(mineralViews);
+    @Test
+    public void getAllMins_ValidInput_ReturnsCorrectly() {
+    when(mineralRepository.getAllMinerals()).thenReturn(mineralList);
 
-//         List <MineralView> actual = mineralServiceImp.getAllViewMinerals();
+    List <Mineral> actual = mineralServiceImp.getAllViewMinerals();
 
-//         assertEquals(mineralViews, actual);
-//     }
+    assertEquals(mineralList, actual);
+    }
 
     @Test
     public void getMineralViewByName_ValidInput_ReturnsCorrectlyConvertedView() throws MineralNotFoundException {
         when(mineralRepository.getMineralByName("Sodium"))
         .thenReturn(java.util.Optional.ofNullable(mineralList.get(0)));
 
-        MineralView actual = mineralServiceImp.getMineralViewByName("Sodium");
+        Mineral actual = mineralServiceImp.getMineralViewByName("Sodium");
 
-        assertEquals(mineralViews.get(0), actual);
+        assertEquals(mineralList.get(0), actual);
     }
 
     @Test
-    public void getElectrolyteByName_InvalidInput_ThrowsElectrolyteNotFoundException(){
+    public void getMineralByName_InvalidInput_ThrowsMineralNotFoundException(){
         when(mineralRepository.getMineralByName("Sodium"))
         .thenReturn(java.util.Optional.empty());
 
@@ -221,7 +187,7 @@ public class MineralServiceImpImpTest {
     }
 
     @Test
-    public void getAllElectrolytesNames_ValidInput_ReturnsCorrectlyConvertedNames() {
+    public void getAllMineralsNames_ValidInput_ReturnsCorrectlyNames() {
         when(mineralRepository.getAllMineralNames())
         .thenReturn(List.of("Sodium", "Potassium"));
 

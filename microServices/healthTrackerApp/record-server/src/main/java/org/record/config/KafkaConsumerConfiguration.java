@@ -22,34 +22,11 @@ public class KafkaConsumerConfiguration {
     public String servers;
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerStorageFillingRemoving(
-        @Qualifier("consumerFactoryStorageFillingRemoving") ConsumerFactory<String, String> consumerFactoryDeletion) {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryStorageFillingRemoving());
-        return factory;
-    }
-
-    @Bean
     ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerUserFirstCreation(
-        @Qualifier("consumerFactoryUserFirstCreation") ConsumerFactory<String, String> consumerFactoryDeletion) {
+            @Qualifier("consumerFactoryUserFirstCreation") ConsumerFactory<String, String> consumerFactoryDeletion) {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryUserFirstCreation());
         return factory;
-    }
-
-    @Bean
-    ConsumerFactory<String, String> consumerFactoryStorageFillingRemoving() {
-        Map<String, Object> config = new HashMap<>();
-
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_storage_filling_removing_2");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
-
     }
 
     @Bean

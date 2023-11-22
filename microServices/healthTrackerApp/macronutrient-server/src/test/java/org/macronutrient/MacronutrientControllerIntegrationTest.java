@@ -16,7 +16,7 @@ public class MacronutrientControllerIntegrationTest {
     private MockMvc mockMvc;
     
     @Test
-    public void getAllMacrosView_shouldReturnAllMacrosView() throws Exception {
+    public void getAllMacros_shouldReturnAllMacros() throws Exception {
        mockMvc.perform(MockMvcRequestBuilders.get("/api/macronutrient"))
               .andExpect(MockMvcResultMatchers.status().isOk())
               .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Carbohydrates"))

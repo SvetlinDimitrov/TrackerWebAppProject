@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.storage.client.FoodUpdate;
 import org.storage.exception.FoodException;
 import org.storage.exception.StorageException;
 import org.storage.model.dto.StorageView;
+import org.storage.model.errorResponses.ErrorResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +30,16 @@ public class StorageController {
     private final StorageService storageService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<StorageView>> getAllStorages(@RequestParam Long recordId) {
+    public ResponseEntity<List<StorageView>> getAllStorages(
+            @RequestParam Long recordId) throws StorageException {
         return new ResponseEntity<>(storageService.getAllByRecordId(recordId), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<StorageView> getStorage(@RequestParam Long recordId, @RequestParam Long storageId) throws StorageException {
+    public ResponseEntity<StorageView> getStorage(
+            @RequestParam Long recordId,
+            @RequestParam Long storageId)
+            throws StorageException {
         return new ResponseEntity<>(storageService.getStorageByIdAndRecordId(storageId, recordId), HttpStatus.OK);
     }
 
@@ -52,10 +58,10 @@ public class StorageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/delete/{stageId}")
+    @DeleteMapping("/delete/{storageId}/record")
     public ResponseEntity<HttpStatus> deleteStorage(
             @PathVariable Long storageId,
-            @RequestParam Long recordId) {
+            @RequestParam Long recordId) throws StorageException {
         storageService.deleteStorage(recordId, storageId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -89,15 +95,33 @@ public class StorageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{storageId}/removeFood/{foodName}")
+    @PatchMapping("/{storageId}/removeFood")
     public ResponseEntity<HttpStatus> removeFoodFromStorage(
             @PathVariable Long storageId,
             @RequestParam Long recordId,
-            @PathVariable String foodName) throws FoodException, StorageException {
+            @RequestParam String foodName) throws FoodException, StorageException {
 
         storageService.removeFood(storageId, recordId, foodName);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+   @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ErrorResponse> catchRecordNotFoundException(StorageException e) {
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setErrorMessage(e.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FoodException.class)
+    public ResponseEntity<ErrorResponse> catchRecordNotFoundException(FoodException e) {
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setErrorMessage(e.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

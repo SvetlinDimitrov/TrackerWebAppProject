@@ -1,5 +1,6 @@
 package org.storage.model.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.storage.model.entity.Food;
@@ -16,6 +17,7 @@ public class StorageView {
     private Long id;
     private Long recordId;
     private String name;
+    private BigDecimal consumedCalories;
     private List<Food> foods;
     
 }

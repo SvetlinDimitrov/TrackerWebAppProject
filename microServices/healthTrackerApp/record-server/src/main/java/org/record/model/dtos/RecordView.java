@@ -6,14 +6,12 @@ import java.util.List;
 import org.record.client.dto.StorageView;
 import org.record.model.entity.NutritionIntake;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
+@Getter
 @Builder
 public class RecordView {
 

@@ -66,7 +66,7 @@ services:
       - "3305:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: users
+      MYSQL_DATABASE: storage
     volumes:
       - storage-data:/var/lib/mysql
   discovery-server:
