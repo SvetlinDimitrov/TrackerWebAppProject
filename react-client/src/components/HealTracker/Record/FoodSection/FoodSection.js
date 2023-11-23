@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { getStorageById } from "../../../../util/RecordUtils.js";
 import styles from "../../HeathTracker.module.css";
+import { AddFoodMenu } from "./AddFoodMenu.js";
+import FoodItem from "./FoodItem.js";
 import styles2 from "./FoodSection.module.css";
-import {
-  getStorageById,
-  getTotalFoodCaloriesFromStorage,
-} from "../../../../util/RecordUtils.js";
 import api from "../../../../util/api";
 import { useNavigate } from "react-router-dom";
-import { AddFoodMenu } from "./AddFoodMenu.js";
 
 const FoodSection = ({
   selectedRecord,
@@ -19,43 +17,57 @@ const FoodSection = ({
 }) => {
   const [selected, setSelected] = useState(-1);
   const [showAddFoodMenu, setShowAddFoodMenu] = useState(false);
+  const [food, setFood] = useState(undefined);
   const navigate = useNavigate();
+  
+  const handleViewFood = (food) => {
+    setFood(food);
+  };
 
+  const changeFood = async (food , length) => {
+    try {
+      await api.patch(
+        `/storage/${selectedStorage.id}/changeFood?recordId=${selectedRecord.id}`,
+        {
+          foodName: food.name,
+          amount: length,
+        },
+        {
+          headers: { Authorization: `Bearer ${userToken}` },
+        }
+      );
+      setSuccessfulMessage({
+        message: "successfully modified " + food.name + "!",
+        flag: true,
+      });
+    } catch (error) {
+      setFailedMessage({
+        message:
+          "Something went wrong with food deletion. Please try again later!",
+        flag: true,
+      });
+    }
+    navigate("/health-tracker");
+  }
   useEffect(() => {
     setSelectedStorage(getStorageById(selectedRecord, selected));
-  }, [selected, selectedRecord , setSelectedStorage]);
-
-  const handleDelete = async (foodName) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      try {
-        await api.patch(
-          `/storage/removeFood`,
-          {
-            foodName,
-            recordId: selectedRecord.id,
-            storageId: selectedStorage.id,
-          },
-          {
-            headers: { Authorization: `Bearer ${userToken}` },
-          }
-        );
-        setSuccessfulMessage({
-          message: foodName + " deleted successfully!",
-          flag: true,
-        });
-      } catch (error) {
-        setFailedMessage({
-          message:
-            "Something went wrong with food deletion. Please try again later!",
-          flag: true,
-        });
-      }
-      navigate("/health-tracker");
-    }
-  };
+  }, [selected, selectedRecord, setSelectedStorage]);
 
   return (
     <>
+      {food && (
+        <FoodItem
+          setShowFood={setFood}
+          showFood={food}
+          fun={"Edit Food"}
+          onAddChangeFunction={changeFood}
+          storage={selectedStorage}
+          record={selectedRecord}
+          userToken={userToken}
+          setFailedMessage={setFailedMessage}
+          setSuccessfulMessage={setSuccessfulMessage}
+        />
+      )}
       {showAddFoodMenu && (
         <AddFoodMenu
           onClose={setShowAddFoodMenu}
@@ -86,25 +98,27 @@ const FoodSection = ({
         {selectedStorage !== undefined && (
           <>
             <div className={styles2.totalCount}>
-              Total Count: {getTotalFoodCaloriesFromStorage(selectedStorage)}
+              Total Count: {selectedStorage.consumedCalories}
             </div>
             <div className={styles2.foodDetails}>
               {selectedStorage.foods.map((food, index) => (
-                <div className={styles2.foodItem} key={food.name + index}>
+                <div
+                  className={styles2.foodItem}
+                  key={food.name + index}
+                  onClick={() => handleViewFood(food)}
+                >
                   <div className={styles.foodItemDetails}>
-                    <div>Name: {food.name}</div>
-                    <div>
-                      {food.size} {food.measurement}
-                    </div>
+                    <div>{food.name}</div>
+                    <div>{food.size} gram</div>
                   </div>
                   <div className={styles.foodItemDetails}>
                     <div>Calories: {food.calories}</div>
-                    <button
+                    {/* <button
                       className={styles2.deleteButton}
                       onClick={() => handleDelete(food.name)}
                     >
                       🗑️ Delete
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               ))}

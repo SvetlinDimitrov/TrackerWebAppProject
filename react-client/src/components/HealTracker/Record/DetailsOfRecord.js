@@ -10,8 +10,8 @@ const DetailsOfRecord = ({ record }) => {
 
   const [categoryShow, setCategoryShow] = useState(undefined);
   const [show, setShow] = useState("");
-  const types = ["Vitamin", "Electrolyte", "Macronutrient", "Calories"];
-  const categories = ["Vitamin", "Electrolyte", "Macronutrient"];
+  const types = ["Vitamin", "Mineral", "Macronutrient", "Calories"];
+  const categories = ["Vitamin", "Mineral", "Macronutrient"];
 
   const handleOnClick = (name) => {
     setShow((prevShow) => (prevShow === name ? "" : name));

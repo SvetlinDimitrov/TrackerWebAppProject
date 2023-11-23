@@ -19,6 +19,7 @@ const DeleteRecord = ({
   const navigate = useNavigate();
 
   const handleDeletion = async () => {
+
     if (selectedRecord.name === nameDeletion) {
       try {
         await api.delete(`/record/${selectedRecord.id}`, {

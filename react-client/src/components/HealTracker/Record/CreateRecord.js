@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
@@ -11,10 +11,15 @@ const CreateRecord = ({
   setSuccessfulMessage,
 }) => {
   const navigate = useNavigate();
+  const [nameCreation, setNameCreation] = useState("");
+
+  useEffect(() => {
+    setNameCreation("");
+  }, [setSuccessfulMessage, setFailedMessage]);
 
   const handleRecordCreation = async (e) => {
     e.preventDefault();
-    const name = e.target.name.value;
+    const name = nameCreation.trim();
 
     if (name.length < 2) {
       setFailedMessage({
@@ -35,6 +40,7 @@ const CreateRecord = ({
         message: "Record created successfully!",
         flag: true,
       });
+      setNameCreation("");
     } catch (error) {
       setFailedMessage({
         message:
@@ -42,6 +48,7 @@ const CreateRecord = ({
         flag: true,
       });
     }
+
     navigate("/health-tracker");
   };
 
@@ -54,8 +61,10 @@ const CreateRecord = ({
         <input
           type="text"
           name="name"
+          value={nameCreation}
           className={styles.input}
           placeholder="Record name"
+          onChange={(e) => setNameCreation(e.target.value)}
         />
         <button type="submit" className={styles.submit}>
           Submit

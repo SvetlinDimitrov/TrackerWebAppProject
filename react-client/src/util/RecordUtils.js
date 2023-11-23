@@ -1,5 +1,5 @@
 export const calculatedPrecentedValues = (rawData, type) => {
-  return rawData.dailyIntakeViews
+  return rawData.nutritionIntakesViews
     .filter((item) => item.nutrientType === type)
     .map((item) =>
       (item.dailyConsumed / item.upperBoundIntake) * 100 > 100
@@ -23,7 +23,7 @@ export const calculatedPrecentedValues = (rawData, type) => {
 };
 
 export const calcAverageValue = (rawData, type) => {
-  const precentedValues = rawData.dailyIntakeViews
+  const precentedValues = rawData.nutritionIntakesViews
     .filter((item) => item.nutrientType === type)
     .map((item) =>
       (item.dailyConsumed / item.upperBoundIntake) * 100 > 100

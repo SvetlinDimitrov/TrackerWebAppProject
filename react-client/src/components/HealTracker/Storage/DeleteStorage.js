@@ -23,11 +23,12 @@ const DeleteStorage = ({
     if (selectedStorage.name === nameDeletion) {
       try {
         await api.delete(
-          `/record/${selectedRecord.id}/storage?storageId=${selectedStorage.id}`,
+          `/record/${selectedRecord.id}/storage/${selectedStorage.id}`,
           { headers: { Authorization: `Bearer ${userToken}` } }
         );
         setSuccessfulMessage({
-          message: "Storage: "+selectedStorage.name +" was deleted successfully!",
+          message:
+            "Storage: " + selectedStorage.name + " was deleted successfully!",
           flag: true,
         });
         navigate("/health-tracker");
@@ -38,6 +39,7 @@ const DeleteStorage = ({
           flag: true,
         });
       }
+      navigate("/health-tracker");
     } else {
       setFailedMessage({
         message:
@@ -46,7 +48,6 @@ const DeleteStorage = ({
       });
     }
     setPopupVisible(false);
-    navigate("/health-tracker");
   };
   return (
     <>
@@ -55,7 +56,9 @@ const DeleteStorage = ({
           Selected record {selectedRecord && selectedRecord.name}
         </h2>
         <FaHeart className={styles.container_icon} />
-        <p className={styles.container_text}>Delete storage {selectedStorage.name}</p>
+        <p className={styles.container_text}>
+          Delete storage {selectedStorage.name}
+        </p>
         <div className={styles2.sectionContainer}>
           <button
             className={styles.deleteButton}

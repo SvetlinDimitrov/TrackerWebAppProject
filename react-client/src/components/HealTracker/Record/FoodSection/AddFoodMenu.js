@@ -1,10 +1,11 @@
-import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../../util/api";
-import styles from "./AddFoodMenu.module.css";
 import styles2 from "../FoodSection/FoodSection.module.css";
+import styles from "./AddFoodMenu.module.css";
+import FoodItem from "./FoodItem";
 
 export const AddFoodMenu = ({
   onClose,
@@ -15,7 +16,9 @@ export const AddFoodMenu = ({
   storage,
 }) => {
   const [foods, setFoods] = useState([]);
+  const [food, setFood] = useState(undefined);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const getFoods = async () => {
@@ -34,7 +37,7 @@ export const AddFoodMenu = ({
     getFoods();
   }, [navigate, setFailedMessage]);
 
-  const handleAdd = async (food) => {
+  const handleAdd = async (food, length) => {
     if (
       window.confirm(
         "Are you sure you want to add" +
@@ -48,11 +51,10 @@ export const AddFoodMenu = ({
     ) {
       try {
         await api.patch(
-          `/storage/addFood`,
+          `/storage/${storage.id}/addFood?recordId=${selectedRecord.id}`,
           {
             foodName: food.name,
-            recordId: selectedRecord.id,
-            storageId: storage.id,
+            amount: length,
           },
           {
             headers: { Authorization: `Bearer ${userToken}` },
@@ -79,48 +81,57 @@ export const AddFoodMenu = ({
     }
   };
 
+  console.log(1);
   return (
-    <div className={styles.overlay}>
-      <div className={styles.containerInfo}>
-        <div className={styles.containerInfo_Heading_CloseButton}>
-          <div className={styles.closeButtonContainer}>
-            <button
-              className={styles.closeButton}
-              onClick={() => onClose(false)}
-            >
-              <FontAwesomeIcon
-                className={styles.closeButtonIcon}
-                icon={faTimes}
-              />
-              <span>Close</span>
-            </button>
-          </div>
-          <h1>List of foods</h1>
-          <div className={styles2.foodDetails}>
-            {foods.map((food, index) => {
-              return (
-                <div className={styles2.foodItem} key={index}>
-                  <div className={styles2.foodItemDetails}>
-                    <div>Name: {food.name}</div>
-                    <div>
-                      {food.size} {food.measurement}
-                    </div>
-                  </div>
-                  <div className={styles2.foodItemDetails}>
-                    <div>Calories: {food.calories}</div>
-                    <button
-                      className={styles2.deleteButton}
-                      onClick={() => handleAdd(food)}
+    <>
+      {food && (
+        <FoodItem
+          fun={"Add Food"}
+          showFood={food}
+          setShowFood={setFood}
+          userToken={userToken}
+          onAddChangeFunction={handleAdd}
+        />
+      )}
+      <div className={styles.overlay}>
+        <div className={styles.containerInfo}>
+          <div className={styles.containerInfo_Heading_CloseButton}>
+            <h1>List of foods</h1>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className={styles.foodDetails}>
+              {foods
+                .filter((food) =>
+                  food.name.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((food, index) => {
+                  return (
+                    <div
+                      className={styles2.foodItem}
+                      key={index}
+                      onClick={() => setFood(food)}
                     >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                      <div className={styles2.foodItemDetails}>
+                        <div>{food.name}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+            <div className={styles.closeButtonContainer}>
+              <button
+                className={styles.closeButton}
+                onClick={() => onClose(false)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
