@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 public class Food {
 
     private String name;
+    private final String measurement = "grams";
+    @Builder.Default
+    private BigDecimal size = BigDecimal.valueOf(100);
     private BigDecimal calories;
     private BigDecimal A;
     private BigDecimal D;

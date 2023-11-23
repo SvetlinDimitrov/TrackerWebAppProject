@@ -1,5 +1,6 @@
 package org.macronutrient;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.macronutrient.model.entity.Macronutrient;
+import org.macronutrient.model.entity.MacronutrientType;
 import org.macronutrient.model.entity.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -16,17 +18,30 @@ import jakarta.annotation.PostConstruct;
 public class MacronutrientRepository {
 
     private final Map<String, Macronutrient> macronutrientMap = new LinkedHashMap<>();
+    private final Map<String, MacronutrientType> macronutrientTypesMap = new LinkedHashMap<>();
 
     public List<Macronutrient> getAllMacronutrient() {
         return new LinkedList<>(macronutrientMap.values());
+    }
+
+    public List<MacronutrientType> getAllMacronutrientTypes() {
+        return new LinkedList<>(macronutrientTypesMap.values());
     }
 
     public Optional<Macronutrient> getMacronutrientByName(String name) {
         return Optional.ofNullable(macronutrientMap.get(name));
     }
 
+    public Optional<MacronutrientType> getMacronutrientTypeByName(String name) {
+        return Optional.ofNullable(macronutrientTypesMap.get(name));
+    }
+
     public List<String> getAllMacronutrientNames() {
         return new LinkedList<>(macronutrientMap.keySet());
+    }
+
+    public List<String> getAllMacronutrientTypesNames() {
+        return new LinkedList<>(macronutrientTypesMap.keySet());
     }
 
     @PostConstruct
@@ -272,4 +287,232 @@ public class MacronutrientRepository {
         macronutrientMap.put(fat.getName(), fat);
     }
 
+    @PostConstruct
+    public void initData2() {
+        MacronutrientType sugar = MacronutrientType.builder()
+                .name("Sugar")
+                .description(
+                        "Sugar is a type of carbohydrate that provides a quick source of energy for the body. However, excessive consumption of added sugars can contribute to health problems such as weight gain, tooth decay, and an increased risk of chronic diseases.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Energy Source")
+                                        .value("Sugar is a simple carbohydrate that the body quickly converts into glucose, providing a rapid source of energy.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Natural Sources")
+                                        .value("fruits, vegetables, and dairy products")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Added Sources")
+                                        .value("sweets, sugary beverages, processed foods")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Excessive Intake")
+                                        .value("High consumption of added sugars is associated with various health risks, including obesity, type 2 diabetes, and cardiovascular disease.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("0"))
+                .maleHigherBoundIntake(new BigDecimal("50"))
+                .femaleLowerBoundIntake(new BigDecimal("0"))
+                .femaleHigherBoundIntake(new BigDecimal("50"))
+                .measure("grams")
+                .build();
+        macronutrientTypesMap.put(sugar.getName(), sugar);
+
+        MacronutrientType fiber = MacronutrientType.builder()
+                .name("Fiber")
+                .description(
+                        "Dietary fiber is a type of carbohydrate that the body cannot digest. It plays a crucial role in maintaining digestive health, regulating blood sugar levels, and supporting heart health.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Digestive Health")
+                                        .value("Fiber adds bulk to the stool, promoting regular bowel movements and preventing constipation.")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Blood Sugar Regulation")
+                                        .value("Soluble fiber helps slow the absorption of sugar, contributing to stable blood sugar levels.")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Heart Health")
+                                        .value("Fiber-rich diets are associated with a reduced risk of heart disease. It helps lower cholesterol levels and improve overall cardiovascular health.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Whole Grains")
+                                        .value("brown rice, oats, quinoa")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Legumes")
+                                        .value("beans, lentils")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Fruits and Vegetables")
+                                        .value("apples, broccoli, carrots")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Adequate Intake")
+                                        .value("Aim for a daily intake of fiber to support digestive health and overall well-being.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("25"))
+                .maleHigherBoundIntake(new BigDecimal("38"))
+                .femaleLowerBoundIntake(new BigDecimal("25"))
+                .femaleHigherBoundIntake(new BigDecimal("38"))
+                .measure("grams")
+                .build();
+        macronutrientTypesMap.put(fiber.getName(), fiber);
+
+        MacronutrientType saturatedFat = MacronutrientType.builder()
+                .name("Saturated Fat")
+                .description(
+                        "Saturated fat is a type of fat that is solid at room temperature. High intake of saturated fat is associated with an increased risk of heart disease and elevated cholesterol levels.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Energy Storage")
+                                        .value("Saturated fat serves as a concentrated source of energy and is stored in adipose tissue for future energy needs.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Animal Products")
+                                        .value("meat, poultry, dairy products, eggs")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Plant Oils")
+                                        .value("coconut oil, palm oil")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Heart Health")
+                                        .value("Limiting saturated fat intake is recommended to maintain heart health and reduce the risk of cardiovascular diseases.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("0"))
+                .maleHigherBoundIntake(new BigDecimal("22"))
+                .femaleLowerBoundIntake(new BigDecimal("0"))
+                .femaleHigherBoundIntake(new BigDecimal("22"))
+                .measure("grams")
+                .build();
+        macronutrientTypesMap.put(saturatedFat.getName(), saturatedFat);
+
+        MacronutrientType polyunsaturatedFat = MacronutrientType.builder()
+                .name("Polyunsaturated Fat")
+                .description(
+                        "Polyunsaturated fat is a type of fat that remains liquid at room temperature. It includes essential fatty acids, such as omega-3 and omega-6, which are important for various bodily functions.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Essential Fatty Acids")
+                                        .value("Polyunsaturated fats contain essential fatty acids, including omega-3 and omega-6, which the body cannot produce and must be obtained through diet.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Fatty Fish")
+                                        .value("salmon, mackerel, sardines")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Nuts and Seeds")
+                                        .value("flaxseeds, walnuts, chia seeds")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Plant Oils")
+                                        .value("soybean oil, sunflower oil")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Heart Health")
+                                        .value("Including polyunsaturated fats in the diet can have positive effects on heart health, including lowering cholesterol levels.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("0"))
+                .maleHigherBoundIntake(new BigDecimal("27"))
+                .femaleLowerBoundIntake(new BigDecimal("0"))
+                .femaleHigherBoundIntake(new BigDecimal("27"))
+                .measure("grams")
+                .build();
+        macronutrientTypesMap.put(polyunsaturatedFat.getName(), polyunsaturatedFat);
+
+        MacronutrientType monounsaturatedFat = MacronutrientType.builder()
+                .name("Monounsaturated Fat")
+                .description(
+                        "Monounsaturated fat is a type of fat that remains liquid at room temperature. It is considered a healthy fat and is associated with various health benefits, including heart health.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Heart Health")
+                                        .value("Monounsaturated fats are known to have a positive impact on heart health by reducing bad cholesterol levels and improving overall cardiovascular health.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Olive Oil")
+                                        .value("extra virgin olive oil")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Avocados")
+                                        .value("avocado")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Nuts")
+                                        .value("almonds, peanuts")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Moderation")
+                                        .value("While monounsaturated fats are considered healthy, moderation is still advised to maintain a balanced diet.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("0"))
+                .maleHigherBoundIntake(new BigDecimal("33"))
+                .femaleLowerBoundIntake(new BigDecimal("0"))
+                .femaleHigherBoundIntake(new BigDecimal("33"))
+                .measure("grams")
+                .build();
+        macronutrientTypesMap.put(monounsaturatedFat.getName(), monounsaturatedFat);
+
+        MacronutrientType transFat = MacronutrientType.builder()
+                .name("Trans Fat")
+                .description(
+                        "Trans fat is a type of unsaturated fat that has undergone hydrogenation, making it solid at room temperature. High intake of trans fat is associated with an increased risk of heart disease.")
+                .functions(
+                        List.of(
+                                Pair.builder()
+                                        .key("Food Processing")
+                                        .value("Trans fat is often found in processed and commercially baked goods, contributing to their texture and shelf life.")
+                                        .build()))
+                .sources(
+                        List.of(
+                                Pair.builder()
+                                        .key("Partially Hydrogenated Oils")
+                                        .value("margarine, shortening")
+                                        .build(),
+                                Pair.builder()
+                                        .key("Processed Foods")
+                                        .value("cakes, cookies, fried foods")
+                                        .build()))
+                .healthConsiderations(
+                        List.of(
+                                Pair.builder()
+                                        .key("Health Risks")
+                                        .value("High consumption of trans fat is linked to an increased risk of heart disease, elevated cholesterol levels, and other cardiovascular issues.")
+                                        .build()))
+                .maleLowerBoundIntake(new BigDecimal("0"))
+                .maleHigherBoundIntake(new BigDecimal("2"))
+                .femaleLowerBoundIntake(new BigDecimal("0"))
+                .femaleHigherBoundIntake(new BigDecimal("2"))
+                .measure("grams")
+                .build();
+
+        macronutrientTypesMap.put(transFat.getName(), transFat);
+
+    }
 }

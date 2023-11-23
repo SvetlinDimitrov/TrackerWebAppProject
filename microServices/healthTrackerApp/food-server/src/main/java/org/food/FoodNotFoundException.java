@@ -1,16 +1,19 @@
 package org.food;
 
-import lombok.Getter;
-
 import java.util.List;
+
+import lombok.Getter;
 
 @Getter
 public class FoodNotFoundException extends Exception {
+    
+    private final List<String> foodsList;
+    private final String errorMessage;
 
-    private final ErrorResponse errorResponse;
-
-    public FoodNotFoundException(String errorMessage, List<String> allFoods) {
-        this.errorResponse = new ErrorResponse(errorMessage, allFoods);
-
+    public FoodNotFoundException(String message , List<String> foodsList) {
+        super(message);
+        this.foodsList = foodsList;
+        this.errorMessage = message;
     }
+
 }

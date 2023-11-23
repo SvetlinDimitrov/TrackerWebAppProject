@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class NutrientIntakeCreator {
             BigDecimal caloriesPerDay,
             WorkoutState workoutState) {
 
-        Map<String, NutritionIntake> nutritionIntakeEntities = new HashMap<>();
+        Map<String, NutritionIntake> nutritionIntakeEntities = new LinkedHashMap<>();
 
         fillAllVitaminsRecords(
                 gender,
@@ -418,8 +419,8 @@ public class NutrientIntakeCreator {
                 .nutrientName("SaturatedFat")
                 .nutrientType("Fat")
                 .measurement("grams (g)")
-                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
-                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
+                .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
+                .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
                 .dailyConsumed(BigDecimal.ZERO)
                 .build();
         nutritionIntakeEntities.put(saturatedFat.getNutrientName(), saturatedFat);
@@ -428,8 +429,8 @@ public class NutrientIntakeCreator {
                 .nutrientName("MonounsaturatedFat")
                 .nutrientType("Fat")
                 .measurement("grams (g)")
-                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.15))))
-                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.2))))
+                .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.15)))
+                .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.2)))
                 .dailyConsumed(BigDecimal.ZERO)
                 .build();
         nutritionIntakeEntities.put(monoFat.getNutrientName(), monoFat);
@@ -438,8 +439,8 @@ public class NutrientIntakeCreator {
                 .nutrientName("PolyunsaturatedFat")
                 .nutrientType("Fat")
                 .measurement("grams (g)")
-                .lowerBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.05))))
-                .upperBoundIntake(fat.subtract(fat.multiply(BigDecimal.valueOf(0.1))))
+                .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.05)))
+                .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
                 .dailyConsumed(BigDecimal.ZERO)
                 .build();
         nutritionIntakeEntities.put(polyFat.getNutrientName(), polyFat);
