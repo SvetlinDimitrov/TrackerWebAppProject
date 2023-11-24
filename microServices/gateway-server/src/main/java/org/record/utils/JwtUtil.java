@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.record.model.UserView;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +25,7 @@ public class JwtUtil {
                 String token = authHeader.get(0);
                 token = token.substring(7);
                 Map<String, Claim> claimMap = decodeToken(token).getClaims();
-                
+
                 return Optional.ofNullable(UserView.builder().id(claimMap.get("id")
                         .asLong()).username(claimMap.get("username").asString())
                         .email(claimMap.get("email").asString())
