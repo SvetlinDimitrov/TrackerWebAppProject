@@ -5,7 +5,7 @@ import { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "../../../util/RecordUtils";
 
-export function Gauge({ width, height, type , data}) {
+export function Gauge({ width, height, type, data }) {
   const diameter = width / 2 + height / 2;
   const centerX = width / 2;
   const centerY = height / 2;
@@ -19,12 +19,13 @@ export function Gauge({ width, height, type , data}) {
 
   if (type === "Vitamin") {
     averageValue = calcAverageValue(data, type);
-  } else if (type === "Electrolyte") {
+  } else if (type === "Mineral") {
     averageValue = calcAverageValue(data, type);
   } else if (type === "Macronutrient") {
     averageValue = calcAverageValue(data, type);
   } else {
-    averageValue = (data.dailyConsumedCalories / data.dailyCaloriesToConsume) * 100 ;
+    averageValue =
+      (data.dailyConsumedCalories / data.dailyCaloriesToConsume) * 100;
   }
 
   const pieData = pie()([averageValue, 100 - averageValue]);
@@ -52,8 +53,8 @@ export function Gauge({ width, height, type , data}) {
             d={arc()
               .innerRadius(diameter / 3.2)
               .outerRadius(diameter / 2.2)
-              .startAngle(-foregroundArc.startAngle)
-              .endAngle(-foregroundArc.endAngle)()}
+              .startAngle(foregroundArc.startAngle)
+              .endAngle(foregroundArc.endAngle)()}
             fill="gray"
           />
 
@@ -109,7 +110,9 @@ export function PipeChar({ width, height, data }) {
       }}
     >
       <div style={{ display: "flex" }}>
-        <span style={{ padding: 5, color: "#67C240" }}>{data.consumed}</span>
+        <span style={{ padding: 5, color: "#67C240" }}>
+          {data.consumed.toFixed(2)}
+        </span>
         <div
           style={{
             width: width,
@@ -131,7 +134,9 @@ export function PipeChar({ width, height, data }) {
             />
           </svg>
         </div>
-        <span style={{ padding: 5, color: "#67C240" }}>{data.max}</span>
+        <span style={{ padding: 5, color: "#67C240" }}>
+          {data.max.toFixed(2)}
+        </span>
       </div>
       {data.consumed === 0 && (
         <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
@@ -145,8 +150,8 @@ export function PipeChar({ width, height, data }) {
               />
             </Link>
           )}
-          {data.type === "Electrolyte" && (
-            <Link to={"/nutrientInfo/electrolyte/" + data.name}>
+          {data.type === "Mineral" && (
+            <Link to={"/nutrientInfo/mineral/" + data.name}>
               {" "}
               <FontAwesomeIcon
                 icon={faInfoCircle}
@@ -179,20 +184,126 @@ export function PipeChar({ width, height, data }) {
           </Link>
         </div>
       )}
-      {data.type === "Electrolyte" && data.consumed !== 0 && (
+      {data.type === "Mineral" && data.consumed !== 0 && (
         <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
           Consumed {data.consumed}{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
           {data.name}.
+          <Link to={"/nutrientInfo/mineral/" + data.name}>
+            {" "}
+            <FontAwesomeIcon
+              icon={faInfoCircle}
+              style={{ fontSize: "24px", marginRight: "5px" }}
+            />
+          </Link>
         </div>
       )}
-      {data.type === "Macronutrient" && data.consumed !== 0 && (
+      {data.type === "Calories" && data.consumed !== 0 && (
+        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+          Consumed {data.consumed} {data.measurement} in the {data.name}.
+        </div>
+      )}
+      {(data.type === "Macronutrient" ||
+        data.type === "Fat" ||
+        data.type === "Carbohydrates") && (
         <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
           Consumed {data.consumed}{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
-          {data.name}.
+          {data.name.replace(/([A-Z])/g, " $1").trim()}.
+          {data.type === "Macronutrient" ? (
+            <Link to={"/nutrientInfo/macronutrient/" + data.name}>
+              {" "}
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                style={{ fontSize: "24px", marginRight: "5px" }}
+              />
+            </Link>
+          ) : (
+            <Link
+              to={
+                "/nutrientInfo/macronutrientTypes/" +
+                data.name.replace(/([A-Z])/g, " $1").trim()
+              }
+            >
+              {" "}
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                style={{ fontSize: "24px", marginRight: "5px" }}
+              />
+            </Link>
+          )}
         </div>
       )}
     </div>
+  );
+}
+
+export function Gauge2({
+  width,
+  height,
+  diameter,
+  legendRectSize,
+  legendSpacing,
+  fat,
+  carbohydrates,
+  protein,
+}) {
+  const colors = ["#845EC2", "#74C25E", "#C2925E"];
+  const legendInfo = ["Fat", "Carbohydrates", "Protein"];
+  let sections = [fat * 9, carbohydrates * 4, protein * 4];
+  const sum = fat * 9 + carbohydrates * 4 + protein * 4;
+  if (sections.every((value) => value === 0)) {
+    sections = [33.33, 33.33, 33.33];
+  }
+  return (
+    <svg width={width} height={height}>
+      <g transform={`translate(${diameter / 2}, ${diameter / 2})`}>
+        {pie()(sections).map((section, index) => {
+          return (
+            <g key={index}>
+              <path
+                d={arc()
+                  .innerRadius(0)
+                  .outerRadius(diameter / 2)
+                  .startAngle(section.startAngle)
+                  .endAngle(section.endAngle)()}
+                fill={colors[index]}
+              />
+              <title>{((section.data / sum) * 100).toFixed(2)}%</title>
+            </g>
+          );
+        })}
+      </g>
+      <g
+        transform={`translate(${diameter + 25}, ${
+          diameter / 2 -
+          (sections.length * (legendRectSize + legendSpacing)) / 2
+        })`}
+      >
+        {sections.map((section, index) => {
+          return (
+            <g
+              key={index}
+              transform={`translate(0, ${
+                index * (legendRectSize + legendSpacing)
+              })`}
+            >
+              <rect
+                width={legendRectSize}
+                height={legendRectSize}
+                fill={colors[index]}
+              />
+              <text
+                x={legendRectSize + legendSpacing}
+                y={legendRectSize}
+                fill={colors[index]}
+              >
+                {legendInfo[index]}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+    </svg>
   );
 }

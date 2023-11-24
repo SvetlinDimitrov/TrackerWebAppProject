@@ -4,19 +4,17 @@ import { useState } from "react";
 
 import { calculatedPrecentedValues } from "../../../util/RecordUtils";
 import styles from "./DetailsOfRecord.module.css";
-import { Gauge, PipeChar } from "./Tools";
+import { Gauge, PipeChar, Gauge2 } from "./Tools";
 
 const DetailsOfRecord = ({ record }) => {
-
   const [categoryShow, setCategoryShow] = useState(undefined);
   const [show, setShow] = useState("");
   const types = ["Vitamin", "Mineral", "Macronutrient", "Calories"];
-  const categories = ["Vitamin", "Mineral", "Macronutrient"];
+  const categories = ["Vitamin", "Mineral", "Macronutrient", "Calories"];
 
   const handleOnClick = (name) => {
     setShow((prevShow) => (prevShow === name ? "" : name));
   };
-
 
   if (record === undefined) {
     return <div id="preloader"></div>;
@@ -60,8 +58,11 @@ const DetailsOfRecord = ({ record }) => {
                       className={styles.infoContainer}
                       onClick={() => handleOnClick(d.name)}
                     >
-                      <span>{d.name}</span>
-                      <span>Completed: {d.precented.toFixed(2)}%</span>
+                      <span>{d.name.replace(/([A-Z])/g, " $1").trim()}</span>
+                      <span>
+                        Completed:{" "}
+                        {isNaN(d.precented) ? 0 : d.precented.toFixed(2)}%
+                      </span>
                       <FontAwesomeIcon
                         icon={show === d.name ? faMinus : faPlus}
                       />
@@ -69,13 +70,24 @@ const DetailsOfRecord = ({ record }) => {
                     {show === d.name && (
                       <PipeChar width={300} height={30} data={d} />
                     )}
+                    {show === d.name && d.type === "Calories" && (
+                      <Gauge2
+                        width={260}
+                        height={110}
+                        diameter={100}
+                        legendRectSize={12}
+                        legendSpacing={10}
+                        protein={d.protein}
+                        fat={d.fat}
+                        carbohydrates={d.carbohydrates}
+                      />
+                    )}
                   </div>
                 );
               })}
             </div>
           )}
         </div>
-        )
       </div>
     </>
   );

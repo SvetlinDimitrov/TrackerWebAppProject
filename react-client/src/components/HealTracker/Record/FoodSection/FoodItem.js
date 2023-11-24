@@ -6,6 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Gauge2 } from "../Tools";
 import api from "../../../../util/api";
 import ChangeLength from "./ChangeLength";
 import styles from "./FoodItem.module.css";
@@ -103,6 +104,18 @@ const FoodItem = ({
             <span>Calories</span>
             <span>{food.calories}</span>
           </div>
+          <div className={styles.rowGauge}>
+            <Gauge2
+              width={300}
+              height={120}
+              diameter={120}
+              legendRectSize={15}
+              legendSpacing={15}
+              fat={food.fat}
+              protein={food.protein}
+              carbohydrates={food.carbohydrates}
+            />
+          </div>
           <div className={styles.row}>
             <span>Serving Size</span>
             <span onClick={() => setShowLength(true)}>{food.size} gram</span>
@@ -178,7 +191,7 @@ const FoodItem = ({
           >
             <span>More Information about Minerals</span>
             <button>
-              <FontAwesomeIcon icon={showVitamins ? faCaretDown : faCaretUp} />
+              <FontAwesomeIcon icon={showMinerals ? faCaretDown : faCaretUp} />
             </button>
           </div>
           {showMinerals && (
@@ -251,7 +264,7 @@ const FoodItem = ({
           >
             <span>More Information about Macros</span>
             <button>
-              <FontAwesomeIcon icon={showVitamins ? faCaretDown : faCaretUp} />
+              <FontAwesomeIcon icon={showMacros ? faCaretDown : faCaretUp} />
             </button>
           </div>
           {showMacros && (

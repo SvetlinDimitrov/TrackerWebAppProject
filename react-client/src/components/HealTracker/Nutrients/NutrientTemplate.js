@@ -5,21 +5,26 @@ import styles from "./NutritionTemplate.module.css";
 import api from "../../../util/api";
 
 const NutrientTemplate = () => {
-  const { nutrition, nutritionType } = useParams();
+  let { nutrition, nutritionType } = useParams();
   const navigate = useNavigate();
   const [nutritionTemplate, setNutritionTemplate] = useState({});
-
+ 
   useEffect(() => {
     const fetchData = async () => {
+      let response;
       try {
-        const response = await api.get("/" + nutrition + "/" + nutritionType);
+        if(nutrition === "macronutrientTypes"){
+          response = await api.get("/" + "macronutrient/types" + "/" + nutritionType);
+          nutrition = "macronutrient";
+        }else{
+          response = await api.get("/" + nutrition + "/" + nutritionType);
+        }
         const capitalizedNutrition =
           nutrition.charAt(0).toUpperCase() + nutrition.slice(1);
         response.data["type"] = capitalizedNutrition;
 
         setNutritionTemplate(response.data);
       } catch (error) {
-        
         navigate("/error");
       }
     };
@@ -103,7 +108,7 @@ const NutrientTemplate = () => {
               </div>
             )}
 
-            {nutritionTemplate.types && nutritionTemplate.types[0] &&(
+            {nutritionTemplate.types && nutritionTemplate.types[0] && (
               <div className={styles.section}>
                 <h2>Types:</h2>
                 <ul className={styles.sourcesUl}>
@@ -147,7 +152,7 @@ const NutrientTemplate = () => {
               </div>
             )}
 
-            {nutritionTemplate.maleLowerBoundIntake && (
+            {nutritionTemplate.maleLowerBoundIntake !== undefined && (
               <div className={styles.section}>
                 <h2>Intake Recommendations:</h2>
                 <p>

@@ -24,7 +24,7 @@
   padding: 20px;
 }
 
-.containerElectrolytes {
+.containerMinerals {
   display: grid;
   justify-content: center; 
   align-content: center; 
@@ -37,7 +37,7 @@
   display: grid;
   justify-content: center; 
   align-content: center; 
-  grid-template-columns: repeat(3, 200px);
+  grid-template-columns: repeat(5, 210px);
   gap: 20px;
   padding: 20px;
 }
