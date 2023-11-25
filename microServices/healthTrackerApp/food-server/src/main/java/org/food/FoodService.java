@@ -55,7 +55,7 @@ public class FoodService {
             return food;
         } else if (food.getSize().compareTo(amount) > 0) {
 
-            BigDecimal multiplayer = food.getSize().divide(amount);
+            BigDecimal multiplayer = food.getSize().divide(amount , 2, RoundingMode.HALF_UP);
 
             Food baseFood = new Food();
             baseFood.setName(food.getName());
@@ -104,7 +104,7 @@ public class FoodService {
 
             return baseFood;
         } else {
-            BigDecimal multiplayer = amount.divide(food.getSize());
+            BigDecimal multiplayer = amount.divide(food.getSize() , 2, RoundingMode.HALF_UP);
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);

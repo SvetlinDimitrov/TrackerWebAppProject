@@ -6,10 +6,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
+
 public class StorageApplicationTests {
-    
+
     @Test
     public void contextLoads() {
-        
+
     }
+
 }

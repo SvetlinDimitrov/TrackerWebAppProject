@@ -16,7 +16,6 @@ import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Food;
 import org.storage.model.entity.Storage;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class StorageService {
 
         List<Storage> storages = storageRepository.findAllByRecordId(recordId);
 
-        if(storages.isEmpty()) {
+        if (storages.isEmpty()) {
             throw new StorageException("No storages found for record with id: " + recordId);
         }
 
@@ -78,11 +77,11 @@ public class StorageService {
 
     @Transactional
     public void deleteStorage(Long recordId, Long storageId) throws StorageException {
-        
-        storageRepository.findByIdAndRecordId(storageId, recordId).orElseThrow(() -> new StorageException(
-                "Storage with ID: " + storageId + " not found with record id: " + recordId)); 
-        
-        storageRepository.deleteByIdAndRecordId(storageId, recordId);
+
+        Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId).orElseThrow(() -> new StorageException(
+                "Storage with ID: " + storageId + " not found with record id: " + recordId));
+
+        storageRepository.delete(storage);
     }
 
     @Transactional
@@ -120,6 +119,9 @@ public class StorageService {
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId));
 
+        if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new FoodException("Amount must be greater than 0.");
+        }
         try {
             Food food = foodClient.getFoodByName(foodInfo.getFoodName());
 
@@ -138,7 +140,7 @@ public class StorageService {
 
             storageRepository.save(storage);
 
-        } catch (FeignException e) {
+        } catch (Exception e) {
             throw new FoodException("Food with name: " + foodInfo.getFoodName() + " not found.");
         }
 
@@ -149,6 +151,11 @@ public class StorageService {
         Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId)
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId));
+
+
+        if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new FoodException("Amount must be greater than 0.");
+        }
 
         if (storage.getFoods().containsKey(foodInfo.getFoodName())) {
 
@@ -203,7 +210,7 @@ public class StorageService {
             return food;
         } else if (food.getSize().compareTo(amount) > 0) {
 
-            BigDecimal multiplayer = food.getSize().divide(amount);
+            BigDecimal multiplayer = food.getSize().divide(amount, 2, RoundingMode.HALF_UP);
 
             Food baseFood = new Food();
             baseFood.setName(food.getName());
@@ -242,7 +249,7 @@ public class StorageService {
             baseFood.setCarbohydrates(food.getCarbohydrates().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setProtein(food.getProtein().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setFat(food.getFat().divide(multiplayer, 2, RoundingMode.HALF_UP));
-            
+
             baseFood.setFiber(food.getFiber().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setTransFat(food.getTransFat().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setSaturatedFat(food.getSaturatedFat().divide(multiplayer, 2, RoundingMode.HALF_UP));
@@ -252,7 +259,7 @@ public class StorageService {
 
             return baseFood;
         } else {
-            BigDecimal multiplayer = amount.divide(food.getSize());
+            BigDecimal multiplayer = amount.divide(food.getSize(), 2, RoundingMode.HALF_UP);
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);
@@ -304,7 +311,7 @@ public class StorageService {
 
     private Food calculateFoodToAdd(Food food, BigDecimal amount) {
 
-        BigDecimal multiplier = amount.divide(BigDecimal.valueOf(100));
+        BigDecimal multiplier = amount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
         Food foodToAdd = new Food();
         foodToAdd.setName(food.getName());
@@ -341,7 +348,7 @@ public class StorageService {
         foodToAdd.setCarbohydrates(food.getCarbohydrates().multiply(multiplier));
         foodToAdd.setProtein(food.getProtein().multiply(multiplier));
         foodToAdd.setFat(food.getFat().multiply(multiplier));
-        
+
         foodToAdd.setFiber(food.getFiber().multiply(multiplier));
         foodToAdd.setTransFat(food.getTransFat().multiply(multiplier));
         foodToAdd.setSaturatedFat(food.getSaturatedFat().multiply(multiplier));
@@ -387,7 +394,7 @@ public class StorageService {
         food.setFat(food.getFat().add(foodToCombine.getFat()));
         food.setSize(food.getSize().add(foodToCombine.getSize()));
         food.setCalories(food.getCalories().add(foodToCombine.getCalories()));
-        
+
         food.setFiber(food.getFiber().add(foodToCombine.getFiber()));
         food.setTransFat(food.getTransFat().add(foodToCombine.getTransFat()));
         food.setSaturatedFat(food.getSaturatedFat().add(foodToCombine.getSaturatedFat()));
