@@ -1,7 +1,18 @@
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { arc, easeLinear, pie, scaleLinear, selectAll } from "d3";
-import { useLayoutEffect } from "react";
+import {
+  arc,
+  axisBottom,
+  axisLeft,
+  easeLinear,
+  format,
+  pie,
+  scaleBand,
+  scaleLinear,
+  select,
+  selectAll,
+} from "d3";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "../../../util/RecordUtils";
 
@@ -53,8 +64,8 @@ export function Gauge({ width, height, type, data }) {
             d={arc()
               .innerRadius(diameter / 3.2)
               .outerRadius(diameter / 2.2)
-              .startAngle(foregroundArc.startAngle)
-              .endAngle(foregroundArc.endAngle)()}
+              .startAngle(-foregroundArc.startAngle)
+              .endAngle(-foregroundArc.endAngle)()}
             fill="gray"
           />
 
@@ -305,5 +316,75 @@ export function Gauge2({
         })}
       </g>
     </svg>
+  );
+}
+export function BarChart({ height, info }) {
+  const { data, dataNames } = info;
+  const ref = useRef();
+  const [width, setWidth] = useState(0);
+  const margin = { top: 10, right: 10, bottom: 45, left: 50 };
+
+  useEffect(() => {
+    setWidth(ref.current.clientWidth);
+
+    const handleResize = () => {
+      setWidth(ref.current.clientWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+
+  const x = scaleBand().range([0, chartWidth]).padding(0.2).domain(dataNames);
+
+  const y = scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, Math.max(...data)]);
+
+  return (
+    <div ref={ref}>
+      <svg width={width} height={height}>
+        <g transform={`translate(${margin.left}, ${margin.top})`}>
+          <g
+            ref={(node) => select(node).call(axisLeft(y))}
+            style={{ fontSize: "12px" }}
+          />
+          <g
+            transform={`translate(0, ${chartHeight})`}
+            ref={(node) => {
+              const axis = axisBottom(x);
+              select(node)
+                .call(axis)
+                .selectAll("text")
+                .attr(
+                  "transform",
+                  (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
+                );
+            }}
+            style={{ fontSize: "11px" }}
+          />
+          {data
+            .sort((a, b) => b - a)
+            .map((d, i) => (
+              <g key={i}>
+                <rect
+                  x={x(dataNames[i])} // Change this line
+                  y={y(d)}
+                  width={x.bandwidth()}
+                  height={chartHeight - y(d)}
+                  fill="steelblue"
+                />
+                <title>{d}</title>
+              </g>
+            ))}
+        </g>
+      </svg>
+    </div>
   );
 }

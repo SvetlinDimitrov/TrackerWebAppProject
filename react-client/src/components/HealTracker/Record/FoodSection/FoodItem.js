@@ -133,55 +133,55 @@ const FoodItem = ({
             <>
               <div className={styles.row}>
                 <span>Vitamin A</span>
-                <span>{food.a.toFixed(2)}</span>
+                <span>{food.a.toFixed(2)} IU</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin D</span>
-                <span>{food.d.toFixed(2)}</span>
+                <span>{food.d.toFixed(2)} IU</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin E</span>
-                <span>{food.e.toFixed(2)}</span>
+                <span>{food.e.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin K</span>
-                <span>{food.k.toFixed(2)}</span>
+                <span>{food.k.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin C</span>
-                <span>{food.c.toFixed(2)}</span>
+                <span>{food.c.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B1</span>
-                <span>{food.b1.toFixed(2)}</span>
+                <span>{food.b1.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B2</span>
-                <span>{food.b2.toFixed(2)}</span>
+                <span>{food.b2.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B3</span>
-                <span>{food.b3.toFixed(2)}</span>
+                <span>{food.b3.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B5</span>
-                <span>{food.b5.toFixed(2)}</span>
+                <span>{food.b5.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B6</span>
-                <span>{food.b6.toFixed(2)}</span>
+                <span>{food.b6.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B7</span>
-                <span>{food.b7.toFixed(2)}</span>
+                <span>{food.b7.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B9</span>
-                <span>{food.b9.toFixed(2)}</span>
+                <span>{food.b9.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Vitamin B12</span>
-                <span>{food.b12.toFixed(2)}</span>
+                <span>{food.b12.toFixed(2)} mcg</span>
               </div>
             </>
           )}
@@ -198,63 +198,63 @@ const FoodItem = ({
             <>
               <div className={styles.row}>
                 <span>Calcium</span>
-                <span>{food.calcium.toFixed(2)}</span>
+                <span>{food.calcium.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Phosphorus</span>
-                <span>{food.phosphorus.toFixed(2)}</span>
+                <span>{food.phosphorus.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Magnesium</span>
-                <span>{food.magnesium.toFixed(2)}</span>
+                <span>{food.magnesium.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Sodium</span>
-                <span>{food.sodium.toFixed(2)}</span>
+                <span>{food.sodium.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Potassium</span>
-                <span>{food.potassium.toFixed(2)}</span>
+                <span>{food.potassium.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Chloride</span>
-                <span>{food.chloride.toFixed(2)}</span>
+                <span>{food.chloride.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Iron</span>
-                <span>{food.iron.toFixed(2)}</span>
+                <span>{food.iron.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Zinc</span>
-                <span>{food.zinc.toFixed(2)}</span>
+                <span>{food.zinc.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Copper</span>
-                <span>{food.copper.toFixed(2)}</span>
+                <span>{food.copper.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Manganese</span>
-                <span>{food.manganese.toFixed(2)}</span>
+                <span>{food.manganese.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Iodine</span>
-                <span>{food.iodine.toFixed(2)}</span>
+                <span>{food.iodine.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Selenium</span>
-                <span>{food.selenium.toFixed(2)}</span>
+                <span>{food.selenium.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Fluoride</span>
-                <span>{food.fluoride.toFixed(2)}</span>
+                <span>{food.fluoride.toFixed(2)} mg</span>
               </div>
               <div className={styles.row}>
                 <span>Chromium</span>
-                <span>{food.chromium.toFixed(2)}</span>
+                <span>{food.chromium.toFixed(2)} mcg</span>
               </div>
               <div className={styles.row}>
                 <span>Molybdenum</span>
-                <span>{food.molybdenum.toFixed(2)}</span>
+                <span>{food.molybdenum.toFixed(2)} mcg</span>
               </div>
             </>
           )}
@@ -271,41 +271,41 @@ const FoodItem = ({
             <>
               <div className={styles.row}>
                 <span>Protein</span>
-                <span>{food.protein.toFixed(2)}</span>
+                <span>{food.protein.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Carbohydrates</span>
-                <span>{food.carbohydrates.toFixed(2)}</span>
+                <span>{food.carbohydrates.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Fiber</span>
-                <span>{food.fiber.toFixed(2)}</span>
+                <span>{food.fiber.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Sugar</span>
-                <span>{food.sugar.toFixed(2)}</span>
+                <span>{food.sugar.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Fat</span>
-                <span>{food.fat.toFixed(2)}</span>
+                <span>{food.fat.toFixed(2)} g</span>
               </div>
 
               <div className={styles.row}>
                 <span>Trans Fat</span>
-                <span>{food.transFat.toFixed(2)}</span>
+                <span>{food.transFat.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Saturated Fat</span>
-                <span>{food.saturatedFat.toFixed(2)}</span>
+                <span>{food.saturatedFat.toFixed(2)} g</span>
               </div>
 
               <div className={styles.row}>
                 <span>Polyunsaturated Fat</span>
-                <span>{food.polyunsaturatedFat.toFixed(2)}</span>
+                <span>{food.polyunsaturatedFat.toFixed(2)} g</span>
               </div>
               <div className={styles.row}>
                 <span>Monounsaturated Fat</span>
-                <span>{food.monounsaturatedFat.toFixed(2)}</span>
+                <span>{food.monounsaturatedFat.toFixed(2)} g</span>
               </div>
             </>
           )}

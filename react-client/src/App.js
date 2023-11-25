@@ -14,14 +14,14 @@ import Error from "./components/Error/Error";
 import NutrientTemplate from "./components/HealTracker/Nutrients/NutrientTemplate";
 import EditUser from "./components/User/EditUser/EditUser";
 import NotificationProvider from "./context/Notification";
-import RecordContextProvider from "./context/RecordContext";
+import FoodContextProvider from "./context/FoodContext";
 import HealthTracker from "./components/HealTracker/HealthTracker";
 function App() {
   return (
     <>
       <UserAuthProvider>
         <NotificationProvider>
-          <RecordContextProvider>
+          <FoodContextProvider>
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -42,7 +42,7 @@ function App() {
               </Route>
             </Routes>
             <Footer />
-          </RecordContextProvider>
+          </FoodContextProvider>
         </NotificationProvider>
       </UserAuthProvider>
     </>

@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { RecordContext } from "../../../context/RecordContext";
 import { AuthContext } from "../../../context/UserAuth";
 import { useForm } from "../../../hooks/useForm";
 import api from "../../../util/api";
@@ -23,7 +22,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { loginUser } = useContext(AuthContext);
-  const { setRecords } = useContext(RecordContext);
 
   const submitHandler = async (values) => {
     try {
@@ -43,14 +41,6 @@ const Login = () => {
         };
         loginUser(userData);
 
-        if (userDataResponse.data.userDetails === "COMPLETED") {
-          const allRecordsResponse = await api.get("/record/all", {
-            headers: { Authorization: `Bearer ${userToken}` },
-          });
-
-          const allRecords = allRecordsResponse.data;
-          setRecords(allRecords);
-        }
         navigate("/");
       }
     } catch (error) {

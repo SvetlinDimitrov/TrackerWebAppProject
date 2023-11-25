@@ -1,15 +1,20 @@
 import { useContext } from "react";
 import { Outlet } from "react-router-dom";
 import { AuthContext } from "./UserAuth";
+
 import { NotificationContext } from "./Notification";
 import { validatedUserToken } from "../util/UserUtils";
 import { useNavigate } from "react-router-dom";
+
 
 const UserAuthGuard = () => {
   const { user, logout } = useContext(AuthContext);
   const validatedUser = validatedUserToken(user);
   const navigate = useNavigate();
   const { setFailedMessage } = useContext(NotificationContext);
+  
+
+
 
   if (validatedUser === "dateExpired") {
     setFailedMessage({

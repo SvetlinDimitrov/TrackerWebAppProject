@@ -4,11 +4,19 @@
 }
 
 .container {
-  max-width: 600px;
+  max-width: 50%;
   margin: 0 auto;
   padding: 20px;
 }
-
+.barCharSection{
+  background-color: #fff;
+  border: 2px solid #00b050;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 10px;
+  height: 700px;
+  width: 100%;
+}
 .section {
   background-color: #fff;
   border: 2px solid #00b050;
@@ -16,6 +24,7 @@
   margin: 20px 0;
   padding: 20px;
 }
+
 
 .sectionH2 {
   font-weight: bold;
