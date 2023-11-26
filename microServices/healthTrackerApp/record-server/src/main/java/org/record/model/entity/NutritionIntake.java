@@ -2,25 +2,25 @@ package org.record.model.entity;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Embeddable
-@Setter
+
 @Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class NutritionIntake {
 
     private String nutrientName;
     private String nutrientType;
-    @Builder.Default
-    private BigDecimal dailyConsumed = BigDecimal.ZERO;
-    @Builder.Default
-    private BigDecimal lowerBoundIntake = BigDecimal.ZERO;
-    @Builder.Default
-    private BigDecimal upperBoundIntake = BigDecimal.ZERO;
+    private BigDecimal dailyConsumed ;
+    private BigDecimal lowerBoundIntake ;
+    private BigDecimal upperBoundIntake ;
     private String measurement;
 
 }

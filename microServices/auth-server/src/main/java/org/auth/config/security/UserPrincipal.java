@@ -1,16 +1,19 @@
 package org.auth.config.security;
 
-import lombok.Data;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.auth.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
 
     private Long id;

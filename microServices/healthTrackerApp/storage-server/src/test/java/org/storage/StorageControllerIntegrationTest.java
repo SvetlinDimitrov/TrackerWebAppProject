@@ -213,7 +213,6 @@ public class StorageControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
                 .header("X-ViewUser", "test"))
-
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         assertTrue(storageRepository.findAllByRecordId(validRecordId).get(0).getFoods().size() == 1);
@@ -500,8 +499,6 @@ public class StorageControllerIntegrationTest {
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-       
-
         mockMvc.perform(MockMvcRequestBuilders
                 .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId + "&foodName=Apple")
                 .header("X-ViewUser", "test"))
@@ -511,6 +508,7 @@ public class StorageControllerIntegrationTest {
         assertTrue(storageRepository.findAllByRecordId(validRecordId).get(0).getConsumedCalories()
                 .compareTo(new BigDecimal(0)) == 0);
     }
+
     @Test
     @Transactional
     public void testDeleteFoodFromStorage_InvalidInput_badRequest() throws Exception {
@@ -518,9 +516,9 @@ public class StorageControllerIntegrationTest {
         Long invalidRecordId = 16L;
         Storage storage = createStorage(invalidRecordId);
 
-    
         mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + invalidRecordId + "&foodName=Apple")
+                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + invalidRecordId
+                        + "&foodName=Apple")
                 .header("X-ViewUser", "test"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -536,15 +534,18 @@ public class StorageControllerIntegrationTest {
         storageRepository.save(storage);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId + "&foodName=Invalid")
+                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId
+                        + "&foodName=Invalid")
                 .header("X-ViewUser", "test"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
+
     private Food getApple() {
         return Food.builder()
                 .name("Apple")
                 .calories(new BigDecimal("52"))
+                .size(new BigDecimal("100"))
                 .A(new BigDecimal("0"))
                 .D(new BigDecimal("0"))
                 .E(new BigDecimal("0.18"))

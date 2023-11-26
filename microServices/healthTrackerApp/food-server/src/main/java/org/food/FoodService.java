@@ -2,7 +2,6 @@ package org.food;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,23 +27,13 @@ public class FoodService {
         Food food = foodRepository
                 .getByName(foodName)
                 .orElseThrow(
-                        () -> new FoodNotFoundException(foodName + " does not exist." , foodRepository.getAllNames()));
+                        () -> new FoodNotFoundException(foodName + " does not exist.", foodRepository.getAllNames()));
 
         if (amount == null) {
             return food;
         }
 
         return calculateFoodByAmount(food, amount);
-    }
-
-    public List<Food> getAllFoodsByListNames(List<String> foodNames) throws FoodNotFoundException {
-        List<Food> foodsToReturn = new ArrayList<>();
-
-        for (String foodName : foodNames) {
-            foodsToReturn.add(getFoodByName(foodName, null));
-        }
-
-        return foodsToReturn;
     }
 
     private Food calculateFoodByAmount(Food food, Double size) {
@@ -55,7 +44,7 @@ public class FoodService {
             return food;
         } else if (food.getSize().compareTo(amount) > 0) {
 
-            BigDecimal multiplayer = food.getSize().divide(amount , 2, RoundingMode.HALF_UP);
+            BigDecimal multiplayer = food.getSize().divide(amount, 2, RoundingMode.HALF_UP);
 
             Food baseFood = new Food();
             baseFood.setName(food.getName());
@@ -104,7 +93,7 @@ public class FoodService {
 
             return baseFood;
         } else {
-            BigDecimal multiplayer = amount.divide(food.getSize() , 2, RoundingMode.HALF_UP);
+            BigDecimal multiplayer = amount.divide(food.getSize(), 2, RoundingMode.HALF_UP);
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);

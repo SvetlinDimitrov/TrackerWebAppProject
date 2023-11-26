@@ -19,9 +19,7 @@ import org.record.utils.RecordUtils;
 import org.record.utils.RecordValidator;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
-
-import feign.FeignException.FeignClientException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Service
 public class RecordServiceImp extends AbstractRecordService {
@@ -29,37 +27,40 @@ public class RecordServiceImp extends AbstractRecordService {
     private final StorageClient storageClient;;
 
     public RecordServiceImp(
-            Gson gson,
             RecordRepository recordRepository,
             NutrientIntakeCreator nutrientIntakeCreator,
             StorageClient storageClient) {
-        super(gson, recordRepository, nutrientIntakeCreator);
+        super(recordRepository, nutrientIntakeCreator);
         this.storageClient = storageClient;
     }
 
-    public List<RecordView> getAllViewsByUserId(String userToken) throws UserNotFoundException {
+    public List<RecordView> getAllViewsByUserId(String userToken) throws UserNotFoundException, JsonProcessingException {
 
         List<Record> records = recordRepository
-                .findAllByUserId(getUserId(userToken).getId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        getUserId(userToken).getUsername() + " does not have any records"));
+                .findAllByUserId(getUserId(userToken).getId());
+                
+        if (records.isEmpty())
+            throw new UserNotFoundException(
+                    getUserId(userToken).getUsername() + " does not have any records");
 
         User user = getUserId(userToken);
 
         return records
                 .stream()
-                .map(record -> toRecordView(record, storageClient.getAllStorages(record.getId(),userToken).getBody(), user))
+                .map(record -> toRecordView(record, storageClient.getAllStorages(record.getId(), userToken).getBody(),
+                        user))
                 .collect(Collectors.toList());
     }
 
-    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException {
+    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException, JsonProcessingException {
 
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
-        return toRecordView(record, storageClient.getAllStorages(record.getId() , userToken).getBody(), getUserId(userToken));
+        return toRecordView(record, storageClient.getAllStorages(record.getId(), userToken).getBody(),
+                getUserId(userToken));
     }
 
-    public void addNewRecordByUserId(String userToken, String name) throws RecordCreationException {
+    public void addNewRecordByUserId(String userToken, String name) throws RecordCreationException, JsonProcessingException {
         User user = getUserId(userToken);
 
         RecordValidator.validateRecord(user);
@@ -85,32 +86,33 @@ public class RecordServiceImp extends AbstractRecordService {
         storageClient.createStorageFirstCreation(record.getId(), userToken);
     }
 
-    public void deleteById(Long recordId, String userToken) throws RecordNotFoundException, StorageException {
+    public void deleteById(Long recordId, String userToken) throws RecordNotFoundException, StorageException, JsonProcessingException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
-        try{
-            storageClient.deleteAllStoragesByRecordId(record.getId() , userToken);
-        } catch (FeignClientException e) {
+        try {
+            storageClient.deleteAllStoragesByRecordId(record.getId(), userToken);
+        } catch (Exception e) {
             throw new StorageException("Storages with record id " + record.getId() + " not found");
         }
 
         recordRepository.deleteById(record.getId());
     }
 
-    public void createNewStorage(Long recordId, String storageName, String userToken) throws RecordNotFoundException {
+    public void createNewStorage(Long recordId, String storageName, String userToken) throws RecordNotFoundException, JsonProcessingException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
-        
+
         storageClient.createStorage(storageName, record.getId(), userToken);
     }
 
-    public void removeStorage(Long recordId, Long storageId, String userToken) throws RecordNotFoundException, StorageException {
+    public void removeStorage(Long recordId, Long storageId, String userToken)
+            throws RecordNotFoundException, StorageException, JsonProcessingException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
-        try{
+        try {
             storageClient.deleteStorage(storageId, record.getId(), userToken);
         } catch (Exception e) {
             throw new StorageException("Storage with id " + storageId + " not found");
         }
-        
+
     }
 }

@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,7 +36,7 @@ public class RecordController {
     @GetMapping("/all")
     public ResponseEntity<List<RecordView>> getAllRecords(
             @RequestHeader("X-ViewUser") String userToken)
-            throws UserNotFoundException {
+            throws UserNotFoundException, JsonProcessingException {
 
         List<RecordView> records = recordService.getAllViewsByUserId(userToken);
         return new ResponseEntity<>(records, HttpStatus.OK);
@@ -44,7 +46,7 @@ public class RecordController {
     public ResponseEntity<RecordView> getById(
             @RequestHeader("X-ViewUser") String userToken,
             @PathVariable(value = "recordId") Long recordId)
-            throws RecordNotFoundException {
+            throws RecordNotFoundException, JsonProcessingException {
         RecordView record = recordService.getViewByRecordIdAndUserId(recordId, userToken);
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
@@ -53,7 +55,7 @@ public class RecordController {
     public ResponseEntity<HttpStatus> createNewRecord(
             @RequestHeader("X-ViewUser") String userToken,
             @RequestParam(required = false) String name)
-            throws RecordCreationException {
+            throws RecordCreationException, JsonProcessingException {
 
         recordService.addNewRecordByUserId(userToken, name);
 
@@ -64,7 +66,7 @@ public class RecordController {
     public ResponseEntity<HttpStatus> deleteRecord(
             @PathVariable Long recordId,
             @RequestHeader("X-ViewUser") String userToken)
-            throws RecordNotFoundException, StorageException {
+            throws RecordNotFoundException, StorageException, JsonProcessingException {
 
         recordService.deleteById(recordId, userToken);
 
@@ -76,7 +78,7 @@ public class RecordController {
     public ResponseEntity<HttpStatus> createStorage(
             @RequestHeader("X-ViewUser") String userToken,
             @PathVariable Long recordId,
-            @RequestParam(required = false) String storageName) throws RecordNotFoundException {
+            @RequestParam(required = false) String storageName) throws RecordNotFoundException, JsonProcessingException {
 
         recordService.createNewStorage(recordId, storageName, userToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -86,7 +88,7 @@ public class RecordController {
     public ResponseEntity<HttpStatus> removeStorage(
             @RequestHeader("X-ViewUser") String userToken,
             @PathVariable Long recordId,
-            @PathVariable Long storageId) throws RecordNotFoundException, StorageException {
+            @PathVariable Long storageId) throws RecordNotFoundException, StorageException, JsonProcessingException {
 
         recordService.removeStorage(recordId, storageId, userToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

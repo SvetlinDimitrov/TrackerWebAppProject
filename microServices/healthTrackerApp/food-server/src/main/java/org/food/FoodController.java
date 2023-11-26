@@ -25,12 +25,6 @@ public class FoodController {
         return new ResponseEntity<>(foodService.getAllFoods(), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<Food>> getAllFoodsByListNames(@RequestParam(name = "foodNames") List<String> foodNames)
-            throws FoodNotFoundException {
-        return new ResponseEntity<>(foodService.getAllFoodsByListNames(foodNames), HttpStatus.OK);
-    }
-
     @GetMapping("/{foodName}")
     public ResponseEntity<Food> getFoodByName(
             @PathVariable String foodName,

@@ -317,6 +317,7 @@ public class StorageService {
         foodToAdd.setName(food.getName());
         foodToAdd.setSize(amount);
         foodToAdd.setCalories(food.getCalories().multiply(multiplier));
+        
         foodToAdd.setA(food.getA().multiply(multiplier));
         foodToAdd.setD(food.getD().multiply(multiplier));
         foodToAdd.setE(food.getE().multiply(multiplier));
@@ -361,6 +362,9 @@ public class StorageService {
 
     private Food combineFoods(Food food, Food foodToCombine) {
 
+        food.setSize(food.getSize().add(foodToCombine.getSize()));
+        food.setCalories(food.getCalories().add(foodToCombine.getCalories()));
+
         food.setA(food.getA().add(foodToCombine.getA()));
         food.setD(food.getD().add(foodToCombine.getD()));
         food.setE(food.getE().add(foodToCombine.getE()));
@@ -392,8 +396,7 @@ public class StorageService {
         food.setCarbohydrates(food.getCarbohydrates().add(foodToCombine.getCarbohydrates()));
         food.setProtein(food.getProtein().add(foodToCombine.getProtein()));
         food.setFat(food.getFat().add(foodToCombine.getFat()));
-        food.setSize(food.getSize().add(foodToCombine.getSize()));
-        food.setCalories(food.getCalories().add(foodToCombine.getCalories()));
+        
 
         food.setFiber(food.getFiber().add(foodToCombine.getFiber()));
         food.setTransFat(food.getTransFat().add(foodToCombine.getTransFat()));

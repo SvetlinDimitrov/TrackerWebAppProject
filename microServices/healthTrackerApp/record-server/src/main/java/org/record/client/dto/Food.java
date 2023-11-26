@@ -2,14 +2,13 @@ package org.record.client.dto;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@Embeddable
-@AllArgsConstructor
+
+@Getter
+@Setter
 @NoArgsConstructor
 public class Food {
 

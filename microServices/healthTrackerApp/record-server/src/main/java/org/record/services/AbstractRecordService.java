@@ -15,7 +15,8 @@ import org.record.model.entity.Record;
 import org.record.utils.NutrientIntakeCreator;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,12 +24,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractRecordService {
 
-    protected final Gson gson;
+    protected final ObjectMapper objectMapper = new ObjectMapper();
     protected final RecordRepository recordRepository;
     protected final NutrientIntakeCreator nutrientIntakeCreator;
 
-    protected User getUserId(String userToken) {
-        return gson.fromJson(userToken, User.class);
+    protected User getUserId(String userToken) throws JsonProcessingException {
+        return objectMapper.readValue(userToken, User.class);
     }
 
     protected RecordView toRecordView(Record record, List<StorageView> storages, User user) {
@@ -54,7 +55,7 @@ public abstract class AbstractRecordService {
         return recordView;
     }
 
-    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException {
+    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException, JsonProcessingException {
         Long userId = getUserId(userToken).getId();
 
         return recordRepository.findByIdAndUserId(recordId, userId)
@@ -157,13 +158,17 @@ public abstract class AbstractRecordService {
                 nutationsMap.get("Sugar").setDailyConsumed(
                         nutationsMap.get("Sugar").getDailyConsumed().add(food.getSugar()));
                 nutationsMap.get("TransFat").setDailyConsumed(
-                        nutationsMap.get("TransFat").getDailyConsumed().add(food.getTransFat()));
+                        nutationsMap.get("TransFat").getDailyConsumed()
+                                .add(food.getTransFat()));
                 nutationsMap.get("SaturatedFat").setDailyConsumed(
-                        nutationsMap.get("SaturatedFat").getDailyConsumed().add(food.getSaturatedFat()));
+                        nutationsMap.get("SaturatedFat").getDailyConsumed()
+                                .add(food.getSaturatedFat()));
                 nutationsMap.get("PolyunsaturatedFat").setDailyConsumed(
-                        nutationsMap.get("PolyunsaturatedFat").getDailyConsumed().add(food.getPolyunsaturatedFat()));
+                        nutationsMap.get("PolyunsaturatedFat").getDailyConsumed()
+                                .add(food.getPolyunsaturatedFat()));
                 nutationsMap.get("MonounsaturatedFat").setDailyConsumed(
-                        nutationsMap.get("MonounsaturatedFat").getDailyConsumed().add(food.getMonounsaturatedFat()));
+                        nutationsMap.get("MonounsaturatedFat").getDailyConsumed()
+                                .add(food.getMonounsaturatedFat()));
 
             }
             if (storage.getConsumedCalories() != null) {

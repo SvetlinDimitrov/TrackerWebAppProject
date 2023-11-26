@@ -5,15 +5,13 @@ import java.math.BigDecimal;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
-@Builder
 public class User {
 
     private Long id;

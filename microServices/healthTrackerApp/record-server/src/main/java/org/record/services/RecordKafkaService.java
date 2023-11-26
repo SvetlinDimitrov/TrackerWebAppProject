@@ -14,7 +14,7 @@ import org.record.utils.RecordValidator;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Service
 public class RecordKafkaService extends AbstractRecordService {
@@ -22,16 +22,15 @@ public class RecordKafkaService extends AbstractRecordService {
     private final StorageClient storageClient;
 
     public RecordKafkaService(
-            Gson gson,
             RecordRepository recordRepository,
             NutrientIntakeCreator nutrientIntakeCreator,
             StorageClient storageClient) {
-        super(gson, recordRepository, nutrientIntakeCreator);
+        super(recordRepository, nutrientIntakeCreator);
         this.storageClient = storageClient;
     }
 
     @KafkaListener(topics = "USER_FIRST_CREATION", groupId = "group_user_creation_1", containerFactory = "kafkaListenerUserFirstCreation")
-    public void addNewRecordByUserId(String userToken) throws RecordCreationException {
+    public void addNewRecordByUserId(String userToken) throws RecordCreationException, JsonProcessingException {
         User user = getUserId(userToken);
 
         RecordValidator.validateRecord(user);

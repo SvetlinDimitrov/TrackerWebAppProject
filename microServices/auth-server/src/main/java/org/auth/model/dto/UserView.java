@@ -1,17 +1,20 @@
 package org.auth.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+
 import org.auth.model.entity.User;
 import org.auth.model.enums.Gender;
 import org.auth.model.enums.UserDetails;
 import org.auth.model.enums.WorkoutState;
 
-import java.math.BigDecimal;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class UserView {
 

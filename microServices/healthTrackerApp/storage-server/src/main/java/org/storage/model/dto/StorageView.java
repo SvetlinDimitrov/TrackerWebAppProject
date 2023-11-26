@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.storage.model.entity.Food;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
 public class StorageView {
 
@@ -19,5 +19,5 @@ public class StorageView {
     private String name;
     private BigDecimal consumedCalories;
     private List<Food> foods;
-    
+
 }
