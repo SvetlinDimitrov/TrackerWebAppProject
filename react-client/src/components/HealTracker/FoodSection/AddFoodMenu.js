@@ -1,9 +1,7 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../../util/api";
-import styles2 from "../FoodSection/FoodSection.module.css";
+
+import api from "../../../util/api";
 import styles from "./AddFoodMenu.module.css";
 import FoodItem from "./FoodItem";
 
@@ -81,7 +79,6 @@ export const AddFoodMenu = ({
     }
   };
 
-  console.log(1);
   return (
     <>
       {food && (
@@ -94,15 +91,15 @@ export const AddFoodMenu = ({
         />
       )}
       <div className={styles.overlay}>
-        <div className={styles.containerInfo}>
-          <div className={styles.containerInfo_Heading_CloseButton}>
+        <div className={styles.container}>
+          <div className={styles.container_CloseButton}>
             <h1>List of foods</h1>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className={styles.foodDetails}>
+            <div className={styles.container_foodDetails}>
               {foods
                 .filter((food) =>
                   food.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -110,11 +107,11 @@ export const AddFoodMenu = ({
                 .map((food, index) => {
                   return (
                     <div
-                      className={styles2.foodItem}
+                      className={styles.container_foodDetails_food}
                       key={index}
                       onClick={() => setFood(food)}
                     >
-                      <div className={styles2.foodItemDetails}>
+                      <div className={styles.container_foodDetails_food_info}>
                         <div>{food.name}</div>
                       </div>
                     </div>

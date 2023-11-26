@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
 import api from "../../../util/api";
-import styles from "../HeathTracker.module.css";
-import styles3 from "./DeleteRecord.module.css";
-import styles2 from "./SelectRecordDetails.module.css";
+
+import styles from "./DeleteRecord.module.css";
+
 
 const DeleteRecord = ({
   selectedRecord,
@@ -56,9 +56,9 @@ const DeleteRecord = ({
         </h2>
         <FaHeart className={styles.container_icon} />
         <p className={styles.container_text}>Delete record</p>
-        <div className={styles2.sectionContainer}>
+        <div className={styles.container_section}>
           <button
-            className={styles.deleteButton}
+            className={styles.container_deleteButton}
             onClick={() => setPopupVisible(true)}
           >
             Delete Record
@@ -66,23 +66,23 @@ const DeleteRecord = ({
         </div>
       </div>
       {isPopupVisible && (
-        <div className={styles3.overlay}>
-          <div className={styles3.popup}>
+        <div className={styles.overlay}>
+          <div className={styles.popup}>
             <h2>Confirm Deletion</h2>
             <p>Please enter the name of the record to confirm deletion:</p>
             <input
               type="text"
-              className={styles3.input}
+              className={styles.popup_input}
               onChange={(e) => setNameDeletion(e.target.value)}
             />
             <button
-              className={styles3.confirmButton}
+              className={styles.popup_confirmButton}
               onClick={() => handleDeletion()}
             >
               Confirm
             </button>
             <button
-              className={styles3.cancelButton}
+              className={styles.popup_cancelButton}
               onClick={() => setPopupVisible(false)}
             >
               Cancel

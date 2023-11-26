@@ -1,15 +1,15 @@
-.body {
+.container {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   margin: 0;
 }
 
-.h1 {
+.container_h1 {
   text-align: center;
   padding: 20px;
 }
 
-.containerGauge {
+.container_gauge {
   grid-template-columns: repeat(4, 250px);
   display: grid;
   justify-content: center;
@@ -18,7 +18,7 @@
   padding: 20px;
 }
 
-.category {
+.container_gauge_category {
   width: 200px;
   background-color: #fff;
   border: 2px solid #00b050;
@@ -29,7 +29,7 @@
   text-align: center;
 }
 
-.containerInfo {
+.container_info {
   display: flex;
   padding: 20px;
   flex-direction: column;
@@ -38,7 +38,7 @@
   text-align: center;
 }
 
-.infoContainer {
+.container_info_info {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -49,84 +49,4 @@
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.3s ease;
-}
-
-.categoryParagraph {
-  font-weight: bold;
-  color: #00b050;
-}
-
-.category.active {
-  transform: scale(1.1);
-}
-
-.category.active + .details {
-  display: block;
-}
-
-.chooseCreate_Body_RecordContainer {
-  display: flex;
-  justify-content: center;
-  padding: 15px;
-}
-.chooseCreate_RecordContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: #f0f0f0;
-  border: 2px solid #00b050;
-  width: 30%;
-  margin-bottom: 10px;
-}
-.chooseCreate_RecordContainer_paragraph {
-  font-size: 1.2em;
-  color: #00b050;
-  text-align: center;
-  margin: 10px;
-}
-.choose_RecordContainer_selectValue {
-  width: 95%;
-  height: 30px;
-  text-align: center;
-  font-size: 15px;
-  border: 2px solid #00b050;
-  background-color: #f0f0f0;
-  border-radius: 20px;
-  margin-bottom: 10px;
-  padding: 0px;
-}
-
-#create_RecordContainer_inputValue {
-  width: 75%;
-  height: 30px;
-  text-align: center;
-  font-size: 15px;
-  border: 2px solid #00b050;
-  background-color: #f0f0f0;
-  border-radius: 20px;
-  margin-bottom: 10px;
-  padding: 0px;
-  overflow: hidden;
-}
-
-#create_RecordContainer_form {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-#create_RecordContainer_button {
-  width: 20%;
-  height: 30px;
-  text-align: center;
-  font-size: 15px;
-  border: 2px solid #00b050;
-  background-color: #f0f0f0;
-  margin-bottom: 10px;
-  padding: 0px;
-  overflow: hidden;
-  cursor: pointer;
 }

@@ -3,14 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { FoodContext } from "../../../context/FoodContext";
 import api from "../../../util/api";
-import { BarChart } from "../Record/Tools";
+import { BarChart } from "../../../util/Tools";
 import styles from "./NutritionTemplate.module.css";
 
 const NutrientTemplate = () => {
   let { nutrition, nutritionType } = useParams();
   const navigate = useNavigate();
   const [nutritionTemplate, setNutritionTemplate] = useState({});
-  const { sortedFoods, allFoods } = useContext(FoodContext);
+  const { sortedFoods } = useContext(FoodContext);
 
   useEffect(() => {
     const fetchData = async () => {

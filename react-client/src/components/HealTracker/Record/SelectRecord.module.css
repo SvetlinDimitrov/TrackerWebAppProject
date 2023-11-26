@@ -1,0 +1,15 @@
+.container {
+    composes: container from "./CreateRecord.module.css";
+  }
+  .container_header {
+    composes: container_header from "./CreateRecord.module.css";
+  }
+  .container_icon {
+    composes: container_icon from "./CreateRecord.module.css";
+  }
+  .container_text {
+    composes: container_text from "./CreateRecord.module.css";
+  }
+  .container_section {
+    composes: sectionContainer from "./SelectRecordDetails.module.css";
+  }

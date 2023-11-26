@@ -7,6 +7,7 @@ import api from "../../../util/api";
 import styles from "../HeathTracker.module.css";
 import styles3 from "../Record/DeleteRecord.module.css";
 import styles2 from "../Record/SelectRecordDetails.module.css";
+import styles4 from "./DeleteStorage.module.css";
 
 const DeleteStorage = ({
   selectedStorage,
@@ -51,17 +52,17 @@ const DeleteStorage = ({
   };
   return (
     <>
-      <div className={styles.container}>
-        <h2 className={styles.container_header}>
+      <div className={styles4.container}>
+        <h2 className={styles4.container_header}>
           Selected record {selectedRecord && selectedRecord.name}
         </h2>
-        <FaHeart className={styles.container_icon} />
-        <p className={styles.container_text}>
+        <FaHeart className={styles4.container_icon} />
+        <p className={styles4.container_text}>
           Delete storage {selectedStorage.name}
         </p>
-        <div className={styles2.sectionContainer}>
+        <div className={styles4.container_section}>
           <button
-            className={styles.deleteButton}
+            className={styles4.container_deleteButton}
             onClick={() => setPopupVisible(true)}
           >
             Delete Storage
@@ -69,23 +70,23 @@ const DeleteStorage = ({
         </div>
       </div>
       {isPopupVisible && (
-        <div className={styles3.overlay}>
-          <div className={styles3.popup}>
+        <div className={styles4.overlay}>
+          <div className={styles4.popup}>
             <h2>Confirm Deletion</h2>
             <p>Please enter the name of the storage to confirm deletion:</p>
             <input
               type="text"
-              className={styles3.input}
+              className={styles4.popup_input}
               onChange={(e) => setNameDeletion(e.target.value)}
             />
             <button
-              className={styles3.confirmButton}
+              className={styles4.popup_confirmButton}
               onClick={() => handleDeletion()}
             >
               Confirm
             </button>
             <button
-              className={styles3.cancelButton}
+              className={styles4.popup_cancelButton}
               onClick={() => setPopupVisible(false)}
             >
               Cancel

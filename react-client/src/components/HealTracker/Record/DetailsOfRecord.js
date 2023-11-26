@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 import { calculatedPrecentedValues } from "../../../util/RecordUtils";
+
 import styles from "./DetailsOfRecord.module.css";
-import { Gauge, PipeChar, Gauge2 } from "./Tools";
+
+import { Gauge, PipeChar, Gauge2 } from "../../../util/Tools";
 
 const DetailsOfRecord = ({ record }) => {
   const [categoryShow, setCategoryShow] = useState(undefined);
@@ -22,10 +24,10 @@ const DetailsOfRecord = ({ record }) => {
 
   return (
     <>
-      <div className={styles.body}>
+      <div className={styles.container}>
         <div>
-          <h1 className={styles.h1}>Record: {record.name}</h1>
-          <div className={styles.containerGauge}>
+          <h1 className={styles.container_h1}>Record: {record.name}</h1>
+          <div className={styles.container_gauge}>
             {types.map((type) => (
               <Gauge
                 key={type}
@@ -37,12 +39,12 @@ const DetailsOfRecord = ({ record }) => {
             ))}
             ;
           </div>
-          <h2 className={styles.h1}>Detailed Information</h2>
-          <div className={styles.containerGauge}>
+          <h2 className={styles.container_h1}>Detailed Information</h2>
+          <div className={styles.container_gauge}>
             {categories.map((category) => (
               <div
                 key={category}
-                className={styles.category}
+                className={styles.container_gauge_category}
                 onClick={() => setCategoryShow(category)}
               >
                 {category}
@@ -50,12 +52,12 @@ const DetailsOfRecord = ({ record }) => {
             ))}
           </div>
           {categoryShow && (
-            <div className={styles.containerInfo}>
+            <div className={styles.container_info}>
               {calculatedPrecentedValues(record, categoryShow).map((d) => {
                 return (
                   <div key={d.id}>
                     <div
-                      className={styles.infoContainer}
+                      className={styles.container_info_info}
                       onClick={() => handleOnClick(d.name)}
                     >
                       <span>{d.name.replace(/([A-Z])/g, " $1").trim()}</span>

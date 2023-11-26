@@ -5,7 +5,6 @@ import {
   axisBottom,
   axisLeft,
   easeLinear,
-  format,
   pie,
   scaleBand,
   scaleLinear,
@@ -14,7 +13,7 @@ import {
 } from "d3";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { calcAverageValue } from "../../../util/RecordUtils";
+import { calcAverageValue } from "./RecordUtils";
 
 export function Gauge({ width, height, type, data }) {
   const diameter = width / 2 + height / 2;

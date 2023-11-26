@@ -1,0 +1,21 @@
+.container {
+  composes: container from "../Record/CreateRecord.module.css";
+}
+.container_header {
+  composes: container_header from "../Record/CreateRecord.module.css";
+}
+.container_icon {
+  composes: container_icon from "../Record/CreateRecord.module.css";
+}
+.container_text {
+  composes: container_text from "../Record/CreateRecord.module.css";
+}
+.container_form {
+  composes: container_form from "../Record/CreateRecord.module.css";
+}
+.container_input {
+  composes: container_input from "../Record/CreateRecord.module.css";
+}
+.container_submit {
+  composes: container_submit from "../Record/CreateRecord.module.css";
+}

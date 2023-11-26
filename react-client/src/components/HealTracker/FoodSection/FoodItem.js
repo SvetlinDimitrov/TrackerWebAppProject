@@ -6,8 +6,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Gauge2 } from "../Tools";
-import api from "../../../../util/api";
+import { Gauge2 } from "../../../util/Tools";
+import api from "../../../util/api";
 import ChangeLength from "./ChangeLength";
 import styles from "./FoodItem.module.css";
 

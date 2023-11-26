@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
 import api from "../../../util/api";
-import styles from "../HeathTracker.module.css";
+import styles from "./CreateStorage.module.css";
 
 const CreateStorage = ({
   selectedRecord,
@@ -51,14 +51,14 @@ const CreateStorage = ({
       <h2 className={styles.container_header}>Create a new storage</h2>
       <FaHeart className={styles.container_icon} />
 
-      <form className={styles.form} onSubmit={(e) => handleStorageCreation(e)}>
+      <form className={styles.container_form} onSubmit={(e) => handleStorageCreation(e)}>
         <input
           type="text"
           name="name"
-          className={styles.input}
+          className={styles.container_input}
           placeholder="Storage name"
         />
-        <button type="submit" className={styles.submit}>
+        <button type="submit" className={styles.container_submit}>
           Submit
         </button>
       </form>

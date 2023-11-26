@@ -1,19 +1,32 @@
-.sectionContainer {
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    margin: auto;
-  }
-  
-  .section {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .section:hover {
-    background-color: #f0f0f0;
-  }
+.container {
+  composes: container from "./CreateRecord.module.css";
+}
+.container_header {
+  composes: container_header from "./CreateRecord.module.css";
+}
+.container_icon {
+  composes: container_icon from "./CreateRecord.module.css";
+}
+.container_text {
+  composes: container_text from "./CreateRecord.module.css";
+}
+
+.container_section {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: auto;
+}
+
+.container_section_container2 {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.container_section_container2:hover {
+  background-color: #f0f0f0;
+}

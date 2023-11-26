@@ -1,0 +1,35 @@
+.container {
+  composes: container from "../Record/DeleteRecord.module.css";
+}
+.container_header {
+  composes: container_header from "../Record/DeleteRecord.module.css";
+}
+.container_icon {
+  composes: container_icon from "../Record/DeleteRecord.module.css";
+}
+.container_text {
+  composes: container_text from "../Record/DeleteRecord.module.css";
+}
+.container_section {
+  composes: sectionContainer from "../Record/DeleteRecord.module.css";
+}
+.container_deleteButton {
+  composes: container_deleteButton from "../Record/DeleteRecord.module.css";
+}
+.overlay {
+  composes: overlay from "../Record/DeleteRecord.module.css";
+}
+
+.popup {
+  composes: popup from "../Record/DeleteRecord.module.css";
+}
+
+.popup_input {
+  composes: popup_input from "../Record/DeleteRecord.module.css";
+}
+.popup_confirmButton {
+  composes: popup_confirmButton from "../Record/DeleteRecord.module.css";
+}
+.popup_cancelButton {
+  composes: popup_cancelButton from "../Record/DeleteRecord.module.css";
+}

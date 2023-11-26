@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
 import api from "../../../util/api";
-import styles from "../HeathTracker.module.css";
+import styles from "./CreateRecord.module.css";
 
 const CreateRecord = ({
   userToken,
@@ -57,16 +57,16 @@ const CreateRecord = ({
       <h2 className={styles.container_header}>Create a new record</h2>
       <FaHeart className={styles.container_icon} />
 
-      <form className={styles.form} onSubmit={(e) => handleRecordCreation(e)}>
+      <form className={styles.container_form} onSubmit={(e) => handleRecordCreation(e)}>
         <input
           type="text"
           name="name"
           value={nameCreation}
-          className={styles.input}
+          className={styles.container_input}
           placeholder="Record name"
           onChange={(e) => setNameCreation(e.target.value)}
         />
-        <button type="submit" className={styles.submit}>
+        <button type="submit" className={styles.container_submit}>
           Submit
         </button>
       </form>

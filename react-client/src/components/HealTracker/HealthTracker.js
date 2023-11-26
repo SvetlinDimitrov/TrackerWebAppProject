@@ -12,7 +12,7 @@ import stylesNotification from "../Notifications/SuccessfulMessage.module.css";
 import api from "../../util/api";
 import CreateRecord from "./Record/CreateRecord";
 import DeleteRecord from "./Record/DeleteRecord";
-import FoodSection from "./Record/FoodSection/FoodSection";
+import FoodSection from "./FoodSection/FoodSection";
 import SelectRecord from "./Record/SelectRecord";
 import SelectRecordDetails from "./Record/SelectRecordDetails";
 import CreateStorage from "./Storage/CreateStorage";

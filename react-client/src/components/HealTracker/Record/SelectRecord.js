@@ -2,7 +2,7 @@ import React, { useState , useEffect} from "react";
 
 import { FaHeart } from "react-icons/fa";
 import { getRecordById } from "../../../util/RecordUtils";
-import styles from "../HeathTracker.module.css";
+import styles from "./SelectRecord.module.css";
 
 const SelectRecord = ({ records, selectedRecord, setSelectedRecord }) => {
   const [selected, setSelected] = useState(-1);
@@ -39,7 +39,6 @@ const SelectRecord = ({ records, selectedRecord, setSelectedRecord }) => {
       <select
         value={selected}
         onChange={(e) => handleSelectRecord(e.target.value)}
-        className={styles.choose_RecordContainer_selectValue}
       >
         <option value={-1}>Choose Record</option>
         {records.map((record) => (

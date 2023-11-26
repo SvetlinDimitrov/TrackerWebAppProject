@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getStorageById } from "../../../../util/RecordUtils.js";
-import styles from "../../HeathTracker.module.css";
+import { useNavigate } from "react-router-dom";
+
+import { getStorageById } from "../../../util/RecordUtils.js";
 import { AddFoodMenu } from "./AddFoodMenu.js";
 import FoodItem from "./FoodItem.js";
-import styles2 from "./FoodSection.module.css";
-import api from "../../../../util/api";
-import { useNavigate } from "react-router-dom";
+import styles from "./FoodSection.module.css";
+import api from "../../../util/api.js";
+
 
 const FoodSection = ({
   selectedRecord,
@@ -19,12 +20,12 @@ const FoodSection = ({
   const [showAddFoodMenu, setShowAddFoodMenu] = useState(false);
   const [food, setFood] = useState(undefined);
   const navigate = useNavigate();
-  
+
   const handleViewFood = (food) => {
     setFood(food);
   };
 
-  const changeFood = async (food , length) => {
+  const changeFood = async (food, length) => {
     try {
       await api.patch(
         `/storage/${selectedStorage.id}/changeFood?recordId=${selectedRecord.id}`,
@@ -48,7 +49,7 @@ const FoodSection = ({
       });
     }
     navigate("/health-tracker");
-  }
+  };
   useEffect(() => {
     setSelectedStorage(getStorageById(selectedRecord, selected));
   }, [selected, selectedRecord, setSelectedStorage]);
@@ -85,9 +86,7 @@ const FoodSection = ({
         </h2>
         <select
           value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-          className={styles.choose_RecordContainer_selectValue}
-        >
+          onChange={(e) => setSelected(e.target.value)}        >
           <option value={-1}>Choose Storage</option>
           {selectedRecord.storageViews.map((storageData) => (
             <option key={storageData.id} value={storageData.id}>
@@ -97,34 +96,28 @@ const FoodSection = ({
         </select>
         {selectedStorage !== undefined && (
           <>
-            <div className={styles2.totalCount}>
+            <div className={styles.container_totalCount}>
               Total Count: {selectedStorage.consumedCalories}
             </div>
-            <div className={styles2.foodDetails}>
+            <div className={styles.container_foodDetails}>
               {selectedStorage.foods.map((food, index) => (
                 <div
-                  className={styles2.foodItem}
+                  className={styles.container_foodDetails_food}
                   key={food.name + index}
                   onClick={() => handleViewFood(food)}
                 >
-                  <div className={styles.foodItemDetails}>
+                  <div className={styles.container_foodDetails_food_info}>
                     <div>{food.name}</div>
                     <div>{food.size} gram</div>
                   </div>
-                  <div className={styles.foodItemDetails}>
+                  <div className={styles.container_foodDetails_food_info}>
                     <div>Calories: {food.calories}</div>
-                    {/* <button
-                      className={styles2.deleteButton}
-                      onClick={() => handleDelete(food.name)}
-                    >
-                      🗑️ Delete
-                    </button> */}
                   </div>
                 </div>
               ))}
             </div>
             <button
-              className={styles2.addButton}
+              className={styles.container_addButton}
               onClick={() => setShowAddFoodMenu(true)}
             >
               Add Food

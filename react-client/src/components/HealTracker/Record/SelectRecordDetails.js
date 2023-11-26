@@ -1,27 +1,25 @@
-import React , {useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { FaHeart } from "react-icons/fa";
-import styles from "../HeathTracker.module.css";
-import styles2 from "./SelectRecordDetails.module.css";
+
+import styles from "./SelectRecordDetails.module.css";
 
 const SelectRecordDetails = ({ selectedRecord, selectedFeature }) => {
-
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
-    selectedFeature("")
+    selectedFeature("");
     setSelected(false);
-  }, [selectedRecord , selectedFeature]);
+  }, [selectedRecord, selectedFeature]);
 
   const handleSelected = () => {
-    
-    if(!selected){
+    if (!selected) {
       setSelected(true);
-      selectedFeature("details")
-    }else{
+      selectedFeature("details");
+    } else {
       setSelected(false);
-      selectedFeature("")
+      selectedFeature("");
     }
-  }
+  };
   return (
     <>
       <div className={styles.container}>
@@ -30,9 +28,9 @@ const SelectRecordDetails = ({ selectedRecord, selectedFeature }) => {
         </h2>
         <FaHeart className={styles.container_icon} />
         <p className={styles.container_text}>Get detailed information</p>
-        <div className={styles2.sectionContainer}>
+        <div className={styles.container_section}>
           <div
-            className={styles2.section}
+            className={styles.container_section_container2}
             onClick={() => handleSelected()}
           >
             {selected ? "Hide Details" : "More Details"}
