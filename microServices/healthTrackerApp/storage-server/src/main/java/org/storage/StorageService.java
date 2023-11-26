@@ -331,6 +331,7 @@ public class StorageService {
         foodToAdd.setB7(food.getB7().multiply(multiplier));
         foodToAdd.setB9(food.getB9().multiply(multiplier));
         foodToAdd.setB12(food.getB12().multiply(multiplier));
+
         foodToAdd.setCalcium(food.getCalcium().multiply(multiplier));
         foodToAdd.setPhosphorus(food.getPhosphorus().multiply(multiplier));
         foodToAdd.setMagnesium(food.getMagnesium().multiply(multiplier));
@@ -346,10 +347,10 @@ public class StorageService {
         foodToAdd.setFluoride(food.getFluoride().multiply(multiplier));
         foodToAdd.setChromium(food.getChromium().multiply(multiplier));
         foodToAdd.setMolybdenum(food.getMolybdenum().multiply(multiplier));
+
         foodToAdd.setCarbohydrates(food.getCarbohydrates().multiply(multiplier));
         foodToAdd.setProtein(food.getProtein().multiply(multiplier));
         foodToAdd.setFat(food.getFat().multiply(multiplier));
-
         foodToAdd.setFiber(food.getFiber().multiply(multiplier));
         foodToAdd.setTransFat(food.getTransFat().multiply(multiplier));
         foodToAdd.setSaturatedFat(food.getSaturatedFat().multiply(multiplier));

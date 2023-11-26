@@ -15,6 +15,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class RecordKafkaService extends AbstractRecordService {
@@ -24,8 +25,9 @@ public class RecordKafkaService extends AbstractRecordService {
     public RecordKafkaService(
             RecordRepository recordRepository,
             NutrientIntakeCreator nutrientIntakeCreator,
-            StorageClient storageClient) {
-        super(recordRepository, nutrientIntakeCreator);
+            StorageClient storageClient,
+            ObjectMapper objectMapper) {
+        super(objectMapper,recordRepository, nutrientIntakeCreator);
         this.storageClient = storageClient;
     }
 

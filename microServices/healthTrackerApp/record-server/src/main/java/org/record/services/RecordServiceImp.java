@@ -20,6 +20,7 @@ import org.record.utils.RecordValidator;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class RecordServiceImp extends AbstractRecordService {
@@ -29,8 +30,9 @@ public class RecordServiceImp extends AbstractRecordService {
     public RecordServiceImp(
             RecordRepository recordRepository,
             NutrientIntakeCreator nutrientIntakeCreator,
-            StorageClient storageClient) {
-        super(recordRepository, nutrientIntakeCreator);
+            StorageClient storageClient,
+            ObjectMapper objectMapper) {
+        super(objectMapper , recordRepository, nutrientIntakeCreator);
         this.storageClient = storageClient;
     }
 

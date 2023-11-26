@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractRecordService {
 
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper;
     protected final RecordRepository recordRepository;
     protected final NutrientIntakeCreator nutrientIntakeCreator;
 
