@@ -86,25 +86,25 @@ const FoodItem = ({
         />
       )}
       <div className={styles.overlay}>
-        <div className={styles.foodItem}>
-          <div className={styles.row}>
+        <div className={styles.container}>
+          <div className={styles.container_row}>
             <h3>{fun}</h3>
             <button
-              className={styles.acceptButton}
+              className={styles.container_row_acceptButton}
               onClick={() => onAddChangeFunction(food, length)}
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
           </div>
 
-          <div className={styles.row}>
+          <div className={styles.container_row}>
             <span>{food.name}</span>
           </div>
-          <div className={styles.row}>
+          <div className={styles.container_row}>
             <span>Calories</span>
             <span>{food.calories}</span>
           </div>
-          <div className={styles.rowGauge}>
+          <div className={styles.container_gauge}>
             <Gauge2
               width={300}
               height={120}
@@ -116,12 +116,12 @@ const FoodItem = ({
               carbohydrates={food.carbohydrates}
             />
           </div>
-          <div className={styles.row}>
+          <div className={styles.container_row}>
             <span>Serving Size</span>
             <span onClick={() => setShowLength(true)}>{food.size} gram</span>
           </div>
           <div
-            className={styles.container}
+            className={styles.container_container}
             onClick={() => setShowVitamins(!showVitamins)}
           >
             <span>More Information about Vitamins</span>
@@ -131,62 +131,62 @@ const FoodItem = ({
           </div>
           {showVitamins && (
             <>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin A</span>
                 <span>{food.a.toFixed(2)} IU</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin D</span>
                 <span>{food.d.toFixed(2)} IU</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin E</span>
                 <span>{food.e.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin K</span>
                 <span>{food.k.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin C</span>
                 <span>{food.c.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B1</span>
                 <span>{food.b1.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B2</span>
                 <span>{food.b2.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B3</span>
                 <span>{food.b3.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B5</span>
                 <span>{food.b5.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B6</span>
                 <span>{food.b6.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B7</span>
                 <span>{food.b7.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B9</span>
                 <span>{food.b9.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Vitamin B12</span>
                 <span>{food.b12.toFixed(2)} mcg</span>
               </div>
             </>
           )}
           <div
-            className={styles.container}
+            className={styles.container_container}
             onClick={() => setShowMinerals(!showMinerals)}
           >
             <span>More Information about Minerals</span>
@@ -196,70 +196,70 @@ const FoodItem = ({
           </div>
           {showMinerals && (
             <>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Calcium</span>
                 <span>{food.calcium.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Phosphorus</span>
                 <span>{food.phosphorus.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Magnesium</span>
                 <span>{food.magnesium.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Sodium</span>
                 <span>{food.sodium.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Potassium</span>
                 <span>{food.potassium.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Chloride</span>
                 <span>{food.chloride.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Iron</span>
                 <span>{food.iron.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Zinc</span>
                 <span>{food.zinc.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Copper</span>
                 <span>{food.copper.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Manganese</span>
                 <span>{food.manganese.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Iodine</span>
                 <span>{food.iodine.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Selenium</span>
                 <span>{food.selenium.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Fluoride</span>
                 <span>{food.fluoride.toFixed(2)} mg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Chromium</span>
                 <span>{food.chromium.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Molybdenum</span>
                 <span>{food.molybdenum.toFixed(2)} mcg</span>
               </div>
             </>
           )}
           <div
-            className={styles.container}
+            className={styles.container_container}
             onClick={() => setShowMacros(!showMacros)}
           >
             <span>More Information about Macros</span>
@@ -269,59 +269,59 @@ const FoodItem = ({
           </div>
           {showMacros && (
             <>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Protein</span>
                 <span>{food.protein.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Carbohydrates</span>
                 <span>{food.carbohydrates.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Fiber</span>
                 <span>{food.fiber.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Sugar</span>
                 <span>{food.sugar.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Fat</span>
                 <span>{food.fat.toFixed(2)} g</span>
               </div>
 
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Trans Fat</span>
                 <span>{food.transFat.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Saturated Fat</span>
                 <span>{food.saturatedFat.toFixed(2)} g</span>
               </div>
 
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Polyunsaturated Fat</span>
                 <span>{food.polyunsaturatedFat.toFixed(2)} g</span>
               </div>
-              <div className={styles.row}>
+              <div className={styles.container_row}>
                 <span>Monounsaturated Fat</span>
                 <span>{food.monounsaturatedFat.toFixed(2)} g</span>
               </div>
             </>
           )}
-          <div className={styles.specialRow}>
-            <div className={styles.closeButtonContainer}>
+          <div className={styles.container_specialRow}>
+            <div className={styles.container_specialRow_closeButtonContainer}>
               <button
-                className={styles.closeButton}
+                className={styles.container_specialRow_closeButtonContainer_closeButton}
                 onClick={() => setShowFood(undefined)}
               >
                 Close
               </button>
             </div>
             {fun === "Edit Food" && (
-              <div className={styles.closeButtonContainer}>
+              <div className={styles.container_specialRow_closeButtonContainer}>
                 <button
-                  className={styles.closeButton}
+                  className={styles.container_specialRow_closeButtonContainer_closeButton}
                   onClick={() => handleDeleteFood()}
                 >
                   Delete

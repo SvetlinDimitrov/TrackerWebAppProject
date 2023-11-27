@@ -118,9 +118,9 @@ export const AddFoodMenu = ({
                   );
                 })}
             </div>
-            <div className={styles.closeButtonContainer}>
+            <div className={styles.container_CloseButton_container2}>
               <button
-                className={styles.closeButton}
+                className={styles.container_CloseButton_container2_closeButton}
                 onClick={() => onClose(false)}
               >
                 Close

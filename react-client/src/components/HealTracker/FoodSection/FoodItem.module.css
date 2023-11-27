@@ -1,8 +1,17 @@
-.foodItem {
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1011;
+}
+.container {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: start;
+  align-items: flex-start;
+  justify-content: flex-start;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -16,17 +25,15 @@
   height: 60%;
   overflow-y: auto;
 }
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+.container_row {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
-  z-index: 1011;
+  border-bottom: gray 1px solid;
+  padding: 10px;
 }
-.acceptButton {
+
+.container_row_acceptButton {
   background: none;
   border: none;
   cursor: pointer;
@@ -34,26 +41,14 @@
   border-radius: 20px;
   background-color: greenyellow;
 }
-.accept_containerButton {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  border-bottom: gray 1px solid;
-  padding: 10px;
-}
-.rowGauge{
+.container_gauge {
   display: flex;
   justify-content: center;
   width: 100%;
   border-bottom: gray 1px solid;
   padding: 10px;
 }
-.container {
+.container_container {
   display: flex;
   justify-content: center;
   gap: 5px;
@@ -62,25 +57,19 @@
   padding: 10px;
   cursor: pointer;
 }
-
-.container button {
-  border: none;
-  background: none;
-  cursor: pointer;
+.container_specialRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
 }
-#aTag {
-  
-  color: blue;
-  cursor: pointer;
-
-}
-.closeButtonContainer {
+.container_specialRow_closeButtonContainer {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.closeButton {
+.container_specialRow_closeButtonContainer_closeButton {
   background-color: #f44336;
   border: none;
   border-radius: 10px;
@@ -94,9 +83,9 @@
   font-size: 16px;
   cursor: pointer;
 }
-.specialRow{
+
+.accept_containerButton {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
-  padding: 10px;
 }

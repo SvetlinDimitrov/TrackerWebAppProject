@@ -3,12 +3,25 @@
   background-color: #f0f0f0;
 }
 
-.container {
+.body_container {
   max-width: 50%;
   margin: 0 auto;
   padding: 20px;
 }
-.barCharSection{
+.body_container_section {
+  background-color: #fff;
+  border: 2px solid #00b050;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+}
+.body_container_section_functions,
+.body_container_section_sources {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.body_container_barChar{
   background-color: #fff;
   border: 2px solid #00b050;
   border-radius: 10px;
@@ -17,27 +30,12 @@
   height: 700px;
   width: 100%;
 }
-.section {
-  background-color: #fff;
-  border: 2px solid #00b050;
-  border-radius: 10px;
-  margin: 20px 0;
-  padding: 20px;
-}
 
 
-.sectionH2 {
+
+.body_container_section_h2 {
   font-weight: bold;
   color: #00b050;
 }
 
-.functions,
-.sources {
-  margin: 10px 0;
-}
 
-.functionsUl,
-.sourcesUl {
-  list-style-type: disc;
-  margin-left: 20px;
-}

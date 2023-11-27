@@ -40,18 +40,18 @@ const NutrientTemplate = () => {
         <div id="preloader"></div>
       ) : (
         <div className={styles.body}>
-          <div className={styles.container}>
-            <div className={styles.section}>
-              <h2 className={styles.sectionH2}>
+          <div className={styles.body_container}>
+            <div className={styles.body_container_section}>
+              <h2 className={styles.body_container_section_h2}>
                 Name: {`${nutritionTemplate.type} ${nutritionTemplate.name}`}
               </h2>
               <p>{nutritionTemplate.description}</p>
             </div>
 
             {nutritionTemplate.functions && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Functions:</h2>
-                <ul className={styles.functionsUl}>
+                <ul className={styles.body_container_section_functions}>
                   {nutritionTemplate.functions.map((func, index) => (
                     <li key={index}>
                       {func.key && func.key !== "-" && func.key !== "" ? (
@@ -70,9 +70,9 @@ const NutrientTemplate = () => {
             )}
 
             {nutritionTemplate.sources && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Sources:</h2>
-                <ul className={styles.sourcesUl}>
+                <ul className={styles.body_container_section_sources}>
                   {nutritionTemplate.sources.map((func, index) => (
                     <li key={index}>
                       {func.key && func.key !== "-" && func.key !== "" ? (
@@ -91,9 +91,9 @@ const NutrientTemplate = () => {
             )}
 
             {nutritionTemplate.healthConsiderations && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Health Considerations:</h2>
-                <ul className={styles.sourcesUl}>
+                <ul className={styles.body_container_section_sources}>
                   {nutritionTemplate.healthConsiderations.map((func, index) => (
                     <li key={index}>
                       {func.key && func.key !== "-" && func.key !== "" ? (
@@ -112,9 +112,9 @@ const NutrientTemplate = () => {
             )}
 
             {nutritionTemplate.types && nutritionTemplate.types[0] && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Types:</h2>
-                <ul className={styles.sourcesUl}>
+                <ul className={styles.body_container_section_sources}>
                   {nutritionTemplate.types.map((func, index) => (
                     <li key={index}>
                       {func.key && func.key !== "-" && func.key !== "" ? (
@@ -133,9 +133,9 @@ const NutrientTemplate = () => {
             )}
 
             {nutritionTemplate.dietaryConsiderations && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Dietary Considerations:</h2>
-                <ul className={styles.sourcesUl}>
+                <ul className={styles.body_container_section_sources}>
                   {nutritionTemplate.dietaryConsiderations.map(
                     (func, index) => (
                       <li key={index}>
@@ -156,7 +156,7 @@ const NutrientTemplate = () => {
             )}
 
             {nutritionTemplate.maleLowerBoundIntake !== undefined && (
-              <div className={styles.section}>
+              <div className={styles.body_container_section}>
                 <h2>Intake Recommendations:</h2>
                 <p>
                   For males, the recommended intake ranges from{" "}
@@ -168,7 +168,7 @@ const NutrientTemplate = () => {
                 </p>
               </div>
             )}
-            <div className={styles.barCharSection}>
+            <div className={styles.body_container_barChar}>
               <p>
                 Hello there! This diagram provides information about foods that
                 are rich in a specific nutrition. You can hover your mouse over
