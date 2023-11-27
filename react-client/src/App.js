@@ -16,6 +16,8 @@ import EditUser from "./components/User/EditUser/EditUser";
 import NotificationProvider from "./context/Notification";
 import FoodContextProvider from "./context/FoodContext";
 import HealthTracker from "./components/HealTracker/HealthTracker";
+import SelectedRecordHolder from "./components/HealTracker/Record/SelectedRecordHolder";
+import SelectedStorageHolder from "./components/HealTracker/Storage/SelectedStorageHolder";
 function App() {
   return (
     <>
@@ -38,6 +40,15 @@ function App() {
               <Route path="/logout" element={<Logout />} />
               <Route element={<UserAuthGuard />}>
                 <Route path="/health-tracker" element={<HealthTracker />}>
+                  <Route
+                    path="record/:recordId"
+                    element={<SelectedRecordHolder />}
+                  >
+                    <Route
+                      path="storage/:storageId"
+                      element={<SelectedStorageHolder />}
+                    />
+                  </Route>
                 </Route>
               </Route>
             </Routes>

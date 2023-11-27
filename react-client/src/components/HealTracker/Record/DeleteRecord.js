@@ -7,7 +7,6 @@ import api from "../../../util/api";
 
 import styles from "./DeleteRecord.module.css";
 
-
 const DeleteRecord = ({
   selectedRecord,
   userToken,
@@ -19,7 +18,6 @@ const DeleteRecord = ({
   const navigate = useNavigate();
 
   const handleDeletion = async () => {
-
     if (selectedRecord.name === nameDeletion) {
       try {
         await api.delete(`/record/${selectedRecord.id}`, {
@@ -30,7 +28,7 @@ const DeleteRecord = ({
           message: "Record created successfully!",
           flag: true,
         });
-        navigate("/health-tracker");
+        
       } catch (error) {
         setFailedMessage({
           message:
@@ -45,7 +43,7 @@ const DeleteRecord = ({
         flag: true,
       });
     }
-
+    navigate("/health-tracker");
     setPopupVisible(false);
   };
   return (

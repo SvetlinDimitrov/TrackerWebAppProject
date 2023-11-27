@@ -4,14 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
 import api from "../../../util/api";
-import styles from "../HeathTracker.module.css";
-import styles3 from "../Record/DeleteRecord.module.css";
-import styles2 from "../Record/SelectRecordDetails.module.css";
 import styles4 from "./DeleteStorage.module.css";
 
 const DeleteStorage = ({
   selectedStorage,
-  selectedRecord,
+  recordId,
   userToken,
   setFailedMessage,
   setSuccessfulMessage,
@@ -24,7 +21,7 @@ const DeleteStorage = ({
     if (selectedStorage.name === nameDeletion) {
       try {
         await api.delete(
-          `/record/${selectedRecord.id}/storage/${selectedStorage.id}`,
+          `/record/${recordId}/storage/${selectedStorage.id}`,
           { headers: { Authorization: `Bearer ${userToken}` } }
         );
         setSuccessfulMessage({
@@ -32,7 +29,7 @@ const DeleteStorage = ({
             "Storage: " + selectedStorage.name + " was deleted successfully!",
           flag: true,
         });
-        navigate("/health-tracker");
+        
       } catch (error) {
         setFailedMessage({
           message:
@@ -40,7 +37,7 @@ const DeleteStorage = ({
           flag: true,
         });
       }
-      navigate("/health-tracker");
+     
     } else {
       setFailedMessage({
         message:
@@ -48,17 +45,18 @@ const DeleteStorage = ({
         flag: true,
       });
     }
+    navigate("/health-tracker/record/" + recordId);
     setPopupVisible(false);
   };
   return (
     <>
       <div className={styles4.container}>
         <h2 className={styles4.container_header}>
-          Selected record {selectedRecord && selectedRecord.name}
+          Selected storage {selectedStorage && selectedStorage.name}
         </h2>
         <FaHeart className={styles4.container_icon} />
         <p className={styles4.container_text}>
-          Delete storage {selectedStorage.name}
+          Delete storage 
         </p>
         <div className={styles4.container_section}>
           <button

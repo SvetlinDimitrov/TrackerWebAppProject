@@ -1,30 +1,27 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { FaHeart } from "react-icons/fa";
-import { getRecordById } from "../../../util/RecordUtils";
 import styles from "./SelectRecord.module.css";
 
-const SelectRecord = ({ records, selectedRecord, setSelectedRecord }) => {
+const SelectRecord = ({ records }) => {
+  const { recordId } = useParams();
   const [selected, setSelected] = useState(-1);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedRecord) {
-      setSelected(selectedRecord.id);
-    } else {
-      setSelected(-1);
-    }
-  }, [selectedRecord]);
-  
-  const handleSelectRecord = async(id) => {
+    setSelected( (recordId === null || recordId === undefined) ? -1 : recordId);
+  }, [recordId]);
+
+  const handleSelectRecord = (id) => {
     const selectedId = +id;
     setSelected(selectedId);
 
     if (selectedId === -1) {
-      setSelectedRecord(undefined);
+      navigate(`/health-tracker`);
       return;
     }
-    const record = getRecordById(records, selectedId);
-    setSelectedRecord(record);
+    navigate(`/health-tracker/record/${selectedId}`);
   };
 
   return (

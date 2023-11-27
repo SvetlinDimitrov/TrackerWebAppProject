@@ -8,14 +8,14 @@ import styles from "./CreateRecord.module.css";
 const CreateRecord = ({
   userToken,
   setFailedMessage,
-  setSuccessfulMessage,
+  setSuccessfulMessage
 }) => {
   const navigate = useNavigate();
   const [nameCreation, setNameCreation] = useState("");
 
   useEffect(() => {
     setNameCreation("");
-  }, [setSuccessfulMessage, setFailedMessage]);
+  }, [navigate]);
 
   const handleRecordCreation = async (e) => {
     e.preventDefault();
@@ -49,6 +49,7 @@ const CreateRecord = ({
       });
     }
 
+    setNameCreation("");
     navigate("/health-tracker");
   };
 

@@ -64,7 +64,7 @@ const FoodItem = ({
           flag: true,
         });
       }
-      navigate("/health-tracker");
+      navigate(`/health-tracker/record/${record.id}/storage/${storage.id}`);
     }
   };
 
@@ -312,7 +312,9 @@ const FoodItem = ({
           <div className={styles.container_specialRow}>
             <div className={styles.container_specialRow_closeButtonContainer}>
               <button
-                className={styles.container_specialRow_closeButtonContainer_closeButton}
+                className={
+                  styles.container_specialRow_closeButtonContainer_closeButton
+                }
                 onClick={() => setShowFood(undefined)}
               >
                 Close
@@ -321,7 +323,9 @@ const FoodItem = ({
             {fun === "Edit Food" && (
               <div className={styles.container_specialRow_closeButtonContainer}>
                 <button
-                  className={styles.container_specialRow_closeButtonContainer_closeButton}
+                  className={
+                    styles.container_specialRow_closeButtonContainer_closeButton
+                  }
                   onClick={() => handleDeleteFood()}
                 >
                   Delete

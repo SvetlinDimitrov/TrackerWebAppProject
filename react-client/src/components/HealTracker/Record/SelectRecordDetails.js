@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaHeart } from "react-icons/fa";
 
 import styles from "./SelectRecordDetails.module.css";
 
-const SelectRecordDetails = ({ selectedRecord, selectedFeature }) => {
-  const [selected, setSelected] = useState(false);
-
-  useEffect(() => {
-    selectedFeature("");
-    setSelected(false);
-  }, [selectedRecord, selectedFeature]);
+const SelectRecordDetails = ({ selectedRecord, setShowMoreInfo , showMoreInfo}) => {
 
   const handleSelected = () => {
-    if (!selected) {
-      setSelected(true);
-      selectedFeature("details");
-    } else {
-      setSelected(false);
-      selectedFeature("");
-    }
+    setShowMoreInfo((prev) => !prev);
   };
   return (
     <>
@@ -33,7 +21,7 @@ const SelectRecordDetails = ({ selectedRecord, selectedFeature }) => {
             className={styles.container_section_container2}
             onClick={() => handleSelected()}
           >
-            {selected ? "Hide Details" : "More Details"}
+            {showMoreInfo ? "Hide Details" : "More Details"}
           </div>
         </div>
       </div>

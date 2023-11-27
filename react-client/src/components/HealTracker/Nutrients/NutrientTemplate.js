@@ -18,7 +18,6 @@ const NutrientTemplate = () => {
       try {
         if (nutrition === "macronutrientTypes") {
           response = await api.get("/macronutrient/types/" + nutritionType);
-          nutrition = "macronutrient";
         } else {
           response = await api.get("/" + nutrition + "/" + nutritionType);
         }

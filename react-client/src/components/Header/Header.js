@@ -78,38 +78,12 @@ const Header = () => {
                   <li>
                     <Link to={"/nutrientInfo"}>NutrientInfo</Link>
                   </li>
-                  {/* <li className="dropdown">
-                    <a href="#">
-                      <span>Deep Drop Down</span>{" "}
-                      <i className="bi bi-chevron-down dropdown-indicator"></i>
-                    </a>
-                    <ul>
-                      <li>
-                        <a href="#">Deep Drop Down 1</a>
-                      </li>
-                      <li>
-                        <a href="#">Deep Drop Down 2</a>
-                      </li>
-                      <li>
-                        <a href="#">Deep Drop Down 3</a>
-                      </li>
-                      <li>
-                        <a href="#">Deep Drop Down 4</a>
-                      </li>
-                      <li>
-                        <a href="#">Deep Drop Down 5</a>
-                      </li>
-                    </ul>
-                  </li> */}
-               
+
                   <li>
                     <Link to={"/foodSection"}>FoodSection</Link>
                   </li>
                   <li>
                     <Link to={"/health-tracker"}>HealthTracker</Link>
-                  </li>
-                  <li>
-                    <a href="#">Drop Down 4</a>
                   </li>
                 </ul>
               </li>

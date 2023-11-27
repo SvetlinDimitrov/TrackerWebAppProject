@@ -1,39 +1,44 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate , useParams} from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 
 import api from "../../../util/api";
 import styles from "./CreateStorage.module.css";
 
 const CreateStorage = ({
-  selectedRecord,
   userToken,
   setFailedMessage,
   setSuccessfulMessage,
 }) => {
+  const { recordId } = useParams();
   const navigate = useNavigate();
+  const [storageName, setStorageName] = useState(undefined);
+
+  useEffect(() => {
+    setStorageName("");
+  }, []);
 
   const handleStorageCreation = async (e) => {
     e.preventDefault();
-    const name = e.target.name.value;
 
-    if (name.length < 2) {
+    if (storageName.length < 2) {
       setFailedMessage({
         message: "Name must be at least 2 character long!",
         flag: true,
       });
-      navigate("/health-tracker");
+      navigate("/health-tracker/record/" + recordId);
       return;
     }
     try {
       await api.post(
-        `/record/${selectedRecord.id}/storage?storageName=${encodeURIComponent(name)}`,
+        `/record/${recordId}/storage?storageName=${encodeURIComponent(
+          storageName
+        )}`,
         {},
         { headers: { Authorization: `Bearer ${userToken}` } }
       );
-
       setSuccessfulMessage({
-        message: "Storage: "+ name + " was created successfully!",
+        message: "Storage: " + storageName + " was created successfully!",
         flag: true,
       });
     } catch (error) {
@@ -43,7 +48,8 @@ const CreateStorage = ({
         flag: true,
       });
     }
-    navigate("/health-tracker");
+    setStorageName("");
+    navigate("/health-tracker/record/" + recordId);
   };
 
   return (
@@ -51,10 +57,15 @@ const CreateStorage = ({
       <h2 className={styles.container_header}>Create a new storage</h2>
       <FaHeart className={styles.container_icon} />
 
-      <form className={styles.container_form} onSubmit={(e) => handleStorageCreation(e)}>
+      <form
+        className={styles.container_form}
+        onSubmit={(e) => handleStorageCreation(e)}
+      >
         <input
           type="text"
           name="name"
+          onChange={(e) => setStorageName(e.target.value)}
+          value={storageName}
           className={styles.container_input}
           placeholder="Storage name"
         />

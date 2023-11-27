@@ -10,7 +10,7 @@ export const AddFoodMenu = ({
   setFailedMessage,
   setSuccessfulMessage,
   userToken,
-  selectedRecord,
+  recordId,
   storage,
 }) => {
   const [foods, setFoods] = useState([]);
@@ -49,7 +49,7 @@ export const AddFoodMenu = ({
     ) {
       try {
         await api.patch(
-          `/storage/${storage.id}/addFood?recordId=${selectedRecord.id}`,
+          `/storage/${storage.id}/addFood?recordId=${recordId}`,
           {
             foodName: food.name,
             amount: length,
@@ -75,7 +75,8 @@ export const AddFoodMenu = ({
           flag: true,
         });
       }
-      navigate("/health-tracker");
+      onClose(false);
+      navigate(`/health-tracker/record/${recordId}/storage/${storage.id}`);
     }
   };
 

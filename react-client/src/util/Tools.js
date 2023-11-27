@@ -11,7 +11,7 @@ import {
   select,
   selectAll,
 } from "d3";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "./RecordUtils";
 
@@ -317,25 +317,11 @@ export function Gauge2({
     </svg>
   );
 }
-export function BarChart({ height, info }) {
+export function BarChart({ height, info , containerWidth}) {
   const { data, dataNames } = info;
-  const ref = useRef();
-  const [width, setWidth] = useState(0);
-  const margin = { top: 10, right: 10, bottom: 45, left: 50 };
-
-  useEffect(() => {
-    setWidth(ref.current.clientWidth);
-
-    const handleResize = () => {
-      setWidth(ref.current.clientWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+ 
+  const width = 3000;
+  const margin = { top: 10, right: 20, bottom: 50, left: 40 };
 
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
@@ -347,7 +333,8 @@ export function BarChart({ height, info }) {
     .domain([0, Math.max(...data)]);
 
   return (
-    <div ref={ref}>
+    <div style={{ width: 870, overflowX: 'auto' }}>
+    <div style={{ minWidth: 'max-content' }}>
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
           <g
@@ -384,6 +371,7 @@ export function BarChart({ height, info }) {
             ))}
         </g>
       </svg>
+    </div>
     </div>
   );
 }
