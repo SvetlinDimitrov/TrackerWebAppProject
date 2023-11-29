@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import UserAuthProvider from "./context/UserAuth";
 import UserAuthGuard from "./context/UserAuthGuard";
 
-import NutrientInfo from "./components/HealTracker/Nutrients/NutrientInfo";
 import Logout from "./components/User/Logout/Logout";
 import Header from "./components/Header/Header";
 import Home from "./components/HomePage/Home";
@@ -18,6 +17,8 @@ import FoodContextProvider from "./context/FoodContext";
 import HealthTracker from "./components/HealTracker/HealthTracker";
 import SelectedRecordHolder from "./components/HealTracker/Record/SelectedRecordHolder";
 import SelectedStorageHolder from "./components/HealTracker/Storage/SelectedStorageHolder";
+import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
+import NutrientFeatureTemplate from "./components/HealTracker/Nutrients/NutrientFeatureTemplate";
 function App() {
   return (
     <>
@@ -29,10 +30,14 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/nutrientInfo" element={<NutrientInfo />}>
+              <Route path="/nutrientInfo" element={<NutritionInfo />}>
                 <Route
                   path=":nutrition/:nutritionType"
                   element={<NutrientTemplate />}
+                />
+                <Route
+                  path="feature/:featureType"
+                  element={<NutrientFeatureTemplate />}
                 />
               </Route>
               <Route path="*" element={<Error />} />

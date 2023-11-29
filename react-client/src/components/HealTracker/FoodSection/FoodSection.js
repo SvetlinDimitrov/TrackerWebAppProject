@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState , useEffect} from "react";
+import { useNavigate , useLocation } from "react-router-dom";
 
 import { AddFoodMenu } from "./AddFoodMenu.js";
 import FoodItem from "./FoodItem.js";
@@ -13,9 +13,14 @@ const FoodSection = ({
   setFailedMessage,
   selectedStorage,
 }) => {
+  const location = useLocation();
   const [showAddFoodMenu, setShowAddFoodMenu] = useState(false);
-  const [food, setFood] = useState(undefined);
+  const [food, setFood] = useState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFood(undefined);
+  }, [location]);
 
   const handleViewFood = (food) => {
     setFood(food);
@@ -44,10 +49,16 @@ const FoodSection = ({
         flag: true,
       });
     }
-    navigate("/health-tracker");
+    navigate(
+      "/health-tracker/record/" +
+        recordId +
+        "/storage/" +
+        selectedStorage.id +
+        "/"
+    );
   };
 
-  if(selectedStorage === undefined){
+  if (selectedStorage === undefined) {
     return <div id="preloader"></div>;
   }
 
@@ -59,8 +70,6 @@ const FoodSection = ({
           showFood={food}
           fun={"Edit Food"}
           onAddChangeFunction={changeFood}
-          storage={selectedStorage}
-          recordId={recordId}
           userToken={userToken}
           setFailedMessage={setFailedMessage}
           setSuccessfulMessage={setSuccessfulMessage}
@@ -72,14 +81,10 @@ const FoodSection = ({
           setFailedMessage={setFailedMessage}
           setSuccessfulMessage={setSuccessfulMessage}
           userToken={userToken}
-          recordId={recordId}
-          storage={selectedStorage}
         />
       )}
       <div className={styles.container}>
-      <h2>
-        Selected foods from {selectedStorage.name}
-      </h2>
+        <h2>Selected foods from {selectedStorage.name}</h2>
         <div className={styles.container_totalCount}>
           Total Count: {selectedStorage.consumedCalories}
         </div>

@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
 import ChangeLength from "./ChangeLength";
@@ -17,11 +17,10 @@ const FoodItem = ({
   setShowFood,
   userToken,
   onAddChangeFunction,
-  storage,
-  record,
   setSuccessfulMessage,
   setFailedMessage,
 }) => {
+  const { recordId , storageId } = useParams();
   const [showVitamins, setShowVitamins] = useState(false);
   const [showMinerals, setShowMinerals] = useState(false);
   const [showMacros, setShowMacros] = useState(false);
@@ -47,7 +46,7 @@ const FoodItem = ({
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         await api.patch(
-          `/storage/${storage.id}/removeFood?foodName=${food.name}&recordId=${record.id}`,
+          `/storage/${storageId}/removeFood?foodName=${food.name}&recordId=${recordId}`,
           {},
           {
             headers: { Authorization: `Bearer ${userToken}` },
@@ -64,7 +63,7 @@ const FoodItem = ({
           flag: true,
         });
       }
-      navigate(`/health-tracker/record/${record.id}/storage/${storage.id}`);
+      navigate(`/health-tracker/record/${recordId}/storage/${storageId}`);
     }
   };
 
@@ -78,11 +77,6 @@ const FoodItem = ({
           setShowLength={setShowLength}
           setLength={setLength}
           length={length}
-          storage={storage}
-          record={record}
-          userToken={userToken}
-          setFailedMessage={setFailedMessage}
-          setSuccessfulMessage={setSuccessfulMessage}
         />
       )}
       <div className={styles.overlay}>

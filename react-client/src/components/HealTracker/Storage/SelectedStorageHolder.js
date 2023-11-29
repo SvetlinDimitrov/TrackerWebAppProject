@@ -7,6 +7,7 @@ import api from "../../../util/api";
 import FoodSection from "../FoodSection/FoodSection";
 import DeleteStorage from "./DeleteStorage";
 import styles from "./SelectedStorageHolder.module.css";
+import CustomFood from "../FoodSection/CustomFood";
 
 const SelectedStorageHolder = () => {
   const location = useLocation();
@@ -56,6 +57,7 @@ const SelectedStorageHolder = () => {
         setFailedMessage={setFailedMessage}
         selectedStorage={storage}
       />
+      <CustomFood/>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../../util/api";
 import styles from "./AddFoodMenu.module.css";
@@ -10,9 +10,8 @@ export const AddFoodMenu = ({
   setFailedMessage,
   setSuccessfulMessage,
   userToken,
-  recordId,
-  storage,
 }) => {
+  const { recordId, storageId } = useParams();
   const [foods, setFoods] = useState([]);
   const [food, setFood] = useState(undefined);
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ export const AddFoodMenu = ({
     ) {
       try {
         await api.patch(
-          `/storage/${storage.id}/addFood?recordId=${recordId}`,
+          `/storage/${storageId}/addFood?recordId=${recordId}`,
           {
             foodName: food.name,
             amount: length,
@@ -76,7 +75,7 @@ export const AddFoodMenu = ({
         });
       }
       onClose(false);
-      navigate(`/health-tracker/record/${recordId}/storage/${storage.id}`);
+      navigate(`/health-tracker/record/${recordId}/storage/${storageId}`);
     }
   };
 

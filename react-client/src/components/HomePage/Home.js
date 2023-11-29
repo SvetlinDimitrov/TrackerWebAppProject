@@ -4,8 +4,6 @@ import AboutUsSection from "./AboutUsSection";
 import AskQuestions from "./AskQuestions";
 import ClientSection from "./ClientsSection";
 import HeroSection from "./HeroSection";
-import OurServices from "./OurServices";
-
 
 import { NotificationContext } from "../../context/Notification";
 
@@ -46,7 +44,6 @@ const Home = () => {
       <main id="main">
         <AboutUsSection />
         <ClientSection />
-        <OurServices />
         <AskQuestions />
       </main>
     </div>
