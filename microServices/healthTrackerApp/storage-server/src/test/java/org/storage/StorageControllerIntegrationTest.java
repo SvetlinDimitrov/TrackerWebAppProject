@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.storage.client.FoodClient;
 import org.storage.client.FoodUpdate;
+import org.storage.client.User;
 import org.storage.model.entity.Food;
 import org.storage.model.entity.Storage;
 
@@ -37,6 +38,7 @@ public class StorageControllerIntegrationTest {
     private StorageRepository storageRepository;
     @Autowired
     private StorageService storageService;
+
     @Autowired
     private Gson gson;
 
@@ -64,11 +66,13 @@ public class StorageControllerIntegrationTest {
     public void testGetAllStorages_ValidINput_statusOK() throws Exception {
 
         Long validRecordId = 1L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(1L);
+
+        Storage storage = createStorage(validRecordId, user.getId());
         storageRepository.save(storage);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/storage/all?recordId=" + validRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
@@ -77,9 +81,10 @@ public class StorageControllerIntegrationTest {
     public void testGetAllStorages_InValidINput_badRequest() throws Exception {
 
         Long invalidRecordId = 1000L;
+        User user = getUser(2L);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/storage/all?recordId=" + invalidRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -88,12 +93,16 @@ public class StorageControllerIntegrationTest {
     public void testGetStorage_ValidINput_statusOK() throws Exception {
 
         Long validRecordId = 2L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(3L);
+
+        Storage storage = createStorage(validRecordId , user.getId());
         storageRepository.save(storage);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/storage?recordId=" + validRecordId + "&storageId=" + storage.getId())
-                        .header("X-ViewUser", "test"))
+                MockMvcRequestBuilders
+                        .get("/api/storage?recordId=" + validRecordId + "&storageId="
+                                + storage.getId())
+                        .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
@@ -103,10 +112,11 @@ public class StorageControllerIntegrationTest {
 
         Long invalidRecordId = 1000L;
         Long invalidStorageId = 1000L;
+        User user = getUser(4L);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/storage?recordId=" + invalidRecordId + "&storageId=" + invalidStorageId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -115,12 +125,13 @@ public class StorageControllerIntegrationTest {
     public void testCreateStorage_ValidInputWitNoName_statusNoContent() throws Exception {
 
         Long validRecordId = 3L;
+        User user = getUser(5L);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/storage?recordId=" + validRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).size() == 1);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).size() == 1);
     }
 
     @Test
@@ -128,40 +139,45 @@ public class StorageControllerIntegrationTest {
 
         Long validRecordId = 4L;
         String storageName = "test";
+        User user = getUser(6L);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/storage?recordId=" + validRecordId + "&storageName=" + storageName)
-                        .header("X-ViewUser", "test"))
+                MockMvcRequestBuilders
+                        .post("/api/storage?recordId=" + validRecordId + "&storageName="
+                                + storageName)
+                        .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findByNameAndRecordId(storageName, validRecordId).isPresent());
+        assertTrue(storageRepository.findByNameAndRecordIdAndUserId(storageName, validRecordId , user.getId()).isPresent());
     }
 
     @Test
     public void testCreateStorageFirstCreation_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 5L;
+        User user = getUser(7L);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/storage/firstCreation?recordId=" + validRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).size() == 4);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).size() == 4);
     }
 
     @Test
     public void testDeleteStorage_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 6L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(8L);
+        Storage storage = createStorage(validRecordId , user.getId());
         storageRepository.save(storage);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/api/storage/delete/" + storage.getId() + "/record?recordId=" + validRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).size() == 0);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).size() == 0);
     }
 
     @Test
@@ -169,10 +185,12 @@ public class StorageControllerIntegrationTest {
 
         Long invalidRecordId = 1000L;
         Long invalidStorageId = 1000L;
+        User user = getUser(9L);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/storage/delete/" + invalidStorageId + "/record?recordId=" + invalidRecordId)
-                .header("X-ViewUser", "test"))
+                .delete("/api/storage/delete/" + invalidStorageId + "/record?recordId="
+                        + invalidRecordId)
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -181,16 +199,17 @@ public class StorageControllerIntegrationTest {
     public void testDeleteAllStoragesByRecordId_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 7L;
-        Storage storage = createStorage(validRecordId);
-        Storage storage1 = createStorage(validRecordId);
-        Storage storage2 = createStorage(validRecordId);
+        User user = getUser(10L);
+        Storage storage = createStorage(validRecordId , user.getId());
+        Storage storage1 = createStorage(validRecordId , user.getId());
+        Storage storage2 = createStorage(validRecordId , user.getId());
         storageRepository.saveAll(List.of(storage, storage1, storage2));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/storage/delete/all?recordId=" + validRecordId)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).size() == 0);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).size() == 0);
     }
 
     @Test
@@ -198,7 +217,8 @@ public class StorageControllerIntegrationTest {
     public void testAddFoodFromStorage_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 8L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(11L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -212,10 +232,10 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).get(0).getFoods().size() == 1);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).get(0).getFoods().size() == 1);
 
     }
 
@@ -224,7 +244,8 @@ public class StorageControllerIntegrationTest {
     public void testAddFoodFromStorage_InvalidFruitName_badRequest() throws Exception {
 
         Long validRecordId = 9L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(12L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -238,7 +259,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -249,7 +270,8 @@ public class StorageControllerIntegrationTest {
     public void testAddFoodFromStorage_stackingTheSameFruit_oneFruitWithIncreasedSize() throws Exception {
 
         Long validRecordId = 10L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(13L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -263,7 +285,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -271,11 +293,11 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Storage storageAfter = storageRepository.findAllByRecordId(validRecordId).get(0);
+        Storage storageAfter = storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).get(0);
         assertTrue(storageAfter.getFoods().size() == 1);
         assertTrue(storageAfter.getFoods().get("Apple").getSize().compareTo(new BigDecimal(200)) == 0);
         assertTrue(storageAfter.getConsumedCalories()
@@ -288,7 +310,8 @@ public class StorageControllerIntegrationTest {
     public void testAddFoodFromStorage_invalidSize_badRequest() throws Exception {
 
         Long validRecordId = 11L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(14L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(-100));
@@ -302,7 +325,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -313,7 +336,8 @@ public class StorageControllerIntegrationTest {
     public void testAddFoodFromStorage_invalidRecordId_badRequest() throws Exception {
 
         Long invalidRecordId = 1000L;
-        Storage storage = createStorage(invalidRecordId);
+        User user = getUser(14L);
+        Storage storage = createStorage(invalidRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -325,7 +349,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + invalidRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -336,7 +360,8 @@ public class StorageControllerIntegrationTest {
     public void testChangeFoodAmountFromStorage_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 12L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(15L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -350,7 +375,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -361,11 +386,11 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Storage storageAfter = storageRepository.findAllByRecordId(validRecordId).get(0);
+        Storage storageAfter = storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).get(0);
         assertTrue(storageAfter.getFoods().size() == 1);
         assertTrue(storageAfter.getFoods().get("Apple").getSize().compareTo(new BigDecimal(300)) == 0);
         assertTrue(storageAfter.getConsumedCalories()
@@ -378,7 +403,8 @@ public class StorageControllerIntegrationTest {
     public void testChangeFoodAmountFromStorage_InvalidInput_badRequest() throws Exception {
 
         Long validRecordId = 13L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(16L);
+        Storage storage = createStorage(validRecordId, user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -392,7 +418,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -403,7 +429,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -414,7 +440,8 @@ public class StorageControllerIntegrationTest {
     public void testChangeFoodAmountFromStorage_InvalidRecordId_badRequest() throws Exception {
 
         Long invalidRecordId = 1000L;
-        Storage storage = createStorage(invalidRecordId);
+        User user = getUser(17L);
+        Storage storage = createStorage(invalidRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -426,7 +453,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + invalidRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
@@ -437,7 +464,8 @@ public class StorageControllerIntegrationTest {
     public void testChangeFoodAmountFromStorage_invalidFruitName_badRequest() throws Exception {
 
         Long validRecordId = 14L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(18L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -451,7 +479,7 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -462,15 +490,16 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
-    private Storage createStorage(Long recordId) {
+    private Storage createStorage(Long recordId, Long userId) {
         Storage entity = new Storage();
         entity.setName("test");
+        entity.setUserId(userId);
         entity.setFoods(new HashMap<>());
         entity.setRecordId(recordId);
         return entity;
@@ -481,7 +510,8 @@ public class StorageControllerIntegrationTest {
     public void testDeleteFoodFromStorage_ValidInput_statusNoContent() throws Exception {
 
         Long validRecordId = 15L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(19L);
+        Storage storage = createStorage(validRecordId , user.getId());
 
         FoodUpdate foodUpdate = new FoodUpdate();
         foodUpdate.setAmount(new BigDecimal(100));
@@ -495,17 +525,18 @@ public class StorageControllerIntegrationTest {
                 .patch("/api/storage/" + storage.getId() + "/addFood?recordId=" + validRecordId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(foodUpdateJson)
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
 
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId + "&foodName=Apple")
-                .header("X-ViewUser", "test"))
+                .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId
+                        + "&foodName=Apple")
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).get(0).getFoods().size() == 0);
-        assertTrue(storageRepository.findAllByRecordId(validRecordId).get(0).getConsumedCalories()
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).get(0).getFoods().size() == 0);
+        assertTrue(storageRepository.findAllByRecordIdAndUserId(validRecordId , user.getId()).get(0).getConsumedCalories()
                 .compareTo(new BigDecimal(0)) == 0);
     }
 
@@ -514,12 +545,13 @@ public class StorageControllerIntegrationTest {
     public void testDeleteFoodFromStorage_InvalidInput_badRequest() throws Exception {
 
         Long invalidRecordId = 16L;
-        Storage storage = createStorage(invalidRecordId);
+        User user = getUser(20L);
+        Storage storage = createStorage(invalidRecordId , user.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
                 .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + invalidRecordId
                         + "&foodName=Apple")
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -529,14 +561,15 @@ public class StorageControllerIntegrationTest {
     public void testDeleteFoodFromStorage_InvalidFoodName_badRequest() throws Exception {
 
         Long validRecordId = 17L;
-        Storage storage = createStorage(validRecordId);
+        User user = getUser(21L);
+        Storage storage = createStorage(validRecordId, user.getId());
 
         storageRepository.save(storage);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .patch("/api/storage/" + storage.getId() + "/removeFood?recordId=" + validRecordId
                         + "&foodName=Invalid")
-                .header("X-ViewUser", "test"))
+                .header("X-ViewUser", gson.toJson(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
@@ -584,6 +617,12 @@ public class StorageControllerIntegrationTest {
                 .PolyunsaturatedFat(new BigDecimal("0.03"))
                 .MonounsaturatedFat(new BigDecimal("0.01"))
                 .build();
+    }
+
+    private User getUser(Long userId) {
+        User user = new User();
+        user.setId(userId);
+        return user;
     }
 
 }

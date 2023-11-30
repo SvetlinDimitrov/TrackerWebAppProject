@@ -1,4 +1,4 @@
-package org.food;
+package org.food.domain.dtos;
 
 import java.math.BigDecimal;
 

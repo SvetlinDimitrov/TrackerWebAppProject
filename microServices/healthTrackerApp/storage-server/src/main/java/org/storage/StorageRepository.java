@@ -9,9 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface StorageRepository extends JpaRepository<Storage, Long> {
-    void deleteAllByRecordId(Long recordId);
-    List<Storage> findAllByRecordId(Long recordId);
-    Optional<Storage> findByNameAndRecordId(String name , Long recordId);
-    Optional<Storage> findByIdAndRecordId(Long id , Long recordId);
-    void deleteByIdAndRecordId(Long id , Long recordId);
+    void deleteAllByRecordIdAndUserId(Long recordId, Long userId);
+
+    List<Storage> findAllByRecordIdAndUserId(Long recordId, Long userId);
+
+    Optional<Storage> findByIdAndRecordIdAndUserId(Long id, Long recordId, Long userId);
+
+    Optional<Storage> findByNameAndRecordIdAndUserId(String name, Long recordId, Long userId);
 }

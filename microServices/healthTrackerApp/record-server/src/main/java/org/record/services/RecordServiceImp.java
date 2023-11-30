@@ -11,16 +11,13 @@ import org.record.client.dto.User;
 import org.record.exceptions.RecordCreationException;
 import org.record.exceptions.RecordNotFoundException;
 import org.record.exceptions.StorageException;
-import org.record.exceptions.UserNotFoundException;
 import org.record.model.dtos.RecordView;
 import org.record.model.entity.Record;
+import org.record.utils.GsonWrapper;
 import org.record.utils.NutrientIntakeCreator;
 import org.record.utils.RecordUtils;
 import org.record.utils.RecordValidator;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class RecordServiceImp extends AbstractRecordService {
@@ -31,30 +28,25 @@ public class RecordServiceImp extends AbstractRecordService {
             RecordRepository recordRepository,
             NutrientIntakeCreator nutrientIntakeCreator,
             StorageClient storageClient,
-            ObjectMapper objectMapper) {
-        super(objectMapper , recordRepository, nutrientIntakeCreator);
+            GsonWrapper gsonWrapper) {
+        super(gsonWrapper, recordRepository, nutrientIntakeCreator);
         this.storageClient = storageClient;
     }
 
-    public List<RecordView> getAllViewsByUserId(String userToken) throws UserNotFoundException, JsonProcessingException {
-
-        List<Record> records = recordRepository
-                .findAllByUserId(getUserId(userToken).getId());
-                
-        if (records.isEmpty())
-            throw new UserNotFoundException(
-                    getUserId(userToken).getUsername() + " does not have any records");
+    public List<RecordView> getAllViewsByUserId(String userToken) {
 
         User user = getUserId(userToken);
 
-        return records
+        return recordRepository
+                .findAllByUserId(user.getId())
                 .stream()
                 .map(record -> toRecordView(record, storageClient.getAllStorages(record.getId(), userToken).getBody(),
                         user))
                 .collect(Collectors.toList());
     }
 
-    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException, JsonProcessingException {
+    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken)
+            throws RecordNotFoundException {
 
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
@@ -62,7 +54,8 @@ public class RecordServiceImp extends AbstractRecordService {
                 getUserId(userToken));
     }
 
-    public void addNewRecordByUserId(String userToken, String name) throws RecordCreationException, JsonProcessingException {
+    public void addNewRecordByUserId(String userToken, String name)
+            throws RecordCreationException {
         User user = getUserId(userToken);
 
         RecordValidator.validateRecord(user);
@@ -88,7 +81,8 @@ public class RecordServiceImp extends AbstractRecordService {
         storageClient.createStorageFirstCreation(record.getId(), userToken);
     }
 
-    public void deleteById(Long recordId, String userToken) throws RecordNotFoundException, StorageException, JsonProcessingException {
+    public void deleteById(Long recordId, String userToken)
+            throws RecordNotFoundException, StorageException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         try {
@@ -100,14 +94,15 @@ public class RecordServiceImp extends AbstractRecordService {
         recordRepository.deleteById(record.getId());
     }
 
-    public void createNewStorage(Long recordId, String storageName, String userToken) throws RecordNotFoundException, JsonProcessingException {
+    public void createNewStorage(Long recordId, String storageName, String userToken)
+            throws RecordNotFoundException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         storageClient.createStorage(storageName, record.getId(), userToken);
     }
 
     public void removeStorage(Long recordId, Long storageId, String userToken)
-            throws RecordNotFoundException, StorageException, JsonProcessingException {
+            throws RecordNotFoundException, StorageException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         try {

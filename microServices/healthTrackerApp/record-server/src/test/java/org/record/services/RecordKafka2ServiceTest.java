@@ -15,6 +15,7 @@ import org.record.client.dto.User;
 import org.record.config.TestKafkaConfiguration;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
+import org.record.utils.GsonWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -22,8 +23,6 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
-
-import com.google.gson.Gson;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,7 +38,7 @@ public class RecordKafka2ServiceTest {
     private RecordRepository recordRepository;
 
     @Autowired
-    private Gson gson;
+    private GsonWrapper gson;
 
     private Consumer<String, String> consumer;
 

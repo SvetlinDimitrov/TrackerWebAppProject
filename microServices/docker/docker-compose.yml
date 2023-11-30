@@ -69,6 +69,17 @@ services:
       MYSQL_DATABASE: storage
     volumes:
       - storage-data:/var/lib/mysql
+  mysql-db-food:
+    container_name: mysql-db-food
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: food
+    volumes:
+      - food-data:/var/lib/mysql
   discovery-server:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
@@ -192,3 +203,4 @@ volumes:
   user-data:
   storage-data:
   record-data:
+  food-data:

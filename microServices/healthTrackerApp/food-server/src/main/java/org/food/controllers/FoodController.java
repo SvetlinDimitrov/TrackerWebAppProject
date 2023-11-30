@@ -1,7 +1,11 @@
-package org.food;
+package org.food.controllers;
 
 import java.util.List;
 
+import org.food.domain.dtos.ErrorResponse;
+import org.food.domain.dtos.Food;
+import org.food.exception.FoodNotFoundException;
+import org.food.services.FoodService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,4 +43,5 @@ public class FoodController {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 }

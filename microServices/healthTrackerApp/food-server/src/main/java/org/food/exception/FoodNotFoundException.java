@@ -1,4 +1,4 @@
-package org.food;
+package org.food.exception;
 
 import java.util.List;
 

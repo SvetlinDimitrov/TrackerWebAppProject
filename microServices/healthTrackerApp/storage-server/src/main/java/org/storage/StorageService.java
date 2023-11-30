@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.storage.client.FoodClient;
 import org.storage.client.FoodUpdate;
+import org.storage.client.User;
 import org.storage.exception.FoodException;
 import org.storage.exception.StorageException;
 import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Food;
 import org.storage.model.entity.Storage;
+import org.storage.utils.GsonWrapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,22 +26,28 @@ public class StorageService {
 
     private final StorageRepository storageRepository;
     private final FoodClient foodClient;
+    private final GsonWrapper gsonWrapper;
 
-    public StorageView getStorageByIdAndRecordId(Long storageId, Long recordId) throws StorageException {
+    public StorageView getStorageByIdAndRecordId(Long storageId, Long recordId, String userToken)
+            throws StorageException {
+        Long userId = getUserId(userToken);
+
         return toStorageView(
                 storageRepository
-                        .findByIdAndRecordId(storageId, recordId)
+                        .findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                         .orElseThrow(() -> new StorageException(
                                 "Storage with ID: " + storageId + " not found with record id: " + recordId)));
 
     }
 
-    public List<StorageView> getAllByRecordId(Long recordId) throws StorageException {
+    public List<StorageView> getAllByRecordId(Long recordId, String userToken) throws StorageException {
 
-        List<Storage> storages = storageRepository.findAllByRecordId(recordId);
+        Long userId = getUserId(userToken);
+
+        List<Storage> storages = storageRepository.findAllByRecordIdAndUserId(recordId, userId);
 
         if (storages.isEmpty()) {
-            throw new StorageException("No storages found for record with id: " + recordId);
+            throw new StorageException("No storages found with record id: " + recordId + " and user id: " + userId);
         }
 
         return storages
@@ -49,8 +57,11 @@ public class StorageService {
 
     }
 
-    public void createStorage(Long recordId, String storageName) {
+    public void createStorage(Long recordId, String storageName, String userToken) {
+        Long userId = getUserId(userToken);
+
         Storage storage = new Storage();
+        storage.setUserId(userId);
         storage.setRecordId(recordId);
         storage.setConsumedCalories(BigDecimal.ZERO);
 
@@ -63,11 +74,13 @@ public class StorageService {
         storageRepository.save(storage);
     }
 
-    public void firstCreationStorage(Long recordId) {
-        Storage storage = new Storage("First Meal", recordId);
-        Storage storage2 = new Storage("Second Meal", recordId);
-        Storage storage3 = new Storage("Third Meal", recordId);
-        Storage storage4 = new Storage("Snacks", recordId);
+    public void firstCreationStorage(Long recordId, String userToken) {
+        Long userId = getUserId(userToken);
+
+        Storage storage = new Storage("First Meal", recordId, userId);
+        Storage storage2 = new Storage("Second Meal", recordId, userId);
+        Storage storage3 = new Storage("Third Meal", recordId, userId);
+        Storage storage4 = new Storage("Snacks", recordId, userId);
 
         storageRepository.save(storage);
         storageRepository.save(storage2);
@@ -76,48 +89,33 @@ public class StorageService {
     }
 
     @Transactional
-    public void deleteStorage(Long recordId, Long storageId) throws StorageException {
+    public void deleteStorage(Long recordId, Long storageId, String userToken) throws StorageException {
 
-        Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId).orElseThrow(() -> new StorageException(
-                "Storage with ID: " + storageId + " not found with record id: " + recordId));
+        Long userId = getUserId(userToken);
+
+        Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+                .orElseThrow(() -> new StorageException(
+                        "Storage with ID: " + storageId + " not found with record id: " + recordId));
 
         storageRepository.delete(storage);
     }
 
     @Transactional
-    public void deleteAllByRecordId(Long recordId) {
-        storageRepository.deleteAllByRecordId(recordId);
+    public void deleteAllByRecordIdAndUserId(Long recordId, String userToken) {
+        Long userId = getUserId(userToken);
+
+        storageRepository.deleteAllByRecordIdAndUserId(recordId, userId);
     }
 
-    private String generateRandomNumbers(int num) {
-        Random rand = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num; i++) {
-            int randomNum = rand.nextInt(100);
-            sb.append(randomNum);
-        }
-        return sb.toString();
-    }
-
-    private StorageView toStorageView(Storage entity) {
-
-        StorageView storageView = new StorageView();
-        storageView.setId(entity.getId());
-        storageView.setRecordId(entity.getRecordId());
-        storageView.setName(entity.getName());
-        storageView.setFoods(entity.getFoods().values().stream().toList());
-        storageView.setRecordId(entity.getRecordId());
-        storageView.setConsumedCalories(entity.getConsumedCalories());
-
-        return storageView;
-    }
-
-    public void addFood(Long storageId, Long recordId, FoodUpdate foodInfo)
+    public void addFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken)
             throws StorageException, FoodException {
 
-        Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId)
+        Long userId = getUserId(userToken);
+
+        Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
-                        "Storage with ID: " + storageId + " not found with record id: " + recordId));
+                        "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
+                                + userId));
 
         if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new FoodException("Amount must be greater than 0.");
@@ -146,12 +144,15 @@ public class StorageService {
 
     }
 
-    public void changeFood(Long storageId, Long recordId, FoodUpdate foodInfo)
+    public void changeFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken)
             throws StorageException, FoodException {
-        Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId)
-                .orElseThrow(() -> new StorageException(
-                        "Storage with ID: " + storageId + " not found with record id: " + recordId));
 
+        Long userId = getUserId(userToken);
+
+        Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+                .orElseThrow(() -> new StorageException(
+                        "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
+                                + userId));
 
         if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new FoodException("Amount must be greater than 0.");
@@ -181,12 +182,15 @@ public class StorageService {
 
     }
 
-    public void removeFood(Long storageId, Long recordId, String foodName)
+    public void removeFood(Long storageId, Long recordId, String foodName, String userToken)
             throws FoodException, StorageException {
 
-        Storage storage = storageRepository.findByIdAndRecordId(storageId, recordId)
+        Long userId = getUserId(userToken);
+
+        Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
-                        "Storage with ID: " + storageId + " not found with record id: " + recordId));
+                        "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
+                                + userId));
 
         if (storage.getFoods().containsKey(foodName)) {
 
@@ -317,7 +321,7 @@ public class StorageService {
         foodToAdd.setName(food.getName());
         foodToAdd.setSize(amount);
         foodToAdd.setCalories(food.getCalories().multiply(multiplier));
-        
+
         foodToAdd.setA(food.getA().multiply(multiplier));
         foodToAdd.setD(food.getD().multiply(multiplier));
         foodToAdd.setE(food.getE().multiply(multiplier));
@@ -397,7 +401,6 @@ public class StorageService {
         food.setCarbohydrates(food.getCarbohydrates().add(foodToCombine.getCarbohydrates()));
         food.setProtein(food.getProtein().add(foodToCombine.getProtein()));
         food.setFat(food.getFat().add(foodToCombine.getFat()));
-        
 
         food.setFiber(food.getFiber().add(foodToCombine.getFiber()));
         food.setTransFat(food.getTransFat().add(foodToCombine.getTransFat()));
@@ -407,6 +410,33 @@ public class StorageService {
         food.setMonounsaturatedFat(food.getMonounsaturatedFat().add(foodToCombine.getMonounsaturatedFat()));
 
         return food;
+    }
+
+    private Long getUserId(String getUserId) {
+        return gsonWrapper.fromJson(getUserId, User.class).getId();
+    }
+
+    private String generateRandomNumbers(int num) {
+        Random rand = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            int randomNum = rand.nextInt(100);
+            sb.append(randomNum);
+        }
+        return sb.toString();
+    }
+
+    private StorageView toStorageView(Storage entity) {
+
+        StorageView storageView = new StorageView();
+        storageView.setId(entity.getId());
+        storageView.setRecordId(entity.getRecordId());
+        storageView.setName(entity.getName());
+        storageView.setFoods(entity.getFoods().values().stream().toList());
+        storageView.setRecordId(entity.getRecordId());
+        storageView.setConsumedCalories(entity.getConsumedCalories());
+
+        return storageView;
     }
 
 }

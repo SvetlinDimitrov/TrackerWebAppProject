@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.food.Food;
+import org.food.domain.dtos.Food;
 import org.springframework.stereotype.Repository;
 
 @Repository

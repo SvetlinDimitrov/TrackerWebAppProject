@@ -18,6 +18,7 @@ import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.services.RecordServiceImp;
+import org.record.utils.GsonWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,8 +30,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import com.google.gson.Gson;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -46,7 +45,8 @@ public class RecordControllerTest {
     @Autowired
     private RecordRepository recordRepository;
 
-    private Gson gson = new Gson();
+    @Autowired
+    private GsonWrapper gson;
 
     private User userView;
 
@@ -92,12 +92,13 @@ public class RecordControllerTest {
     }
 
     @Test
-    public void getAllRecords_InvalidInputHeader_StatusBadRequest() throws Exception {
+    public void getAllRecords_InvalidInputHeader_EmptyArrayStatus200() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/record/all")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-ViewUser", gson.toJson(new User())))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
     @Test
@@ -243,7 +244,8 @@ public class RecordControllerTest {
         userView.setEmail("test");
         mockMvc.perform(MockMvcRequestBuilders.post("/api/record")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))).andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .header("X-ViewUser", gson.toJson(userView)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -252,12 +254,14 @@ public class RecordControllerTest {
         userView.setUsername(null);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/record")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))).andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .header("X-ViewUser", gson.toJson(userView)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         userView.setUsername("");
         mockMvc.perform(MockMvcRequestBuilders.post("/api/record")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))).andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .header("X-ViewUser", gson.toJson(userView)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -325,7 +329,8 @@ public class RecordControllerTest {
         record.setUserId(userView.getId());
         record = recordRepository.save(record);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/record/" + record.getId() + "/storage/" + validStorageId)
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/record/" + record.getId() + "/storage/" + validStorageId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-ViewUser", gson.toJson(userView)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -338,7 +343,8 @@ public class RecordControllerTest {
         Long invalidRecordId = 666L;
         Long invalidStorageId = 666L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/record/" + invalidRecordId + "/storage/" + invalidStorageId)
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/record/" + invalidRecordId + "/storage/" + invalidStorageId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-ViewUser", gson.toJson(userView))
                 .param("storageId", "1"))
@@ -358,7 +364,8 @@ public class RecordControllerTest {
         when(storageClient.deleteStorage(invalidStorageId, record.getId(), gson.toJson(userView)))
                 .thenThrow(new RuntimeException());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/record/" + record.getId() + "/storage/" + invalidStorageId)
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/record/" + record.getId() + "/storage/" + invalidStorageId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-ViewUser", gson.toJson(userView)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());

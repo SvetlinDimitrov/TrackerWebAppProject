@@ -12,11 +12,9 @@ import org.record.exceptions.RecordNotFoundException;
 import org.record.model.dtos.RecordView;
 import org.record.model.entity.NutritionIntake;
 import org.record.model.entity.Record;
+import org.record.utils.GsonWrapper;
 import org.record.utils.NutrientIntakeCreator;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractRecordService {
 
-    protected final ObjectMapper objectMapper;
+    protected final GsonWrapper gsonWrapper;
     protected final RecordRepository recordRepository;
     protected final NutrientIntakeCreator nutrientIntakeCreator;
 
-    protected User getUserId(String userToken) throws JsonProcessingException {
-        return objectMapper.readValue(userToken, User.class);
+    protected User getUserId(String userToken) {
+        return gsonWrapper.fromJson(userToken, User.class);
     }
 
     protected RecordView toRecordView(Record record, List<StorageView> storages, User user) {
@@ -55,7 +53,7 @@ public abstract class AbstractRecordService {
         return recordView;
     }
 
-    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException, JsonProcessingException {
+    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException {
         Long userId = getUserId(userToken).getId();
 
         return recordRepository.findByIdAndUserId(recordId, userId)

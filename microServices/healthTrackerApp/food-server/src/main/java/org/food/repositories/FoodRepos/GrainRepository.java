@@ -2,7 +2,7 @@ package org.food.repositories.FoodRepos;
 
 import java.math.BigDecimal;
 
-import org.food.Food;
+import org.food.domain.dtos.Food;
 import org.food.repositories.FoodRepository;
 import org.springframework.stereotype.Component;
 

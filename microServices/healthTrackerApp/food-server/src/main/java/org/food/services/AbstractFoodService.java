@@ -1,42 +1,13 @@
-package org.food;
+package org.food.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import org.food.repositories.FoodRepository;
-import org.springframework.stereotype.Service;
+import org.food.domain.dtos.Food;
 
-import lombok.RequiredArgsConstructor;
+public abstract class AbstractFoodService {
 
-@Service
-@RequiredArgsConstructor
-public class FoodService {
-
-    private final FoodRepository foodRepository;
-
-    public List<Food> getAllFoods() {
-        return foodRepository.getAllFoods()
-                .stream()
-                .collect(Collectors.toList());
-    }
-
-    public Food getFoodByName(String foodName, Double amount) throws FoodNotFoundException {
-
-        Food food = foodRepository
-                .getByName(foodName)
-                .orElseThrow(
-                        () -> new FoodNotFoundException(foodName + " does not exist.", foodRepository.getAllNames()));
-
-        if (amount == null) {
-            return food;
-        }
-
-        return calculateFoodByAmount(food, amount);
-    }
-
-    private Food calculateFoodByAmount(Food food, Double size) {
+    protected Food calculateFoodByAmount(Food food, Double size) {
 
         BigDecimal amount = BigDecimal.valueOf(size);
 
@@ -142,4 +113,5 @@ public class FoodService {
             return baseFood;
         }
     }
+
 }

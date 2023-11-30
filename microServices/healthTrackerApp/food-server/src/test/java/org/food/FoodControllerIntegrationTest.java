@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
+import org.food.domain.dtos.Food;
 import org.food.repositories.FoodRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,6 +2,7 @@ package org.record.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,12 +29,12 @@ import org.record.client.dto.User;
 import org.record.exceptions.RecordCreationException;
 import org.record.exceptions.RecordNotFoundException;
 import org.record.exceptions.StorageException;
-import org.record.exceptions.UserNotFoundException;
 import org.record.model.dtos.RecordView;
 import org.record.model.entity.NutritionIntake;
 import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
+import org.record.utils.GsonWrapper;
 import org.record.utils.NutrientIntakeCreator;
 import org.springframework.http.ResponseEntity;
 
@@ -51,6 +52,9 @@ public class RecordServiceImpTest {
 
     @Mock
     private NutrientIntakeCreator nutrientIntakeCreator;
+
+    @Mock
+    private GsonWrapper gsonWrapper;
 
     private ArgumentCaptor<Record> recordArgumentCaptor = ArgumentCaptor.forClass(Record.class);
 
@@ -71,6 +75,7 @@ public class RecordServiceImpTest {
         userView.setKilograms(new BigDecimal("60"));
         userView.setUsername("test");
         userView.setWorkoutState(WorkoutState.MODERATELY_ACTIVE);
+
     }
 
     @Test
@@ -84,10 +89,10 @@ public class RecordServiceImpTest {
         storage.setConsumedCalories(getApple().getCalories());
 
         when(nutrientIntakeCreator.create(userView.getGender(),
-         record.getDailyCalories(),
-          userView.getWorkoutState()))
-          .thenReturn(getNutritionMap());
-
+                record.getDailyCalories(),
+                userView.getWorkoutState()))
+                .thenReturn(getNutritionMap());
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findAllByUserId(userView.getId())).thenReturn(Collections.singletonList(record));
 
         when(storageClient.getAllStorages(record.getId(), token))
@@ -101,14 +106,16 @@ public class RecordServiceImpTest {
     }
 
     @Test
-    public void testGetAllViewsByUserId_EmptyRecordList_ThrowsUserNotFoundException() throws JsonProcessingException {
+    public void testGetAllViewsByUserId_EmptyRecordList_ReturnEmptyArray() throws JsonProcessingException {
         userView.setId(1L);
         String token = objectMapper.writeValueAsString(userView);
 
         when(recordRepository.findAllByUserId(userView.getId())).thenReturn(Collections.emptyList());
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
 
-        assertThrows(UserNotFoundException.class,
-                () -> recordServiceImp.getAllViewsByUserId(token));
+        List<RecordView> result = recordServiceImp.getAllViewsByUserId(token);
+
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -117,7 +124,7 @@ public class RecordServiceImpTest {
         userView.setId(2L);
         Record record = getRecord(userView.getId(), 2L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         when(storageClient.getAllStorages(record.getId(), token))
@@ -134,7 +141,7 @@ public class RecordServiceImpTest {
         userView.setId(3L);
         Record record = getRecord(userView.getId(), 3L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
@@ -146,20 +153,21 @@ public class RecordServiceImpTest {
             throws JsonProcessingException, RecordCreationException {
         userView.setId(4L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         recordServiceImp.addNewRecordByUserId(token, null);
 
         verify(recordRepository, times(1)).saveAndFlush(recordArgumentCaptor.capture());
 
         assertEquals("Default", recordArgumentCaptor.getValue().getName().substring(0, 7));
     }
+
     @Test
     public void testAddNewRecordByUserId_GivenName_CreatesRecord()
             throws JsonProcessingException, RecordCreationException {
         String recordName = "test";
         userView.setId(5L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         recordServiceImp.addNewRecordByUserId(token, recordName);
 
         verify(recordRepository, times(1)).saveAndFlush(recordArgumentCaptor.capture());
@@ -173,38 +181,39 @@ public class RecordServiceImpTest {
         userView.setId(6L);
         Record record = getRecord(userView.getId(), 6L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         recordServiceImp.deleteById(record.getId(), token);
 
         verify(recordRepository, times(1)).deleteById(record.getId());
     }
+
     @Test
     public void testDeleteById_InvalidRecordId_ThrowsRecordNotFoundException()
             throws JsonProcessingException {
         userView.setId(7L);
         Record record = getRecord(userView.getId(), 7L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
                 () -> recordServiceImp.deleteById(record.getId(), token));
     }
-    
-   @Test
+
+    @Test
     public void testDeleteById_InvalidRecordId_ThrowsStorageException()
             throws JsonProcessingException {
         userView.setId(7L);
         Record record = getRecord(userView.getId(), 7L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         when(storageClient.deleteAllStoragesByRecordId(record.getId(), token))
                 .thenThrow(new RuntimeException());
-        
+
         assertThrows(StorageException.class,
                 () -> recordServiceImp.deleteById(record.getId(), token));
     }
@@ -215,47 +224,48 @@ public class RecordServiceImpTest {
         userView.setId(8L);
         Record record = getRecord(userView.getId(), 8L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         recordServiceImp.createNewStorage(record.getId(), "test", token);
 
         verify(storageClient, times(1)).createStorage("test", record.getId(), token);
     }
-    
+
     @Test
     public void testCreateNewStorage_InvalidRecordId_ThrowsRecordNotFoundException()
             throws JsonProcessingException {
         userView.setId(9L);
         Record record = getRecord(userView.getId(), 9L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
                 () -> recordServiceImp.createNewStorage(record.getId(), "test", token));
     }
-    
+
     @Test
     public void testRemoveStorage_ValidRecordIdAndUserToken_RemovesStorage()
             throws JsonProcessingException, RecordNotFoundException, StorageException {
         userView.setId(10L);
         Record record = getRecord(userView.getId(), 10L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         recordServiceImp.removeStorage(record.getId(), 1L, token);
 
         verify(storageClient, times(1)).deleteStorage(1L, record.getId(), token);
     }
+
     @Test
     public void testRemoveStorage_InvalidRecordId_ThrowsRecordNotFoundException()
             throws JsonProcessingException {
         userView.setId(11L);
         Record record = getRecord(userView.getId(), 11L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
@@ -268,15 +278,16 @@ public class RecordServiceImpTest {
         userView.setId(12L);
         Record record = getRecord(userView.getId(), 12L);
         String token = objectMapper.writeValueAsString(userView);
-
+        when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
         when(recordRepository.findByIdAndUserId(record.getId(), userView.getId())).thenReturn(Optional.of(record));
 
         when(storageClient.deleteStorage(1L, record.getId(), token))
                 .thenThrow(new RuntimeException());
-        
+
         assertThrows(StorageException.class,
                 () -> recordServiceImp.removeStorage(record.getId(), 1L, token));
     }
+
     public Record getRecord(Long userId, Long recordId) {
         Record record = new Record();
         record.setUserId(userId);
@@ -286,6 +297,7 @@ public class RecordServiceImpTest {
         record.setDate(java.time.LocalDate.now());
         return record;
     }
+
     private Food getApple() {
         Food food = new Food();
         food.setSize(new BigDecimal("100"));
@@ -331,8 +343,8 @@ public class RecordServiceImpTest {
         return food;
     }
 
-    private Map<String , NutritionIntake> getNutritionMap(){
-        Map<String , NutritionIntake> nutritionMap = new HashMap<>();
+    private Map<String, NutritionIntake> getNutritionMap() {
+        Map<String, NutritionIntake> nutritionMap = new HashMap<>();
         fillMap(nutritionMap, "A");
         fillMap(nutritionMap, "D");
         fillMap(nutritionMap, "E");
@@ -346,7 +358,7 @@ public class RecordServiceImpTest {
         fillMap(nutritionMap, "B7");
         fillMap(nutritionMap, "B9");
         fillMap(nutritionMap, "B12");
-        
+
         fillMap(nutritionMap, "Calcium");
         fillMap(nutritionMap, "Phosphorus");
         fillMap(nutritionMap, "Magnesium");
@@ -362,7 +374,7 @@ public class RecordServiceImpTest {
         fillMap(nutritionMap, "Chromium");
         fillMap(nutritionMap, "Iodine");
         fillMap(nutritionMap, "Fluoride");
-        
+
         fillMap(nutritionMap, "Protein");
         fillMap(nutritionMap, "Carbohydrates");
         fillMap(nutritionMap, "Fat");
@@ -375,7 +387,7 @@ public class RecordServiceImpTest {
         return nutritionMap;
     }
 
-    private void fillMap (Map<String ,  NutritionIntake> map , String nutritionName){
+    private void fillMap(Map<String, NutritionIntake> map, String nutritionName) {
         NutritionIntake nutritionIntake = new NutritionIntake();
         nutritionIntake.setNutrientName(nutritionName);
         nutritionIntake.setDailyConsumed(BigDecimal.ZERO);

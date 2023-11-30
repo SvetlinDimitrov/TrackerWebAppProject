@@ -31,6 +31,8 @@ public class Storage {
 
     private Long recordId;
 
+    private Long userId;
+
     private String name;
 
     @ElementCollection
@@ -39,10 +41,11 @@ public class Storage {
     @Column(name = "food")
     private Map<String, Food> foods;
 
-    public Storage(String name, Long recordId) {
+    public Storage(String name, Long recordId , Long userId) {
         this.name = name;
         this.recordId = recordId;
         consumedCalories = BigDecimal.ZERO;
+        this.userId = userId;
         this.foods = new HashMap<>();
     }
 }
