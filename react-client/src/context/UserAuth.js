@@ -13,7 +13,6 @@ const UserAuthProvider = ({ children }) => {
 
     return undefined;
   });
-
   const loginUser = (user) =>{
 
     setUser(user);

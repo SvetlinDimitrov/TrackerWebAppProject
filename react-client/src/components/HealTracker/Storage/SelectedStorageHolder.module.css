@@ -1,7 +1,0 @@
-.main_container {
-    display: grid;
-    margin: 30px;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    justify-content: space-around;
-  }

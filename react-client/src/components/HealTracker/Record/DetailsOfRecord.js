@@ -28,18 +28,20 @@ const DetailsOfRecord = ({ record }) => {
         <div>
           <h1 className={styles.container_h1}>Record: {record.name}</h1>
           <div className={styles.container_gauge}>
-            {types.map((type) => (
+            {types.map((d , i) => (
               <Gauge
-                key={type}
-                width={200}
-                height={200}
-                type={type}
+                key={i}
+                className={`pathEffect${i}`}
+                width={250}
+                height={270}
+                type={d}
                 data={record}
               />
             ))}
-            ;
           </div>
-          <h2 className={styles.container_h1}>Detailed Information</h2>
+          <p className={styles.container_p}>
+            Clicking one of the following categories will give you detailed
+          </p>
           <div className={styles.container_gauge}>
             {categories.map((category) => (
               <div
@@ -55,8 +57,9 @@ const DetailsOfRecord = ({ record }) => {
             <div className={styles.container_info}>
               {calculatedPrecentedValues(record, categoryShow).map((d) => {
                 return (
-                  <div key={d.id}>
+                  <>
                     <div
+                      key={d.id}
                       className={styles.container_info_info}
                       onClick={() => handleOnClick(d.name)}
                     >
@@ -70,21 +73,24 @@ const DetailsOfRecord = ({ record }) => {
                       />
                     </div>
                     {show === d.name && (
-                      <PipeChar width={300} height={30} data={d} />
+                      <div className={styles.container_info_info}>
+                        <PipeChar width={300} height={30} data={d} />
+
+                        {show === d.name && d.type === "Calories" && (
+                          <Gauge2
+                            width={260}
+                            height={110}
+                            diameter={100}
+                            legendRectSize={12}
+                            legendSpacing={10}
+                            protein={d.protein}
+                            fat={d.fat}
+                            carbohydrates={d.carbohydrates}
+                          />
+                        )}
+                      </div>
                     )}
-                    {show === d.name && d.type === "Calories" && (
-                      <Gauge2
-                        width={260}
-                        height={110}
-                        diameter={100}
-                        legendRectSize={12}
-                        legendSpacing={10}
-                        protein={d.protein}
-                        fat={d.fat}
-                        carbohydrates={d.carbohydrates}
-                      />
-                    )}
-                  </div>
+                  </>
                 );
               })}
             </div>

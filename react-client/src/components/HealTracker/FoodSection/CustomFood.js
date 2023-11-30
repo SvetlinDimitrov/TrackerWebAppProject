@@ -1,109 +1,133 @@
-// CustomFood.js
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "./CustomFood.module.css";
-import { group } from "d3";
+
+import { AuthContext } from "../../../context/UserAuth";
+import { NotificationContext } from "../../../context/Notification";
+import api from "../../../util/api";
+
 const groups = {
-  // define which properties belong to which group
   vitamin: [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "k",
-    "b1",
-    "b2",
-    "b3",
-    "b5",
-    "b6",
-    "b7",
-    "b9",
-    "b12",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "K",
+    "B1",
+    "B2",
+    "B3",
+    "B5",
+    "B6",
+    "B7",
+    "B9",
+    "B12",
   ],
   macro: [
-    "size",
-    "calories",
-    "fat",
-    "saturatedFat",
-    "transFat",
-    "monounsaturatedFat",
-    "polyunsaturatedFat",
-    "carbohydrates",
-    "sugar",
-    "fiber",
-    "protein",
+    "Size",
+    "Calories",
+    "Fat",
+    "SaturatedFat",
+    "TransFat",
+    "MonounsaturatedFat",
+    "PolyunsaturatedFat",
+    "Carbohydrates",
+    "Sugar",
+    "Fiber",
+    "Protein",
   ],
   mineral: [
-    "calcium",
-    "iron",
-    "magnesium",
-    "phosphorus",
-    "potassium",
-    "sodium",
-    "zinc",
-    "copper",
-    "manganese",
-    "selenium",
-    "chromium",
-    "molybdenum",
-    "iodine",
-    "fluoride",
-    "chloride",
+    "Calcium",
+    "Iron",
+    "Magnesium",
+    "Phosphorus",
+    "Potassium",
+    "Sodium",
+    "Zinc",
+    "Copper",
+    "Manganese",
+    "Selenium",
+    "Chromium",
+    "Molybdenum",
+    "Iodine",
+    "Fluoride",
+    "Chloride",
   ],
 };
 const CustomFood = () => {
   const [foodItem, setFoodItem] = useState({
     name: "",
-    size: 100,
-    calories: 0,
-    chromium: 0,
-    fluoride: 0,
-    iodine: 0,
-    selenium: 0,
-    molybdenum: 0,
-    polyunsaturatedFat: 0,
-    monounsaturatedFat: 0,
-    fat: 0,
-    saturatedFat: 0,
-    protein: 0,
-    fiber: 0,
-    carbohydrates: 0,
-    transFat: 0,
-    sugar: 0,
-    b9: 0,
-    phosphorus: 0,
-    calcium: 0,
-    iron: 0,
-    chloride: 0,
-    zinc: 0,
-    b7: 0,
-    manganese: 0,
-    sodium: 0,
-    copper: 0,
-    b3: 0,
-    b12: 0,
-    potassium: 0,
-    b5: 0,
-    b6: 0,
-    magnesium: 0,
-    d: 0,
-    k: 0,
-    b1: 0,
-    b2: 0,
-    e: 0,
-    a: 0,
-    c: 0,
+    size: "100.00",
+    calories: "0.00",
+    chromium: "0.00",
+    fluoride: "0.00",
+    iodine: "0.00",
+    selenium: "0.00",
+    molybdenum: "0.00",
+    polyunsaturatedFat: "0.00",
+    monounsaturatedFat: "0.00",
+    fat: "0.00",
+    saturatedFat: "0.00",
+    protein: "0.00",
+    fiber: "0.00",
+    carbohydrates: "0.00",
+    transFat: "0.00",
+    sugar: "0.00",
+    b9: "0.00",
+    phosphorus: "0.00",
+    calcium: "0.00",
+    iron: "0.00",
+    chloride: "0.00",
+    zinc: "0.00",
+    b7: "0.00",
+    manganese: "0.00",
+    sodium: "0.00",
+    copper: "0.00",
+    b3: "0.00",
+    b12: "0.00",
+    potassium: "0.00",
+    b5: "0.00",
+    b6: "0.00",
+    magnesium: "0.00",
+    d: "0.00",
+    k: "0.00",
+    b1: "0.00",
+    b2: "0.00",
+    e: "0.00",
+    a: "0.00",
+    c: "0.00",
   });
-
+  const { user } = useContext(AuthContext);
+  const { setSuccessfulMessage, setFailedMessage } =
+    useContext(NotificationContext);
+  const { recordId, storageId } = useParams();
   const [activeGroup, setActiveGroup] = useState("");
+  const navigate = useNavigate();
+  const userToken = user.tokenInfo.token;
 
   const handleChange = (event) => {
     setFoodItem({ ...foodItem, [event.target.name]: event.target.value });
   };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(foodItem);
+    try {
+      await api.post(
+        "food/customFood",
+         foodItem ,
+        { headers: { Authorization: `Bearer ${userToken}` } }
+      );
+      setSuccessfulMessage({
+        message: "FOOD: " + foodItem.name + " was created successfully!",
+        flag: true,
+      });
+    } catch (error) {
+      setFailedMessage({
+        message:
+          "Something went wrong with record creation. Please try again later!",
+        flag: true,
+      });
+    }
+    navigate("/health-tracker/record/" + recordId + "/storage/" + storageId);
   };
 
   return (
@@ -146,7 +170,7 @@ const CustomFood = () => {
                 </label>
                 <input
                   className={styles.input}
-                  type={key === "name" ? "text" : "number"}
+                  type={key === "name" ? "Text" : "Number"}
                   id={key}
                   name={key}
                   value={foodItem[key]}

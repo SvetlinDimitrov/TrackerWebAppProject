@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { FaHeart } from "react-icons/fa";
-
+import * as PathCreator from "../../../util/PathCreator";
 import api from "../../../util/api";
-
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
 import styles from "./DeleteRecord.module.css";
 
-const DeleteRecord = ({
-  selectedRecord,
-  userToken,
-  setFailedMessage,
-  setSuccessfulMessage,
-}) => {
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [nameDeletion, setNameDeletion] = useState("");
+const DeleteRecord = () => {
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
+  const { recordId } = useParams();
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
   const navigate = useNavigate();
 
   const handleDeletion = async () => {
-    if (selectedRecord.name === nameDeletion) {
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this record?"
+    );
+    if (confirmation) {
       try {
-        await api.delete(`/record/${selectedRecord.id}`, {
+        await api.delete(`/record/${recordId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
 
@@ -28,7 +29,6 @@ const DeleteRecord = ({
           message: "Record created successfully!",
           flag: true,
         });
-        
       } catch (error) {
         setFailedMessage({
           message:
@@ -36,59 +36,27 @@ const DeleteRecord = ({
           flag: true,
         });
       }
-    } else {
-      setFailedMessage({
-        message:
-          "Names do not match. Please enter the name of the record to confirm deletion!",
-        flag: true,
-      });
     }
     navigate("/health-tracker");
-    setPopupVisible(false);
+  };
+  const onClose = () => {
+    navigate(PathCreator.basicPath());
   };
   return (
-    <>
+    <div className={styles.overlay}>
       <div className={styles.container}>
-        <h2 className={styles.container_header}>
-          Selected record {selectedRecord && selectedRecord.name}
-        </h2>
-        <FaHeart className={styles.container_icon} />
-        <p className={styles.container_text}>Delete record</p>
-        <div className={styles.container_section}>
-          <button
-            className={styles.container_deleteButton}
-            onClick={() => setPopupVisible(true)}
-          >
-            Delete Record
-          </button>
-        </div>
+      <button className={styles.closeButton} onClick={onClose}>
+          X
+        </button>
+        <h2 className={styles.container_header}>Delete Record</h2>
+        <button
+          className={styles.container_deleteButton}
+          onClick={() => handleDeletion()}
+        >
+          Delete Record
+        </button>
       </div>
-      {isPopupVisible && (
-        <div className={styles.overlay}>
-          <div className={styles.popup}>
-            <h2>Confirm Deletion</h2>
-            <p>Please enter the name of the record to confirm deletion:</p>
-            <input
-              type="text"
-              className={styles.popup_input}
-              onChange={(e) => setNameDeletion(e.target.value)}
-            />
-            <button
-              className={styles.popup_confirmButton}
-              onClick={() => handleDeletion()}
-            >
-              Confirm
-            </button>
-            <button
-              className={styles.popup_cancelButton}
-              onClick={() => setPopupVisible(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

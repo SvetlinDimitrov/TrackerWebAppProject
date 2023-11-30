@@ -13,9 +13,7 @@ const UserAuthGuard = () => {
   const navigate = useNavigate();
   const { setFailedMessage } = useContext(NotificationContext);
   
-
-
-
+  
   if (validatedUser === "dateExpired") {
     setFailedMessage({
       message: "Your token has expired please login again!",

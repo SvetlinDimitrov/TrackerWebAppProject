@@ -1,24 +1,37 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+  z-index: 1011;
+}
+
 .failedMessage {
-  z-index: 99;
-  background-color: rgb(227, 6, 35); 
-  color: white; 
-  padding: 10px; 
-  border-radius: 5px; 
-  text-align: center; 
-  position: fixed; 
-  top: 20px; 
-  right: 20px; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* distribute items across the row */
+  padding: 20px;
+  background-color: #f8d7da; /* light red background */
+  color: #721c24; /* dark red text */
+  border: 1px solid #f5c6cb; /* light red border */
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif; /* Roboto font */
+  font-size: 1.2em; /* larger font size */
+  z-index: 1012; /* make sure the message is above the overlay */
 }
 
 .failedMessageButton {
-  background-color: transparent;
+  background-color: #721c24; /* dark red background */
+  color: #ffffff; /* white text */
   border: none;
-  color: white;
+  border-radius: 5px;
+  padding: 10px 20px; /* add some padding */
   cursor: pointer;
-  font-size: 16px;
-  margin-left: 10px;
+  transition: background-color 0.3s ease; /* transition for hover effect */
 }
 
-.failedMessage button:focus {
-  outline: none;
+.failedMessageButton:hover {
+  background-color: #a71d2a; /* lighter red on hover */
 }

@@ -1,0 +1,51 @@
+/* RecordHolder.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: #cfd8dc; /* lighter grey */
+}
+
+.title {
+  font-size: 36px;
+  color: #263238; /* dark blue grey */
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.recordInfo {
+  font-size: 18px;
+  color: #263238; /* dark blue grey */
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 600px;
+}
+
+.optionButton {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #546e7a; /* matching blue grey */
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.optionButton:hover {
+  background-color: #78909c; /* lighter blue grey */
+  transform: scale(1.1); /* scale up the button on hover */
+}

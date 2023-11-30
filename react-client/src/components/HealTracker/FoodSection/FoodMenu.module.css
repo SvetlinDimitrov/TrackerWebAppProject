@@ -1,0 +1,95 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif; /* change the font */
+}
+
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background-color: #f0f0f0; /* change the background color */
+  padding: 20px; /* increase the padding */
+  border-radius: 10px;
+  width: 600px; /* increase the width */
+  height: 600px; /* increase the height */
+  font-size: 16px; /* change the font size */
+}
+.foodMenuTitle {
+  font-family: "Roboto", sans-serif; /* Roboto font */
+  font-size: 2.5em; /* larger font size */
+  color: #546e7a;
+  text-align: center;
+  padding: 5px 0;
+  text-transform: uppercase; /* make the text uppercase */
+  letter-spacing: 1.5px; /* increase the spacing between letters */
+}
+
+.container_CloseButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container_foodDetails {
+  margin-top: 10px;
+  padding: 10px; /* increase the padding */
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+  font-size: 14px; /* change the font size */
+}
+.container_foodDetails_food:hover {
+  background-color: #f0f0f0; /* light grey */
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.container_foodDetails_food_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px;
+  
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 40px;
+  font-family: Arial, sans-serif;
+  font-size: small;
+  border-bottom: 1px solid #ddd;
+  overflow: hidden;
+}
+.closeButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}

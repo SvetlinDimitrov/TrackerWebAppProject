@@ -1,34 +1,37 @@
-.successMessage {
-  z-index: 99;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-}
-
-.successMessageButton {
-  background-color: transparent;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 10px;
-}
-
-.success-message button:focus {
-  outline: none;
-}
-
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 98;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+  z-index: 1011;
+}
+
+.successMessage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* distribute items across the row */
+  padding: 20px;
+  background-color: #c3e6cb; /* lighter green background */
+  color: #0c5460; /* darker green text */
+  border: 1px solid #b8daff; /* lighter green border */
+  border-radius: 5px;
+  font-family: 'Roboto', sans-serif; /* Roboto font */
+  font-size: 1.2em; /* larger font size */
+  z-index: 1012; /* make sure the message is above the overlay */
+}
+
+.successMessageButton {
+  background-color: #0c5460; /* darker green background */
+  color: #ffffff; /* white text */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px; /* add some padding */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* transition for hover effect */
+}
+
+.successMessageButton:hover {
+  background-color: #1b6ec2; /* lighter green on hover */
 }

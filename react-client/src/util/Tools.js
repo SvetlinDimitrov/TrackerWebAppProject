@@ -10,20 +10,17 @@ import {
   scaleLinear,
   select,
   selectAll,
+  interpolate,
 } from "d3";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "./RecordUtils";
 
-export function Gauge({ width, height, type, data }) {
+export function Gauge({ width, height, type, data, className }) {
   const diameter = width / 2 + height / 2;
   const centerX = width / 2;
   const centerY = height / 2;
-
-  useLayoutEffect(() => {
-    selectAll(".pathEffect").transition().duration(2000).attr("fill", "red");
-    selectAll(".text").transition().duration(2000).attr("fill", "black");
-  });
+  const textRef = useRef();
 
   let averageValue = null;
 
@@ -40,6 +37,42 @@ export function Gauge({ width, height, type, data }) {
 
   const pieData = pie()([averageValue, 100 - averageValue]);
   const foregroundArc = pieData[0];
+
+  useLayoutEffect(() => {
+    const percentage = averageValue / 100;
+    const endAngle =
+      percentage * (foregroundArc.endAngle - foregroundArc.startAngle);
+
+    const arcGenerator = arc()
+      .innerRadius(diameter / 3.2)
+      .outerRadius(diameter / 2.2)
+      .startAngle(0);
+
+    const path = select(`.${className}`)
+      .attr("d", arcGenerator.endAngle(-foregroundArc.endAngle)())
+      .attr("fill", "#78909C");
+
+    path
+      .transition()
+      .duration(4000) // duration of the transition in milliseconds
+      .attrTween("d", function () {
+        const i = interpolate(0, endAngle);
+        return function (t) {
+          return arcGenerator.endAngle(i(t))();
+        };
+      });
+    const text = select(textRef.current);
+
+    text
+      .transition()
+      .duration(4000) // duration of the transition in milliseconds
+      .tween("text", function () {
+        const i = interpolate(0, averageValue);
+        return function (t) {
+          this.textContent = `${i(t).toFixed(2)}%`;
+        };
+      });
+  }, [diameter, averageValue]);
 
   if (averageValue === null) {
     return <div id="preloader"></div>;
@@ -58,28 +91,22 @@ export function Gauge({ width, height, type, data }) {
             fill="gray"
           />
 
-          <path
-            className="pathEffect"
-            d={arc()
-              .innerRadius(diameter / 3.2)
-              .outerRadius(diameter / 2.2)
-              .startAngle(-foregroundArc.startAngle)
-              .endAngle(-foregroundArc.endAngle)()}
-            fill="gray"
-          />
+          <path className={className} fill="gray" />
 
           <text
             className="text"
             transform={`translate(${0},${-10})`}
             textAnchor="middle"
-            fill="#f0f0f0"
-            fontSize={width / 12 + "px"}
+            fill="#CFD8DC" // light blue gray
+            fontSize={width / 12 + "px"} // increase font size
+            fontWeight="bold" // make font bold
           >
             {type}
           </text>
           <text
+            ref={textRef}
             className="text"
-            fill="#f0f0f0"
+            fill="#CFD8DC" // light blue gray
             transform={`translate(${0},${+25})`}
             textAnchor="middle"
             fontSize={width / 12 + "px"}
@@ -113,14 +140,25 @@ export function PipeChar({ width, height, data }) {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#EFEFEF",
+        backgroundColor: "#546e7a", // lighter gray background
         borderRadius: 15,
         overflow: "hidden",
         padding: 20,
+        color: "#ffffff", // white text
+        fontFamily: "Arial", // Arial font
+        fontSize: 16, // adjust font size
       }}
     >
       <div style={{ display: "flex" }}>
-        <span style={{ padding: 5, color: "#67C240" }}>
+        <span
+          style={{
+            padding: 5,
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontSize: 18,
+            fontWeight: "bold",
+          }}
+        >
           {data.consumed.toFixed(2)}
         </span>
         <div
@@ -138,18 +176,34 @@ export function PipeChar({ width, height, data }) {
               width={0}
               style={{
                 height: "100%",
-                fill: "red",
-                stroke: "black",
+                fill: "#78909C", // change fill color to a lighter gray
+                stroke: "#455A64", // change stroke color to match the theme
               }}
             />
           </svg>
         </div>
-        <span style={{ padding: 5, color: "#67C240" }}>
+        <span
+          style={{
+            padding: 5,
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontSize: 18,
+            fontWeight: "bold",
+          }}
+        >
           {data.max.toFixed(2)}
         </span>
       </div>
       {data.consumed === 0 && (
-        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+        <div
+          style={{
+            color: "#67C240",
+            fontSize: 16,
+            marginTop: 10,
+            lineHeight: "1.5",
+            textAlign: "justify",
+          }}
+        >
           Nothing is consumed !{" "}
           {data.type === "Vitamin" && (
             <Link to={"/nutrientInfo/vitamin/" + data.name}>
@@ -181,7 +235,15 @@ export function PipeChar({ width, height, data }) {
         </div>
       )}
       {data.type === "Vitamin" && data.consumed !== 0 && (
-        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+        <div
+          style={{
+            color: "#67C240",
+            fontSize: 16,
+            marginTop: 10,
+            lineHeight: "1.5",
+            textAlign: "justify",
+          }}
+        >
           Consumed {data.consumed}{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of Vitamin{" "}
           {data.name}.
@@ -195,7 +257,15 @@ export function PipeChar({ width, height, data }) {
         </div>
       )}
       {data.type === "Mineral" && data.consumed !== 0 && (
-        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+        <div
+          style={{
+            color: "#67C240",
+            fontSize: 16,
+            marginTop: 10,
+            lineHeight: "1.5",
+            textAlign: "justify",
+          }}
+        >
           Consumed {data.consumed}{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
           {data.name}.
@@ -209,14 +279,30 @@ export function PipeChar({ width, height, data }) {
         </div>
       )}
       {data.type === "Calories" && data.consumed !== 0 && (
-        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+        <div
+          style={{
+            color: "#67C240",
+            fontSize: 16,
+            marginTop: 10,
+            lineHeight: "1.5",
+            textAlign: "justify",
+          }}
+        >
           Consumed {data.consumed} {data.measurement} in the {data.name}.
         </div>
       )}
       {(data.type === "Macronutrient" ||
         data.type === "Fat" ||
         data.type === "Carbohydrates") && (
-        <div style={{ color: "#67C240", fontSize: 16, marginTop: 10 }}>
+        <div
+          style={{
+            color: "#67C240",
+            fontSize: 16,
+            marginTop: 10,
+            lineHeight: "1.5",
+            textAlign: "justify",
+          }}
+        >
           Consumed {data.consumed}{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
           {data.name.replace(/([A-Z])/g, " $1").trim()}.

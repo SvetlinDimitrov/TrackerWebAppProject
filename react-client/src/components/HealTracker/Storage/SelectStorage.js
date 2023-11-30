@@ -1,49 +1,73 @@
-import React, { useState , useEffect} from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-import { FaHeart } from "react-icons/fa";
+import * as PathCreator from "../../../util/PathCreator";
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
+import api from "../../../util/api";
 import styles from "./SelectStorage.module.css";
 
-const SelectStorage = ({ storages }) => {
-  const { recordId , storageId} = useParams();
-  const [selected, setSelected] = useState(-1);
+const SelectStorage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const detailRecord = queryParams.get("detailsRecord") === "true";
+  const [storages, setStorages] = useState();
+  const { recordId } = useParams();
+  const { setFailedMessage } = useContext(NotificationContext);
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSelected( (storageId === null || storageId === undefined) ? -1 : storageId);
-  }, [storageId]);
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/storage/all?recordId=${recordId}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        setStorages(response.data);
+      } catch (error) {
+        setFailedMessage({
+          message:
+            "Something went wrong with record creation. Please try again later!",
+          flag: true,
+        });
+        navigate(PathCreator.recordPath(recordId, detailRecord));
+        return;
+      }
+    };
 
-  const handleSelectStorage = (id) => {
-    const selectedId = +id;
-    setSelected(selectedId);
+    fetchData();
+  }, [recordId, navigate, setFailedMessage, userToken, detailRecord]);
 
-    if (selectedId === -1) {
-      navigate(`/health-tracker/record/${recordId}`);
-      return;
-    }
-    navigate(`/health-tracker/record/${recordId}/storage/${selectedId}`);
+  if (storages === undefined) {
+    return <div id="preloader"></div>;
+  }
+  const onClose = () => {
+    navigate(PathCreator.recordPath(recordId, detailRecord));
   };
-
   return (
-    <div className={styles.container}>
-      <h2 className={styles.container_header}>
-        Select storage for more food details
-      </h2>
-      <FaHeart className={styles.container_icon} />
-      <p className={styles.container_text}>
-        Choose a storage from the dropdown:
-      </p>
-      <select
-        value={selected}
-        onChange={(e) => handleSelectStorage(e.target.value)}
-      >
-        <option value={-1}>Choose Storage</option>
-        {storages.map((storage) => (
-          <option key={storage.id} value={storage.id}>
-            {storage.name}
-          </option>
-        ))}
-      </select>
+    <div className={styles.overlay}>
+      <div className={styles.popup}>
+        <button className={styles.closeButton} onClick={onClose}>
+          X
+        </button>
+        <h2 className={styles.header}>Select Storage</h2>
+        <select
+          onChange={(e) =>
+            navigate(
+              PathCreator.storagePath(recordId, e.target.value, detailRecord)
+            )
+          }
+          className={styles.select}
+        >
+          <option value={-1}>Choose Storage</option>
+          {storages.map((storage) => (
+            <option key={storage.id} value={storage.id}>
+              {storage.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };

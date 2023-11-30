@@ -1,50 +1,90 @@
+/* FoodSection.module.css */
 .container {
-  composes: container from "../Record/CreateRecord.module.css";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: #90a4ae; /* darker grey */
+  color: #fff;
+  width: 100%;
 }
-.container_header {
-  composes: container_header from "../Record/CreateRecord.module.css";
+
+.container h2 {
+  font-size: 36px;
+  color: #fff; /* white */
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 .container_totalCount {
-  display: block;
-  width: 85%;
-  margin-top: 10px;
-  font-size: small;
-  text-align: right;
-}
-.container_foodDetails {
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  width: 100%;
-  max-height: 120px; 
-  overflow-y: auto;
-}
-.container_foodDetails_food {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  cursor: pointer;
-  height: 40px;
-  font-size: small;
-  border-bottom: 1px solid #ddd;
-  overflow: hidden;
+  width: 40%;
+  font-size: 18px;
+  color: #fff; /* white */
+  margin-bottom: 30px;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
-
-.container_foodDetails_food_info {
+.container_foodDetails {
+  width: 40%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  max-height: 200px;
+  height: 200px;
+  overflow-y: scroll;
+  border: 1px solid #546e7a; /* matching grey */
+  border-radius: 5px;
+  padding: 10px;
 }
-.container_addButton {
-  margin-top: 10px;
+
+.container_foodDetails_food {
+  display: flex;
+  cursor: pointer;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  background-color: #546e7a; /* matching grey */
+  border-radius: 5px;
+  height: 50px;
+  align-items: center;
+  color: #fff; /* white */
+}
+.container_foodDetails_food:hover {
+  background-color: #f0f0f0; /* even lighter gray background on hover */
+  color: #000; /* black text on hover */
+}
+
+.container_addButton,
+.container_addCustomFood {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #4caf50;
-  color: white;
+  background-color: #546e7a; /* matching grey */
+  color: #fff;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  position: relative;
+}
+
+.container_addButton:hover,
+.container_addCustomFood:hover {
+  background-color: #37474f; /* darker grey */
+  transform: scale(1.1); /* scale up the button on hover */
+}
+
+.container_button_container {
+  display: flex;
+  justify-content: space-around;
+  width: 40%;
 }

@@ -1,46 +1,50 @@
-import {
-  faCaretDown,
-  faCaretUp,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import { useNavigate , useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
+
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
-import ChangeLength from "./ChangeLength";
 import styles from "./FoodItem.module.css";
+import * as PathCreator from "../../../util/PathCreator";
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
 
-const FoodItem = ({
-  fun,
-  showFood,
-  setShowFood,
-  userToken,
-  onAddChangeFunction,
-  setSuccessfulMessage,
-  setFailedMessage,
-}) => {
-  const { recordId , storageId } = useParams();
+const FoodItem = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const foodSize = queryParams.get("foodSize");
+  const fromFoodMenu = queryParams.get("fromFoodMenu") === "true";
+  const { recordId, storageId, foodName } = useParams();
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
   const [showVitamins, setShowVitamins] = useState(false);
   const [showMinerals, setShowMinerals] = useState(false);
   const [showMacros, setShowMacros] = useState(false);
-  const [food, setFood] = useState(showFood);
-  const [showLength, setShowLength] = useState(false);
-  const [length, setLength] = useState(food.size);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
+
+  const [inputValue, setInputValue] = useState(foodSize);
+  const [food, setFood] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.get(`/food/${food.name}?amount=${length}`);
-      setFood(response.data);
-      setLength(response.data.size);
+      try {
+        const response = await api.get(`/food/${foodName}?amount=${foodSize}`);
+        setFood(response.data);
+      } catch (error) {
+        setFailedMessage({
+          message:
+            "Something went wrong with food fetching. Please try again later!",
+          flag: true,
+        });
+      }
     };
 
-    if (length !== undefined) {
-      fetchData();
-    }
-    setShowLength(false);
-  }, [length, food.name]);
+    fetchData();
+    // setShowLength(false);
+  }, [foodName, setFailedMessage, foodSize]);
 
   const handleDeleteFood = async () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
@@ -63,8 +67,83 @@ const FoodItem = ({
           flag: true,
         });
       }
-      navigate(`/health-tracker/record/${recordId}/storage/${storageId}`);
+      navigate(PathCreator.storagePath(recordId, storageId));
     }
+  };
+
+  const handleAddFood = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to add" +
+          food.size +
+          " " +
+          food.measurement +
+          " of " +
+          food.name +
+          "?"
+      )
+    ) {
+      try {
+        await api.patch(
+          `/storage/${storageId}/addFood?recordId=${recordId}`,
+          {
+            foodName: food.name,
+            amount: food.size,
+          },
+          {
+            headers: { Authorization: `Bearer ${userToken}` },
+          }
+        );
+        setSuccessfulMessage({
+          message:
+            food.size +
+            " " +
+            food.measurement +
+            " of " +
+            food.name +
+            " added successfully!",
+          flag: true,
+        });
+      } catch (error) {
+        setFailedMessage({
+          message:
+            "Something went wrong with food addition. Please try again later!",
+          flag: true,
+        });
+      }
+      onClose(false);
+      navigate(PathCreator.storagePath(recordId, storageId));
+    }
+  };
+
+  const handleEditFood = async () => {
+    try {
+      await api.patch(
+        `/storage/${storageId}/changeFood?recordId=${recordId}`,
+        {
+          foodName: food.name,
+          amount: food.size,
+        },
+        {
+          headers: { Authorization: `Bearer ${userToken}` },
+        }
+      );
+      setSuccessfulMessage({
+        message: "successfully modified " + food.name + "!",
+        flag: true,
+      });
+    } catch (error) {
+      setFailedMessage({
+        message:
+          "Something went wrong with food deletion. Please try again later!",
+        flag: true,
+      });
+    }
+    navigate(PathCreator.storagePath(recordId, storageId));
+  };
+
+  const onClose = () => {
+    navigate(PathCreator.storagePath(recordId, storageId));
   };
 
   if (!food) {
@@ -72,20 +151,18 @@ const FoodItem = ({
   }
   return (
     <>
-      {showLength && (
-        <ChangeLength
-          setShowLength={setShowLength}
-          setLength={setLength}
-          length={length}
-        />
-      )}
       <div className={styles.overlay}>
+        <button className={styles.closeButton} onClick={onClose}>
+          X
+        </button>
         <div className={styles.container}>
           <div className={styles.container_row}>
-            <h3>{fun}</h3>
+            <h3>{fromFoodMenu ? "Add Food" : "Edit Food"}</h3>
             <button
               className={styles.container_row_acceptButton}
-              onClick={() => onAddChangeFunction(food, length)}
+              onClick={() =>
+                fromFoodMenu ? handleAddFood() : handleEditFood()
+              }
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
@@ -111,17 +188,36 @@ const FoodItem = ({
             />
           </div>
           <div className={styles.container_row}>
-            <span>Serving Size</span>
-            <span onClick={() => setShowLength(true)}>{food.size} gram</span>
+            <div className={styles.container_row_changeSize}>
+              <span>Serving Size In Grams</span>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(
+                    PathCreator.basicFoodPath(
+                      recordId,
+                      storageId,
+                      foodName,
+                      inputValue,
+                      fromFoodMenu
+                    )
+                  );
+                }}
+              >
+                <input
+                  type="number"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
+                <button type="submit">Change Size</button>
+              </form>
+            </div>
           </div>
           <div
             className={styles.container_container}
             onClick={() => setShowVitamins(!showVitamins)}
           >
-            <span>More Information about Vitamins</span>
-            <button>
-              <FontAwesomeIcon icon={showVitamins ? faCaretDown : faCaretUp} />
-            </button>
+            Vitamins Information
           </div>
           {showVitamins && (
             <>
@@ -183,10 +279,7 @@ const FoodItem = ({
             className={styles.container_container}
             onClick={() => setShowMinerals(!showMinerals)}
           >
-            <span>More Information about Minerals</span>
-            <button>
-              <FontAwesomeIcon icon={showMinerals ? faCaretDown : faCaretUp} />
-            </button>
+            Minerals Information
           </div>
           {showMinerals && (
             <>
@@ -256,10 +349,7 @@ const FoodItem = ({
             className={styles.container_container}
             onClick={() => setShowMacros(!showMacros)}
           >
-            <span>More Information about Macros</span>
-            <button>
-              <FontAwesomeIcon icon={showMacros ? faCaretDown : faCaretUp} />
-            </button>
+            Macros Information
           </div>
           {showMacros && (
             <>
@@ -304,31 +394,20 @@ const FoodItem = ({
             </>
           )}
           <div className={styles.container_specialRow}>
-            <div className={styles.container_specialRow_closeButtonContainer}>
+            {!fromFoodMenu && (
               <button
                 className={
-                  styles.container_specialRow_closeButtonContainer_closeButton
+                  styles.container_specialRow_DeleteButton
                 }
-                onClick={() => setShowFood(undefined)}
+                onClick={() => handleDeleteFood()}
               >
-                Close
+                Delete Food
               </button>
-            </div>
-            {fun === "Edit Food" && (
-              <div className={styles.container_specialRow_closeButtonContainer}>
-                <button
-                  className={
-                    styles.container_specialRow_closeButtonContainer_closeButton
-                  }
-                  onClick={() => handleDeleteFood()}
-                >
-                  Delete
-                </button>
-              </div>
             )}
           </div>
         </div>
       </div>
+      <Outlet />
     </>
   );
 };

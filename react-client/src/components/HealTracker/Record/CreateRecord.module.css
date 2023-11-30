@@ -1,47 +1,81 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  width: 380px;
-  margin: auto;
-  margin-bottom: 10px;
-  margin-top: 20px;
-}
-.container_header {
-  font-size: 26px;
-  margin-bottom: 20px;
-}
-.container_icon {
-  color: red;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-.container_form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  width: 96%;
-  margin-top: 20px;
-}
-.container_input {
+/* CreateRecord.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.container_submit {
-  padding: 10px 20px;
+.popup {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  padding: 10px;
+  border: none;
+  border-bottom: 2px solid #333;
+  background: transparent;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.button {
+  padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #6a11cb;
   color: #fff;
+  font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: #2575fc;
+}
+.closeButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }

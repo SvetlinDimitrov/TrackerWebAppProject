@@ -1,99 +1,66 @@
-import React, { useState , useEffect} from "react";
-import { useNavigate , useLocation } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 
-import { AddFoodMenu } from "./AddFoodMenu.js";
-import FoodItem from "./FoodItem.js";
 import styles from "./FoodSection.module.css";
-import api from "../../../util/api.js";
+import * as PathCreator from "../../../util/PathCreator";
+import api from "../../../util/api";
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
 
-const FoodSection = ({
-  recordId,
-  userToken,
-  setSuccessfulMessage,
-  setFailedMessage,
-  selectedStorage,
-}) => {
-  const location = useLocation();
-  const [showAddFoodMenu, setShowAddFoodMenu] = useState(false);
-  const [food, setFood] = useState();
+const FoodSection = () => {
+  const { recordId, storageId } = useParams();
+  const { setFailedMessage } = useContext(NotificationContext);
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
+  const [selectedStorage, setSelectedStorage] = useState(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFood(undefined);
-  }, [location]);
+    setSelectedStorage(undefined);
+    const fetchData = async () => {
+      try {
+        const response = await api.get(
+          `/storage?recordId=${recordId}&storageId=${storageId}`,
+          {
+            headers: { Authorization: `Bearer ${userToken}` },
+          }
+        );
+        setSelectedStorage(response.data);
+      } catch (error) {
+        setFailedMessage({
+          message:
+            "Something went wrong with record creation. Please try again later!",
+          flag: true,
+        });
+        navigate(PathCreator.storagePath(recordId, storageId));
+      }
+    };
+    fetchData();
+  }, [recordId, storageId, userToken, setFailedMessage, navigate]);
 
-  const handleViewFood = (food) => {
-    setFood(food);
-  };
-
-  const changeFood = async (food, length) => {
-    try {
-      await api.patch(
-        `/storage/${selectedStorage.id}/changeFood?recordId=${recordId}`,
-        {
-          foodName: food.name,
-          amount: length,
-        },
-        {
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      );
-      setSuccessfulMessage({
-        message: "successfully modified " + food.name + "!",
-        flag: true,
-      });
-    } catch (error) {
-      setFailedMessage({
-        message:
-          "Something went wrong with food deletion. Please try again later!",
-        flag: true,
-      });
-    }
-    navigate(
-      "/health-tracker/record/" +
-        recordId +
-        "/storage/" +
-        selectedStorage.id +
-        "/"
-    );
-  };
-
+  
   if (selectedStorage === undefined) {
     return <div id="preloader"></div>;
   }
 
   return (
     <>
-      {food && (
-        <FoodItem
-          setShowFood={setFood}
-          showFood={food}
-          fun={"Edit Food"}
-          onAddChangeFunction={changeFood}
-          userToken={userToken}
-          setFailedMessage={setFailedMessage}
-          setSuccessfulMessage={setSuccessfulMessage}
-        />
-      )}
-      {showAddFoodMenu && (
-        <AddFoodMenu
-          onClose={setShowAddFoodMenu}
-          setFailedMessage={setFailedMessage}
-          setSuccessfulMessage={setSuccessfulMessage}
-          userToken={userToken}
-        />
-      )}
       <div className={styles.container}>
-        <h2>Selected foods from {selectedStorage.name}</h2>
+        <h2>Food Section </h2>
         <div className={styles.container_totalCount}>
-          Total Count: {selectedStorage.consumedCalories}
+          <span className={styles.container_totalCount_title}>
+            Listed Foods For {selectedStorage.name}
+          </span>
+          <span className={styles.container_totalCount_title}>
+            Total Count: {selectedStorage.consumedCalories}
+          </span>
         </div>
         <div className={styles.container_foodDetails}>
           {selectedStorage.foods.map((food, index) => (
             <div
               className={styles.container_foodDetails_food}
               key={food.name + index}
-              onClick={() => handleViewFood(food)}
+              onClick={() => navigate(PathCreator.basicFoodPath(recordId, storageId, food.name , food.size, false))}
             >
               <div className={styles.container_foodDetails_food_info}>
                 <div>{food.name}</div>
@@ -105,13 +72,21 @@ const FoodSection = ({
             </div>
           ))}
         </div>
-        <button
-          className={styles.container_addButton}
-          onClick={() => setShowAddFoodMenu(true)}
-        >
-          Add Food
-        </button>
+        <div className={styles.container_button_container}>
+          <button
+            className={styles.container_addButton}
+            onClick={() =>
+              navigate(
+                PathCreator.storagePath(recordId, storageId) + "/foodMenu"
+              )
+            }
+          >
+            Add Food
+          </button>
+          <button className={styles.container_addButton}>More Options</button>
+        </div>
       </div>
+      <Outlet />
     </>
   );
 };

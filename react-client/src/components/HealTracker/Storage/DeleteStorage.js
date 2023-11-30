@@ -1,35 +1,38 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { useNavigate , useParams} from "react-router-dom";
 
-import { FaHeart } from "react-icons/fa";
-
+import * as PathCreator from "../../../util/PathCreator";
 import api from "../../../util/api";
-import styles4 from "./DeleteStorage.module.css";
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
+import styles from "./DeleteStorage.module.css";
 
-const DeleteStorage = ({
-  selectedStorage,
-  recordId,
-  userToken,
-  setFailedMessage,
-  setSuccessfulMessage,
-}) => {
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [nameDeletion, setNameDeletion] = useState("");
+const DeleteStorage = () => {
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
+  const { recordId , storageId} = useParams();
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
   const navigate = useNavigate();
 
+  const onClose = () => {
+    navigate(PathCreator.recordPath(recordId));
+  };
+
   const handleDeletion = async () => {
-    if (selectedStorage.name === nameDeletion) {
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this record?"
+    );
+    if (confirmation) {
       try {
-        await api.delete(
-          `/record/${recordId}/storage/${selectedStorage.id}`,
-          { headers: { Authorization: `Bearer ${userToken}` } }
-        );
+        await api.delete(`/record/${recordId}/storage/${storageId}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
         setSuccessfulMessage({
           message:
-            "Storage: " + selectedStorage.name + " was deleted successfully!",
+            "Storage deletion was successful!",
           flag: true,
         });
-        
       } catch (error) {
         setFailedMessage({
           message:
@@ -37,62 +40,24 @@ const DeleteStorage = ({
           flag: true,
         });
       }
-     
-    } else {
-      setFailedMessage({
-        message:
-          "Names do not match. Please enter the name of the record to confirm deletion!",
-        flag: true,
-      });
-    }
-    navigate("/health-tracker/record/" + recordId);
-    setPopupVisible(false);
+    } 
+    navigate(PathCreator.recordPath(recordId));
   };
   return (
-    <>
-      <div className={styles4.container}>
-        <h2 className={styles4.container_header}>
-          Selected storage {selectedStorage && selectedStorage.name}
-        </h2>
-        <FaHeart className={styles4.container_icon} />
-        <p className={styles4.container_text}>
-          Delete storage 
-        </p>
-        <div className={styles4.container_section}>
-          <button
-            className={styles4.container_deleteButton}
-            onClick={() => setPopupVisible(true)}
-          >
-            Delete Storage
-          </button>
-        </div>
+    <div className={styles.overlay}>
+      <div className={styles.container}>
+        <button className={styles.closeButton} onClick={onClose}>
+          X
+        </button>
+        <h2 className={styles.container_header}>Delete Storage</h2>
+        <button
+          className={styles.container_deleteButton}
+          onClick={() => handleDeletion()}
+        >
+          Delete 
+        </button>
       </div>
-      {isPopupVisible && (
-        <div className={styles4.overlay}>
-          <div className={styles4.popup}>
-            <h2>Confirm Deletion</h2>
-            <p>Please enter the name of the storage to confirm deletion:</p>
-            <input
-              type="text"
-              className={styles4.popup_input}
-              onChange={(e) => setNameDeletion(e.target.value)}
-            />
-            <button
-              className={styles4.popup_confirmButton}
-              onClick={() => handleDeletion()}
-            >
-              Confirm
-            </button>
-            <button
-              className={styles4.popup_cancelButton}
-              onClick={() => setPopupVisible(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

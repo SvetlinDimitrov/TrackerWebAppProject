@@ -14,11 +14,20 @@ import NutrientTemplate from "./components/HealTracker/Nutrients/NutrientTemplat
 import EditUser from "./components/User/EditUser/EditUser";
 import NotificationProvider from "./context/Notification";
 import FoodContextProvider from "./context/FoodContext";
-import HealthTracker from "./components/HealTracker/HealthTracker";
-import SelectedRecordHolder from "./components/HealTracker/Record/SelectedRecordHolder";
-import SelectedStorageHolder from "./components/HealTracker/Storage/SelectedStorageHolder";
+import SelectRecord from "./components/HealTracker/Record/SelectRecord";
 import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
 import NutrientFeatureTemplate from "./components/HealTracker/Nutrients/NutrientFeatureTemplate";
+import RecordHolder from "./components/HealTracker/Record/RecordHolder";
+import CreateRecord from "./components/HealTracker/Record/CreateRecord";
+import DeleteRecord from "./components/HealTracker/Record/DeleteRecord";
+import StorageHolder from "./components/HealTracker/Storage/StorageHolder";
+import SelectStorage from "./components/HealTracker/Storage/SelectStorage";
+import CreateStorage from "./components/HealTracker/Storage/CreateStorage";
+import DeleteStorage from "./components/HealTracker/Storage/DeleteStorage";
+import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
+import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu";
+import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
+
 function App() {
   return (
     <>
@@ -44,15 +53,18 @@ function App() {
               <Route path="/editUser" element={<EditUser />} />
               <Route path="/logout" element={<Logout />} />
               <Route element={<UserAuthGuard />}>
-                <Route path="/health-tracker" element={<HealthTracker />}>
-                  <Route
-                    path="record/:recordId"
-                    element={<SelectedRecordHolder />}
-                  >
-                    <Route
-                      path="storage/:storageId"
-                      element={<SelectedStorageHolder />}
-                    />
+                <Route path="/health-tracker" element={<RecordHolder />}>
+                  <Route path="selectRecord" element={<SelectRecord />} />
+                  <Route path="createRecord" element={<CreateRecord />} />
+                  <Route path="record/:recordId" element={<StorageHolder />}>
+                    <Route path="deleteRecord" element={<DeleteRecord />} />
+                    <Route path="selectStorage" element={<SelectStorage />} />
+                    <Route path="createStorage" element={<CreateStorage />} />
+                    <Route path="storage/:storageId" element={<FoodSection />}>
+                      <Route path="deleteStorage" element={<DeleteStorage />} />
+                      <Route path="foodMenu" element={<FoodMenu />} />
+                      <Route path="foodItem/:foodName" element={<FoodItem />} />
+                    </Route>
                   </Route>
                 </Route>
               </Route>

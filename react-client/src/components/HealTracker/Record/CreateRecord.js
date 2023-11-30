@@ -1,46 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
 
+import * as PathCreator from "../../../util/PathCreator";
 import api from "../../../util/api";
 import styles from "./CreateRecord.module.css";
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserAuth";
 
-const CreateRecord = ({
-  userToken,
-  setFailedMessage,
-  setSuccessfulMessage
-}) => {
+const CreateRecord = () => {
   const navigate = useNavigate();
-  const [nameCreation, setNameCreation] = useState("");
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
+  const { user } = useContext(AuthContext);
+  const userToken = user.tokenInfo.token;
+  const [recordName, setRecordName] = useState("");
 
-  useEffect(() => {
-    setNameCreation("");
-  }, [navigate]);
-
-  const handleRecordCreation = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const name = nameCreation.trim();
+    setRecordName(recordName.trim());
 
-    if (name.length < 2) {
-      setFailedMessage({
-        message: "Name must be at least 2 character long!",
-        flag: true,
-      });
-      navigate("/health-tracker");
-      return;
-    }
     try {
       await api.post(
-        `/record?name=${encodeURIComponent(name)}`,
+        `/record?name=${encodeURIComponent(recordName)}`,
         {},
         { headers: { Authorization: `Bearer ${userToken}` } }
       );
-
       setSuccessfulMessage({
         message: "Record created successfully!",
         flag: true,
       });
-      setNameCreation("");
     } catch (error) {
       setFailedMessage({
         message:
@@ -48,29 +36,34 @@ const CreateRecord = ({
         flag: true,
       });
     }
-
-    setNameCreation("");
-    navigate("/health-tracker");
+    setRecordName("");
+    navigate(PathCreator.basicPath());
   };
-
+  const onClose = () => {
+    navigate(PathCreator.basicPath());
+  };
   return (
-    <div className={styles.container}>
-      <h2 className={styles.container_header}>Create a new record</h2>
-      <FaHeart className={styles.container_icon} />
-
-      <form className={styles.container_form} onSubmit={(e) => handleRecordCreation(e)}>
-        <input
-          type="text"
-          name="name"
-          value={nameCreation}
-          className={styles.container_input}
-          placeholder="Record name"
-          onChange={(e) => setNameCreation(e.target.value)}
-        />
-        <button type="submit" className={styles.container_submit}>
-          Submit
+    <div className={styles.overlay}>
+      <div className={styles.popup}>
+        <button className={styles.closeButton} onClick={onClose}>
+          X
         </button>
-      </form>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <h2 className={styles.header}>Create Record</h2>
+          <input
+            type="text"
+            value={recordName}
+            minLength={3}
+            onChange={(e) => setRecordName(e.target.value)}
+            className={styles.input}
+            placeholder="Record Name"
+            required
+          />
+          <button type="submit" className={styles.button}>
+            Create
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
