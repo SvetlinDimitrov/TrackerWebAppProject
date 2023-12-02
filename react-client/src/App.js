@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import UserAuthProvider from "./context/UserAuth";
 import UserAuthGuard from "./context/UserAuthGuard";
 
-import Logout from "./components/User/Logout/Logout";
 import Header from "./components/Header/Header";
 import Home from "./components/HomePage/Home";
 import Footer from "./components/Footer/Footer";
@@ -23,10 +22,12 @@ import DeleteRecord from "./components/HealTracker/Record/DeleteRecord";
 import StorageHolder from "./components/HealTracker/Storage/StorageHolder";
 import SelectStorage from "./components/HealTracker/Storage/SelectStorage";
 import CreateStorage from "./components/HealTracker/Storage/CreateStorage";
-import DeleteStorage from "./components/HealTracker/Storage/DeleteStorage";
 import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
 import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu";
 import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
+import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection";
+import CreateCustomFood from "./components/HealTracker/FoodSection/CreateCustomFood";
+import Settings from "./components/User/Settings/Settings";
 
 function App() {
   return (
@@ -50,9 +51,10 @@ function App() {
                 />
               </Route>
               <Route path="*" element={<Error />} />
-              <Route path="/editUser" element={<EditUser />} />
-              <Route path="/logout" element={<Logout />} />
+
               <Route element={<UserAuthGuard />}>
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings/editUser" element={<EditUser />} />
                 <Route path="/health-tracker" element={<RecordHolder />}>
                   <Route path="selectRecord" element={<SelectRecord />} />
                   <Route path="createRecord" element={<CreateRecord />} />
@@ -61,9 +63,14 @@ function App() {
                     <Route path="selectStorage" element={<SelectStorage />} />
                     <Route path="createStorage" element={<CreateStorage />} />
                     <Route path="storage/:storageId" element={<FoodSection />}>
-                      <Route path="deleteStorage" element={<DeleteStorage />} />
                       <Route path="foodMenu" element={<FoodMenu />} />
                       <Route path="foodItem/:foodName" element={<FoodItem />} />
+                      <Route path="customFood" element={<CustomFoodSection />}>
+                        <Route
+                          path="create"
+                          element={<CreateCustomFood />}
+                        ></Route>
+                      </Route>
                     </Route>
                   </Route>
                 </Route>

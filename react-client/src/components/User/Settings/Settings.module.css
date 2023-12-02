@@ -1,0 +1,45 @@
+.body {
+  background-color: #b0c7c3; /* Light teal color that complements #008374 */
+  font-family: "Roboto", sans-serif;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.settingsContainer {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #a8b6bf; /* Subdued blue color */
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333; /* Dark grey color for text */
+}
+
+.settingsTitle {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333; /* Dark grey color */
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.settingsOption {
+  padding: 10px;
+  border: 1px solid #ddd; /* Medium grey color for border */
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Added transition for smooth color change */
+}
+
+.settingsOption:hover {
+  background-color: #8a9ca9; /* Darker subdued blue color */
+  color: #333; /* Dark grey color */
+}

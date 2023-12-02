@@ -15,7 +15,8 @@ export const basicFoodPath = (
   storageId,
   foodName,
   foodSize,
-  fromFoodMenu
+  fromFoodMenu,
+  custom
 ) => {
   return (
     "/health-tracker/record/" +
@@ -27,6 +28,15 @@ export const basicFoodPath = (
     "?foodSize=" +
     foodSize +
     "&fromFoodMenu=" +
-    fromFoodMenu
+    fromFoodMenu +
+    "&custom=" + 
+    custom
   );
 };
+export const customFoodPath = (
+  recordId,
+  storageId,
+) => {
+  return (storagePath(recordId , storageId) + "/customFood");
+};
+

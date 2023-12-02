@@ -10,7 +10,7 @@ import styles from "./StorageHolder.module.css";
 const StorageHolder = () => {
   const navigate = useNavigate();
   const { recordId, storageId } = useParams();
-  const { setFailedMessage } = useContext(NotificationContext);
+  const { setFailedMessage , setSuccessfulMessage} = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
 
@@ -42,6 +42,28 @@ const StorageHolder = () => {
     }
   }, [recordId, navigate, setFailedMessage, userToken, storageId]);
 
+  const onDelete = async () => {
+    if (
+      window.confirm("Are you sure you want to delete this storage?") === false
+    )
+      return;
+    try {
+      await api.delete(`/record/${recordId}/storage/${storageId}`, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+      setSuccessfulMessage({
+        message: "Storage " + storage.name + " was successful!",
+        flag: true,
+      });
+    } catch (error) {
+      setFailedMessage({
+        message:
+          "Something went wrong with storage deletion. Please try again later!",
+        flag: true,
+      });
+    }
+    navigate(PathCreator.storagePath(recordId, storageId));
+  };
   return (
     <>
       <div className={styles.container}>
@@ -67,12 +89,7 @@ const StorageHolder = () => {
             Create Storage
           </button>
           {storage && (
-            <button
-              className={styles.optionButton}
-              onClick={() =>
-                navigate(PathCreator.storagePath(recordId, storageId))
-              }
-            >
+            <button className={styles.optionButton} onClick={() => onDelete()}>
               Delete Storage
             </button>
           )}

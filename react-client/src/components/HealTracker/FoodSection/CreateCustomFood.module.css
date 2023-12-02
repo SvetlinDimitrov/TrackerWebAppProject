@@ -1,0 +1,126 @@
+/* CustomFood.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupForm {
+  background: #3a6186; /* slightly different blue */
+  padding: 20px;
+  border-radius: 4px;
+  width: 40%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff; /* white text */
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-height: 500px;
+  overflow-y: scroll;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  width: 46%; /* adjust as needed */
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #fff; /* white text */
+}
+
+.input {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #fff; /* white border */
+  background: #5E8B92; /* lighter blue */
+  color: #fff; /* white text */
+}
+
+.submitButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #88BBD6; /* light blue */
+  color: #fff; /* white text */
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #B0CFE7; /* even lighter blue */
+}
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.groupButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #88BBD6; /* light blue */
+  color: #fff; /* white text */
+  border: none;
+  cursor: pointer;
+  margin: 5px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.groupButton:hover {
+  background-color: #B0CFE7; /* even lighter blue */
+}
+.closeButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #88BBD6; /* light blue */
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1); /* make it larger */
+  background: #B0CFE7; /* even lighter blue */
+}

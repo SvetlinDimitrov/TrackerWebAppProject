@@ -1,0 +1,122 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupSection {
+  background: #3C6478; /* dark blue */
+  padding: 20px;
+  border-radius: 4px;
+  width: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff; /* white text */
+}
+
+.popupSection h1 {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+}
+.customFoodList{
+  width: 80%;
+  text-align: center;
+}
+
+.popupSection h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.foodItems {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #fff; /* white border */
+  padding: 10px;
+  border-radius: 5px;
+  max-height: 300px; /* adjust as needed */
+  overflow-y: auto; /* make it scrollable */
+}
+
+.foodItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 97%;
+  margin: 5px;
+  padding: 10px;
+  height: 50px;
+  box-sizing: border-box;
+  background: #5E8B92; /* lighter blue */
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* add shadow */
+}
+.foodItem:hover {
+  transform: scale(1.01); /* make it slightly larger */
+  background: #3A6186;
+  cursor: pointer; /* slightly different blue */
+}
+
+.foodItem button {
+  background: #88BBD6; /* light blue */
+  color: #fff; /* white text */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.foodItem button:hover {
+  background: #B0CFE7; /* even lighter blue */
+}
+.customFoodList_addButton {
+  background: #88BBD6; /* light blue */
+  color: #fff; /* white text */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 20px;
+}
+
+.customFoodList_addButton:hover {
+  background: #B0CFE7; /* even lighter blue */
+}
+
+.closeButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #3A6186; /* slightly different blue */
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1); /* make it larger */
+  background: #5E8B92; /* lighter blue */
+}

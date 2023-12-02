@@ -16,6 +16,7 @@ const FoodItem = () => {
   const queryParams = new URLSearchParams(location.search);
   const foodSize = queryParams.get("foodSize");
   const fromFoodMenu = queryParams.get("fromFoodMenu") === "true";
+  const customFood = queryParams.get("custom") === "true";
   const { recordId, storageId, foodName } = useParams();
   const { setFailedMessage, setSuccessfulMessage } =
     useContext(NotificationContext);
@@ -30,27 +31,45 @@ const FoodItem = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await api.get(`/food/${foodName}?amount=${foodSize}`);
-        setFood(response.data);
-      } catch (error) {
-        setFailedMessage({
-          message:
-            "Something went wrong with food fetching. Please try again later!",
-          flag: true,
-        });
+      if (!customFood) {
+        try {
+          const response = await api.get(
+            `/food/${foodName}?amount=${foodSize}`
+          );
+          setFood(response.data);
+        } catch (error) {
+          setFailedMessage({
+            message:
+              "Something went wrong with food fetching. Please try again later!",
+            flag: true,
+          });
+        }
+      } else {
+        try {
+          const response = await api.get(
+            `/food/customFood?foodName=${foodName}&amount=${foodSize}`,
+            { headers: { Authorization: `Bearer ${userToken}` } }
+          );
+          setFood(response.data);
+        } catch (error) {
+          setFailedMessage({
+            message:
+              "Something went wrong with food fetching. Please try again later!",
+            flag: true,
+          });
+        }
       }
     };
 
     fetchData();
     // setShowLength(false);
-  }, [foodName, setFailedMessage, foodSize]);
+  }, [foodName, setFailedMessage, foodSize, customFood, userToken]);
 
   const handleDeleteFood = async () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         await api.patch(
-          `/storage/${storageId}/removeFood?foodName=${food.name}&recordId=${recordId}`,
+          `/storage/${storageId}/removeFood?foodName=${food.name}&recordId=${recordId}&isCustom=${customFood}`,
           {},
           {
             headers: { Authorization: `Bearer ${userToken}` },
@@ -85,7 +104,7 @@ const FoodItem = () => {
     ) {
       try {
         await api.patch(
-          `/storage/${storageId}/addFood?recordId=${recordId}`,
+          `/storage/${storageId}/addFood?recordId=${recordId}&isCustom=${customFood}`,
           {
             foodName: food.name,
             amount: food.size,
@@ -119,7 +138,7 @@ const FoodItem = () => {
   const handleEditFood = async () => {
     try {
       await api.patch(
-        `/storage/${storageId}/changeFood?recordId=${recordId}`,
+        `/storage/${storageId}/changeFood?recordId=${recordId}&isCustom=${customFood}`,
         {
           foodName: food.name,
           amount: food.size,
@@ -143,12 +162,17 @@ const FoodItem = () => {
   };
 
   const onClose = () => {
+    if(customFood){
+      navigate(PathCreator.customFoodPath(recordId, storageId));
+      return;
+    }
     navigate(PathCreator.storagePath(recordId, storageId));
   };
 
   if (!food) {
     return <div id="preloader"></div>;
   }
+  console.log(food);
   return (
     <>
       <div className={styles.overlay}>
@@ -178,7 +202,7 @@ const FoodItem = () => {
           <div className={styles.container_gauge}>
             <Gauge2
               width={300}
-              height={120}
+              height={130}
               diameter={120}
               legendRectSize={15}
               legendSpacing={15}
@@ -199,7 +223,8 @@ const FoodItem = () => {
                       storageId,
                       foodName,
                       inputValue,
-                      fromFoodMenu
+                      fromFoodMenu,
+                      customFood
                     )
                   );
                 }}
@@ -396,9 +421,7 @@ const FoodItem = () => {
           <div className={styles.container_specialRow}>
             {!fromFoodMenu && (
               <button
-                className={
-                  styles.container_specialRow_DeleteButton
-                }
+                className={styles.container_specialRow_DeleteButton}
                 onClick={() => handleDeleteFood()}
               >
                 Delete Food

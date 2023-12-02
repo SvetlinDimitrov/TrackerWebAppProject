@@ -1,30 +1,32 @@
 .body {
-    padding: 20px;
+  padding: 20px;
+  background-color: #d8e9e5; /* Light teal color that complements #008374 */
 }
 .container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: #b0c7c3; /* Darker teal color that complements #d8e9e5 */
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 20px;
-  color: #007f4e;
-}
-
-.formGroup {
-  margin-bottom: 15px;
+  color: #007f74; /* Dark teal color */
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  color: #007f4e;
+  margin-bottom: 10px;
+  color: #007f74; /* Dark teal color */
   font-weight: bold;
+  font-size: 16px;
 }
 
 input[type="text"],
@@ -32,27 +34,32 @@ input[type="email"],
 input[type="number"],
 select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 10px; /* Reduced padding */
   border-radius: 5px;
-  font-size: 16px;
-  outline: none;
+  border: 1px solid #ddd;
+  font-size: 14px; /* Reduced size */
 }
-
-select {
-  cursor: pointer;
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+select:hover {
+  border-color: #007f74; /* Dark teal color on hover */
 }
 
 .submitButton {
-  background-color: #007f4e;
-  color: white;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(0, 131, 116, 0.8);
+  color: #fff;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease; /* Added transition for smooth color change */
 }
 
 .submitButton:hover {
-  background-color: #005f3c;
+  background-color: rgba(0, 131, 116, 1);
 }

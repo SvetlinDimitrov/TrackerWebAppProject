@@ -69,7 +69,8 @@ export const FoodMenu = () => {
                             storageId,
                             food.name,
                             food.size,
-                            true
+                            true,
+                            false
                           )
                         )
                       }

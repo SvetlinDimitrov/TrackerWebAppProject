@@ -51,48 +51,50 @@ const Login = () => {
   const { values, onChange, onSubmit } = useForm(initValues, submitHandler);
 
   return (
-    <div className={styles.logRegContainer}>
-      <h2 className={styles.h2}>Login</h2>
-      <form
-        className={styles.form}
-        method="POST"
-        onSubmit={(e) => {
-          onSubmit(e);
-        }}
-      >
-        <input
-          className={styles.input}
-          type="email"
-          autoComplete={keys.email}
-          name={keys.email}
-          placeholder={keys.email}
-          value={values[keys.email]}
-          onChange={(e) => {
-            onChange(e);
-            setError("");
+    <div className={styles.body}>
+      <div className={styles.logRegContainer}>
+        <h2 className={styles.h2}>Login</h2>
+        <form
+          className={styles.form}
+          method="POST"
+          onSubmit={(e) => {
+            onSubmit(e);
           }}
-          required
-          email
-        />
+        >
+          <input
+            className={styles.input}
+            type="email"
+            autoComplete={keys.email}
+            name={keys.email}
+            placeholder={keys.email}
+            value={values[keys.email]}
+            onChange={(e) => {
+              onChange(e);
+              setError("");
+            }}
+            required
+            email
+          />
 
-        <input
-          className={styles.input}
-          type="password"
-          autoComplete={keys.password}
-          name={keys.password}
-          placeholder={keys.password}
-          value={values[keys.password]}
-          onChange={(e) => {
-            onChange(e);
-            setError("");
-          }}
-          required
-        />
+          <input
+            className={styles.input}
+            type="password"
+            autoComplete={keys.password}
+            name={keys.password}
+            placeholder={keys.password}
+            value={values[keys.password]}
+            onChange={(e) => {
+              onChange(e);
+              setError("");
+            }}
+            required
+          />
 
-        {error !== "" && <p>{error}</p>}
+          {error !== "" && <p>{error}</p>}
 
-        <button className={styles.button}>Login</button>
-      </form>
+          <button className={styles.button}>Login</button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -38,11 +38,10 @@ const FoodSection = () => {
     fetchData();
   }, [recordId, storageId, userToken, setFailedMessage, navigate]);
 
-  
   if (selectedStorage === undefined) {
     return <div id="preloader"></div>;
   }
-
+  
   return (
     <>
       <div className={styles.container}>
@@ -60,7 +59,18 @@ const FoodSection = () => {
             <div
               className={styles.container_foodDetails_food}
               key={food.name + index}
-              onClick={() => navigate(PathCreator.basicFoodPath(recordId, storageId, food.name , food.size, false))}
+              onClick={() =>
+                navigate(
+                  PathCreator.basicFoodPath(
+                    recordId,
+                    storageId,
+                    food.name,
+                    food.size,
+                    false,
+                    food.isCustom
+                  )
+                )
+              }
             >
               <div className={styles.container_foodDetails_food_info}>
                 <div>{food.name}</div>
@@ -83,7 +93,16 @@ const FoodSection = () => {
           >
             Add Food
           </button>
-          <button className={styles.container_addButton}>More Options</button>
+          <button
+            className={styles.container_addButton}
+            onClick={() =>
+              navigate(
+                PathCreator.storagePath(recordId, storageId) + "/customFood"
+              )
+            }
+          >
+            More Options
+          </button>
         </div>
       </div>
       <Outlet />

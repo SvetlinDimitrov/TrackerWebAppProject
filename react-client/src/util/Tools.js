@@ -1,4 +1,5 @@
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import chroma from "chroma-js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   arc,
@@ -12,7 +13,7 @@ import {
   selectAll,
   interpolate,
 } from "d3";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, useEffect , useMemo } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "./RecordUtils";
 
@@ -72,7 +73,13 @@ export function Gauge({ width, height, type, data, className }) {
           this.textContent = `${i(t).toFixed(2)}%`;
         };
       });
-  }, [diameter, averageValue]);
+  }, [
+    diameter,
+    averageValue,
+    foregroundArc.endAngle,
+    foregroundArc.startAngle,
+    className,
+  ]);
 
   if (averageValue === null) {
     return <div id="preloader"></div>;
@@ -121,14 +128,38 @@ export function Gauge({ width, height, type, data, className }) {
 
 export function PipeChar({ width, height, data }) {
   const xScale = scaleLinear().domain([0, 100]).range([0, width]);
+  const [currentColor, setCurrentColor] = useState("#67C240");
 
   useLayoutEffect(() => {
-    selectAll(".rect")
+    const fills = Math.ceil(data.consumed / data.max);
+    const durationPerFill = 4000 / fills;
+
+    const colors = generateColors("#67C240", fills + 1);
+
+    let transition = selectAll(".rect")
+      .attr("fill", colors[1])
+      .attr("stroke", "#455A64");
+
+    for (let i = 1; i < fills; i++) {
+      console.log(i);
+      transition = transition
+        .transition()
+        .ease(easeLinear)
+        .duration(durationPerFill)
+        .attr("width", xScale(100))
+        .on("end", () => setCurrentColor(colors[i])) // update color on transition end
+        .transition()
+        .duration(0)
+        .attr("width", 0)
+        .attr("fill", colors[i + 1]);
+    }
+
+    transition
       .transition()
       .ease(easeLinear)
-      .duration(2000)
-      .attr("width", xScale(data.precented));
-  });
+      .duration(durationPerFill)
+      .attr("width", xScale(data.precented % 100));
+  }, [ ]);
 
   return (
     <div
@@ -159,13 +190,13 @@ export function PipeChar({ width, height, data }) {
             fontWeight: "bold",
           }}
         >
-          {data.consumed.toFixed(2)}
+          <AnimatedNumber value={data.consumed.toFixed(2)} />
         </span>
         <div
           style={{
             width: width,
             height: height,
-            backgroundColor: "#67C240",
+            backgroundColor: currentColor,
             borderRadius: 15,
             overflow: "hidden",
           }}
@@ -176,8 +207,6 @@ export function PipeChar({ width, height, data }) {
               width={0}
               style={{
                 height: "100%",
-                fill: "#78909C", // change fill color to a lighter gray
-                stroke: "#455A64", // change stroke color to match the theme
               }}
             />
           </svg>
@@ -244,7 +273,7 @@ export function PipeChar({ width, height, data }) {
             textAlign: "justify",
           }}
         >
-          Consumed {data.consumed}{" "}
+          Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />{" "}
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of Vitamin{" "}
           {data.name}.
           <Link to={"/nutrientInfo/vitamin/" + data.name}>
@@ -266,7 +295,7 @@ export function PipeChar({ width, height, data }) {
             textAlign: "justify",
           }}
         >
-          Consumed {data.consumed}{" "}
+          Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
           {data.name}.
           <Link to={"/nutrientInfo/mineral/" + data.name}>
@@ -288,7 +317,8 @@ export function PipeChar({ width, height, data }) {
             textAlign: "justify",
           }}
         >
-          Consumed {data.consumed} {data.measurement} in the {data.name}.
+          Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />{" "}
+          {data.measurement} in the {data.name}.
         </div>
       )}
       {(data.type === "Macronutrient" ||
@@ -303,7 +333,7 @@ export function PipeChar({ width, height, data }) {
             textAlign: "justify",
           }}
         >
-          Consumed {data.consumed}{" "}
+          Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />
           {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
           {data.name.replace(/([A-Z])/g, " $1").trim()}.
           {data.type === "Macronutrient" ? (
@@ -344,16 +374,68 @@ export function Gauge2({
   carbohydrates,
   protein,
 }) {
-  const colors = ["#845EC2", "#74C25E", "#C2925E"];
+  const svgRef = useRef(null);
+  const colors = useMemo(() => ["#6a5071", "#5E74C2", "#C25E74"], []);
   const legendInfo = ["Fat", "Carbohydrates", "Protein"];
   let sections = [fat * 9, carbohydrates * 4, protein * 4];
   const sum = fat * 9 + carbohydrates * 4 + protein * 4;
   if (sections.every((value) => value === 0)) {
     sections = [33.33, 33.33, 33.33];
   }
+
+  useEffect(() => {
+    const svg = select(svgRef.current);
+    const arcGenerator = arc()
+      .innerRadius(0)
+      .outerRadius(diameter / 2);
+
+    const pieGenerator = pie()
+      .value((d) => d)
+      .sort(null);
+
+    const arcs = pieGenerator(sections);
+
+    const path = svg
+      .selectAll("path")
+      .data(arcs)
+      .join("path")
+      .attr("fill", (d, i) => colors[i])
+      .attr("stroke", "white")
+      .attr("stroke-width", 2);
+
+    let previousTransition = null;
+
+    path.each(function (d, i) {
+      const totalDuration = 6000; // Total duration of the animation
+      const duration = totalDuration * (sections[i] / sum); // Adjust the duration based on the section's percentage of the total
+
+      const dCopy = { ...d }; // Create a copy of d
+
+      const currentTransition = select(this)
+        .transition()
+        .duration(duration)
+        .attrTween("d", function () {
+          const i = interpolate(dCopy.startAngle, dCopy.endAngle);
+          return function (t) {
+            dCopy.endAngle = i(t);
+            return arcGenerator(dCopy);
+          };
+        });
+      // Set the stroke-wid
+
+      if (previousTransition) {
+        previousTransition.each(() => {
+          select(this).transition().delay(duration);
+        });
+      }
+
+      previousTransition = currentTransition;
+    });
+  }, [sections, diameter, sum , colors]);
+
   return (
-    <svg width={width} height={height}>
-      <g transform={`translate(${diameter / 2}, ${diameter / 2})`}>
+    <svg ref={svgRef} width={width} height={height}>
+      <g transform={`translate(${diameter / 1.9}, ${diameter / 1.9})`}>
         {pie()(sections).map((section, index) => {
           return (
             <g key={index}>
@@ -363,7 +445,6 @@ export function Gauge2({
                   .outerRadius(diameter / 2)
                   .startAngle(section.startAngle)
                   .endAngle(section.endAngle)()}
-                fill={colors[index]}
               />
               <title>{((section.data / sum) * 100).toFixed(2)}%</title>
             </g>
@@ -371,9 +452,9 @@ export function Gauge2({
         })}
       </g>
       <g
-        transform={`translate(${diameter + 25}, ${
+        transform={`translate(${diameter + 31}, ${
           diameter / 2 -
-          (sections.length * (legendRectSize + legendSpacing)) / 2
+          (sections.length * (legendRectSize - 10 + legendSpacing)) / 2
         })`}
       >
         {sections.map((section, index) => {
@@ -636,4 +717,38 @@ export function BarChart2({ height, info }) {
       </div>
     </div>
   );
+}
+
+export function AnimatedNumber({ value }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const targetValue = parseFloat(value);
+    const interval = setInterval(() => {
+      setDisplayValue((prevValue) => {
+        const newValue = prevValue + targetValue / 100;
+        if (newValue < targetValue) {
+          return newValue;
+        } else {
+          clearInterval(interval);
+          return targetValue;
+        }
+      });
+    }, 40);
+
+    return () => clearInterval(interval);
+  }, [value]);
+
+  return <span>{displayValue.toFixed(2)}</span>;
+}
+
+function generateColors(startColor, count) {
+  const colors = [startColor];
+  for (let i = 1; i < count; i++) {
+    const color = chroma(colors[i - 1])
+      .darken(0.4)
+      .hex();
+    colors.push(color);
+  }
+  return colors;
 }

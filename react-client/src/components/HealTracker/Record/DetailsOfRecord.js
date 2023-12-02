@@ -6,7 +6,7 @@ import { calculatedPrecentedValues } from "../../../util/RecordUtils";
 
 import styles from "./DetailsOfRecord.module.css";
 
-import { Gauge, PipeChar, Gauge2 } from "../../../util/Tools";
+import { Gauge, PipeChar, Gauge2, AnimatedNumber } from "../../../util/Tools";
 
 const DetailsOfRecord = ({ record }) => {
   const [categoryShow, setCategoryShow] = useState(undefined);
@@ -28,7 +28,7 @@ const DetailsOfRecord = ({ record }) => {
         <div>
           <h1 className={styles.container_h1}>Record: {record.name}</h1>
           <div className={styles.container_gauge}>
-            {types.map((d , i) => (
+            {types.map((d, i) => (
               <Gauge
                 key={i}
                 className={`pathEffect${i}`}
@@ -47,7 +47,9 @@ const DetailsOfRecord = ({ record }) => {
               <div
                 key={category}
                 className={styles.container_gauge_category}
-                onClick={() => setCategoryShow(category)}
+                onClick={() =>
+                  setCategoryShow((s) => (s === category ? "" : category))
+                }
               >
                 {category}
               </div>
@@ -66,29 +68,36 @@ const DetailsOfRecord = ({ record }) => {
                       <span>{d.name.replace(/([A-Z])/g, " $1").trim()}</span>
                       <span>
                         Completed:{" "}
-                        {isNaN(d.precented) ? 0 : d.precented.toFixed(2)}%
+                        <AnimatedNumber
+                          value={isNaN(d.precented) ? 0 : d.precented.toFixed(2)}
+                        />
+                        %
                       </span>
                       <FontAwesomeIcon
                         icon={show === d.name ? faMinus : faPlus}
                       />
                     </div>
                     {show === d.name && (
-                      <div className={styles.container_info_info}>
-                        <PipeChar width={300} height={30} data={d} />
+                      <>
+                        <div className={styles.container_info_info_info}>
+                          <PipeChar width={300} height={30} data={d} />
+                        </div>
 
                         {show === d.name && d.type === "Calories" && (
-                          <Gauge2
-                            width={260}
-                            height={110}
-                            diameter={100}
-                            legendRectSize={12}
-                            legendSpacing={10}
-                            protein={d.protein}
-                            fat={d.fat}
-                            carbohydrates={d.carbohydrates}
-                          />
+                          <div className={styles.container_info_info_info}>
+                            <Gauge2
+                              width={260}
+                              height={120}
+                              diameter={100}
+                              legendRectSize={12}
+                              legendSpacing={10}
+                              protein={d.protein}
+                              fat={d.fat}
+                              carbohydrates={d.carbohydrates}
+                            />
+                          </div>
                         )}
-                      </div>
+                      </>
                     )}
                   </>
                 );

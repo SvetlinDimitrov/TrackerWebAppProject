@@ -33,11 +33,7 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link to={"/logout"}>Logout</Link>
-                  </li>
-
-                  <li>
-                    <Link to={"/editUser"}>EditUser</Link>
+                    <Link to={"/settings"}>Settings</Link>
                   </li>
                 </>
               )}

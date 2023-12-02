@@ -65,9 +65,10 @@
   font-size: 16px; /* adjust font size */
 }
 .container_info_info_info {
-  background-color: #627c93; /* even lighter gray background */
+  background-color: #546e7a; /* even lighter gray background */
   text-align: center;
   width: 30%;
+  padding: 10px;
   margin: auto;
   margin-bottom: 10px; /* add space between elements */
 
