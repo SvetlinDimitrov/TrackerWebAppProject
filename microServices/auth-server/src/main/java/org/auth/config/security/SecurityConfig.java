@@ -1,5 +1,6 @@
 package org.auth.config.security;
 
+import org.auth.model.enums.UserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -25,7 +26,9 @@ public class SecurityConfig {
                                 .formLogin(AbstractHttpConfigurer::disable)
                                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers("/api/user/register", "/api/user/login").permitAll()
+                                                .anyRequest().hasAnyRole(UserDetails.COMPLETED.name(), UserDetails.NOT_COMPLETED.name()))
                                 .build();
         }
 

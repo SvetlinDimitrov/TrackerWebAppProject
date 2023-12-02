@@ -15,6 +15,7 @@ import lombok.Setter;
 @Builder
 public class Food {
 
+    private Long id;
     private String name;
     private final String measurement = "grams";
     @Builder.Default

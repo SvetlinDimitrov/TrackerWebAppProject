@@ -2,6 +2,7 @@ package org.auth;
 
 import org.auth.config.security.JwtUtil;
 import org.auth.exceptions.ExpiredTokenException;
+import org.auth.exceptions.UserNotFoundException;
 import org.auth.exceptions.WrongUserCredentialsException;
 import org.auth.model.dto.EditUserDto;
 import org.auth.model.dto.ErrorResponse;
@@ -15,6 +16,7 @@ import org.auth.services.UserServiceKafkaImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -76,10 +78,21 @@ public class UserController {
         UserView userView = jwtUtil.extractUserId(authorization)
                 .map(id -> userServiceKafkaImp.editUserEntity(dto, id))
                 .orElseThrow(() -> new ExpiredTokenException("Token is expiated"));
-        
-                
+
         return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
 
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteUser(@RequestHeader("Authorization") String authorization)
+            throws ExpiredTokenException, UserNotFoundException {
+
+        Long userId = jwtUtil.extractUserId(authorization)
+                .orElseThrow(() -> new ExpiredTokenException("Token is expiated"));
+
+        userServiceKafkaImp.deleteUserById(userId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ExceptionHandler(WrongUserCredentialsException.class)
@@ -91,8 +104,9 @@ public class UserController {
     public ResponseEntity<ErrorSingleResponse> catchExpiredTokenException(ExpiredTokenException e) {
         return new ResponseEntity<>(new ErrorSingleResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
-    @ExceptionHandler(JWTDecodeException.class)
-    public ResponseEntity<ErrorSingleResponse> wrongTokenErrorCaught(JWTDecodeException e) {
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorSingleResponse> wrongTokenErrorCaught(UserNotFoundException e) {
         return new ResponseEntity<>(new ErrorSingleResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 }

@@ -1,7 +1,10 @@
 package org.food.controllers;
 
+import java.util.List;
+
 import org.food.domain.dtos.CreateCustomFood;
 import org.food.domain.dtos.Food;
+import org.food.domain.dtos.SingleErrorResponse;
 import org.food.exception.FoodException;
 import org.food.services.CustomFoodServiceImp;
 import org.springframework.http.HttpStatus;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,14 +44,14 @@ public class CustomFoodController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<Iterable<Food>> getAllCustomFoods(
+    public ResponseEntity<List<Food>> getAllCustomFoods(
             @RequestHeader(name = "X-ViewUser") String userToken) {
-        Iterable<Food> foods = foodService.getAllCustomFoods(userToken);
+        List<Food> foods = foodService.getAllCustomFoods(userToken);
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Food> getAllCustomFoods(
+    public ResponseEntity<Food> getCustomFood(
             @RequestHeader(name = "X-ViewUser") String userToken,
             @RequestParam(name = "foodName") String name,
             @RequestParam(name = "amount", required = false) Double amount) throws FoodException {
@@ -61,5 +65,10 @@ public class CustomFoodController {
             @RequestParam(name = "foodName") String name) throws FoodException {
         foodService.deleteCustomFood(name, userToken);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ExceptionHandler(FoodException.class)
+    public ResponseEntity<SingleErrorResponse> handleFoodException(FoodException e) {
+        return new ResponseEntity<>(new SingleErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

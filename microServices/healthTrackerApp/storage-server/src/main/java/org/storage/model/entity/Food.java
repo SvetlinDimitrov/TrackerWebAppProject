@@ -19,6 +19,7 @@ import lombok.Setter;
 @Builder
 public class Food {
 
+    private Boolean isCustom;
     private String name;
     @Builder.Default
     private BigDecimal size = BigDecimal.ZERO;

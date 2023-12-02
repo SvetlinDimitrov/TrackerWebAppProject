@@ -2,9 +2,11 @@ package org.storage;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +109,7 @@ public class StorageService {
         storageRepository.deleteAllByRecordIdAndUserId(recordId, userId);
     }
 
-    public void addFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken)
+    public void addFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken, Boolean isCustom)
             throws StorageException, FoodException {
 
         Long userId = getUserId(userToken);
@@ -121,20 +123,38 @@ public class StorageService {
             throw new FoodException("Amount must be greater than 0.");
         }
         try {
-            Food food = foodClient.getFoodByName(foodInfo.getFoodName());
-
-            if (storage.getFoods().containsKey(foodInfo.getFoodName())) {
-                Food currentFood = storage.getFoods().get(foodInfo.getFoodName());
-                combineFoods(currentFood, calculateFoodToAdd(food, foodInfo.getAmount()));
+            Food food = null;
+            if (!isCustom) {
+                food = foodClient.getFoodByName(foodInfo.getFoodName());
             } else {
-                storage.getFoods().put(foodInfo.getFoodName(), calculateFoodToAdd(food, foodInfo.getAmount()));
+                food = foodClient.getCustomFoodByNameAndSize(foodInfo.getFoodName(), foodInfo.getAmount().doubleValue(),
+                        userToken);
             }
 
-            BigDecimal consumedCalories = storage.getFoods().values()
-                    .stream()
-                    .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories()), BigDecimal::add);
+            if (!isCustom) {
 
-            storage.setConsumedCalories(consumedCalories);
+                if (storage.getFoods().containsKey(foodInfo.getFoodName())) {
+                    Food currentFood = storage.getFoods().get(foodInfo.getFoodName());
+                    combineFoods(currentFood, calculateFoodToAdd(food, foodInfo.getAmount()));
+                } else {
+                    food.setIsCustom(false);
+                    storage.getFoods().put(foodInfo.getFoodName(), calculateFoodToAdd(food, foodInfo.getAmount()));
+                }
+
+            } else {
+
+                if (storage.getCustomFoods().containsKey(foodInfo.getFoodName())) {
+                    Food currentFood = storage.getCustomFoods().get(foodInfo.getFoodName());
+                    combineFoods(currentFood, calculateFoodToAdd(food, foodInfo.getAmount()));
+                } else {
+                    food.setIsCustom(true);
+                    storage.getCustomFoods().put(foodInfo.getFoodName(),
+                            calculateFoodToAdd(food, foodInfo.getAmount()));
+                }
+
+            }
+
+            setStorageConsumedCalories(storage);
 
             storageRepository.save(storage);
 
@@ -144,7 +164,7 @@ public class StorageService {
 
     }
 
-    public void changeFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken)
+    public void changeFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken, Boolean isCustom)
             throws StorageException, FoodException {
 
         Long userId = getUserId(userToken);
@@ -158,31 +178,43 @@ public class StorageService {
             throw new FoodException("Amount must be greater than 0.");
         }
 
-        if (storage.getFoods().containsKey(foodInfo.getFoodName())) {
+        if (!isCustom) {
+            if (storage.getFoods().containsKey(foodInfo.getFoodName())) {
 
-            Food currentFood = storage.getFoods().get(foodInfo.getFoodName());
+                Food currentFood = storage.getFoods().get(foodInfo.getFoodName());
 
-            Food newFood = changeFoodMeasurement(currentFood, foodInfo.getAmount());
+                Food newFood = changeFoodMeasurement(currentFood, foodInfo.getAmount());
 
-            newFood.setSize(foodInfo.getAmount());
+                newFood.setSize(foodInfo.getAmount());
 
-            storage.getFoods().put(foodInfo.getFoodName(), newFood);
+                storage.getFoods().put(foodInfo.getFoodName(), newFood);
 
+            } else {
+                throw new FoodException("Food with name: " + foodInfo.getFoodName() + " not found.");
+            }
         } else {
-            throw new FoodException("Food with name: " + foodInfo.getFoodName() + " not found.");
+            if (storage.getCustomFoods().containsKey(foodInfo.getFoodName())) {
+
+                Food currentFood = storage.getCustomFoods().get(foodInfo.getFoodName());
+
+                Food newFood = changeFoodMeasurement(currentFood, foodInfo.getAmount());
+
+                newFood.setSize(foodInfo.getAmount());
+
+                storage.getCustomFoods().put(foodInfo.getFoodName(), newFood);
+
+            } else {
+                throw new FoodException("Custom food with name: " + foodInfo.getFoodName() + " not found.");
+            }
         }
 
-        BigDecimal consumedCalories = storage.getFoods().values()
-                .stream()
-                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories()), BigDecimal::add);
-
-        storage.setConsumedCalories(consumedCalories);
+        setStorageConsumedCalories(storage);
 
         storageRepository.save(storage);
 
     }
 
-    public void removeFood(Long storageId, Long recordId, String foodName, String userToken)
+    public void removeFood(Long storageId, Long recordId, String foodName, String userToken, Boolean isCustom)
             throws FoodException, StorageException {
 
         Long userId = getUserId(userToken);
@@ -192,18 +224,21 @@ public class StorageService {
                         "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
                                 + userId));
 
-        if (storage.getFoods().containsKey(foodName)) {
-
-            storage.getFoods().remove(foodName);
+        if (!isCustom) {
+            if (storage.getFoods().containsKey(foodName)) {
+                storage.getFoods().remove(foodName);
+            } else {
+                throw new FoodException("Food with name: " + foodName + " not found.");
+            }
         } else {
-            throw new FoodException("Food with name: " + foodName + " not found.");
+            if (storage.getCustomFoods().containsKey(foodName)) {
+                storage.getCustomFoods().remove(foodName);
+            } else {
+                throw new FoodException("Custom food with name: " + foodName + " not found.");
+            }
         }
 
-        BigDecimal consumedCalories = storage.getFoods().values()
-                .stream()
-                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories()), BigDecimal::add);
-
-        storage.setConsumedCalories(consumedCalories);
+        setStorageConsumedCalories(storage);
 
         storageRepository.save(storage);
     }
@@ -219,6 +254,8 @@ public class StorageService {
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);
+            baseFood.setIsCustom(food.getIsCustom());
+
             baseFood.setCalories(food.getCalories().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setA(food.getA().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setD(food.getD().divide(multiplayer, 2, RoundingMode.HALF_UP));
@@ -267,6 +304,8 @@ public class StorageService {
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);
+            baseFood.setIsCustom(food.getIsCustom());
+
             baseFood.setCalories(food.getCalories().multiply(multiplayer));
             baseFood.setA(food.getA().multiply(multiplayer));
             baseFood.setD(food.getD().multiply(multiplayer));
@@ -318,6 +357,7 @@ public class StorageService {
         BigDecimal multiplier = amount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
         Food foodToAdd = new Food();
+        foodToAdd.setIsCustom(food.getIsCustom());
         foodToAdd.setName(food.getName());
         foodToAdd.setSize(amount);
         foodToAdd.setCalories(food.getCalories().multiply(multiplier));
@@ -369,6 +409,7 @@ public class StorageService {
 
         food.setSize(food.getSize().add(foodToCombine.getSize()));
         food.setCalories(food.getCalories().add(foodToCombine.getCalories()));
+        food.setIsCustom(foodToCombine.getIsCustom());
 
         food.setA(food.getA().add(foodToCombine.getA()));
         food.setD(food.getD().add(foodToCombine.getD()));
@@ -432,11 +473,22 @@ public class StorageService {
         storageView.setId(entity.getId());
         storageView.setRecordId(entity.getRecordId());
         storageView.setName(entity.getName());
-        storageView.setFoods(entity.getFoods().values().stream().toList());
+        List<Food> foods = new ArrayList<>();
+        foods.addAll(entity.getFoods().values());
+        foods.addAll(entity.getCustomFoods().values());
+        storageView.setFoods(foods);
         storageView.setRecordId(entity.getRecordId());
         storageView.setConsumedCalories(entity.getConsumedCalories());
 
         return storageView;
     }
 
+    private void setStorageConsumedCalories(Storage storage) {
+        BigDecimal consumedCalories = Stream.concat(
+                storage.getFoods().values().stream(),
+                storage.getCustomFoods().values().stream())
+                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories()), BigDecimal::add);
+
+        storage.setConsumedCalories(consumedCalories);
+    }
 }

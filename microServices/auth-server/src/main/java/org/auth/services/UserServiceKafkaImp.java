@@ -1,6 +1,7 @@
 package org.auth.services;
 
 import org.auth.UserRepository;
+import org.auth.exceptions.UserNotFoundException;
 import org.auth.model.dto.EditUserDto;
 import org.auth.model.dto.RegisterUserDto;
 import org.auth.model.dto.UserView;
@@ -81,6 +82,17 @@ public class UserServiceKafkaImp extends AbstractUserService {
 
         userRepository.saveAndFlush(user);
         return new UserView(user);
+    }
+
+    public void deleteUserById(Long userId) throws UserNotFoundException {
+        User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("user with id :" + userId + " was not found"));
+
+        String token = gson.toJson(new UserView(user));
+
+        kafkaTemplate.send("USER_DELETION", token);
+
+        userRepository.deleteById(userId);
     }
 
 }

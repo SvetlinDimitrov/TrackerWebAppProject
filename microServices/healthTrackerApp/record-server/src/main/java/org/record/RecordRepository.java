@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface RecordRepository extends JpaRepository<Record, Long> {
     Optional<Record> findByIdAndUserId(Long recordId , Long userId);
     List<Record> findAllByUserId(Long userId);
+    void deleteAllByUserId(Long userId);
 }

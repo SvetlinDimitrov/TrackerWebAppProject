@@ -41,11 +41,18 @@ public class Storage {
     @Column(name = "food")
     private Map<String, Food> foods;
 
-    public Storage(String name, Long recordId , Long userId) {
+    @ElementCollection
+    @CollectionTable(name = "custom_storage_foods", joinColumns = @JoinColumn(name = "storage_id"))
+    @MapKeyColumn(name = "custom_food_name")
+    @Column(name = "custom_food")
+    private Map<String, Food> customFoods;
+
+    public Storage(String name, Long recordId, Long userId) {
         this.name = name;
         this.recordId = recordId;
         consumedCalories = BigDecimal.ZERO;
         this.userId = userId;
         this.foods = new HashMap<>();
+        this.customFoods = new HashMap<>();
     }
 }

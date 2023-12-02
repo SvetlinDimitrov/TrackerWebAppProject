@@ -2,6 +2,7 @@ package org.record.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.record.RecordRepository;
 import org.record.client.StorageClient;
@@ -14,6 +15,8 @@ import org.record.utils.RecordUtils;
 import org.record.utils.RecordValidator;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RecordKafkaService extends AbstractRecordService {
@@ -49,6 +52,19 @@ public class RecordKafkaService extends AbstractRecordService {
         recordRepository.saveAndFlush(record);
 
         storageClient.createStorageFirstCreation(record.getId(), userToken);
+    }
+    @Transactional
+    @KafkaListener(topics = "USER_DELETION", groupId = "group_user_deletion_1", containerFactory = "kafkaListenerUserDeletion")
+    public void deleteUser(String userToken) throws RecordCreationException {
+        User user = getUserId(userToken);
+
+        List<Record> records = recordRepository.findAllByUserId(user.getId());
+
+        for (Record record : records) {
+            storageClient.deleteAllStoragesByRecordId(record.getId(), userToken);
+        }
+
+        recordRepository.deleteAll(records);
     }
 
 }

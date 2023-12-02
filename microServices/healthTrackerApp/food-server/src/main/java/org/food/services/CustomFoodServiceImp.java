@@ -27,7 +27,7 @@ public class CustomFoodServiceImp extends AbstractFoodService {
         Long userId = getUserId(userToken);
         CustomFood food = toCustomFood(customFood);
 
-        if (customFoodRepository.findByName(customFood.getName()).isPresent()) {
+        if (customFoodRepository.findByNameAndUserId(customFood.getName() , userId).isPresent()) {
             throw new FoodException("Food with name " + customFood.getName() + " already exists.");
         }
 

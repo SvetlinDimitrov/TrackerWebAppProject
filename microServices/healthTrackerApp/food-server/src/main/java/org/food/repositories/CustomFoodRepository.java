@@ -12,5 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface CustomFoodRepository extends JpaRepository<CustomFood, Long>{
     Optional<CustomFood> findByIdAndUserId(Long id, Long userId);
     Optional<CustomFood> findByNameAndUserId (String name , Long userId);
-    Optional<CustomFood> findByName(String name);
+    void deleteAllByUserId(Long userId);
+
 }

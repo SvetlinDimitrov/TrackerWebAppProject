@@ -85,10 +85,11 @@ public class StorageController {
     public ResponseEntity<HttpStatus> addFoodFromStorage(
             @PathVariable Long storageId,
             @RequestParam Long recordId,
+            @RequestParam(defaultValue = "false") Boolean isCustom,
             @RequestBody FoodUpdate foodInfo,
             @RequestHeader(name = "X-ViewUser") String userToken) throws StorageException, FoodException {
 
-        storageService.addFood(storageId, recordId, foodInfo, userToken);
+        storageService.addFood(storageId, recordId, foodInfo, userToken, isCustom);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -97,10 +98,11 @@ public class StorageController {
     public ResponseEntity<HttpStatus> changeFoodFromStorage(
             @PathVariable Long storageId,
             @RequestParam Long recordId,
+            @RequestParam(defaultValue = "false") Boolean isCustom,
             @RequestBody FoodUpdate foodInfo,
             @RequestHeader(name = "X-ViewUser") String userToken) throws StorageException, FoodException {
 
-        storageService.changeFood(storageId, recordId, foodInfo, userToken);
+        storageService.changeFood(storageId, recordId, foodInfo, userToken, isCustom);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -109,10 +111,11 @@ public class StorageController {
     public ResponseEntity<HttpStatus> removeFoodFromStorage(
             @PathVariable Long storageId,
             @RequestParam Long recordId,
+            @RequestParam(defaultValue = "false") Boolean isCustom,
             @RequestParam String foodName,
             @RequestHeader(name = "X-ViewUser") String userToken) throws FoodException, StorageException {
 
-        storageService.removeFood(storageId, recordId, foodName, userToken);
+        storageService.removeFood(storageId, recordId, foodName, userToken, isCustom);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

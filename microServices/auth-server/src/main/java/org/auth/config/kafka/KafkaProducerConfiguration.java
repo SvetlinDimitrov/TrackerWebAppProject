@@ -27,6 +27,11 @@ public class KafkaProducerConfiguration {
         return TopicBuilder.name("USER_FIRST_CREATION")
                 .build();
     }
+    @Bean
+    NewTopic recordDeletionTopic() {
+        return TopicBuilder.name("USER_DELETION")
+                .build();
+    }
 
     @Bean
     KafkaTemplate<String, String> kafkaTemplate() {
