@@ -13,27 +13,36 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-        @Bean
-        SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthorizationFilter filter)
-                        throws Exception {
-                return httpSecurity
-                                .csrf(AbstractHttpConfigurer::disable)
-                                .cors(Customizer.withDefaults())
-                                .formLogin(AbstractHttpConfigurer::disable)
-                                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .authorizeHttpRequests(request -> request
-                                                .requestMatchers("/api/user/register", "/api/user/login").permitAll()
-                                                .anyRequest().hasAnyRole(UserDetails.COMPLETED.name(), UserDetails.NOT_COMPLETED.name()))
-                                .build();
-        }
+    private final JwtUtil jwtUtil;
 
-        @Bean
-        PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+    public SecurityConfig(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
+            throws Exception {
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/user/register", "/api/user/login").permitAll()
+                        .anyRequest().hasAnyRole(UserDetails.COMPLETED.name(),
+                                UserDetails.NOT_COMPLETED.name()))
+                .build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

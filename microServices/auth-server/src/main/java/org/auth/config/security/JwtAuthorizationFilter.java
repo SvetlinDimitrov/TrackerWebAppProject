@@ -3,11 +3,15 @@ package org.auth.config.security;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.auth.exceptions.UserNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,12 +31,30 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        extractTokenFromRequest(request)
-                .map(jwtUtil::decodeToken)
-                .map(jwtUtil::convert)
-                .map(t -> new UsernamePasswordAuthenticationToken(t, null, t.getAuthorities()))
-                .ifPresent(auth -> SecurityContextHolder.getContext().setAuthentication(auth));
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/api/user/register") || requestURI.startsWith("/api/user/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        try {
+            String token = extractTokenFromRequest(request)
+                    .orElseThrow(() -> new BadCredentialsException("Invalid token"));
 
+            DecodedJWT jwt = jwtUtil.decodeToken(token)
+                    .orElseThrow(() -> new BadCredentialsException("Invalid token"));
+
+            UserPrincipal principal = jwtUtil.convert(jwt)
+                    .orElseThrow(() -> new UserNotFoundException(token));
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principal, null,
+                    principal.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("Invalid token");
+        }
         filterChain.doFilter(request, response);
     }
 

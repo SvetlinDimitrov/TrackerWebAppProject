@@ -7,27 +7,27 @@ import org.auth.model.dto.RegisterUserDto;
 import org.auth.model.dto.UserView;
 import org.auth.model.entity.User;
 import org.auth.model.enums.UserDetails;
+import org.auth.util.GsonWrapper;
 import org.auth.util.UserValidator;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
-
 @Service
 public class UserServiceKafkaImp extends AbstractUserService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private Gson gson = new Gson();
+    private final GsonWrapper gson;
 
     public UserServiceKafkaImp(
             UserRepository userRepository,
             UserValidator validator,
             PasswordEncoder passwordEncoder,
-            KafkaTemplate<String, String> kafkaTemplate) {
+            KafkaTemplate<String, String> kafkaTemplate,
+            GsonWrapper gson) {
         super(validator, passwordEncoder, userRepository);
         this.kafkaTemplate = kafkaTemplate;
-
+        this.gson = gson;
     }
 
     public void register(RegisterUserDto userDto) {
@@ -48,9 +48,9 @@ public class UserServiceKafkaImp extends AbstractUserService {
 
     }
 
-    public UserView editUserEntity(EditUserDto userDto, Long userId) {
+    public UserView editUserEntity(EditUserDto userDto, Long userId) throws UserNotFoundException {
 
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("user with id :" + userId + " was not found"));
 
         if (validator.validUsernameChange(userDto)) {
             user.setUsername(userDto.getUsername());

@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping(path = "/api/food/customFood", headers = "X-ViewUser")
+@RequestMapping(path = "/api/food/customFood")
 @RequiredArgsConstructor
 public class CustomFoodController {
 

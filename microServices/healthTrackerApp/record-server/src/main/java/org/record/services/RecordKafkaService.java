@@ -55,7 +55,7 @@ public class RecordKafkaService extends AbstractRecordService {
     }
     @Transactional
     @KafkaListener(topics = "USER_DELETION", groupId = "group_user_deletion_1", containerFactory = "kafkaListenerUserDeletion")
-    public void deleteUser(String userToken) throws RecordCreationException {
+    public void deleteUser(String userToken){
         User user = getUserId(userToken);
 
         List<Record> records = recordRepository.findAllByUserId(user.getId());

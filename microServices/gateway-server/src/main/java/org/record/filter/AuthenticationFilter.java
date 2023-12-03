@@ -1,7 +1,8 @@
 package org.record.filter;
 
-import java.util.Optional;
-
+import com.google.gson.Gson;
+import lombok.RequiredArgsConstructor;
+import org.record.enums.NotCompletedUserDetailsServices;
 import org.record.model.UserView;
 import org.record.utils.JwtUtil;
 import org.record.utils.PathChecker;
@@ -12,11 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.google.gson.Gson;
-
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -33,12 +33,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        if (PathChecker.nonAuthServices(exchange)) {
+        if (!PathChecker.halfAuthServices(exchange) && PathChecker.nonAuthServices(exchange)) {
             return chain.filter(exchange);
         } else {
             Optional<UserView> user = jwtUtil.verifyAndExtractUser(exchange.getRequest().getHeaders());
 
-            if (user.isEmpty() || user.get().getUserDetails().equals("NOT_COMPLETED")) {
+            if (user.isEmpty() || (user.get().getUserDetails().equals("NOT_COMPLETED") && !PathChecker.halfAuthServices(exchange))) {
                 exchange.getResponse()
                         .setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange
@@ -58,5 +58,5 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange.mutate().request(request).build());
         }
 
-    } 
+    }
 }

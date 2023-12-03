@@ -80,6 +80,17 @@ services:
       MYSQL_DATABASE: food
     volumes:
       - food-data:/var/lib/mysql
+  mysql-db-achievement:
+    container_name: mysql-db-achievement
+    restart: always
+    image: mysql:latest
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: achievement
+    volumes:
+      - achievement-data:/var/lib/mysql
   discovery-server:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
@@ -204,3 +215,4 @@ volumes:
   storage-data:
   record-data:
   food-data:
+  achievement-data:

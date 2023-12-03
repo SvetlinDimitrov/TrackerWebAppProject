@@ -10,9 +10,13 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.record.RecordRepository;
+import org.record.client.StorageClient;
 import org.record.client.dto.User;
 import org.record.config.TestKafkaConfiguration;
+import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.utils.GsonWrapper;
@@ -29,6 +33,9 @@ import org.springframework.test.context.ActiveProfiles;
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 @Import(TestKafkaConfiguration.class)
 public class RecordKafka2ServiceTest {
+
+    @Mock
+    private StorageClient storageClient;
 
     @Autowired
     private ConsumerFactory<String, String> consumerFactory2;
@@ -57,7 +64,8 @@ public class RecordKafka2ServiceTest {
         userView.setWorkoutState(WorkoutState.MODERATELY_ACTIVE);
 
         consumer = consumerFactory2.createConsumer("testGroupString", "test");
-        consumer.subscribe(Collections.singletonList("user-first-creation"));
+        consumer.subscribe(Collections.singletonList("USER_FIRST_CREATION"));
+        consumer.subscribe(Collections.singletonList("USER_DELETION"));
     }
 
     @AfterEach
@@ -68,15 +76,16 @@ public class RecordKafka2ServiceTest {
     }
 
     @Test
-    public void addNewRecordByUserId_SuccessConsumeMessageWithValidData_CreatesRecord() throws InterruptedException {
+    public void testAddNewRecordByUserId_SuccessConsumeMessageWithValidData_CreatesRecord() throws InterruptedException {
 
+        userView.setId(1L);
         String userToken = gson.toJson(userView);
 
         kafkaTemplate.send("USER_FIRST_CREATION", userToken);
 
         Thread.sleep(5000);
 
-        assertFalse(recordRepository.findAll().isEmpty());
+        assertTrue(recordRepository.findAllByUserId(userView.getId()).size() != 0);
     }
 
     @Test
@@ -85,9 +94,10 @@ public class RecordKafka2ServiceTest {
         String message = "invalid";
         kafkaTemplate.send("USER_FIRST_CREATION", message);
 
-        Thread.sleep(5000);
+        Thread.sleep(20000);
 
         assertTrue(recordRepository.findAll().isEmpty());
     }
+
 
 }

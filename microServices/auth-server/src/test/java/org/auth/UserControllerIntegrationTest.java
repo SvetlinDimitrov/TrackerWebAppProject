@@ -199,7 +199,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void getUserDetails_InvalidAuthToken_ReturnHttp401() throws Exception {
+    public void getUserDetails_InvalidAuthToken_ReturnHttp403() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/register")
@@ -220,14 +220,14 @@ public class UserControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/details")
                 .header("Authorization", "Bearer " + authToken))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
-    public void getUserDetails_NotExistingAuthToken_ReturnHttp400() throws Exception {
+    public void getUserDetails_NotExistingAuthToken_ReturnHttp403() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/details"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -327,7 +327,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void editUserProfile_InvalidInput_ReturnsHttp401() throws Exception {
+    public void editUserProfile_InvalidInput_ReturnsHttp403() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
         EditUserDto editUserDto = new EditUserDto();
@@ -340,6 +340,50 @@ public class UserControllerIntegrationTest {
                 .header("Authorization", "Bearer " + invalidToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(editUserDto)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    public void deleteUser_ValidAuthToken_ReturnsHttp200() throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        RegisterUserDto registerUserDto = new RegisterUserDto();
+        registerUserDto.setEmail("test6@abv.bg");
+        registerUserDto.setPassword("12345");
+        registerUserDto.setUsername("test6");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerUserDto)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        LoginUserDto loginUserDto = new LoginUserDto();
+        loginUserDto.setEmail(registerUserDto.getEmail());
+        loginUserDto.setPassword(registerUserDto.getPassword());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginUserDto)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        JwtTokenView jwtTokenView = objectMapper.readValue(response.getContentAsString(), JwtTokenView.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user")
+                .header("Authorization", "Bearer " + jwtTokenView.getToken()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void deleteUser_InvalidAuthToken_ReturnsHttp403() throws Exception {
+        // Mock the authorization header
+        String authToken = "invalidAuthToken";
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user")
+                .header("Authorization", "Bearer " + authToken))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 }

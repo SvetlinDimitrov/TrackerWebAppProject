@@ -71,6 +71,13 @@ spring:
           filters:
             - RewritePath=/food(/?.*), /api/food$1
 
+        - id: achievement
+          uri: lb://achievement
+          predicates:
+            - Path=/achievement/**
+          filters:
+            - RewritePath=/achievement(/?.*), /api/achievement$1
+
 management:
   endpoints:
     web:

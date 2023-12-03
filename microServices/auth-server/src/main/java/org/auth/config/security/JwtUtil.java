@@ -48,30 +48,28 @@ public class JwtUtil {
         return new JwtTokenView(token, Instant.now().plus(Duration.of(12, ChronoUnit.HOURS)).toString());
     }
 
-    public DecodedJWT decodeToken(String token) {
-        return JWT.require(Algorithm.HMAC256(secret))
+    public Optional<DecodedJWT> decodeToken(String token) {
+
+        return Optional.ofNullable(JWT.require(Algorithm.HMAC256(secret))
                 .build()
-                .verify(token);
+                .verify(token));
+
     }
 
-    public UserPrincipal convert(DecodedJWT token) {
-        return userRepository.findById(Long.parseLong(token.getSubject()))
+    public Optional<UserPrincipal> convert(DecodedJWT token) {
+        return Optional.ofNullable(userRepository.findById(Long.parseLong(token.getSubject()))
                 .map(UserPrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException("No suck  user exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("No suck  user exist")));
 
     }
 
-    public Optional<Long> extractUserId(String token) {
-        try {
-            token = token.substring(7);
-            Map<String, Claim> claimMap = decodeToken(token).getClaims();
+    public Long extractUserId(String token) {
 
-            return Optional.ofNullable(claimMap.get("id"))
-                    .map(Claim::asLong);
+        token = token.substring(7);
+        Map<String, Claim> claimMap = decodeToken(token).get().getClaims();
 
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        return claimMap.get("id").asLong();
+
     }
 
     public String turnToJwString(String token) {

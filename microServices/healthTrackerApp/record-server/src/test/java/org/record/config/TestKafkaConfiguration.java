@@ -19,6 +19,7 @@ import org.springframework.kafka.core.ProducerFactory;
 public class TestKafkaConfiguration {
 
 
+    
     @Bean
     ConsumerFactory<String, String> consumerFactory2() {
         Map<String, Object> props = new HashMap<>();

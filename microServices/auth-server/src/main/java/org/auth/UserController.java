@@ -15,6 +15,7 @@ import org.auth.services.UserServiceImp;
 import org.auth.services.UserServiceKafkaImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.auth0.jwt.exceptions.JWTDecodeException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,20 +63,16 @@ public class UserController {
     public ResponseEntity<UserView> getUserDetails(@RequestHeader("Authorization") String authorization)
             throws ExpiredTokenException {
 
-        UserView userView = jwtUtil.extractUserId(authorization)
-                .map(id -> userServiceImp.getUserViewById(id))
-                .orElseThrow(() -> new ExpiredTokenException("Token is expiated"));
+        UserView userView = userServiceImp.getUserViewById(jwtUtil.extractUserId(authorization));
 
         return new ResponseEntity<>(userView, HttpStatus.OK);
     }
 
     @PatchMapping("/edit")
     public ResponseEntity<JwtTokenView> editUserProfile(@RequestBody EditUserDto dto,
-            @RequestHeader("Authorization") String authorization) throws ExpiredTokenException {
+            @RequestHeader("Authorization") String authorization) throws ExpiredTokenException, UserNotFoundException {
 
-        UserView userView = jwtUtil.extractUserId(authorization)
-                .map(id -> userServiceKafkaImp.editUserEntity(dto, id))
-                .orElseThrow(() -> new ExpiredTokenException("Token is expiated"));
+        UserView userView = userServiceKafkaImp.editUserEntity(dto, jwtUtil.extractUserId(authorization));
 
         return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
 
@@ -87,10 +82,7 @@ public class UserController {
     public ResponseEntity<HttpStatus> deleteUser(@RequestHeader("Authorization") String authorization)
             throws ExpiredTokenException, UserNotFoundException {
 
-        Long userId = jwtUtil.extractUserId(authorization)
-                .orElseThrow(() -> new ExpiredTokenException("Token is expiated"));
-
-        userServiceKafkaImp.deleteUserById(userId);
+        userServiceKafkaImp.deleteUserById(jwtUtil.extractUserId(authorization));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -105,8 +97,4 @@ public class UserController {
         return new ResponseEntity<>(new ErrorSingleResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorSingleResponse> wrongTokenErrorCaught(UserNotFoundException e) {
-        return new ResponseEntity<>(new ErrorSingleResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
-    }
 }
