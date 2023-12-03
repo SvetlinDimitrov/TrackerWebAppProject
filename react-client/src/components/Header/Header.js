@@ -51,6 +51,9 @@ const Header = () => {
                   <li>
                     <Link to={"/health-tracker"}>Health Tracker</Link>
                   </li>
+                  <li>
+                    <Link to={"/achievements"}>Achievement Tracker</Link>
+                  </li>
                 </ul>
               </li>
             </ul>

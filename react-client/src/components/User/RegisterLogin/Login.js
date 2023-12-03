@@ -2,75 +2,78 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../../context/UserAuth";
-import { useForm } from "../../../hooks/useForm";
 import api from "../../../util/api";
+import { NotificationContext } from "../../../context/Notification";
 
 import React from "react";
 import styles from "./LoginRegister.module.css";
-
-const keys = {
-  email: "email",
-  password: "password",
-};
-
-const initValues = {
-  [keys.email]: "",
-  [keys.password]: "",
-};
+import AlertMessage from "../../HealTracker/AlertMessage";
 
 const Login = () => {
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { loginUser } = useContext(AuthContext);
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
-  const submitHandler = async (values) => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
     try {
-      if (error === "") {
-        const userTokenResponse = await api.post("/auth/login", values);
+      const userTokenResponse = await api.post("/auth/login", user);
+      const userToken = userTokenResponse.data.token;
+      const newUserTokenInfo = userTokenResponse.data;
+      const userDataResponse = await api.get("/auth/details", {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
 
-        const userToken = userTokenResponse.data.token;
-        const newUserTokenInfo = userTokenResponse.data;
+      const userData = {
+        userData: userDataResponse.data,
+        tokenInfo: newUserTokenInfo,
+      };
+      loginUser(userData);
 
-        const userDataResponse = await api.get("/auth/details", {
-          headers: { Authorization: `Bearer ${userToken}` },
-        });
-
-        const userData = {
-          userData: userDataResponse.data,
-          tokenInfo: newUserTokenInfo,
-        };
-        loginUser(userData);
-
-        navigate("/");
-      }
+      setSuccessfulMessage({
+        message: "Logged in successfully!",
+        flag: true,
+      });
     } catch (error) {
-      setError(error.response.data.errorMessages[0]);
+      if (error.response.status === 400) {
+        setFailedMessage({
+          message: error.response.data.errorMessages[0],
+          flag: true,
+        });
+        setUser({ ...user, password: "" });
+        navigate("/login");
+        return;
+      }
+      setFailedMessage({
+        message: "Something went wrong!",
+        flag: true,
+      });
     }
+    navigate("/");
   };
-
-  const { values, onChange, onSubmit } = useForm(initValues, submitHandler);
-
   return (
     <div className={styles.body}>
+      <AlertMessage />
       <div className={styles.logRegContainer}>
         <h2 className={styles.h2}>Login</h2>
         <form
           className={styles.form}
           method="POST"
-          onSubmit={(e) => {
-            onSubmit(e);
-          }}
+          onSubmit={(e) => submitHandler(e)}
         >
           <input
             className={styles.input}
             type="email"
-            autoComplete={keys.email}
-            name={keys.email}
-            placeholder={keys.email}
-            value={values[keys.email]}
+            name="email"
+            placeholder="Email"
+            value={user.email}
             onChange={(e) => {
-              onChange(e);
-              setError("");
+              setUser({ ...user, email: e.target.value });
             }}
             required
             email
@@ -79,19 +82,15 @@ const Login = () => {
           <input
             className={styles.input}
             type="password"
-            autoComplete={keys.password}
-            name={keys.password}
-            placeholder={keys.password}
-            value={values[keys.password]}
+            name="password"
+            placeholder="Password"
+            value={user.password}
             onChange={(e) => {
-              onChange(e);
-              setError("");
+              setUser({ ...user, password: e.target.value });
             }}
             required
+            minLength={5}
           />
-
-          {error !== "" && <p>{error}</p>}
-
           <button className={styles.button}>Login</button>
         </form>
       </div>

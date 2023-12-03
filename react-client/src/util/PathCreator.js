@@ -2,6 +2,13 @@ export const basicPath = () => {
   return "/health-tracker";
 };
 
+export const basicAchievementPath = () => {
+  return "/achievements";
+}
+export const achievementPathId = (id) => {
+  return "/achievements/"+id;
+}
+
 export const recordPath = (recordId) => {
   return "/health-tracker/record/" + recordId;
 };

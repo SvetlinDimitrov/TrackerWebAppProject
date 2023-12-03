@@ -28,6 +28,9 @@ import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
 import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection";
 import CreateCustomFood from "./components/HealTracker/FoodSection/CreateCustomFood";
 import Settings from "./components/User/Settings/Settings";
+import AchievementTracker from "./components/AchievementTracker/AchievementTracker";
+import SelectAchievement from "./components/AchievementTracker/SelectAchievement";
+import CreateAchievement from "./components/AchievementTracker/CreateAchievement";
 
 function App() {
   return (
@@ -55,6 +58,11 @@ function App() {
               <Route element={<UserAuthGuard />}>
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/settings/editUser" element={<EditUser />} />
+                <Route path="/achievements" element={<AchievementTracker />}>
+                  <Route path="select" element={<SelectAchievement />} />
+                  <Route path="create" element={<CreateAchievement />} />
+                  <Route path=":achId" />
+                </Route>
                 <Route path="/health-tracker" element={<RecordHolder />}>
                   <Route path="selectRecord" element={<SelectRecord />} />
                   <Route path="createRecord" element={<CreateRecord />} />

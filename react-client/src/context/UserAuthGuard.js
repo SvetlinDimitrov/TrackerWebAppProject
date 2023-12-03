@@ -28,7 +28,7 @@ const UserAuthGuard = () => {
     });
     navigate("/");
     return;
-  } else if (validatedUser === "userNotCompleted" && location.pathname !== "/settings/editUser" && location.pathname !== "/settings") {
+  } else if (validatedUser === "userNotCompleted" && !location.pathname.startsWith('/settings') && !location.pathname.startsWith('/achievements')){
     setFailedMessage({
       message: "Please complete your user details. Go to edit user page!",
       flag: true,
