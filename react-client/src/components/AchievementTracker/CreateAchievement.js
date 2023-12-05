@@ -79,6 +79,7 @@ const CreateAchievement = () => {
             type="number"
             value={ach.goal}
             min={0}
+            step={0.01}
             onChange={(e) =>
               setAch((value) => ({ ...value, goal: e.target.value }))
             }

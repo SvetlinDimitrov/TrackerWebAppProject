@@ -1,37 +1,38 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import UserAuthProvider from "./context/UserAuth";
 import UserAuthGuard from "./context/UserAuthGuard";
 
-import Header from "./components/Header/Header";
-import Home from "./components/HomePage/Home";
-import Footer from "./components/Footer/Footer";
-import Login from "./components/User/RegisterLogin/Login";
-import Register from "./components/User/RegisterLogin/Register";
+import AchievementDetails from "./components/AchievementTracker/AchievementDetails";
+import AchievementTracker from "./components/AchievementTracker/AchievementTracker";
+import AchievementUpdate from "./components/AchievementTracker/AchievementUpdate";
+import CreateAchievement from "./components/AchievementTracker/CreateAchievement";
+import SelectAchievement from "./components/AchievementTracker/SelectAchievement";
 import Error from "./components/Error/Error";
-import NutrientTemplate from "./components/HealTracker/Nutrients/NutrientTemplate";
-import EditUser from "./components/User/EditUser/EditUser";
-import NotificationProvider from "./context/Notification";
-import FoodContextProvider from "./context/FoodContext";
-import SelectRecord from "./components/HealTracker/Record/SelectRecord";
-import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
+import Footer from "./components/Footer/Footer";
+import Header from "./components/Header/Header";
+import CreateCustomFood from "./components/HealTracker/FoodSection/CreateCustomFood";
+import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection";
+import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
+import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu";
+import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
 import NutrientFeatureTemplate from "./components/HealTracker/Nutrients/NutrientFeatureTemplate";
-import RecordHolder from "./components/HealTracker/Record/RecordHolder";
+import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
+import NutritionTemplate from "./components/HealTracker/Nutrients/NutritionTemplate";
 import CreateRecord from "./components/HealTracker/Record/CreateRecord";
 import DeleteRecord from "./components/HealTracker/Record/DeleteRecord";
-import StorageHolder from "./components/HealTracker/Storage/StorageHolder";
-import SelectStorage from "./components/HealTracker/Storage/SelectStorage";
+import RecordHolder from "./components/HealTracker/Record/RecordHolder";
+import SelectRecord from "./components/HealTracker/Record/SelectRecord";
 import CreateStorage from "./components/HealTracker/Storage/CreateStorage";
-import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
-import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu";
-import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
-import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection";
-import CreateCustomFood from "./components/HealTracker/FoodSection/CreateCustomFood";
+import SelectStorage from "./components/HealTracker/Storage/SelectStorage";
+import StorageHolder from "./components/HealTracker/Storage/StorageHolder";
+import Home from "./components/HomePage/Home";
+import EditUser from "./components/User/EditUser/EditUser";
+import Login from "./components/User/RegisterLogin/Login";
+import Register from "./components/User/RegisterLogin/Register";
 import Settings from "./components/User/Settings/Settings";
-import AchievementTracker from "./components/AchievementTracker/AchievementTracker";
-import SelectAchievement from "./components/AchievementTracker/SelectAchievement";
-import CreateAchievement from "./components/AchievementTracker/CreateAchievement";
-
+import FoodContextProvider from "./context/FoodContext";
+import NotificationProvider from "./context/Notification";
 function App() {
   return (
     <>
@@ -43,25 +44,28 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/nutrientInfo" element={<NutritionInfo />}>
-                <Route
-                  path=":nutrition/:nutritionType"
-                  element={<NutrientTemplate />}
-                />
-                <Route
-                  path="feature/:featureType"
-                  element={<NutrientFeatureTemplate />}
-                />
-              </Route>
+              <Route path="/nutrientInfo" element={<NutritionInfo />} />
               <Route path="*" element={<Error />} />
 
               <Route element={<UserAuthGuard />}>
+                <Route path="/nutrientInfo" element={<NutritionInfo />}>
+                  <Route
+                    path=":nutrition/:nutritionType"
+                    element={<NutritionTemplate />}
+                  />
+                  <Route
+                    path="feature/:featureType"
+                    element={<NutrientFeatureTemplate />}
+                  />
+                </Route>
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/settings/editUser" element={<EditUser />} />
                 <Route path="/achievements" element={<AchievementTracker />}>
                   <Route path="select" element={<SelectAchievement />} />
                   <Route path="create" element={<CreateAchievement />} />
-                  <Route path=":achId" />
+                  <Route path=":achId" element={<AchievementDetails />} >
+                    <Route path="addProgress/:achName" element={<AchievementUpdate />} />
+                    </Route>
                 </Route>
                 <Route path="/health-tracker" element={<RecordHolder />}>
                   <Route path="selectRecord" element={<SelectRecord />} />

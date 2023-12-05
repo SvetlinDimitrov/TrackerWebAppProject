@@ -1,16 +1,20 @@
-.container{
-    composes: container from "./NutritionTemplate.module.css";
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-
+.container {
+  composes: container from "./NutritionTemplate.module.css";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
-.body_container_barChar{
-    composes: body_container_barChar from "./NutritionTemplate.module.css";
-    width: 65%;
-    padding: 20px;
+.body_container_barChar {
+  composes: body_container_barChar from "./NutritionTemplate.module.css";
+  width: 65%;
+  display: flex;
+  flex-direction: column;
 }
+.BarChart2_container{
+    overflow-x: auto;
+}
+

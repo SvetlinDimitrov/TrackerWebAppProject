@@ -7,7 +7,7 @@ import DetailsOfRecord from "./DetailsOfRecord";
 import { NotificationContext } from "../../../context/Notification";
 import { AuthContext } from "../../../context/UserAuth";
 import api from "../../../util/api";
-import AlertMessage from "../AlertMessage";
+import AlertMessage from "../../Notifications/AlertMessage";
 
 function RecordHolder() {
   const navigate = useNavigate();

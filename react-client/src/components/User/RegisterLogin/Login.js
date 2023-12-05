@@ -7,7 +7,7 @@ import { NotificationContext } from "../../../context/Notification";
 
 import React from "react";
 import styles from "./LoginRegister.module.css";
-import AlertMessage from "../../HealTracker/AlertMessage";
+import AlertMessage from "../../Notifications/AlertMessage";
 
 const Login = () => {
   const navigate = useNavigate();

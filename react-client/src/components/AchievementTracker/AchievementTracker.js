@@ -6,7 +6,7 @@ import * as PathCreator from "../../util/PathCreator";
 import { NotificationContext } from "../../context/Notification";
 import { AuthContext } from "../../context/UserAuth";
 import api from "../../util/api";
-import AlertMessage from "./../HealTracker/AlertMessage";
+import AlertMessage from "../Notifications/AlertMessage";
 
 const AchievementTracker = () => {
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ const AchievementTracker = () => {
   useEffect(() => {
     setAchievement(undefined);
     const fetchData = async () => {
-      console.log("achId: " + achId);
       try {
         const response = await api.get(`/achievement?id=${achId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
@@ -64,11 +63,6 @@ const AchievementTracker = () => {
       <AlertMessage />
       <div className={styles.container}>
         <h1 className={styles.title}>Achievement Menu</h1>
-        {achievement && (
-          <p className={styles.recordInfo}>
-            Selected Achievement {achievement.name}{" "}
-          </p>
-        )}
         <div className={styles.options}>
           <button
             className={styles.optionButton}

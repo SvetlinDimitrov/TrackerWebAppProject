@@ -1,130 +1,110 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useForm } from "../../../hooks/useForm";
-import { useErrorForm } from "../../../hooks/useErrorForm";
 import api from "../../../util/api";
-import React from "react";
+import { NotificationContext } from "../../../context/Notification";
 import styles from "./LoginRegister.module.css";
-
-const keys = {
-  username: "username",
-  password: "password",
-  email: "email",
-  confirmPassword: "confirmPassword",
-};
-
-const initValues = {
-  [keys.username]: "",
-  [keys.password]: "",
-  [keys.email]: "",
-  [keys.confirmPassword]: "",
-};
+import AlertMessage from "../../Notifications/AlertMessage";
 
 const Register = () => {
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const submitHandler = async (values) => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
     try {
-      if (Object.values(errors).every((error) => error === "")) {
-        if (values.password !== values.confirmPassword) {
-          setError("Passwords should match !");
-        } else {
-          await api.post("/auth/register", values);
-          navigate("/login");
-        }
+      if (user.password !== user.confirmPassword) {
+        setFailedMessage({
+          message: "Passwords do not match!",
+          flag: true,
+        });
+        return;
       }
+      await api.post("/auth/register", user);
+      setSuccessfulMessage({
+        message: "Registered successfully!",
+        flag: true,
+      });
+      navigate("/login");
     } catch (error) {
-      Object.keys(values).forEach((key) =>
-        onBluerError({ name: key, value: values[key] })
-      );
-      setError(error.response.data.errorMessages[0]);
+      if (error.response.status === 400) {
+        setFailedMessage({
+          message: error.response.data.errorMessages[0],
+          flag: true,
+        });
+        setUser({ ...user, password: "", confirmPassword: "" });
+        navigate("/register");
+        return;
+      }
+      setFailedMessage({
+        message: "Something went wrong! Please try again later!",
+        flag: true,
+      });
+      navigate("/");
     }
   };
 
-  const { values, onChange, onSubmit } = useForm(initValues, submitHandler);
-  const { errors, onChangeError, onBluerError } = useErrorForm(initValues);
-
   return (
     <div className={styles.body}>
+      <AlertMessage />
       <div className={styles.logRegContainer}>
         <h2 className={styles.h2}>Register</h2>
         <form
           className={styles.form}
           method="POST"
-          onSubmit={(e) => {
-            onSubmit(e);
-          }}
+          onSubmit={(e) => submitHandler(e)}
         >
           <input
             className={styles.input}
             type="text"
-            autoComplete={keys.username}
-            name={keys.username}
-            placeholder={keys.username}
-            value={values[keys.username]}
-            onChange={(e) => {
-              onChange(e);
-              onChangeError(e);
-            }}
-            onBlur={(e) => onBluerError(e.target)}
+            name="username"
+            minLength={4}
+            required
+            placeholder="Username"
+            value={user.username}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
           />
-
-          {errors[keys.username].length !== 0 && <p>{errors[keys.username]}</p>}
 
           <input
             className={styles.input}
             type="email"
-            autoComplete={keys.email}
-            name={keys.email}
-            placeholder={keys.email}
-            value={values[keys.email]}
-            onChange={(e) => {
-              onChange(e);
-              onChangeError(e);
-            }}
-            onBlur={(e) => onBluerError(e.target)}
+            name="email"
+            required
+            email
+            placeholder="Email"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
-
-          {errors[keys.email].length !== 0 && <p>{errors[keys.email]}</p>}
 
           <input
             className={styles.input}
             type="password"
-            autoComplete={keys.password}
-            name={keys.password}
-            placeholder={keys.password}
-            value={values[keys.password]}
-            onChange={(e) => {
-              onChange(e);
-              onChangeError(e);
-            }}
-            onBlur={(e) => onBluerError(e.target)}
+            name="password"
+            minLength={5}
+            required
+            placeholder="Password"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
-
-          {errors[keys.password].length !== 0 && <p>{errors[keys.password]}</p>}
 
           <input
             className={styles.input}
             type="password"
-            autoComplete={keys.confirmPassword}
-            name={keys.confirmPassword}
-            placeholder={keys.confirmPassword}
-            value={values[keys.confirmPassword]}
-            onChange={(e) => {
-              onChange(e);
-              onChangeError(e);
-            }}
-            onBlur={(e) => onBluerError(e.target)}
+            name="confirmPassword"
+            required
+            placeholder="Confirm Password"
+            value={user.confirmPassword}
+            onChange={(e) =>
+              setUser({ ...user, confirmPassword: e.target.value })
+            }
           />
-
-          {errors[keys.confirmPassword].length !== 0 && (
-            <p>{errors[keys.confirmPassword]}</p>
-          )}
-
-          {Object.values(errors).every((error) => error === "") &&
-            error !== "" && <p>{error}</p>}
 
           <button className={styles.button} type="submit">
             Register

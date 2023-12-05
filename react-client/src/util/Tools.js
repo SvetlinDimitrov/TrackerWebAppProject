@@ -13,7 +13,7 @@ import {
   selectAll,
   interpolate,
 } from "d3";
-import { useLayoutEffect, useRef, useState, useEffect , useMemo } from "react";
+import { useLayoutEffect, useRef, useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "./RecordUtils";
 
@@ -159,7 +159,7 @@ export function PipeChar({ width, height, data }) {
       .ease(easeLinear)
       .duration(durationPerFill)
       .attr("width", xScale(data.precented % 100));
-  }, [ ]);
+  }, []);
 
   return (
     <div
@@ -431,7 +431,7 @@ export function Gauge2({
 
       previousTransition = currentTransition;
     });
-  }, [sections, diameter, sum , colors]);
+  }, [sections, diameter, sum, colors]);
 
   return (
     <svg ref={svgRef} width={width} height={height}>
@@ -543,13 +543,16 @@ export function BarChart({ height, info }) {
     </div>
   );
 }
-export function BarChart2({ height, info }) {
-  const { data, dataNames, fullData, type } = info;
+export function BarChart2({ height, info, dataLength }) {
+  let { data, dataNames, typeData } = info;
 
-  console.log(fullData);
-  const width = 3000;
+  console.log(info);
+  data = data.slice(0, dataLength);
+  dataNames = dataNames.slice(0, dataLength);
+
   const margin = { top: 10, right: 20, bottom: 40, left: 40 };
 
+  const width = 100 * dataLength;
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -560,162 +563,42 @@ export function BarChart2({ height, info }) {
     .domain([0, Math.max(...data)]);
 
   return (
-    <div style={{ width: 1150, overflowX: "auto" }}>
-      <div style={{ minWidth: "max-content" }}>
-        <svg width={width} height={height}>
-          <g transform={`translate(${margin.left}, ${margin.top})`}>
-            <g
-              ref={(node) => select(node).call(axisLeft(y))}
-              style={{ fontSize: "12px" }}
-            />
-            <g
-              transform={`translate(0, ${chartHeight})`}
-              ref={(node) => {
-                const axis = axisBottom(x);
-                select(node)
-                  .call(axis)
-                  .selectAll("text")
-                  .attr(
-                    "transform",
-                    (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
-                  );
-              }}
-              style={{ fontSize: "11px" }}
-            />
-            {data
-              .sort((a, b) => b - a)
-              .map((d, i) => (
-                <g key={i}>
-                  {type === "ImmuneSystem" && (
-                    <title>
-                      {`Vitamin C: ${fullData[i].C.toFixed(
-                        2
-                      )}%\nVitamin D: ${fullData[i].D.toFixed(
-                        2
-                      )}%\nVitamin A: ${fullData[i].A.toFixed(
-                        2
-                      )}%\nVitamin E: ${fullData[i].E.toFixed(
-                        2
-                      )}%\nVitamin B6: ${fullData[i].B6.toFixed(
-                        2
-                      )}%\nVitamin B9: ${fullData[i].B9.toFixed(
-                        2
-                      )}%\nVitamin B12: ${fullData[i].B12.toFixed(
-                        2
-                      )}%\nZinc: ${fullData[i].Zinc.toFixed(
-                        2
-                      )}%\nSelenium : ${fullData[i].Selenium.toFixed(
-                        2
-                      )}%\nIron: ${fullData[i].Iron.toFixed(
-                        2
-                      )}%\nProtein: ${fullData[i].Protein.toFixed(
-                        2
-                      )}g\nFat: ${fullData[i].Fat.toFixed(2)}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-                  {type === "GrowthAndDevelopment" && (
-                    <title>
-                      {`Vitamin C: ${fullData[i].C.toFixed(
-                        2
-                      )}%\nVitamin D: ${fullData[i].D.toFixed(
-                        2
-                      )}%\nVitamin A: ${fullData[i].A.toFixed(
-                        2
-                      )}%\nVitamin E: ${fullData[i].E.toFixed(
-                        2
-                      )}%\nVitamin B9: ${fullData[i].B9.toFixed(
-                        2
-                      )}%\nVitamin B12: ${fullData[i].B12.toFixed(
-                        2
-                      )}%\nZinc: ${fullData[i].Zinc.toFixed(
-                        2
-                      )}%\nCalcium : ${fullData[i].Calcium.toFixed(
-                        2
-                      )}%\nIron: ${fullData[i].Iron.toFixed(
-                        2
-                      )}%\nProtein: ${fullData[i].Protein.toFixed(
-                        2
-                      )}g\nFat: ${fullData[i].Fat.toFixed(2)}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-                  {type === "CognitiveFunctionAndBrainHealth" && (
-                    <title>
-                      {`Vitamin C: ${fullData[i].C.toFixed(
-                        2
-                      )}%\nVitamin E: ${fullData[i].E.toFixed(
-                        2
-                      )}%\nVitamin B6: ${fullData[i].B6.toFixed(
-                        2
-                      )}%\nVitamin B12: ${fullData[i].B12.toFixed(
-                        2
-                      )}%\nIron: ${fullData[i].Iron.toFixed(
-                        2
-                      )}%\nFat: ${fullData[i].Fat.toFixed(2)}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-                  {type === "BoneHealth" && (
-                    <title>
-                      {`Vitamin D: ${fullData[i].D.toFixed(
-                        2
-                      )}%\nVitamin K: ${fullData[i].K.toFixed(
-                        2
-                      )}%\nCalcium: ${fullData[i].Calcium.toFixed(
-                        2
-                      )}%\nPhosphorus: ${fullData[i].Phosphorus.toFixed(
-                        2
-                      )}%\nMagnesium: ${fullData[i].Magnesium.toFixed(
-                        2
-                      )}%\nProtein: ${fullData[i].Protein.toFixed(
-                        2
-                      )}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-                  {type === "PhysicalPerformanceAndFitness" && (
-                    <title>
-                      {`Vitamin B6: ${fullData[i].B6.toFixed(
-                        2
-                      )}%\nVitamin B12: ${fullData[i].B12.toFixed(
-                        2
-                      )}%\nIron: ${fullData[i].Iron.toFixed(
-                        2
-                      )}%\nPotassium: ${fullData[i].Potassium.toFixed(
-                        2
-                      )}%\nProtein: ${fullData[i].Protein.toFixed(
-                        2
-                      )}g\nCarbohydrates: ${fullData[i].Carbohydrates.toFixed(
-                        2
-                      )}g\nFat: ${fullData[i].Fat.toFixed(2)}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-                  {type === "AgingAndLongevity" && (
-                    <title>
-                      {`Vitamin C: ${fullData[i].C.toFixed(
-                        2
-                      )}%\nVitamin E: ${fullData[i].E.toFixed(
-                        2
-                      )}%\nVitamin D: ${fullData[i].D.toFixed(
-                        2
-                      )}%\nFiber: ${fullData[i].Fiber.toFixed(
-                        2
-                      )}%\nProtein: ${fullData[i].Protein.toFixed(
-                        2
-                      )}g\nTotal %: ${d}`}
-                    </title>
-                  )}
-
-                  <rect
-                    x={x(dataNames[i])}
-                    y={y(d)}
-                    width={x.bandwidth()}
-                    height={chartHeight - y(d)}
-                    fill="steelblue"
-                  />
-                </g>
-              ))}
-          </g>
-        </svg>
-      </div>
-    </div>
+    <svg width={width} height={height}>
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
+        <g
+          ref={(node) => select(node).call(axisLeft(y))}
+          style={{ fontSize: "12px" }}
+        />
+        <g
+          transform={`translate(0, ${chartHeight})`}
+          ref={(node) => {
+            const axis = axisBottom(x);
+            select(node)
+              .call(axis)
+              .selectAll("text")
+              .attr(
+                "transform",
+                (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
+              );
+          }}
+          style={{ fontSize: "11px" }}
+        />
+        {data
+          .sort((a, b) => b - a)
+          .map((d, i) => (
+            <g key={i}>
+              <title>{typeData[i]}</title>
+              <rect
+                x={x(dataNames[i])}
+                y={y(d)}
+                width={x.bandwidth()}
+                height={chartHeight - y(d)}
+                fill="steelblue"
+              />
+            </g>
+          ))}
+      </g>
+    </svg>
   );
 }
 

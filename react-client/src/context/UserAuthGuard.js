@@ -12,6 +12,8 @@ const UserAuthGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setFailedMessage } = useContext(NotificationContext);
+  const halfAuthPaths = ['/settings', '/achievements' ,'/nutrientInfo/mineral' , '/nutrientInfo/macronutrient' , '/nutrientInfo/vitamin'];
+
 
   if (validatedUser === "dateExpired") {
     setFailedMessage({
@@ -28,7 +30,7 @@ const UserAuthGuard = () => {
     });
     navigate("/");
     return;
-  } else if (validatedUser === "userNotCompleted" && !location.pathname.startsWith('/settings') && !location.pathname.startsWith('/achievements')){
+  } else if (validatedUser === "userNotCompleted" && !halfAuthPaths.some(path => location.pathname.startsWith(path))){
     setFailedMessage({
       message: "Please complete your user details. Go to edit user page!",
       flag: true,
