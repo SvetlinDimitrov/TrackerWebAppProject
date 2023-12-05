@@ -1,0 +1,132 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  background-color: #90a4ae; /* This is a light blue color that complements #cfd8dc and #008374 */
+}
+.container {
+  width: 50%;
+  font-family: Arial, sans-serif;
+  border: 1px solid #90a4ae; /* Same color for border */
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #eceff1; /* Lighter shade for background */
+}
+
+.titleRow,
+.subtitle,
+.goalText,
+.reports h3 {
+  color: #455a64; /* Darker shade for text */
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #90a4ae; /* Same color for border */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 2em;
+}
+
+.date {
+  font-size: 0.8em;
+}
+
+.subtitle {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.goalText {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  text-align: center;
+
+}
+
+.reports {
+  border-top: 1px solid #90a4ae; /* Same color for border */
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.reports h3 {
+  font-size: 1.5em;
+}
+
+.reportOptions {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #90a4ae; /* Same color for border */
+  border-radius: 10px;
+  width: 50%;
+  overflow: hidden; /* This makes the border radius apply to the buttons */
+}
+
+.reportOptions button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #cfd8dc; /* Lighter shade for background */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  text-align: center;
+  width: 50%;
+  position: relative;
+  box-sizing: border-box; /* Add this line */
+  color: #455a64; /* Darker shade for text */
+}
+
+.reportOptions button:not(:last-child) {
+  border-right: 1px solid #90a4ae; /* Same color for border */
+}
+
+.reportOptions button:hover {
+  background-color: #b0bec5;
+}
+
+.updateButton {
+  padding: 15px 30px; /* Increase padding */
+  border: none;
+  background-color: #cfd8dc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: 2px solid #455a64;
+  border-radius: 10px;
+  position: relative;
+  box-sizing: border-box;
+  color: #455a64;
+  font-size: 16px; /* Add this line to increase font size */
+}
+
+.updateButton:hover {
+  background-color: #b0bec5;
+}
+.diagram {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 75%;
+  font-family: Arial, sans-serif;
+  border: 1px solid #90a4ae; /* Same color for border */
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #eceff1;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
