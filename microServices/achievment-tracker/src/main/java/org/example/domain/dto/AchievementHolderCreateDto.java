@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.domain.entity.Achievement;
+import org.example.domain.entity.AchievementTracker;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
@@ -15,11 +15,10 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AchievementCreateDto {
+public class AchievementHolderCreateDto {
 
     @NotEmpty
     @NotBlank
-    @Length(min = 3)
     private String name;
     @NotEmpty
     @NotBlank
@@ -30,12 +29,12 @@ public class AchievementCreateDto {
     private BigDecimal goal;
     private String measurement;
 
-    public Achievement toEntity() {
-        Achievement achievement = new Achievement();
-        achievement.setName(name);
-        achievement.setDescription(description);
-        achievement.setGoal(goal);
-        achievement.setMeasurement(measurement);
-        return achievement;
+    public AchievementTracker toEntity() {
+        AchievementTracker achievementTracker = new AchievementTracker();
+        achievementTracker.setName(name);
+        achievementTracker.setDescription(description);
+        achievementTracker.setGoal(goal);
+        achievementTracker.setMeasurement(measurement);
+        return achievementTracker;
     }
 }

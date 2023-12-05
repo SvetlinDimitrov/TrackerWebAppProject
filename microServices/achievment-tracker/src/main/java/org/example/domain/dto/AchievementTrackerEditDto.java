@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AchievementEditDto {
+public class AchievementTrackerEditDto {
 
     private String description;
-    private BigDecimal progress;
+    private String name;
     private BigDecimal goal;
     private String measurement;
 

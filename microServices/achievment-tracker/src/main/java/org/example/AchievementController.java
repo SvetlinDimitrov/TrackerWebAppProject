@@ -2,14 +2,16 @@ package org.example;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.dto.AchievementCreateDto;
-import org.example.domain.dto.AchievementEditDto;
-import org.example.domain.dto.AchievementView;
+import org.example.domain.dto.AchievementHolderCreateDto;
+import org.example.domain.dto.AchievementTrackerEditDto;
+import org.example.domain.dto.AchievementTrackerView;
+import org.example.domain.entity.Achievement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -20,42 +22,53 @@ public class AchievementController {
     private final AchievementServiceImp achievementServiceImp;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<AchievementView>> getAllAchievementsById(
+    public ResponseEntity<List<AchievementTrackerView>> getAllAchievementHoldersById(
             @RequestHeader(name = "X-ViewUser") String userToken) {
-        List<AchievementView> foods = achievementServiceImp.getAllAchievementViewsWitherUserId(userToken);
+        List<AchievementTrackerView> foods = achievementServiceImp.getAllAchievementViewsWitherUserId(userToken);
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<AchievementView> getAchievementById(
+    public ResponseEntity<AchievementTrackerView> getAchievementHolderById(
             @RequestHeader(name = "X-ViewUser") String userToken,
             @RequestParam(name = "id") Long id) {
-        AchievementView foods = achievementServiceImp.getAchievementViewById(userToken, id);
+        AchievementTrackerView foods = achievementServiceImp.getAchievementViewById(userToken, id);
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<AchievementView> createAchievement(
+    public ResponseEntity<AchievementTrackerView> createAchievementHolder(
             @RequestHeader(name = "X-ViewUser") String userToken,
-            @Valid @RequestBody AchievementCreateDto dto,
+            @Valid @RequestBody AchievementHolderCreateDto dto,
             BindingResult result) {
 
         if (result.hasErrors()) {
-            throw new AchievementException("Invalid data :" + result.getFieldErrors().toString());
+            throw new AchievementException("Invalid data :" + result.getFieldErrors().get(0).getDefaultMessage());
         }
 
-        AchievementView achievement = achievementServiceImp.createAchievement(userToken, dto);
+        AchievementTrackerView achievement = achievementServiceImp.createAchievement(userToken, dto);
         return new ResponseEntity<>(achievement, HttpStatus.CREATED);
     }
 
-    @PatchMapping
-    public ResponseEntity<AchievementView> updateAchievement(
+    @PatchMapping("/{achievementName}/addProgress")
+    public ResponseEntity<AchievementTrackerView> updateAchievement(
             @RequestHeader(name = "X-ViewUser") String userToken,
-            @RequestParam(name = "id") Long id,
-            @RequestBody AchievementEditDto dto) {
+            @PathVariable(name = "achievementName") String achievementName,
+            @RequestParam(name = "replaceDailyProgress" , defaultValue = "false") Boolean replaceDailyProgress ,
+            @RequestBody Achievement achievement) {
 
-        AchievementView achievement = achievementServiceImp.updateAchievement(userToken, dto , id);
-        return new ResponseEntity<>(achievement, HttpStatus.OK);
+        AchievementTrackerView achievementHolder = achievementServiceImp.updateAchievement(userToken, achievement , achievementName , replaceDailyProgress);
+        return new ResponseEntity<>(achievementHolder, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{achievementName}")
+    public ResponseEntity<AchievementTrackerView> changeAchievementTracker(
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @PathVariable(name = "achievementName") String achievementName,
+            @RequestBody AchievementTrackerEditDto dto) {
+
+        AchievementTrackerView achievementHolder = achievementServiceImp.editTracker(userToken, dto , achievementName);
+        return new ResponseEntity<>(achievementHolder, HttpStatus.OK);
     }
 
     @DeleteMapping
