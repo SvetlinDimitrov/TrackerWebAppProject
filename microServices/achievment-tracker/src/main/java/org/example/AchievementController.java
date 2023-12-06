@@ -37,7 +37,7 @@ public class AchievementController {
     }
 
     @PostMapping
-    public ResponseEntity<AchievementTrackerView> createAchievementHolder(
+    public ResponseEntity<HttpStatus> createAchievementHolder(
             @RequestHeader(name = "X-ViewUser") String userToken,
             @Valid @RequestBody AchievementHolderCreateDto dto,
             BindingResult result) {
@@ -46,29 +46,29 @@ public class AchievementController {
             throw new AchievementException("Invalid data :" + result.getFieldErrors().get(0).getDefaultMessage());
         }
 
-        AchievementTrackerView achievement = achievementServiceImp.createAchievement(userToken, dto);
-        return new ResponseEntity<>(achievement, HttpStatus.CREATED);
+        achievementServiceImp.createAchievement(userToken, dto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{achievementName}/addProgress")
-    public ResponseEntity<AchievementTrackerView> updateAchievement(
+    @PatchMapping("/{achId}/addProgress")
+    public ResponseEntity<HttpStatus> updateAchievement(
             @RequestHeader(name = "X-ViewUser") String userToken,
-            @PathVariable(name = "achievementName") String achievementName,
+            @PathVariable(name = "achId") Long achId,
             @RequestParam(name = "replaceDailyProgress" , defaultValue = "false") Boolean replaceDailyProgress ,
             @RequestBody Achievement achievement) {
 
-        AchievementTrackerView achievementHolder = achievementServiceImp.updateAchievement(userToken, achievement , achievementName , replaceDailyProgress);
-        return new ResponseEntity<>(achievementHolder, HttpStatus.OK);
+        achievementServiceImp.updateAchievement(userToken, achievement , achId , replaceDailyProgress);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/{achievementName}")
-    public ResponseEntity<AchievementTrackerView> changeAchievementTracker(
+    @PatchMapping("/{achId}")
+    public ResponseEntity<HttpStatus> changeAchievementTracker(
             @RequestHeader(name = "X-ViewUser") String userToken,
-            @PathVariable(name = "achievementName") String achievementName,
+            @PathVariable(name = "achId") Long achId,
             @RequestBody AchievementTrackerEditDto dto) {
 
-        AchievementTrackerView achievementHolder = achievementServiceImp.editTracker(userToken, dto , achievementName);
-        return new ResponseEntity<>(achievementHolder, HttpStatus.OK);
+        achievementServiceImp.editTracker(userToken, dto , achId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping

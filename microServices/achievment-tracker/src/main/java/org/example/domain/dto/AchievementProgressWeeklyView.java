@@ -1,22 +1,17 @@
-package org.example.domain.entity;
+package org.example.domain.dto;
 
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-@Embeddable
-@Setter
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
-public class AchievementProgress {
-
-    private LocalDate date;
+public class AchievementProgressWeeklyView {
+    
+    private YearWeek week;
     private BigDecimal bestProgress;
     private BigDecimal worstProgress;
     private BigDecimal totalProgress;

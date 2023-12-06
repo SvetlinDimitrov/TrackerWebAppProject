@@ -19,20 +19,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AchievementTracker {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-        private Long userId;
-        private String name;
-        private String description;
-        private BigDecimal goal;
-        private String measurement;
-        private LocalDate startDate;
-
-        @ElementCollection
-        private SortedMap<LocalDate, Achievement> dailyProgress = new TreeMap<>();
-        @ElementCollection
-        private SortedMap<YearMonth, AchievementProgress> monthlyProgress = new TreeMap<>();
-        @ElementCollection
-        private SortedMap<Integer, AchievementProgress> yearlyProgresses = new TreeMap<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long userId;
+    private String name;
+    private String description;
+    private BigDecimal goal;
+    private String measurement;
+    private LocalDate startDate;
+    
+    @ElementCollection
+    private SortedMap<LocalDate, Achievement> dailyProgress = new TreeMap<>();
+    
 }

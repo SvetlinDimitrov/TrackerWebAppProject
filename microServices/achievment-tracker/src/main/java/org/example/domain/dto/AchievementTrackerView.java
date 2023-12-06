@@ -4,14 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.domain.entity.Achievement;
-import org.example.domain.entity.AchievementProgress;
 import org.example.domain.entity.AchievementTracker;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -24,12 +22,18 @@ public class AchievementTrackerView {
     private BigDecimal goal;
     private String measurement;
     private LocalDate startDate;
-
+    
     private List<Achievement> dailyProgress = new LinkedList<>();
-    private List<AchievementProgress> monthlyProgress = new LinkedList<>();
-    private List<AchievementProgress> yearlyProgress = new LinkedList<>();
-
-    public AchievementTrackerView(AchievementTracker achievementTracker) {
+    private List<AchievementProgressWeeklyView> weeklyProgress = new LinkedList<>();
+    private List<AchievementProgressMonthlyView> monthlyProgress = new LinkedList<>();
+    private List<AchievementProgressYearlyView> yearlyProgress = new LinkedList<>();
+    
+    public AchievementTrackerView(
+        AchievementTracker achievementTracker,
+        List<AchievementProgressMonthlyView> monthlyProgress,
+        List<AchievementProgressYearlyView> yearlyProgress,
+        List<AchievementProgressWeeklyView> weeklyProgress) {
+        
         this.id = achievementTracker.getId();
         this.userId = achievementTracker.getUserId();
         this.name = achievementTracker.getName();
@@ -37,10 +41,11 @@ public class AchievementTrackerView {
         this.goal = achievementTracker.getGoal();
         this.measurement = achievementTracker.getMeasurement();
         this.startDate = achievementTracker.getStartDate();
-
+        
         this.dailyProgress = achievementTracker.getDailyProgress().values().stream().toList();
-        this.monthlyProgress = achievementTracker.getMonthlyProgress().values().stream().toList();
-        this.yearlyProgress = achievementTracker.getYearlyProgresses().values().stream().toList();
-
+        this.monthlyProgress = monthlyProgress;
+        this.yearlyProgress = yearlyProgress;
+        this.weeklyProgress = weeklyProgress;
+        
     }
 }
