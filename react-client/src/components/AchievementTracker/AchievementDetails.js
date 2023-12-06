@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
-import styles from "./AchievementDetails.module.css";
+import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
+import styles from "./AchievementDetails.module.css";
 
+import AchievementDetailsDaily from "./AchievementDetailsDaily";
 import { NotificationContext } from "../../context/Notification";
-import * as PathCreator from "../../util/PathCreator";
 import { AuthContext } from "../../context/UserAuth";
+import * as PathCreator from "../../util/PathCreator";
+
 import api from "../../util/api";
-import { BarChart2 } from "../../util/Tools";
+import AchievementDetailsWeekly from "./AchievementDetailsWeekly";
 
 const AchievementDetails = () => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const AchievementDetails = () => {
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState(undefined);
+  const [show, setShow] = useState("");
 
   useEffect(() => {
     setAchievement(undefined);
@@ -55,11 +58,7 @@ const AchievementDetails = () => {
             <button
               className={styles.updateButton}
               onClick={() =>
-                navigate(
-                  PathCreator.achievementPathId(achId) +
-                    "/addProgress/" +
-                    achievement.name
-                )
+                navigate(PathCreator.achievementPathId(achId) + "/addProgress")
               }
             >
               Update Progress
@@ -71,33 +70,49 @@ const AchievementDetails = () => {
           <div className={styles.reports}>
             <h3 className={styles.reportsH3}>Reports</h3>
             <div className={styles.reportOptions}>
-              <button>Daily</button>
-              <button>Weekly</button>
-              <button>Monthly</button>
-              <button>Yearly</button>
+              <button
+                onClick={() =>
+                  show === "Daily" ? setShow("") : setShow("Daily")
+                }
+              >
+                Daily
+              </button>
+              <button
+                onClick={() =>
+                  show === "Weekly" ? setShow("") : setShow("Weekly")
+                }
+              >
+                Weekly
+              </button>
+              <button
+                onClick={() =>
+                  show === "Monthly" ? setShow("") : setShow("Monthly")
+                }
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() =>
+                  show === "Yearly" ? setShow("") : setShow("Yearly")
+                }
+              >
+                Yearly
+              </button>
             </div>
           </div>
         </div>
-        <div className={styles.diagram}>
-          <div className={styles.diagramContainer}>
-            <h1 className={styles.diagramContainerTitle}>Daily reports</h1>
-            <BarChart2
-              height={400}
-              info={getDailyData(achievement)}
-              dataLength={achievement.dailyProgress.length}
-            />
-          </div>
-        </div>
+        {show !== "" && show === "Daily" && (
+          <AchievementDetailsDaily achievement={achievement} />
+        )}
+
+        {show !== "" && show === "Weekly" && (
+          <AchievementDetailsWeekly achievement={achievement} />
+        )}
       </div>
+
       <Outlet />
     </>
   );
 };
 
 export default AchievementDetails;
-const getDailyData = (achievement) => {
-  const data = achievement.dailyProgress.map((item) => item.progress);
-  const dataNames = achievement.dailyProgress.map((item) => item.date);
-  const typeData = achievement.dailyProgress.map((item) => item.progress);
-  return { data, dataNames, typeData };
-};

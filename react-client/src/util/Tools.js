@@ -16,6 +16,7 @@ import {
 import { useLayoutEffect, useRef, useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { calcAverageValue } from "./RecordUtils";
+import NoDataFoundImage from "./No-data-found-banner.webp";
 
 export function Gauge({ width, height, type, data, className }) {
   const diameter = width / 2 + height / 2;
@@ -544,11 +545,10 @@ export function BarChart({ height, info }) {
   );
 }
 export function BarChart2({ height, info, dataLength }) {
-  let { data, dataNames, typeData } = info;
-
-  console.log(info);
-  data = data.slice(0, dataLength);
-  dataNames = dataNames.slice(0, dataLength);
+  info = info.slice(0, dataLength);
+  const dataNames = info.map((item) => item.dataNames);
+  const data = info.map((item) => item.data);
+  const typeData = info.map((item) => item.typeData);
 
   const margin = { top: 10, right: 20, bottom: 40, left: 40 };
 
@@ -583,20 +583,109 @@ export function BarChart2({ height, info, dataLength }) {
           }}
           style={{ fontSize: "11px" }}
         />
-        {data
-          .sort((a, b) => b - a)
-          .map((d, i) => (
-            <g key={i}>
-              <title>{typeData[i]}</title>
-              <rect
-                x={x(dataNames[i])}
-                y={y(d)}
-                width={x.bandwidth()}
-                height={chartHeight - y(d)}
-                fill="steelblue"
-              />
-            </g>
-          ))}
+        {data.map((d, i) => (
+          <g key={i}>
+            <title>{typeData[i]}</title>
+            <rect
+              x={x(dataNames[i])}
+              y={y(d)}
+              width={x.bandwidth()}
+              height={chartHeight - y(d)}
+              fill="steelblue"
+            />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+export function GroupedBarChart({ height, info, dataLength }) {
+  info = info.slice(0, dataLength);
+  const dataNames = info.map((item) => item.dataNames);
+  const data = info.map((item) => item.data);
+  const typeData = info.map((item) => item.typeData);
+
+  const margin = { top: 10, right: 10, bottom: 40, left: 40 };
+
+  const width = 95 * dataLength;
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+
+  const x = scaleBand().range([0, chartWidth]).padding(0.2).domain(dataNames);
+  const subX = scaleBand()
+    .domain([0, 1, 2, 3])
+    .range([0, x.bandwidth()])
+    .padding(0.05);
+
+  const y = scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, Math.max(...data.map((item) => item[2]))]);
+  const colors = ["steelblue", "green", "red", "purple"];
+
+  useEffect(() => {
+    selectAll(".bar")
+      .data(data.flat())
+      .transition()
+      .duration(4000)
+      .attr("y", (d) => y(d))
+      .attr("height", (d) => chartHeight - y(d));
+  }, [data , y, chartHeight]);
+
+  if (data.every((d) => d[0] === 0)) {
+    return (
+      <svg width={width} height={height}>
+        {data.every((d) => d[0] === 0) && (
+          <image
+            href={NoDataFoundImage}
+            x={(width - width / 1.8) / 2}
+            y={(height - height / 1.8) / 2}
+            width={width / 1.8}
+            height={height / 1.8}
+          />
+        )}
+      </svg>
+    );
+  }
+
+  return (
+    <svg width={width} height={height}>
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
+        <g
+          ref={(node) => select(node).call(axisLeft(y))}
+          style={{ fontSize: "18px", fontFamily: "Verdana" }}
+        />
+        <g
+          transform={`translate(0, ${chartHeight})`}
+          ref={(node) => {
+            const axis = axisBottom(x);
+            select(node)
+              .call(axis)
+              .selectAll("text")
+              .attr(
+                "transform",
+                (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
+              );
+          }}
+          style={{ fontSize: "16px", fontFamily: "Verdana" }}
+        />
+        {dataNames.map((dName, i) => (
+          <g key={i} transform={`translate(${x(dName)}, 0)`}>
+            {data[i].map((d, j) => (
+              <g key={j}>
+                <rect
+                  className="bar"
+                  x={subX(j)}
+                  y={chartHeight}
+                  width={subX.bandwidth()}
+                  height={0}
+                  fill={colors[j % colors.length]}
+                >
+                  <title>{`${typeData[i][j]}`}</title>
+                </rect>
+              </g>
+            ))}
+          </g>
+        ))}
       </g>
     </svg>
   );

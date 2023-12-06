@@ -1,29 +1,30 @@
-import styles from "./AchievementUpdate.module.css";
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import styles from "./AchievementUpdate.module.css";
 
 import { NotificationContext } from "../../context/Notification";
-import * as PathCreator from "../../util/PathCreator";
 import { AuthContext } from "../../context/UserAuth";
+import * as PathCreator from "../../util/PathCreator";
 import api from "../../util/api";
 
 const AchievementUpdate = () => {
   const navigate = useNavigate();
-  const { achId , achName} = useParams();
+  const { achId } = useParams();
   const { setFailedMessage, setSuccessfulMessage } =
     useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState({
     progress: 0,
+    date: new Date().toLocaleDateString(),
     replace: false,
   });
 
   const handleUpdate = async () => {
     try {
       await api.patch(
-        `/achievement/${achName}/addProgress?progress=${achievement.progress}&replaceDailyProgress=${achievement.replace}`,
-        {},
+        `/achievement/${achId}/addProgress?replaceDailyProgress=${achievement.replace}`,
+        achievement,
         {
           headers: { Authorization: `Bearer ${userToken}` },
         }
@@ -61,6 +62,24 @@ const AchievementUpdate = () => {
               setAchievement((value) => ({
                 ...value,
                 progress: e.target.value,
+              }))
+            }
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label} htmlFor="date">
+            Date of Achievement
+          </label>
+          <input
+            className={styles.input}
+            type="date"
+            id="date"
+            required
+            value={achievement.date}
+            onChange={(e) =>
+              setAchievement((value) => ({
+                ...value,
+                date: e.target.value,
               }))
             }
           />

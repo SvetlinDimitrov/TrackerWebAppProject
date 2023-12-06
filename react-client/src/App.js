@@ -64,7 +64,7 @@ function App() {
                   <Route path="select" element={<SelectAchievement />} />
                   <Route path="create" element={<CreateAchievement />} />
                   <Route path=":achId" element={<AchievementDetails />} >
-                    <Route path="addProgress/:achName" element={<AchievementUpdate />} />
+                    <Route path="addProgress" element={<AchievementUpdate />} />
                     </Route>
                 </Route>
                 <Route path="/health-tracker" element={<RecordHolder />}>

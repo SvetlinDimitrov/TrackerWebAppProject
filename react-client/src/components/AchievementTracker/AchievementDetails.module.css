@@ -4,6 +4,7 @@
   align-items: center;
   gap: 30px;
   background-color: #90a4ae; /* This is a light blue color that complements #cfd8dc and #008374 */
+  padding: 30px;
 }
 .container {
   width: 50%;
@@ -72,6 +73,7 @@
   overflow: hidden; /* This makes the border radius apply to the buttons */
 }
 
+
 .reportOptions button {
   padding: 10px 20px;
   border: none;
@@ -111,18 +113,6 @@
 
 .updateButton:hover {
   background-color: #b0bec5;
-}
-.diagram {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  width: 75%;
-  font-family: Arial, sans-serif;
-  border: 1px solid #90a4ae; /* Same color for border */
-  border-radius: 10px;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #eceff1;
 }
 
 .row {

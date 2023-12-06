@@ -141,16 +141,43 @@ export const getAllPercentageForImmuneSystem = (
   name
 ) => {
   return {
-    C: getPercentageForVitaminC(C, Gender),
-    D: getPercentageForVitaminD(D, Gender),
-    A: getPercentageForVitaminA(A, Gender),
-    E: getPercentageForVitaminE(E, Gender),
-    B6: getPercentageForVitaminB6(B6, Gender),
-    B9: getPercentageForVitaminB9(B9, Gender),
-    B12: getPercentageForVitaminB12(B12, Gender),
-    Zinc: getPercentageForZinc(Zinc, Gender),
-    Selenium: getPercentageForSelenium(Selenium, Gender),
-    Iron: getPercentageForIron(Iron),
+    C:
+      getPercentageForVitaminC(C, Gender) > 100
+        ? 100
+        : getPercentageForVitaminC(C, Gender),
+    D:
+      getPercentageForVitaminD(D, Gender) > 100
+        ? 100
+        : getPercentageForVitaminD(D, Gender),
+    A:
+      getPercentageForVitaminA(A, Gender) > 100
+        ? 100
+        : getPercentageForVitaminA(A, Gender),
+    E:
+      getPercentageForVitaminE(E, Gender) > 100
+        ? 100
+        : getPercentageForVitaminE(E, Gender),
+    B6:
+      getPercentageForVitaminB6(B6, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB6(B6, Gender),
+    B9:
+      getPercentageForVitaminB9(B9, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB9(B9, Gender),
+    B12:
+      getPercentageForVitaminB12(B12, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB12(B12, Gender),
+    Zinc:
+      getPercentageForZinc(Zinc, Gender) > 100
+        ? 100
+        : getPercentageForZinc(Zinc, Gender),
+    Selenium:
+      getPercentageForSelenium(Selenium, Gender) > 100
+        ? 100
+        : getPercentageForSelenium(Selenium, Gender),
+    Iron: getPercentageForIron(Iron) > 100 ? 100 : getPercentageForIron(Iron),
     Protein,
     Fat,
     name,
@@ -172,15 +199,39 @@ export const getAllPercentageForGrowthAndDevelopmentText = (
   name
 ) => {
   return {
-    C: getPercentageForVitaminC(C, Gender),
-    D: getPercentageForVitaminD(D, Gender),
-    A: getPercentageForVitaminA(A, Gender),
-    E: getPercentageForVitaminE(E, Gender),
-    B9: getPercentageForVitaminB9(B9, Gender),
-    B12: getPercentageForVitaminB12(B12, Gender),
-    Zinc: getPercentageForZinc(Zinc, Gender),
-    Calcium: getPercentageForCalcium(Calcium, Gender),
-    Iron: getPercentageForIron(Iron),
+    C:
+      getPercentageForVitaminC(C, Gender) > 100
+        ? 100
+        : getPercentageForVitaminC(C, Gender),
+    D:
+      getPercentageForVitaminD(D, Gender) > 100
+        ? 100
+        : getPercentageForVitaminD(D, Gender),
+    A:
+      getPercentageForVitaminA(A, Gender) > 100
+        ? 100
+        : getPercentageForVitaminA(A, Gender),
+    E:
+      getPercentageForVitaminE(E, Gender) > 100
+        ? 100
+        : getPercentageForVitaminE(E, Gender),
+    B9:
+      getPercentageForVitaminB9(B9, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB9(B9, Gender),
+    B12:
+      getPercentageForVitaminB12(B12, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB12(B12, Gender),
+    Zinc:
+      getPercentageForZinc(Zinc, Gender) > 100
+        ? 100
+        : getPercentageForZinc(Zinc, Gender),
+    Calcium:
+      getPercentageForCalcium(Calcium, Gender) > 100
+        ? 100
+        : getPercentageForCalcium(Calcium, Gender),
+    Iron: getPercentageForIron(Iron) > 100 ? 100 : getPercentageForIron(Iron),
     Protein,
     Fat,
     name,
@@ -197,11 +248,26 @@ export const getAllPercentageForCognitiveFunctionAndBrainHealth = (
   name
 ) => {
   return {
-    E: getPercentageForVitaminE(E, Gender),
-    C: getPercentageForVitaminC(C, Gender),
-    B6: getPercentageForVitaminB6(B6, Gender),
-    B12: getPercentageForVitaminB12(B12, Gender),
-    Iron: getPercentageForIron(Iron, Gender),
+    E:
+      getPercentageForVitaminE(E, Gender) > 100
+        ? 100
+        : getPercentageForVitaminE(E, Gender),
+    C:
+      getPercentageForVitaminC(C, Gender) > 100
+        ? 100
+        : getPercentageForVitaminC(C, Gender),
+    B6:
+      getPercentageForVitaminB6(B6, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB6(B6, Gender),
+    B12:
+      getPercentageForVitaminB12(B12, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB12(B12, Gender),
+    Iron:
+      getPercentageForIron(Iron, Gender) > 100
+        ? 100
+        : getPercentageForIron(Iron, Gender),
     Fat,
     name,
   };
@@ -217,13 +283,29 @@ export const getAllPercentageForBoneHealth = (
   name
 ) => {
   return {
-    D: getPercentageForVitaminD(D, Gender),
-    K: getPercentageForVitaminK(K, Gender),
-    Calcium: getPercentageForCalcium(Calcium, Gender),
-    Phosphorus: getPercentageForPhosphorus(Phosphorus, Gender),
-    Magnesium: getPercentageForMagnesium(Magnesium, Gender),
+    D:
+      getPercentageForVitaminD(D, Gender) > 100
+        ? 100
+        : getPercentageForVitaminD(D, Gender),
+    K:
+      getPercentageForVitaminK(K, Gender) > 100
+        ? 100
+        : getPercentageForVitaminK(K, Gender),
+    Calcium:
+      getPercentageForCalcium(Calcium, Gender) > 100
+        ? 100
+        : getPercentageForCalcium(Calcium, Gender),
+    Phosphorus:
+      getPercentageForPhosphorus(Phosphorus, Gender) > 100
+        ? 100
+        : getPercentageForPhosphorus(Phosphorus, Gender),
+    Magnesium:
+      getPercentageForMagnesium(Magnesium, Gender) > 100
+        ? 100
+        : getPercentageForMagnesium(Magnesium, Gender),
+
     Protein,
-    name
+    name,
   };
 };
 export const getAllPercentageForPhysicalPerformance = (
@@ -238,10 +320,22 @@ export const getAllPercentageForPhysicalPerformance = (
   name
 ) => {
   return {
-    B6: getPercentageForVitaminB6(B6, Gender),
-    B12: getPercentageForVitaminB12(B12, Gender),
-    Iron: getPercentageForIron(Iron, Gender),
-    Potassium: getPercentageForPotassium(Potassium, Gender),
+    B6:
+      getPercentageForVitaminB6(B6, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB6(B6, Gender),
+    B12:
+      getPercentageForVitaminB12(B12, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB12(B12, Gender),
+    Iron:
+      getPercentageForIron(Iron, Gender) > 100
+        ? 100
+        : getPercentageForIron(Iron, Gender),
+    Potassium:
+      getPercentageForPotassium(Potassium, Gender) > 100
+        ? 100
+        : getPercentageForPotassium(Potassium, Gender),
     Protein,
     Fat,
     Carbohydrates,
@@ -258,10 +352,22 @@ export const getAllPercentageForAging = (
   name
 ) => {
   return {
-    C: getPercentageForVitaminC(C, Gender),
-    E: getPercentageForVitaminB12(E, Gender),
-    D: getPercentageForVitaminD(D, Gender),
-    Fiber: getPercentageForFiber(Fiber, Gender),
+    C:
+      getPercentageForVitaminC(C, Gender) > 100
+        ? 100
+        : getPercentageForVitaminC(C, Gender),
+    E:
+      getPercentageForVitaminB12(E, Gender) > 100
+        ? 100
+        : getPercentageForVitaminB12(E, Gender),
+    D:
+      getPercentageForVitaminD(D, Gender) > 100
+        ? 100
+        : getPercentageForVitaminD(D, Gender),
+    Fiber:
+      getPercentageForFiber(Fiber, Gender) > 100
+        ? 100
+        : getPercentageForFiber(Fiber, Gender),
     Protein,
     name,
   };

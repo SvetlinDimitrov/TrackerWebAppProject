@@ -1,0 +1,177 @@
+.diagram {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  font-family: Arial, sans-serif;
+  border: 1px solid #9E9E9E; /* Darker grey for border */
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #E0E0E0; /* Darker background color */
+}
+.dailyTitleContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px;
+  width: 100%;
+}
+
+
+
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  padding-top: 0px;
+  border-bottom: 2px solid #b8a8a8; /* Lighter shade for border */
+}
+.title {
+  margin: 0;
+  padding: 0;
+  color: #212529;
+  font-size: 32px; /* Increased font size */
+  font-weight: 700; /* Increased font weight */
+  letter-spacing: 1.2px; /* Increased letter spacing */
+  text-transform: uppercase; /* Added text transformation */
+}
+.moreInfo {
+  color: #6c757d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 18px; /* Increased font size */
+  font-weight: 500; /* Added font weight */
+}
+.moreInfo {
+  color: #6c757d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 20px; /* Increased font size */
+  font-weight: 600; /* Increased font weight */
+  transition: color 0.3s ease; /* Added color transition */
+}
+.moreInfo svg {
+  margin-left: 12px; /* Increased margin */
+  color: #6c757d;
+  transition: all 0.3s ease; /* Transition applies to all properties */
+  transform: scale(1.3); /* Increased icon size */
+}
+.moreInfo:hover {
+  color: #212529; /* Text color changes on hover */
+}
+.moreInfo:hover svg {
+  color: #212529;
+  transform: scale(1.5); /* Icon size increases on hover */
+}
+
+
+
+.draggable_container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: #757575 #f5f5f5; /* Darker grey for scrollbar */
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+.draggable_container::-webkit-scrollbar-track {
+  background: #b8a8a8; /* Lighter shade for scrollbar track */
+}
+
+.draggable_container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.draggable_container::-webkit-scrollbar-thumb {
+  background-color: #6c6c6c; /* Darker shade for scrollbar thumb */
+  border-radius: 20px;
+  border: 3px solid #b8a8a8; /* Border color matching the track */
+}
+.draggable_container > div {
+  flex: 0 0 auto;
+  margin: 0 15px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.draggable_container > div:hover {
+  transform: scale(1.05);
+}
+.section {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #E0E0E0; /* Darker grey for section background */
+}
+
+.section:hover {
+  background-color: #BDBDBD; /* Even darker grey for hover effect */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+.diagram_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+  background-color: #E0E0E0; /* Lighter background color */
+  border-radius: 10px; /* Added border radius */
+}
+
+.reportsH3 {
+  margin-top: 0;
+  color: #343a40;
+  font-size: 24px; /* Increased font size */
+  font-weight: 600; /* Bolder font */
+}
+
+.reportOptions {
+  display: flex;
+  justify-content: space-between;
+  border: 3px solid #b8a8a8; /* Lighter border color */
+  border-radius: 15px; /* Increased border radius */
+  width: 85%; /* Increased width */
+  overflow: hidden;
+  background-color: #e9ecef; /* Lighter background color */
+}
+
+.reportOptions button {
+  padding: 15px 25px; /* Increased padding */
+  border: none;
+  background-color: #cfd8dc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  text-align: center;
+  width: 50%;
+  position: relative;
+  box-sizing: border-box;
+  color: #455a64;
+  font-size: 18px; /* Increased font size */
+}
+
+.reportOptions button:not(:last-child) {
+  border-right: 2px solid #b8a8a8; /* Lighter border color */
+}
+
+.reportOptions button:hover {
+  background-color: #b0bec5;
+}
+
+.BarChart2_container {
+  overflow-x: auto;
+  border-radius: 10px; /* Added border radius */
+  background-color: #E0E0E0; /* Lighter background color */
+  border: solid 2.5px #f5f5f5;
+  padding: 25px;
+}
