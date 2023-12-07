@@ -48,13 +48,15 @@ public class AchievementServiceImp {
     
     public void createAchievement(String userToken, AchievementHolderCreateDto dto) {
         
-        if (achievementRepository.findByName(dto.getName()).isPresent()) {
+        Long userId = getUserId(userToken);
+        
+        if (achievementRepository.findByNameAndUserId(dto.getName(), userId).isPresent()) {
             throw new AchievementException("Achievement with name " + dto.getName() + " already exists");
         }
         
         AchievementTracker entity = dto.toEntity();
         entity.setStartDate(LocalDate.now());
-        entity.setUserId(getUserId(userToken));
+        entity.setUserId(userId);
         achievementRepository.saveAndFlush(entity);
     }
     

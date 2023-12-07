@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.domain.dto.AchievementHolderCreateDto;
 import org.example.domain.dto.AchievementTrackerEditDto;
 import org.example.domain.dto.AchievementTrackerView;
+import org.example.domain.dto.SingleErrorResponse;
 import org.example.domain.entity.Achievement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +81,7 @@ public class AchievementController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @ExceptionHandler
-    public ResponseEntity<String> handleException(AchievementException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<SingleErrorResponse> handleException(AchievementException e) {
+        return new ResponseEntity<>(new SingleErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
