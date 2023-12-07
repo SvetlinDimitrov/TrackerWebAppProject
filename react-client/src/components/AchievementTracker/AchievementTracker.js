@@ -5,6 +5,7 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import * as PathCreator from "../../util/PathCreator";
 import { NotificationContext } from "../../context/Notification";
 import { AuthContext } from "../../context/UserAuth";
+import { AchievementContext } from "../../context/AchievementContextProvider";
 import api from "../../util/api";
 import AlertMessage from "../Notifications/AlertMessage";
 
@@ -13,17 +14,20 @@ const AchievementTracker = () => {
   const { achId } = useParams();
   const { setFailedMessage } = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
+  const { setAchievementToPass } = useContext(AchievementContext);
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState(undefined);
 
   useEffect(() => {
     setAchievement(undefined);
+    setAchievementToPass(undefined);
     const fetchData = async () => {
       try {
         const response = await api.get(`/achievement?id=${achId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         setAchievement(response.data);
+        setAchievementToPass(response.data);
       } catch (error) {
         setFailedMessage({
           message:
@@ -36,7 +40,7 @@ const AchievementTracker = () => {
     if (achId) {
       fetchData();
     }
-  }, [achId, navigate, setFailedMessage, userToken]);
+  }, [achId, navigate, setFailedMessage, userToken , setAchievementToPass]);
 
   const handleDeleteAchievement = async (id) => {
     if(!window.confirm("Are you sure you want to delete this achievement?")){return;}

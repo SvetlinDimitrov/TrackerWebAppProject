@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Tooltip.module.css";
 
-const Tooltip = ({ children }) => {
+const Tooltip = ({ children, type }) => {
   const [show, setShow] = useState(false);
 
   return (
@@ -13,34 +13,44 @@ const Tooltip = ({ children }) => {
       {children}
       {show && (
         <div className={styles.tooltipContent}>
-          <div>
-            <span
-              className={styles.colorSquare}
-              style={{ backgroundColor: "steelblue" }}
-            ></span>
-            Best Progress
-          </div>
-          <div>
-            <span
-              className={styles.colorSquare}
-              style={{ backgroundColor: "green" }}
-            ></span>
-            Worst Progress
-          </div>
-          <div>
-            <span
-              className={styles.colorSquare}
-              style={{ backgroundColor: "red" }}
-            ></span>
-            Total Progress
-          </div>
-          <div>
-            <span
-              className={styles.colorSquare}
-              style={{ backgroundColor: "purple" }}
-            ></span>
-            Average Progress
-          </div>
+          {type !== "Daily" && (
+            <div>
+              <span
+                className={styles.colorSquare}
+                style={{ backgroundColor: "steelblue" }}
+              ></span>
+              Best Progress
+            </div>
+          )}
+          {type !== "Daily" && (
+            <div>
+              <span
+                className={styles.colorSquare}
+                style={{ backgroundColor: "green" }}
+              ></span>
+              Worst Progress
+            </div>
+          )}
+          {type !== "Daily" && (
+            <div>
+              <span
+                className={styles.colorSquare}
+                style={{ backgroundColor: "red" }}
+              ></span>
+              Total Progress
+            </div>
+          )}
+
+          {type !== "Daily" && (
+            <div>
+              <span
+                className={styles.colorSquare}
+                style={{ backgroundColor: "purple" }}
+              ></span>
+              Average Progress
+            </div>
+          )}
+
           <div>
             <span>DO: Descending Order</span>
           </div>

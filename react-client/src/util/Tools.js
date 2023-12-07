@@ -12,6 +12,7 @@ import {
   select,
   selectAll,
   interpolate,
+  format,
 } from "d3";
 import { useLayoutEffect, useRef, useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -485,74 +486,16 @@ export function Gauge2({
     </svg>
   );
 }
-export function BarChart({ height, info }) {
-  const { data, dataNames } = info;
-
-  console.log(info);
-  const width = 3000;
-  const margin = { top: 10, right: 20, bottom: 50, left: 40 };
-
-  const chartWidth = width - margin.left - margin.right;
-  const chartHeight = height - margin.top - margin.bottom;
-
-  const x = scaleBand().range([0, chartWidth]).padding(0.2).domain(dataNames);
-
-  const y = scaleLinear()
-    .range([chartHeight, 0])
-    .domain([0, Math.max(...data)]);
-
-  return (
-    <div style={{ width: 870, overflowX: "auto" }}>
-      <div style={{ minWidth: "max-content" }}>
-        <svg width={width} height={height}>
-          <g transform={`translate(${margin.left}, ${margin.top})`}>
-            <g
-              ref={(node) => select(node).call(axisLeft(y))}
-              style={{ fontSize: "12px" }}
-            />
-            <g
-              transform={`translate(0, ${chartHeight})`}
-              ref={(node) => {
-                const axis = axisBottom(x);
-                select(node)
-                  .call(axis)
-                  .selectAll("text")
-                  .attr(
-                    "transform",
-                    (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
-                  );
-              }}
-              style={{ fontSize: "11px" }}
-            />
-            {data
-              .sort((a, b) => b - a)
-              .map((d, i) => (
-                <g key={i}>
-                  <rect
-                    x={x(dataNames[i])} // Change this line
-                    y={y(d)}
-                    width={x.bandwidth()}
-                    height={chartHeight - y(d)}
-                    fill="steelblue"
-                  />
-                  <title>{d}</title>
-                </g>
-              ))}
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
-}
 export function BarChart2({ height, info, dataLength }) {
+  let widthIncreaser = info.length > dataLength ? dataLength : info.length;
   info = info.slice(0, dataLength);
   const dataNames = info.map((item) => item.dataNames);
   const data = info.map((item) => item.data);
   const typeData = info.map((item) => item.typeData);
 
-  const margin = { top: 10, right: 20, bottom: 40, left: 40 };
+  const margin = { top: 10, right: 10, bottom: 40, left: 40 };
 
-  const width = 100 * dataLength;
+  const width = 100 * widthIncreaser;
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -562,12 +505,37 @@ export function BarChart2({ height, info, dataLength }) {
     .range([chartHeight, 0])
     .domain([0, Math.max(...data)]);
 
+  const maxValue = Math.max(...data);
+  let yAxis = axisLeft(y);
+
+  if (maxValue >= 1000) {
+    const formatFunction = format(".1s");
+    yAxis = yAxis.tickFormat(formatFunction);
+  }
+
+  const rectsRef = useRef(null);
+
+  useEffect(() => {
+    const svg = select(rectsRef.current);
+    svg
+      .selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("x", (d, i) => x(dataNames[i]))
+      .attr("width", x.bandwidth())
+      .attr("fill", "steelblue")
+      .transition()
+      .duration(4000)
+      .attr("y", (d) => y(d))
+      .attr("height", (d) => chartHeight - y(d));
+  }, [data]);
+
   return (
     <svg width={width} height={height}>
       <g transform={`translate(${margin.left}, ${margin.top})`}>
         <g
-          ref={(node) => select(node).call(axisLeft(y))}
-          style={{ fontSize: "12px" }}
+          ref={(node) => select(node).call(yAxis)}
+          style={{ fontSize: "12px", fontFamily: "Verdana" }}
         />
         <g
           transform={`translate(0, ${chartHeight})`}
@@ -581,20 +549,23 @@ export function BarChart2({ height, info, dataLength }) {
                 (d, i) => `translate(0, ${i % 2 === 0 ? 0 : 15})`
               );
           }}
-          style={{ fontSize: "11px" }}
+          style={{ fontSize: "13px", fontFamily: "Verdana" }}
         />
-        {data.map((d, i) => (
-          <g key={i}>
-            <title>{typeData[i]}</title>
-            <rect
-              x={x(dataNames[i])}
-              y={y(d)}
-              width={x.bandwidth()}
-              height={chartHeight - y(d)}
-              fill="steelblue"
-            />
-          </g>
-        ))}
+        <g ref={rectsRef}>
+          {data.map((d, i) => (
+            <g key={i}>
+              <title>{typeData[i]}</title>
+              <rect
+                className="rect"
+                x={x(dataNames[i])}
+                y={chartHeight}
+                width={x.bandwidth()}
+                height={0}
+                fill="steelblue"
+              />
+            </g>
+          ))}
+        </g>
       </g>
     </svg>
   );
@@ -607,7 +578,7 @@ export function GroupedBarChart({ height, info, dataLength }) {
 
   const margin = { top: 10, right: 10, bottom: 40, left: 40 };
 
-  const width = 95 * dataLength;
+  const width = data.every((d) => d[0] === 0) ? 95 * 8 : 95 * dataLength;
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -629,7 +600,7 @@ export function GroupedBarChart({ height, info, dataLength }) {
       .duration(4000)
       .attr("y", (d) => y(d))
       .attr("height", (d) => chartHeight - y(d));
-  }, [data , y, chartHeight]);
+  }, [data, y, chartHeight]);
 
   if (data.every((d) => d[0] === 0)) {
     return (

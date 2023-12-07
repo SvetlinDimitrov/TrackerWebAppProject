@@ -2,11 +2,17 @@ export const basicPath = () => {
   return "/health-tracker";
 };
 
+export const nutrientInfo = (nutrientType , nutrientName , info) => {
+  return `/nutrientInfo/${nutrientType}/${nutrientName}/${info}`;
+};
 export const basicAchievementPath = () => {
   return "/achievements";
 }
 export const achievementPathId = (id) => {
   return "/achievements/"+id;
+}
+export const achievementPathIdReport = (id , type , sortType) => {
+  return `/achievements/${id}/reports?type=${type}&sort=${sortType}`;
 }
 
 export const recordPath = (recordId) => {

@@ -1,42 +1,160 @@
-.body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+.body_container_main {
+  background-color: #f8f9fa; /* Lighter background color */
+  border: 2px solid #007bff; /* Change border color */
+  border-radius: 15px; /* Increase border radius */
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 20px; /* Increase padding */
+  width: 75%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a shadow for depth */
 }
-
-.body_container {
-  max-width: 50%;
-  margin: 0 auto;
-  padding: 20px;
+.body_container_section_h2 {
+  font-family: "Arial", sans-serif; /* Change font family */
+  font-weight: bold;
+  color: #007bff; /* Change text color */
+  font-size: 2em; /* Increase font size */
+  text-transform: uppercase; /* Make the text uppercase */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add a text shadow for depth */
 }
+.body_container_section p {
+  font-family: "Georgia", serif; /* Change font family to Georgia */
+  font-size: 1.2em; /* Increase font size */
+  color: #333; /* Darker text color */
+  line-height: 1.6; /* Increase line height for readability */
+  text-align: justify; /* Align the text to both left and right margins */
+  text-indent: 30px; /* Indent the first line of the text */
+}
+/* new section */
 .body_container_section {
-  background-color: #fff;
-  border: 2px solid #00b050;
-  border-radius: 10px;
-  margin: 20px 0;
-  padding: 20px;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 20px; /* Increase padding */
+  width: 75%;
 }
-.body_container_section_functions,
 .body_container_section_sources {
   list-style-type: disc;
-  margin-left: 20px;
+  margin-left: 40px; /* Increase left margin */
+  font-size: 1.3em; /* Increase font size */
+  color: #6c757d; /* Change text color to a darker shade of gray */
+  line-height: 1.6; /* Increase line height for readability */
+  font-family: "Georgia", serif; /* Change font family to Georgia */
 }
 
-.body_container_barChar{
-  background-color: #fff;
-  border: 2px solid #00b050;
-  border-radius: 10px;
-  margin: 20px 0;
-  padding: 10px;
-  height: 700px;
+.body_container_barChar {
+  display: flex; /* Use Flexbox layout */
+  flex-direction: column; /* Make each element start on a new row */
+  align-items: start; /* Align elements to the start of the row */
+}
+.container_BarChar2 {
+  width: 100%; /* Ensure the container takes up the full width */
+  overflow-x: auto; /* Add horizontal scrolling */
+}
+
+.body_container_barChar_p {
+  font-family: "Arial", sans-serif; /* Change font family to Arial */
+  font-size: 1.3em; /* Increase font size */
+  color: #212529; /* Change text color to a darker shade */
+  line-height: 1.8; /* Increase line height for readability */
+  text-align: justify; /* Align the text to both left and right margins */
+  border-radius: 10px; /* Add border radius */
+  background-color: #ffc107; /* Change background color to a warning yellow */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a darker shadow for depth */
+}
+/* new section */
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 3px solid #ccc;
+}
+.tab {
+  padding: 10px 20px;
+  background-color: #e0e0e0; /* Lighter gray background */
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-bottom: none; /* Prevent double borders */
+  border-top-left-radius: 10px; /* Round the top left corner */
+  border-top-right-radius: 10px; /* Round the top right corner */
+  margin-right: 5px; /* Add some space between the tabs */
+  font-size: 1em;
+  text-align: center;
+  position: relative;
+  top: 3px; /* Move the tabs down to overlap the bottom border */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Add a shadow for depth */
+}
+.activeTab {
+  padding: 10px 20px;
+  background-color: #007bff; /* Change to a different color */
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-bottom: none; /* Prevent double borders */
+  border-top-left-radius: 10px; /* Round the top left corner */
+  border-top-right-radius: 10px; /* Round the top right corner */
+  margin-right: 5px; /* Add some space between the tabs */
+  font-size: 1em;
+  text-align: center;
+  position: relative;
+  top: 1px; /* Move the active tab higher */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Darker shadow for more depth */
+  color: #fff; /* Change text color to white */
+}
+.tabContent {
+  /* Style the tab content as needed */
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 10px; /* Round the corners */
+}
+
+/* new section */
+.diagram_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  padding: 20px;
   width: 100%;
+  background-color: #e0e0e0; /* Lighter background color */
+  border-radius: 10px; /* Added border radius */
+}
+
+.reportsH3 {
+  color: #343a40;
+  font-size: 24px; /* Increased font size */
+  font-weight: 600; /* Bolder font */
+  margin: 0px;
+  align-self: center;
+}
+
+.reportOptions {
+  display: flex;
+  justify-content: space-between;
+  border: 3px solid #b8a8a8; /* Lighter border color */
+  border-radius: 15px; /* Increased border radius */
+  width: 185px; /* Increased width */
   overflow: hidden;
+  background-color: #e9ecef; /* Lighter background color */
 }
 
-
-
-.body_container_section_h2 {
-  font-weight: bold;
-  color: #00b050;
+.reportOptions button {
+  padding: 15px 25px; /* Increased padding */
+  border: none;
+  background-color: #cfd8dc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  text-align: center;
+  width: 50%;
+  position: relative;
+  box-sizing: border-box;
+  color: #455a64;
+  font-size: 18px; /* Increased font size */
 }
 
+.reportOptions button:not(:last-child) {
+  border-right: 2px solid #b8a8a8; /* Lighter border color */
+}
 
+.reportOptions button:hover {
+  background-color: #b0bec5;
+}

@@ -140,7 +140,7 @@
   justify-content: space-between;
   border: 3px solid #b8a8a8; /* Lighter border color */
   border-radius: 15px; /* Increased border radius */
-  width: 85%; /* Increased width */
+  width: 185px; /* Increased width */
   overflow: hidden;
   background-color: #e9ecef; /* Lighter background color */
 }

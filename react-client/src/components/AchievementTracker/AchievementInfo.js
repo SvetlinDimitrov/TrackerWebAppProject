@@ -1,23 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import styles from "./AchievementDetails.module.css";
 
-import AchievementDetailsDaily from "./AchievementDetailsDaily";
+import styles from "./AchievementInfo.module.css";
 import { NotificationContext } from "../../context/Notification";
 import { AuthContext } from "../../context/UserAuth";
 import * as PathCreator from "../../util/PathCreator";
 
 import api from "../../util/api";
-import AchievementDetailsWeekly from "./AchievementDetailsWeekly";
 
-const AchievementDetails = () => {
+const AchievementInfo = () => {
   const navigate = useNavigate();
   const { achId } = useParams();
   const { setFailedMessage } = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState(undefined);
-  const [show, setShow] = useState("");
 
   useEffect(() => {
     setAchievement(undefined);
@@ -72,28 +69,52 @@ const AchievementDetails = () => {
             <div className={styles.reportOptions}>
               <button
                 onClick={() =>
-                  show === "Daily" ? setShow("") : setShow("Daily")
+                  navigate(
+                    PathCreator.achievementPathIdReport(
+                      achId,
+                      "Daily",
+                      "date_AO"
+                    )
+                  )
                 }
               >
                 Daily
               </button>
               <button
                 onClick={() =>
-                  show === "Weekly" ? setShow("") : setShow("Weekly")
+                  navigate(
+                    PathCreator.achievementPathIdReport(
+                      achId,
+                      "Weekly",
+                      "date_AO"
+                    )
+                  )
                 }
               >
                 Weekly
               </button>
               <button
                 onClick={() =>
-                  show === "Monthly" ? setShow("") : setShow("Monthly")
+                  navigate(
+                    PathCreator.achievementPathIdReport(
+                      achId,
+                      "Monthly",
+                      "date_AO"
+                    )
+                  )
                 }
               >
                 Monthly
               </button>
               <button
                 onClick={() =>
-                  show === "Yearly" ? setShow("") : setShow("Yearly")
+                  navigate(
+                    PathCreator.achievementPathIdReport(
+                      achId,
+                      "Yearly",
+                      "date_AO"
+                    )
+                  )
                 }
               >
                 Yearly
@@ -101,18 +122,10 @@ const AchievementDetails = () => {
             </div>
           </div>
         </div>
-        {show !== "" && show === "Daily" && (
-          <AchievementDetailsDaily achievement={achievement} />
-        )}
-
-        {show !== "" && show === "Weekly" && (
-          <AchievementDetailsWeekly achievement={achievement} />
-        )}
+        <Outlet achievement={achievement} />
       </div>
-
-      <Outlet />
     </>
   );
 };
 
-export default AchievementDetails;
+export default AchievementInfo;
