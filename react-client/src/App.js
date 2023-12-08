@@ -42,6 +42,9 @@ import NutritionTemplateTypes from "./components/HealTracker/Nutrients/Nutrition
 import NutritionTemplateDietaryConsiderations from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateDietaryConsiderations";
 import NutritionTemplateIntake from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateIntake";
 import NutritionTemplateBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateBarCharInfo";
+import NutrientTemplateDescription from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateDescription";
+import NutrientTemplateDescriptionFeature from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBonus";
+import NutrientTemplateFeatureBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBarCharInfo";
 function App() {
   return (
     <>
@@ -91,11 +94,21 @@ function App() {
                         path="barCharStatistic"
                         element={<NutritionTemplateBarCharInfo />}
                       />
+                      <Route
+                        path="description"
+                        element={<NutrientTemplateDescription />}
+                      />
                     </Route>
                     <Route
                       path="feature/:featureType"
-                      element={<NutrientFeatureTemplate />}
-                    />
+                      element={<NutrientFeatureTemplate />}>
+                      <Route
+                        path="description"
+                        element={<NutrientTemplateDescriptionFeature />}/>
+                      <Route 
+                        path="barCharStatistic"
+                        element={<NutrientTemplateFeatureBarCharInfo />}/>
+                    </Route>
                   </Route>
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/settings/editUser" element={<EditUser />} />

@@ -33,7 +33,7 @@ const NutritionTemplate = () => {
       }
     };
     fetchData();
-  }, [navigate, nutrition, nutritionType]);
+  }, [navigate, nutrition, nutritionType , setNutrient]);
 
   if (!nutritionTemplate.name) {
     return <div id="preloader"></div>;
@@ -44,9 +44,20 @@ const NutritionTemplate = () => {
       <h2 className={styles.body_container_section_h2}>
         {`${nutritionTemplate.type} ${nutritionTemplate.name}`}
       </h2>
-      <p>{nutritionTemplate.description}</p>
-
       <div className={styles.tabs}>
+        <button
+          className={
+            activeTab === "description" ? styles.activeTab : styles.tab
+          }
+          onClick={() => {
+            setActiveTab("description");
+            navigate(
+              PathCreator.nutrientInfo(nutrition, nutritionType, "description")
+            );
+          }}
+        >
+          Description
+        </button>
         <button
           className={activeTab === "functions" ? styles.activeTab : styles.tab}
           onClick={() => {
@@ -58,6 +69,7 @@ const NutritionTemplate = () => {
         >
           Functions
         </button>
+
         <button
           className={activeTab === "sources" ? styles.activeTab : styles.tab}
           onClick={() => {
@@ -147,7 +159,7 @@ const NutritionTemplate = () => {
               PathCreator.nutrientInfo(
                 nutrition,
                 nutritionType,
-                "barCharStatistic" + "?sort=DO" + "&limit=50"
+                "barCharStatistic?sort=DO&limit=50"
               )
             );
           }}
@@ -161,10 +173,6 @@ const NutritionTemplate = () => {
       </div>
     </div>
   );
-
-  // Existing code...
-
-  // Existing code...
 };
 
 export default NutritionTemplate;

@@ -54,8 +54,8 @@ const NutritionInfo = () => {
   return (
     <>
       <section id="services" className="services sections-bg">
-        <div className="container" data-aos="fade-up">
-          <div className="section-header">
+        <div key={"MainContainer"} className="container" data-aos="fade-up">
+          <div key={"title"} className="section-header">
             <h2>Nutrition Information</h2>
             <p>
               The saying, "You are what you eat," succinctly captures the
@@ -71,8 +71,13 @@ const NutritionInfo = () => {
             </p>
           </div>
 
-          <div className="row gy-4" data-aos="fade-up" data-aos-delay="100">
-            <div className="col-lg-4 col-md-6">
+          <div
+            key={"sections"}
+            className="row gy-4"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div key={"sectionVitamin"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Vitamins</h3>
                 <p>
@@ -92,6 +97,7 @@ const NutritionInfo = () => {
                     <div className={styles.dropdownContent}>
                       {allNutritious.allVitamins.map((vitamin) => (
                         <Link
+                          key={vitamin}
                           onClick={() => onClickHandler()}
                           to={`vitamin/${vitamin}`}
                         >
@@ -104,7 +110,7 @@ const NutritionInfo = () => {
               </div>
             </div>
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"sectionMineral"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Minerals</h3>
                 <p>
@@ -124,6 +130,7 @@ const NutritionInfo = () => {
                     <div className={styles.dropdownContent}>
                       {allNutritious.allMinerals.map((mineral) => (
                         <Link
+                          key={mineral}
                           onClick={() => onClickHandler()}
                           to={`mineral/${mineral}`}
                         >
@@ -136,7 +143,7 @@ const NutritionInfo = () => {
               </div>
             </div>
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"sectionMacronutrients"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Macronutrients</h3>
                 <p>
@@ -157,6 +164,7 @@ const NutritionInfo = () => {
                     <div className={styles.dropdownContent}>
                       {allNutritious.allMacronutrients.map((macronutrient) => (
                         <Link
+                          key={macronutrient}
                           onClick={() => onClickHandler()}
                           to={`macronutrient/${macronutrient}`}
                         >
@@ -171,6 +179,7 @@ const NutritionInfo = () => {
                       {allNutritious.allMacronutrientsTypes.map(
                         (macronutrientType) => (
                           <Link
+                            key={macronutrientType}
                             onClick={() => onClickHandler()}
                             to={`macronutrientTypes/${macronutrientType}`}
                           >
@@ -184,7 +193,7 @@ const NutritionInfo = () => {
               </div>
             </div>
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"sectionImmuneFunction"} className="col-lg-4 col-md-6">
               <div className="service-item  position-relative">
                 <h3>Immune Function</h3>
                 <p>
@@ -206,7 +215,7 @@ const NutritionInfo = () => {
             </div>
             {/* <!-- End Service Item --> */}
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"Growth and Development"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Growth and Development (Childhood and Adolescence)</h3>
                 <p>
@@ -227,7 +236,10 @@ const NutritionInfo = () => {
             </div>
             {/* <!-- End Service Item --> */}
 
-            <div className="col-lg-4 col-md-6">
+            <div
+              key={"Cognitive Function and Brain Health"}
+              className="col-lg-4 col-md-6"
+            >
               <div className="service-item position-relative">
                 <h3>Cognitive Function and Brain Health</h3>
                 <p>
@@ -247,7 +259,7 @@ const NutritionInfo = () => {
             </div>
             {/* <!-- End Service Item --> */}
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"Bone Health"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Bone Health</h3>
                 <p>
@@ -267,7 +279,10 @@ const NutritionInfo = () => {
             </div>
             {/* <!-- End Service Item --> */}
 
-            <div className="col-lg-4 col-md-6">
+            <div
+              key={"Physical Performance and Fitness"}
+              className="col-lg-4 col-md-6"
+            >
               <div className="service-item position-relative">
                 <h3>Physical Performance and Fitness</h3>
                 <p>
@@ -287,7 +302,7 @@ const NutritionInfo = () => {
             </div>
             {/* <!-- End Service Item --> */}
 
-            <div className="col-lg-4 col-md-6">
+            <div key={"Aging and Longevity"} className="col-lg-4 col-md-6">
               <div className="service-item position-relative">
                 <h3>Aging and Longevity</h3>
                 <p>

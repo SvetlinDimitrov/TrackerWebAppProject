@@ -509,7 +509,7 @@ export function BarChart2({ height, info, dataLength }) {
   let yAxis = axisLeft(y);
 
   if (maxValue >= 1000) {
-    const formatFunction = format(".1s");
+    const formatFunction = format(".2s");
     yAxis = yAxis.tickFormat(formatFunction);
   }
 

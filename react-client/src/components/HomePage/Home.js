@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 
 import AboutUsSection from "./AboutUsSection";
 import AskQuestions from "./AskQuestions";
-import ClientSection from "./ClientsSection";
 import HeroSection from "./HeroSection";
 
 import { NotificationContext } from "../../context/Notification";
@@ -43,7 +42,6 @@ const Home = () => {
       <HeroSection />
       <main id="main">
         <AboutUsSection />
-        <ClientSection />
         <AskQuestions />
       </main>
     </div>

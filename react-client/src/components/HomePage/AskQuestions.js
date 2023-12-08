@@ -1,34 +1,49 @@
 const AskQuestions = () => {
-
-    return (
-      <section id="faq" className="faq">
+  return (
+    <section id="faq" className="faq">
       <div className="container" data-aos="fade-up">
-
         <div className="row gy-4">
-
           <div className="col-lg-4">
             <div className="content px-xl-5">
-              <h3>Frequently Asked <strong>Questions</strong></h3>
+              <h3>
+                Frequently Asked <strong>Questions</strong>
+              </h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
+                Here are some of the most common questions we get from our
+                users. If you don't find the answer you're looking for, feel
+                free to contact us.
               </p>
             </div>
           </div>
 
           <div className="col-lg-8">
-
-            <div className="accordion accordion-flush" id="faqlist" data-aos="fade-up" data-aos-delay="100">
-
+            <div
+              className="accordion accordion-flush"
+              id="faqlist"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
               <div className="accordion-item">
                 <h3 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq-content-1"
+                  >
                     <span className="num">1.</span>
-                    Non consectetur a erat nam at lectus urna duis?
+                    How do I start tracking my health data with TrackerApp?
                   </button>
                 </h3>
-                <div id="faq-content-1" className="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div
+                  id="faq-content-1"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#faqlist"
+                >
                   <div className="accordion-body">
-                    Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
+                    To start tracking your health data, simply create an account
+                    and fill out your profile. Then, you can start logging your
+                    meals, workouts, and other health data.
                   </div>
                 </div>
               </div>
@@ -36,14 +51,26 @@ const AskQuestions = () => {
 
               <div className="accordion-item">
                 <h3 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-2">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq-content-2"
+                  >
                     <span className="num">2.</span>
-                    Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque?
+                    What kind of data can I track with TrackerApp?
                   </button>
                 </h3>
-                <div id="faq-content-2" className="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div
+                  id="faq-content-2"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#faqlist"
+                >
                   <div className="accordion-body">
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    With TrackerApp, you can track a wide range of health data,
+                    including your meals, workouts, sleep, weight, and more. You
+                    can also set personal health goals and monitor your progress
+                    over time.
                   </div>
                 </div>
               </div>
@@ -51,29 +78,52 @@ const AskQuestions = () => {
 
               <div className="accordion-item">
                 <h3 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-3">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq-content-3"
+                  >
                     <span className="num">3.</span>
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi?
+                    How does TrackerApp keep my data secure?
                   </button>
                 </h3>
-                <div id="faq-content-3" className="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div
+                  id="faq-content-3"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#faqlist"
+                >
                   <div className="accordion-body">
-                    Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                    We take data security very seriously at TrackerApp. We use
+                    industry-standard encryption methods to ensure that your
+                    data is safe and secure. We also never share your data with
+                    third parties without your explicit consent.
                   </div>
                 </div>
               </div>
               {/* <!-- # Faq item--> */}
-
               <div className="accordion-item">
                 <h3 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-4">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq-content-4"
+                  >
                     <span className="num">4.</span>
-                    Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?
+                    Can I share my progress with friends or family?
                   </button>
                 </h3>
-                <div id="faq-content-4" className="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div
+                  id="faq-content-4"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#faqlist"
+                >
                   <div className="accordion-body">
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    Yes, TrackerApp allows you to share your progress with
+                    friends and family. You can choose what information to share
+                    and who to share it with. This can be a great way to stay
+                    motivated and accountable.
                   </div>
                 </div>
               </div>
@@ -81,28 +131,36 @@ const AskQuestions = () => {
 
               <div className="accordion-item">
                 <h3 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-5">
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq-content-5"
+                  >
                     <span className="num">5.</span>
-                    Tempus quam pellentesque nec nam aliquam sem et tortor consequat?
+                    What devices is TrackerApp compatible with?
                   </button>
                 </h3>
-                <div id="faq-content-5" className="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div
+                  id="faq-content-5"
+                  className="accordion-collapse collapse"
+                  data-bs-parent="#faqlist"
+                >
                   <div className="accordion-body">
-                    Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in
+                    TrackerApp is compatible with most modern smartphones,
+                    tablets, and computers. We offer a mobile app for both iOS
+                    and Android devices, and our website is optimized for both
+                    desktop and mobile browsers.
                   </div>
                 </div>
               </div>
               {/* <!-- # Faq item--> */}
-
             </div>
-
           </div>
         </div>
-
       </div>
     </section>
-    );
-
-}
+  );
+};
 
 export default AskQuestions;

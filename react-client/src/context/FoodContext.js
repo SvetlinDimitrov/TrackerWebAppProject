@@ -19,7 +19,7 @@ const FoodContextProvider = ({ children }) => {
     if (allFoods.length === 0) {
       getFoods();
     }
-  }, []);
+  }, [allFoods.length]);
 
   if (allFoods.length === 0) {
     return <div id="preloader"></div>;

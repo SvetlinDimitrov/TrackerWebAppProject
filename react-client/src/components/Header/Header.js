@@ -9,11 +9,9 @@ const Header = () => {
     <>
       <header id="header" className="header d-flex align-items-center">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-between">
-          <Link className="logo d-flex align-items-center">
-            <img src="assets/img/logo.png" alt="" />
-          </Link>
+          <Link className="logo d-flex align-items-center"></Link>
           <h1>
-            Impact<span>.</span>
+            TrackerApp<span>.</span>
           </h1>
 
           <nav id="navbar" className="navbar">
