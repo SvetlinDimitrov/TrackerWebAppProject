@@ -1,5 +1,6 @@
 package org.food.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,12 @@ public class CustomFoodServiceImp extends AbstractFoodService {
         if (amount == null) {
             return modelMapper.map(food, Food.class);
         }
+        if (amount.compareTo(0.0) == 0){
+            return generateEmptyFood(name , food.getId());
+        }
+        if(amount.compareTo(0.0) < 0){
+            throw new FoodException("Amount cannot be negative.");
+        }
 
         return calculateFoodByAmount(modelMapper.map(food, Food.class), amount);
     }
@@ -78,4 +85,55 @@ public class CustomFoodServiceImp extends AbstractFoodService {
     private Long getUserId(String userToken) {
         return gsonWrapper.fromJson(userToken, User.class).getId();
     }
+    
+    private Food generateEmptyFood(String name , Long foodId){
+        Food baseFood = new Food();
+        baseFood.setName(name);
+        baseFood.setId(foodId);
+        baseFood.setSize(BigDecimal.ZERO);
+        baseFood.setCalories(BigDecimal.ZERO);
+        
+        baseFood.setA(BigDecimal.ZERO);
+        baseFood.setD(BigDecimal.ZERO);
+        baseFood.setE(BigDecimal.ZERO);
+        baseFood.setK(BigDecimal.ZERO);
+        baseFood.setC(BigDecimal.ZERO);
+        baseFood.setB1(BigDecimal.ZERO);
+        baseFood.setB2(BigDecimal.ZERO);
+        baseFood.setB3(BigDecimal.ZERO);
+        baseFood.setB5(BigDecimal.ZERO);
+        baseFood.setB6(BigDecimal.ZERO);
+        baseFood.setB7(BigDecimal.ZERO);
+        baseFood.setB9(BigDecimal.ZERO);
+        baseFood.setB12(BigDecimal.ZERO);
+        
+        baseFood.setCalcium(BigDecimal.ZERO);
+        baseFood.setPhosphorus(BigDecimal.ZERO);
+        baseFood.setMagnesium(BigDecimal.ZERO);
+        baseFood.setSodium(BigDecimal.ZERO);
+        baseFood.setPotassium(BigDecimal.ZERO);
+        baseFood.setChloride(BigDecimal.ZERO);
+        baseFood.setIron(BigDecimal.ZERO);
+        baseFood.setZinc(BigDecimal.ZERO);
+        baseFood.setCopper(BigDecimal.ZERO);
+        baseFood.setManganese(BigDecimal.ZERO);
+        baseFood.setIodine(BigDecimal.ZERO);
+        baseFood.setSelenium(BigDecimal.ZERO);
+        baseFood.setFluoride(BigDecimal.ZERO);
+        baseFood.setChromium(BigDecimal.ZERO);
+        baseFood.setMolybdenum(BigDecimal.ZERO);
+        
+        baseFood.setCarbohydrates(BigDecimal.ZERO);
+        baseFood.setProtein(BigDecimal.ZERO);
+        baseFood.setFat(BigDecimal.ZERO);
+        
+        baseFood.setFiber(BigDecimal.ZERO);
+        baseFood.setTransFat(BigDecimal.ZERO);
+        baseFood.setSaturatedFat(BigDecimal.ZERO);
+        baseFood.setSugar(BigDecimal.ZERO);
+        baseFood.setPolyunsaturatedFat(BigDecimal.ZERO);
+        baseFood.setMonounsaturatedFat(BigDecimal.ZERO);
+        return baseFood;
+    }
+
 }

@@ -25,8 +25,8 @@ public class AchievementController {
     @GetMapping(path = "/all")
     public ResponseEntity<List<AchievementTrackerView>> getAllAchievementHoldersById(
             @RequestHeader(name = "X-ViewUser") String userToken) {
-        List<AchievementTrackerView> foods = achievementServiceImp.getAllAchievementViewsWitherUserId(userToken);
-        return new ResponseEntity<>(foods, HttpStatus.OK);
+        List<AchievementTrackerView> achievementTrackerViews = achievementServiceImp.getAllAchievementViewsWitherUserId(userToken);
+        return new ResponseEntity<>(achievementTrackerViews, HttpStatus.OK);
     }
 
     @GetMapping

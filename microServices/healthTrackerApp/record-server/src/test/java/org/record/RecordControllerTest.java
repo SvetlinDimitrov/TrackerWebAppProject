@@ -78,7 +78,7 @@ public class RecordControllerTest {
     public void getAllRecords_ValidInputHeader_StatusOk() throws Exception {
 
         Record record = new Record();
-        record.setId(1L);
+        record.setId(1001L);
         record.setUserId(userView.getId());
         recordRepository.save(record);
 

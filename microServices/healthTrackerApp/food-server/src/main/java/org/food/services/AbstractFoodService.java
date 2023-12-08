@@ -14,7 +14,7 @@ public abstract class AbstractFoodService {
         if (food.getSize().compareTo(amount) == 0) {
             return food;
         } else if (food.getSize().compareTo(amount) > 0) {
-
+        
             BigDecimal multiplayer = food.getSize().divide(amount, 2, RoundingMode.HALF_UP);
 
             Food baseFood = new Food();

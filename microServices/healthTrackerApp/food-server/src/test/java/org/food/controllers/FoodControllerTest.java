@@ -1,4 +1,4 @@
-package org.food;
+package org.food.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FoodControllerIntegrationTest {
+public class FoodControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

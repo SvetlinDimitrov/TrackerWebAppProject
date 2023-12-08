@@ -122,12 +122,13 @@ public class AchievementServiceImp {
         if (dto.getMeasurement() != null && !dto.getMeasurement().isEmpty() && !dto.getMeasurement().isBlank()) {
             achievementTracker.setMeasurement(dto.getMeasurement());
         }
-        if (dto.getDescription() != null && !dto.getDescription().isEmpty() && !dto.getDescription().isBlank()) {
+        if (dto.getDescription() != null && !dto.getDescription().isEmpty() && !dto.getDescription().isBlank() && dto.getDescription().length() >= 3) {
             achievementTracker.setDescription(dto.getDescription());
         }
-        if (dto.getGoal() != null && dto.getGoal().compareTo(BigDecimal.ZERO) > 0) {
+        if (dto.getGoal() != null && dto.getGoal().compareTo(BigDecimal.ZERO) >= 0) {
             achievementTracker.setGoal(dto.getGoal());
         }
+        achievementRepository.saveAndFlush(achievementTracker);
     }
     
     private Long getUserId(String userToken) {
