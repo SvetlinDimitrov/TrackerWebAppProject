@@ -138,9 +138,9 @@ services:
       - zipkin
       - discovery-server
       - gateway-server
-  electrolyte-server:
-    image: svetlindimitrov/electrolyte-server-tracker-app
-    container_name: electrolyte-server
+  mineral-server:
+    image: svetlindimitrov/mineral-server-tracker-app
+    container_name: mineral-server
     environment:
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
@@ -162,10 +162,14 @@ services:
     image: svetlindimitrov/food-server-tracker-app
     container_name: food-server
     environment:
+      DB_HOST: mysql-db-food
+      DB_PORT: 3306
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
+      KAFKA_HOST: broker:29092
     depends_on:
       - zipkin
+      - mysql-db-food
       - discovery-server
       - gateway-server
   record-server:
@@ -180,7 +184,39 @@ services:
       KAFKA_HOST: broker:29092
     depends_on:
       - zipkin
+      - mysql-db-record
       - mysql-db-user
+      - gateway-server
+      - discovery-server
+      - broker
+  storage-server:
+    restart: always
+    image: svetlindimitrov/storage-server-tracker-app
+    container_name: storage-server
+    environment:
+      DB_HOST: mysql-db-storage
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-server
+      ZIPKIN_URL: zipkin
+      KAFKA_HOST: broker:29092
+    depends_on:
+      - zipkin
+      - mysql-db-storage
+      - gateway-server
+      - discovery-server
+      - broker
+  achievement-server:
+    image: svetlindimitrov/achievement-server-tracker-app
+    container_name: achievement-server
+    environment:
+      DB_HOST: mysql-db-achievement
+      DB_PORT: 3306
+      EUREKA_HOST: discovery-server
+      ZIPKIN_URL: zipkin
+      KAFKA_HOST: broker:29092
+    depends_on:
+      - zipkin
+      - mysql-db-achievement
       - gateway-server
       - discovery-server
       - broker
