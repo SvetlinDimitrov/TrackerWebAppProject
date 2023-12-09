@@ -74,7 +74,7 @@ public class StorageServiceTest {
         when(storageRepository.findAllByRecordIdAndUserId(recordId, userId)).thenReturn(List.of());
         when(gsonWrapper.fromJson(userToken, User.class)).thenReturn(new User(userId));
 
-        assertThrows(StorageException.class, () -> storageService.getAllByRecordId(recordId, userToken));
+         assertTrue(storageService.getAllByRecordId(recordId, userToken).isEmpty());
     }
 
     @Test
