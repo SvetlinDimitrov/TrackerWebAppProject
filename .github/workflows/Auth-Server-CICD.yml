@@ -38,9 +38,9 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/auth-server
+      working-directory: ./microServices
       run: |
         mvn test
         mvn install
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/auth-server-tracker-app .
+        docker build -f auth-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/auth-server-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/auth-server-tracker-app

@@ -1,14 +1,16 @@
-# Start with a base image containing Java runtime
-FROM amazoncorretto:17
+# Stage 1: Build the application
+FROM maven:3.8.4-openjdk-17-slim AS build
+WORKDIR /app
+COPY ../pom.xml ./pom.xml
+COPY ./auth-server ./auth-server
+WORKDIR /app/auth-server
+RUN mvn clean package
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Remove unnecessary files from the build stage
+RUN rm -rf /root/.m2
 
-# The application's jar file
-ARG JAR_FILE=target/auth-server-1.0-SNAPSHOT.jar
-
-# Add the application's jar to the container
-ADD ${JAR_FILE} app.jar
-
-# Run the jar file
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+# Stage 2: Run the application
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY --from=build /app/auth-server/target/auth-server-1.0-SNAPSHOT.jar /app/your-application.jar
+CMD ["java", "-jar", "your-application.jar"]

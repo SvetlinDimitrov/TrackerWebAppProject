@@ -1,5 +1,6 @@
 package org.example;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.dto.AchievementHolderCreateDto;

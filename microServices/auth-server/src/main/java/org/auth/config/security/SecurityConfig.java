@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/user/register", "/api/user/login").permitAll()
+                        .requestMatchers("/api/user/register", "/api/user/login" , "/actuator/**").permitAll()
                         .anyRequest().hasAnyRole(UserDetails.COMPLETED.name(),
                                 UserDetails.NOT_COMPLETED.name()))
                 .build();
