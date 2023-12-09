@@ -38,9 +38,7 @@ jobs:
         distribution: corretto
 
     - name : Test && Build && Deploy
-      working-directory: ./microServices/healthTrackerApp/record-server
+      working-directory: ./microServices
       run: |
-        mvn test
-        mvn install
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/record-server-tracker-app .
+        docker build -f healthTrackerApp/record-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/record-server-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/record-server-tracker-app
