@@ -40,5 +40,5 @@ jobs:
     - name : Test && Build && Deploy
       working-directory: ./microServices
       run: |
-        docker build -f auth-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-server-tracker-app .
+        docker build -f discovery-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/discovery-server-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/discovery-server-tracker-app
