@@ -77,7 +77,7 @@ const Register = () => {
             type="email"
             name="email"
             required
-            email
+            email="true"
             placeholder="Email"
             value={user.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}

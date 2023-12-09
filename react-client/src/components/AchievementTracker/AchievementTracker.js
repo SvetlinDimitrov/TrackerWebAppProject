@@ -50,7 +50,7 @@ const AchievementTracker = () => {
       });
       setFailedMessage({
         message: "Achievement deleted successfully!",
-        flag: false,
+        flag: true,
       });
       
     } catch (error) {

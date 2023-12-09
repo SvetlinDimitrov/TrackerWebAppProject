@@ -1,5 +1,6 @@
 package org.food.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +18,7 @@ public class FoodService extends AbstractFoodService {
     private final FoodRepository foodRepository;
 
     public List<Food> getAllFoods() {
-        return foodRepository.getAllFoods()
-                .stream()
-                .collect(Collectors.toList());
+        return new ArrayList<>(foodRepository.getAllFoods());
     }
 
     public Food getFoodByName(String foodName, Double amount) throws FoodNotFoundException {
@@ -32,7 +31,11 @@ public class FoodService extends AbstractFoodService {
         if (amount == null) {
             return food;
         }
-
+        
+        if(amount.compareTo((double) 0) == 0) {
+           return  generateEmptyFood(food.getName() , null);
+        }
+        
         return calculateFoodByAmount(food, amount);
     }
 

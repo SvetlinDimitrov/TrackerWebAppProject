@@ -33,7 +33,7 @@ public class StorageController {
     @GetMapping("/all")
     public ResponseEntity<List<StorageView>> getAllStorages(
             @RequestParam Long recordId,
-            @RequestHeader(name = "X-ViewUser") String userToken) throws StorageException {
+            @RequestHeader(name = "X-ViewUser") String userToken){
         return new ResponseEntity<>(storageService.getAllByRecordId(recordId, userToken), HttpStatus.OK);
     }
 

@@ -16,7 +16,7 @@ const AchievementUpdate = () => {
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState({
     progress: 0,
-    date: new Date(),
+    date: new Date().toISOString().split('T')[0],
     replace: false,
   });
 
@@ -34,30 +34,28 @@ const AchievementUpdate = () => {
         flag: true,
       });
     } catch (error) {
-      if(error.response.status === 400){
-      setFailedMessage({
-        message:
-          error.response.data.message,
-        flag: true,
-      });
-    }else{
-      setFailedMessage({
-        message:
-          "Something went wrong. Please try again later.",
-        flag: true,
-      });
+      if (error.response.status === 400) {
+        setFailedMessage({
+          message: error.response.data.message,
+          flag: true,
+        });
+      } else {
+        setFailedMessage({
+          message: "Something went wrong. Please try again later.",
+          flag: true,
+        });
+      }
     }
-  }
     navigate(PathCreator.achievementPathId(achId));
   };
   return (
     <div className={styles.modalBackground}>
       <button
-          className={styles.closeButton}
-          onClick={() => navigate(PathCreator.achievementPathId(achId))}
-        >
-          X
-        </button>
+        className={styles.closeButton}
+        onClick={() => navigate(PathCreator.achievementPathId(achId))}
+      >
+        X
+      </button>
       <div className={styles.modal}>
         <h1 className={styles.title}>Add Progress</h1>
         <div className={styles.inputGroup}>

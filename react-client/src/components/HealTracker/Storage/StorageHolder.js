@@ -62,7 +62,7 @@ const StorageHolder = () => {
         flag: true,
       });
     }
-    navigate(PathCreator.storagePath(recordId, storageId));
+    navigate(PathCreator.recordPath(recordId));
   };
   return (
     <>

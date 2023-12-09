@@ -78,14 +78,14 @@ public class StorageControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllStorages_InValidINput_badRequest() throws Exception {
+    public void testGetAllStorages_InValidINput_emptyList() throws Exception {
 
         Long invalidRecordId = 1000L;
         User user = getUser(2L);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/storage/all?recordId=" + invalidRecordId)
                 .header("X-ViewUser", gson.toJson(user)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
 

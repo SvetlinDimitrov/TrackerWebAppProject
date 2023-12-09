@@ -70,7 +70,7 @@ public class UserController {
 
     @PatchMapping("/edit")
     public ResponseEntity<JwtTokenView> editUserProfile(@RequestBody EditUserDto dto,
-            @RequestHeader("Authorization") String authorization) throws ExpiredTokenException, UserNotFoundException {
+            @RequestHeader("Authorization") String authorization) throws  UserNotFoundException {
 
         UserView userView = userServiceKafkaImp.editUserEntity(dto, jwtUtil.extractUserId(authorization));
 

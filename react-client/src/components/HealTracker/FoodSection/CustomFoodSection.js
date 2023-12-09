@@ -11,7 +11,7 @@ const CustomFoodSection = () => {
   const location = useLocation();
   const [customFoods, setCustomFoods] = useState();
   const { recordId, storageId } = useParams();
-  const { setFailedMessage } = useContext(NotificationContext);
+  const { setFailedMessage , setSuccessfulMessage} = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const navigate = useNavigate();
@@ -51,6 +51,10 @@ const CustomFoodSection = () => {
     try {
       await api.delete(`/food/customFood?foodName=${food.name}`, {
         headers: { Authorization: `Bearer ${userToken}` },
+      });
+      setSuccessfulMessage({
+        message: "Successfully deleted " + food.name + " !",
+        flag: true,
       });
       navigate(PathCreator.customFoodPath(recordId, storageId));
     } catch (error) {

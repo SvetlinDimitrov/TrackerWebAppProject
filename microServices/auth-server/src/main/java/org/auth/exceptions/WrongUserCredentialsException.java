@@ -1,6 +1,7 @@
 package org.auth.exceptions;
 
 import lombok.Getter;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class WrongUserCredentialsException extends Exception{
         super();
 
         errors.stream()
-                .map(error -> error.getField() + " : " + error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .forEach(error -> getMessageWithErrors().add(error));
 
     }

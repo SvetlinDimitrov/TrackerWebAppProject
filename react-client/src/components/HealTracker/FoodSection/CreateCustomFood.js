@@ -194,6 +194,7 @@ const CreateCustomFood = () => {
                     required={key === "name" || key === "calories"}
                     min={key !== "name" ? 0 : undefined}
                     minLength={key === "name" ? 3 : undefined}
+                    max={key !== "name" ? 1000000 : undefined}
                   />
                 </div>
               )

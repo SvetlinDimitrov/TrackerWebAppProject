@@ -42,14 +42,14 @@ public class StorageService {
 
     }
 
-    public List<StorageView> getAllByRecordId(Long recordId, String userToken) throws StorageException {
+    public List<StorageView> getAllByRecordId(Long recordId, String userToken)  {
 
         Long userId = getUserId(userToken);
 
         List<Storage> storages = storageRepository.findAllByRecordIdAndUserId(recordId, userId);
 
         if (storages.isEmpty()) {
-            throw new StorageException("No storages found with record id: " + recordId + " and user id: " + userId);
+           return  new ArrayList<>();
         }
 
         return storages

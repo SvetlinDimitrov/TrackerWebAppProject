@@ -172,7 +172,6 @@ const FoodItem = () => {
   if (!food) {
     return <div id="preloader"></div>;
   }
-  console.log(food);
   return (
     <>
       <div className={styles.overlay}>
@@ -231,6 +230,9 @@ const FoodItem = () => {
               >
                 <input
                   type="number"
+                  min={1}
+                  max={100000}
+                  step={0.01}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                 />

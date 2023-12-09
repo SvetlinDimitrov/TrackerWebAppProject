@@ -89,6 +89,7 @@ const EditUser = () => {
                   name="kilograms"
                   step="0.01"
                   min="5"
+                  max={1000000}
                   value={+currentUser.kilograms || ""}
                   onChange={(e) =>
                     setCurrentUser({
@@ -106,6 +107,7 @@ const EditUser = () => {
                   name="height"
                   step="0.01"
                   min="0.5"
+                  max={1000000}
                   value={+currentUser.height || ""}
                   onChange={(e) =>
                     setCurrentUser({ ...currentUser, height: e.target.value })
@@ -123,7 +125,7 @@ const EditUser = () => {
                   onChange={(e) =>
                     setCurrentUser({
                       ...currentUser,
-                      workoutState: e.target.value,
+                      workoutState: e.target.value === "" ? currentUser.workoutState : e.target.value,
                     })
                   }
                 >
@@ -142,7 +144,7 @@ const EditUser = () => {
                   name="gender"
                   value={currentUser.gender ? currentUser.gender : ""}
                   onChange={(e) =>
-                    setCurrentUser({ ...currentUser, gender: e.target.value })
+                    setCurrentUser({ ...currentUser, gender: e.target.value === "" ? currentUser.gender : e.target.value })
                   }
                 >
                   <option value="">Choose Gender</option>
@@ -158,6 +160,7 @@ const EditUser = () => {
                   name="age"
                   step="1"
                   min="1"
+                  max={2147483647}
                   value={+currentUser.age || ""}
                   onChange={(e) =>
                     setCurrentUser({ ...currentUser, age: e.target.value })
