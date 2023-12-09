@@ -40,5 +40,5 @@ jobs:
     - name : Test && Build && Deploy
       working-directory: ./microServices
       run: |
-        docker build docker build -f healthTrackerApp/food-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/food-server-tracker-app .
+        docker build -f healthTrackerApp/food-server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/food-server-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/food-server-tracker-app
