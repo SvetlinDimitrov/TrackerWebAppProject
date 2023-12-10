@@ -12,7 +12,7 @@ import AlertMessage from "../Notifications/AlertMessage";
 const AchievementTracker = () => {
   const navigate = useNavigate();
   const { achId } = useParams();
-  const { setFailedMessage } = useContext(NotificationContext);
+  const { setFailedMessage ,setSuccessfulMessage} = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const { setAchievementToPass } = useContext(AchievementContext);
   const userToken = user.tokenInfo.token;
@@ -48,7 +48,7 @@ const AchievementTracker = () => {
       await api.delete("/achievement?id=" + id, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
-      setFailedMessage({
+      setSuccessfulMessage({
         message: "Achievement deleted successfully!",
         flag: true,
       });

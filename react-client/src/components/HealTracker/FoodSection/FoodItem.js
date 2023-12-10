@@ -52,18 +52,40 @@ const FoodItem = () => {
           );
           setFood(response.data);
         } catch (error) {
-          setFailedMessage({
-            message:
-              "Something went wrong with food fetching. Please try again later!",
-            flag: true,
-          });
+          if (error.response.status === 400) {
+            try {
+              await api.patch(
+                `/storage/${storageId}/removeFood?foodName=${foodName}&recordId=${recordId}&isCustom=${customFood}`,
+                {},
+                {
+                  headers: { Authorization: `Bearer ${userToken}` },
+                }
+              );
+            } catch (error) {}
+          } else {
+            setFailedMessage({
+              message: "Something went wrong with . Please try again later!",
+              flag: true,
+            });
+          }
+          navigate(PathCreator.storagePath(recordId, storageId));
+          return;
         }
       }
     };
 
     fetchData();
-    // setShowLength(false);
-  }, [foodName, setFailedMessage, foodSize, customFood, userToken]);
+  }, [
+    foodName,
+    setFailedMessage,
+    foodSize,
+    customFood,
+    userToken,
+    navigate,
+    recordId,
+    storageId,
+    setSuccessfulMessage,
+  ]);
 
   const handleDeleteFood = async () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
@@ -162,7 +184,7 @@ const FoodItem = () => {
   };
 
   const onClose = () => {
-    if(customFood){
+    if (customFood) {
       navigate(PathCreator.customFoodPath(recordId, storageId));
       return;
     }
