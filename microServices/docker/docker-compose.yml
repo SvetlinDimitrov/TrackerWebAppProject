@@ -247,10 +247,9 @@ services:
     depends_on:
       - prometheus
   react-app:
-    build:
-      context: ../../react-client
-      args:
-        REACT_APP_API_SERVER: http://localhost:8080
+    image: svetlindimitrov/react-client-app
+    environment:
+      REACT_APP_API_SERVER: http://localhost:8080
     container_name: react-app
     restart: always
     ports:

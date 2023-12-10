@@ -7,7 +7,7 @@ COPY package.json ./
 RUN npm install
 COPY . .
 ARG REACT_APP_API_SERVER
-ENV REACT_APP_API_SERVER=${REACT_APP_API_SERVER}
+ENV REACT_APP_API_SERVER=http://localhost:8080
 RUN npm run build
 
 # Production stage
