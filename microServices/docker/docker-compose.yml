@@ -248,8 +248,6 @@ services:
       - prometheus
   react-app:
     image: svetlindimitrov/react-client-app
-    environment:
-      REACT_APP_API_SERVER: http://localhost:8080
     container_name: react-app
     restart: always
     ports:
