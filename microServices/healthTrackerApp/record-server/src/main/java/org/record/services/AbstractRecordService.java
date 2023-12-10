@@ -8,6 +8,7 @@ import org.record.RecordRepository;
 import org.record.client.dto.Food;
 import org.record.client.dto.StorageView;
 import org.record.client.dto.User;
+import org.record.exceptions.InvalidJsonTokenException;
 import org.record.exceptions.RecordNotFoundException;
 import org.record.model.dtos.RecordView;
 import org.record.model.entity.NutritionIntake;
@@ -26,8 +27,12 @@ public abstract class AbstractRecordService {
     protected final RecordRepository recordRepository;
     protected final NutrientIntakeCreator nutrientIntakeCreator;
 
-    protected User getUserId(String userToken) {
-        return gsonWrapper.fromJson(userToken, User.class);
+    protected User getUserId(String userToken) throws InvalidJsonTokenException {
+        try{
+            return gsonWrapper.fromJson(userToken, User.class);
+        } catch (Exception e) {
+           throw new InvalidJsonTokenException("Invalid user token.");
+        }
     }
 
     protected RecordView toRecordView(Record record, List<StorageView> storages, User user) {
@@ -53,7 +58,7 @@ public abstract class AbstractRecordService {
         return recordView;
     }
 
-    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException {
+    protected Record getRecordByIdAndUserId(Long recordId, String userToken) throws RecordNotFoundException, InvalidJsonTokenException {
         Long userId = getUserId(userToken).getId();
 
         return recordRepository.findByIdAndUserId(recordId, userId)

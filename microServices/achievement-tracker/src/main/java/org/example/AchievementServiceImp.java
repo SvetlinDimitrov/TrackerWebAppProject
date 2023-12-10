@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.domain.dto.*;
 import org.example.domain.entity.Achievement;
 import org.example.domain.entity.AchievementTracker;
+import org.example.exceptions.AchievementException;
+import org.example.exceptions.InvalidJsonTokenException;
 import org.example.utils.AchievementProgressCalculator;
 import org.example.utils.GsonWrapper;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class AchievementServiceImp {
     private final AchievementProgressCalculator achievementProgressCalculator;
     private final GsonWrapper gsonWrapper;
     
-    public List<AchievementTrackerView> getAllAchievementViewsWitherUserId(String userToken) {
+    public List<AchievementTrackerView> getAllAchievementViewsWitherUserId(String userToken) throws InvalidJsonTokenException {
         Long userId = getUserId(userToken);
         
         return achievementRepository.findAllByUserId(userId)
@@ -34,7 +36,7 @@ public class AchievementServiceImp {
             ).toList();
     }
     
-    public AchievementTrackerView getAchievementViewById(String userToken, Long id) {
+    public AchievementTrackerView getAchievementViewById(String userToken, Long id) throws InvalidJsonTokenException {
         Long userId = getUserId(userToken);
         AchievementTracker achTracker = achievementRepository.findByIdAndUserId(id, userId)
             .orElseThrow(() -> new AchievementException("Achievement not found"));
@@ -42,11 +44,11 @@ public class AchievementServiceImp {
         List<AchievementProgressMonthlyView> monthlyProgress = achievementProgressCalculator.getMonthlyProgress(achTracker.getDailyProgress().values().stream().toList());
         List<AchievementProgressYearlyView> yearlyProgress = achievementProgressCalculator.getYearlyProgress(achTracker.getDailyProgress().values().stream().toList());
         List<AchievementProgressWeeklyView> weeklyProgress = achievementProgressCalculator.getWeeklyProgress(achTracker.getDailyProgress().values().stream().toList());
-        return new AchievementTrackerView(achTracker, monthlyProgress, yearlyProgress , weeklyProgress);
+        return new AchievementTrackerView(achTracker, monthlyProgress, yearlyProgress, weeklyProgress);
     }
     
     
-    public void createAchievement(String userToken, AchievementHolderCreateDto dto) {
+    public void createAchievement(String userToken, AchievementHolderCreateDto dto) throws InvalidJsonTokenException {
         
         Long userId = getUserId(userToken);
         
@@ -61,7 +63,7 @@ public class AchievementServiceImp {
     }
     
     public void updateAchievement(String userToken, Achievement achievementToAdd, Long achId,
-                                  Boolean replaceDailyProgress) {
+                                  Boolean replaceDailyProgress) throws InvalidJsonTokenException {
         
         AchievementTracker achievementTracker = achievementRepository
             .findByIdAndUserId(achId, getUserId(userToken))
@@ -96,7 +98,7 @@ public class AchievementServiceImp {
         achievementRepository.saveAndFlush(achievementTracker);
     }
     
-    public void deleteAchievement(String userToken, Long id) {
+    public void deleteAchievement(String userToken, Long id) throws InvalidJsonTokenException {
         AchievementTracker achievementTracker = achievementRepository
             .findByIdAndUserId(id, getUserId(userToken))
             .orElseThrow(() -> new AchievementException("Achievement not found"));
@@ -104,7 +106,7 @@ public class AchievementServiceImp {
         achievementRepository.delete(achievementTracker);
     }
     
-    public void editTracker(String userToken, AchievementTrackerEditDto dto, Long achId) {
+    public void editTracker(String userToken, AchievementTrackerEditDto dto, Long achId) throws InvalidJsonTokenException {
         AchievementTracker achievementTracker = achievementRepository
             .findByIdAndUserId(achId, getUserId(userToken))
             .orElseThrow(() -> new AchievementException("Achievement not found"));
@@ -131,7 +133,11 @@ public class AchievementServiceImp {
         achievementRepository.saveAndFlush(achievementTracker);
     }
     
-    private Long getUserId(String userToken) {
-        return gsonWrapper.fromJson(userToken, User.class).getId();
+    private Long getUserId(String userToken) throws InvalidJsonTokenException {
+        try {
+            return gsonWrapper.fromJson(userToken, User.class).getId();
+        } catch (Exception e) {
+            throw new InvalidJsonTokenException("Invalid user token");
+        }
     }
 }

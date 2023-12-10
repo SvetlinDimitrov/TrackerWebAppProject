@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.food.domain.dtos.Food;
-import org.food.exception.FoodNotFoundException;
+import org.food.exception.FoodListException;
 import org.food.repositories.FoodRepository;
 import org.food.services.FoodService;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class FoodServiceTest {
     }
 
     @Test
-    public void testGetFoodByName_validFoodNameNullSize_ShouldReturnFood() throws FoodNotFoundException {
+    public void testGetFoodByName_validFoodNameNullSize_ShouldReturnFood() throws FoodListException {
         Food apple = getApple();
         when(foodRepository.getByName("Apple")).thenReturn(java.util.Optional.of(apple));
 
@@ -48,7 +48,7 @@ public class FoodServiceTest {
         assertEquals(apple, food);
     }
     @Test
-    public void testGetFoodByName_validFoodNameWithHigherSize_ShouldReturnFood() throws FoodNotFoundException {
+    public void testGetFoodByName_validFoodNameWithHigherSize_ShouldReturnFood() throws FoodListException {
         Food apple = getApple();
         when(foodRepository.getByName("Apple")).thenReturn(java.util.Optional.of(apple));
 
@@ -101,7 +101,7 @@ public class FoodServiceTest {
     }
     
     @Test
-    public void testGetFoodByName_validFoodNameWithLowerSize_ShouldReturnFood() throws FoodNotFoundException {
+    public void testGetFoodByName_validFoodNameWithLowerSize_ShouldReturnFood() throws FoodListException {
         Food apple = getApple();
         when(foodRepository.getByName("Apple")).thenReturn(java.util.Optional.of(apple));
 
@@ -153,7 +153,7 @@ public class FoodServiceTest {
     }
     
     @Test
-    public void testGetFoodByName_validFoodNameWithSameSize_ShouldReturnFood() throws FoodNotFoundException {
+    public void testGetFoodByName_validFoodNameWithSameSize_ShouldReturnFood() throws FoodListException {
         Food apple = getApple();
         when(foodRepository.getByName("Apple")).thenReturn(java.util.Optional.of(apple));
 
@@ -166,7 +166,7 @@ public class FoodServiceTest {
     public void testGetFoodByName_invalidFoodName_ShouldThrowException() {
         when(foodRepository.getByName("Invalid")).thenReturn(java.util.Optional.empty());
 
-        assertThrows(FoodNotFoundException.class, 
+        assertThrows(FoodListException.class,
         () -> foodService.getFoodByName("Invalid", null));
     }
 

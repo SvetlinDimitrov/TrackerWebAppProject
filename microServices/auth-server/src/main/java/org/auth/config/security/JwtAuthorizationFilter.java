@@ -8,6 +8,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,6 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -30,9 +33,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
+        
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/api/user/register") || requestURI.startsWith("/api/user/login")) {
+        if (pathMatcher.match("/api/user/register", requestURI) || pathMatcher.match("/api/user/login", requestURI)
+            || pathMatcher.match("/swagger-ui.html", requestURI) || pathMatcher.match("/swagger-ui/**", requestURI)
+            || pathMatcher.match("/v3/api-docs/**", requestURI) || pathMatcher.match("/v3/api-docs.yaml", requestURI)
+            || pathMatcher.match("/swagger-resources/**", requestURI) || pathMatcher.match("/swagger-config/**", requestURI)
+            || pathMatcher.match("/webjars/**", requestURI) || pathMatcher.match("/actuator/prometheus", requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }

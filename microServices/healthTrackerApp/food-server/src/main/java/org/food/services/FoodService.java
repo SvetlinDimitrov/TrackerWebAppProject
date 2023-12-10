@@ -2,10 +2,9 @@ package org.food.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.food.domain.dtos.Food;
-import org.food.exception.FoodNotFoundException;
+import org.food.exception.FoodListException;
 import org.food.repositories.FoodRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +20,12 @@ public class FoodService extends AbstractFoodService {
         return new ArrayList<>(foodRepository.getAllFoods());
     }
 
-    public Food getFoodByName(String foodName, Double amount) throws FoodNotFoundException {
+    public Food getFoodByName(String foodName, Double amount) throws FoodListException {
 
         Food food = foodRepository
                 .getByName(foodName)
                 .orElseThrow(
-                        () -> new FoodNotFoundException(foodName + " does not exist.", foodRepository.getAllNames()));
+                        () -> new FoodListException( foodRepository.getAllNames() , foodName + " does not exist."));
 
         if (amount == null) {
             return food;

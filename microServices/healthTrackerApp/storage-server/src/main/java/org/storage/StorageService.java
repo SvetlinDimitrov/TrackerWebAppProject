@@ -14,6 +14,7 @@ import org.storage.client.FoodClient;
 import org.storage.client.FoodUpdate;
 import org.storage.client.User;
 import org.storage.exception.FoodException;
+import org.storage.exception.InvalidJsonTokenException;
 import org.storage.exception.StorageException;
 import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Food;
@@ -31,7 +32,7 @@ public class StorageService {
     private final GsonWrapper gsonWrapper;
 
     public StorageView getStorageByIdAndRecordId(Long storageId, Long recordId, String userToken)
-            throws StorageException {
+        throws StorageException, InvalidJsonTokenException {
         Long userId = getUserId(userToken);
 
         return toStorageView(
@@ -42,7 +43,7 @@ public class StorageService {
 
     }
 
-    public List<StorageView> getAllByRecordId(Long recordId, String userToken)  {
+    public List<StorageView> getAllByRecordId(Long recordId, String userToken) throws InvalidJsonTokenException {
 
         Long userId = getUserId(userToken);
 
@@ -59,7 +60,7 @@ public class StorageService {
 
     }
 
-    public void createStorage(Long recordId, String storageName, String userToken) {
+    public void createStorage(Long recordId, String storageName, String userToken) throws InvalidJsonTokenException {
         Long userId = getUserId(userToken);
 
         Storage storage = new Storage();
@@ -76,7 +77,7 @@ public class StorageService {
         storageRepository.save(storage);
     }
 
-    public void firstCreationStorage(Long recordId, String userToken) {
+    public void firstCreationStorage(Long recordId, String userToken) throws InvalidJsonTokenException {
         Long userId = getUserId(userToken);
 
         Storage storage = new Storage("First Meal", recordId, userId);
@@ -91,7 +92,7 @@ public class StorageService {
     }
 
     @Transactional
-    public void deleteStorage(Long recordId, Long storageId, String userToken) throws StorageException {
+    public void deleteStorage(Long recordId, Long storageId, String userToken) throws StorageException, InvalidJsonTokenException {
 
         Long userId = getUserId(userToken);
 
@@ -103,14 +104,14 @@ public class StorageService {
     }
 
     @Transactional
-    public void deleteAllByRecordIdAndUserId(Long recordId, String userToken) {
+    public void deleteAllByRecordIdAndUserId(Long recordId, String userToken) throws InvalidJsonTokenException {
         Long userId = getUserId(userToken);
 
         storageRepository.deleteAllByRecordIdAndUserId(recordId, userId);
     }
 
     public void addFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken, Boolean isCustom)
-            throws StorageException, FoodException {
+        throws StorageException, FoodException, InvalidJsonTokenException {
 
         Long userId = getUserId(userToken);
 
@@ -118,8 +119,11 @@ public class StorageService {
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
                                 + userId));
-
-        if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        
+        if (foodInfo.getFoodName() == null || foodInfo.getFoodName().isEmpty()) {
+            throw new FoodException("Food name cannot be empty.");
+        }
+        if ( foodInfo.getAmount() != null && foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new FoodException("Amount must be greater than 0.");
         }
         try {
@@ -165,7 +169,7 @@ public class StorageService {
     }
 
     public void changeFood(Long storageId, Long recordId, FoodUpdate foodInfo, String userToken, Boolean isCustom)
-            throws StorageException, FoodException {
+        throws StorageException, FoodException, InvalidJsonTokenException {
 
         Long userId = getUserId(userToken);
 
@@ -173,8 +177,11 @@ public class StorageService {
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
                                 + userId));
-
-        if (foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        
+        if (foodInfo.getFoodName() == null || foodInfo.getFoodName().isEmpty()) {
+            throw new FoodException("Food name cannot be empty.");
+        }
+        if ( foodInfo.getAmount() != null && foodInfo.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new FoodException("Amount must be greater than 0.");
         }
 
@@ -215,7 +222,7 @@ public class StorageService {
     }
 
     public void removeFood(Long storageId, Long recordId, String foodName, String userToken, Boolean isCustom)
-            throws FoodException, StorageException {
+        throws FoodException, StorageException, InvalidJsonTokenException {
 
         Long userId = getUserId(userToken);
 
@@ -453,8 +460,12 @@ public class StorageService {
         return food;
     }
 
-    private Long getUserId(String getUserId) {
-        return gsonWrapper.fromJson(getUserId, User.class).getId();
+    private Long getUserId(String getUserId) throws InvalidJsonTokenException {
+        try {
+            return gsonWrapper.fromJson(getUserId, User.class).getId();
+        } catch (Exception e) {
+            throw new InvalidJsonTokenException("Invalid token.");
+        }
     }
 
     private String generateRandomNumbers(int num) {

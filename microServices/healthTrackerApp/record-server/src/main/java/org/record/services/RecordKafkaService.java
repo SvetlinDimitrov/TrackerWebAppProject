@@ -7,6 +7,7 @@ import java.util.List;
 import org.record.RecordRepository;
 import org.record.client.StorageClient;
 import org.record.client.dto.User;
+import org.record.exceptions.InvalidJsonTokenException;
 import org.record.exceptions.RecordCreationException;
 import org.record.model.entity.Record;
 import org.record.utils.GsonWrapper;
@@ -33,7 +34,7 @@ public class RecordKafkaService extends AbstractRecordService {
     }
 
     @KafkaListener(topics = "USER_FIRST_CREATION", groupId = "group_user_creation_1", containerFactory = "kafkaListenerUserFirstCreation")
-    public void addNewRecordByUserId(String userToken) throws RecordCreationException {
+    public void addNewRecordByUserId(String userToken) throws RecordCreationException, InvalidJsonTokenException {
         User user = getUserId(userToken);
 
         RecordValidator.validateRecord(user);
@@ -55,7 +56,7 @@ public class RecordKafkaService extends AbstractRecordService {
     }
     @Transactional
     @KafkaListener(topics = "USER_DELETION", groupId = "group_user_deletion_1", containerFactory = "kafkaListenerUserDeletion")
-    public void deleteUser(String userToken){
+    public void deleteUser(String userToken) throws InvalidJsonTokenException {
         User user = getUserId(userToken);
 
         List<Record> records = recordRepository.findAllByUserId(user.getId());

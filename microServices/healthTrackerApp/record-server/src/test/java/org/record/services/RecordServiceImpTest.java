@@ -26,6 +26,7 @@ import org.record.client.StorageClient;
 import org.record.client.dto.Food;
 import org.record.client.dto.StorageView;
 import org.record.client.dto.User;
+import org.record.exceptions.InvalidJsonTokenException;
 import org.record.exceptions.RecordCreationException;
 import org.record.exceptions.RecordNotFoundException;
 import org.record.exceptions.StorageException;
@@ -79,7 +80,7 @@ public class RecordServiceImpTest {
     }
 
     @Test
-    public void testGetAllViewsByUserId_ValidUserCredential_ReturnRecordViews() throws JsonProcessingException {
+    public void testGetAllViewsByUserId_ValidUserCredential_ReturnRecordViews() throws JsonProcessingException, InvalidJsonTokenException {
         userView.setId(1L);
         Record record = getRecord(userView.getId(), 1L);
         String token = objectMapper.writeValueAsString(userView);
@@ -106,7 +107,7 @@ public class RecordServiceImpTest {
     }
 
     @Test
-    public void testGetAllViewsByUserId_EmptyRecordList_ReturnEmptyArray() throws JsonProcessingException {
+    public void testGetAllViewsByUserId_EmptyRecordList_ReturnEmptyArray() throws JsonProcessingException, InvalidJsonTokenException {
         userView.setId(1L);
         String token = objectMapper.writeValueAsString(userView);
 
@@ -120,7 +121,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testGetViewByRecordIdAndUserId_ValidUserCredential_ReturnRecordView()
-            throws JsonProcessingException, RecordNotFoundException {
+        throws JsonProcessingException, RecordNotFoundException, InvalidJsonTokenException {
         userView.setId(2L);
         Record record = getRecord(userView.getId(), 2L);
         String token = objectMapper.writeValueAsString(userView);
@@ -150,7 +151,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testAddNewRecordByUserId_EmptyName_GeneratesDefaultName()
-            throws JsonProcessingException, RecordCreationException {
+        throws JsonProcessingException, RecordCreationException, InvalidJsonTokenException {
         userView.setId(4L);
         String token = objectMapper.writeValueAsString(userView);
         when(gsonWrapper.fromJson(token, User.class)).thenReturn(userView);
@@ -163,7 +164,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testAddNewRecordByUserId_GivenName_CreatesRecord()
-            throws JsonProcessingException, RecordCreationException {
+        throws JsonProcessingException, RecordCreationException, InvalidJsonTokenException {
         String recordName = "test";
         userView.setId(5L);
         String token = objectMapper.writeValueAsString(userView);
@@ -177,7 +178,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testDeleteById_ValidRecordIdAndUserToken_DeletesRecord()
-            throws JsonProcessingException, RecordNotFoundException, StorageException {
+        throws JsonProcessingException, RecordNotFoundException, StorageException, InvalidJsonTokenException {
         userView.setId(6L);
         Record record = getRecord(userView.getId(), 6L);
         String token = objectMapper.writeValueAsString(userView);
@@ -220,7 +221,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testCreateNewStorage_ValidRecordIdAndUserToken_CreatesStorage()
-            throws JsonProcessingException, RecordNotFoundException {
+        throws JsonProcessingException, RecordNotFoundException, InvalidJsonTokenException {
         userView.setId(8L);
         Record record = getRecord(userView.getId(), 8L);
         String token = objectMapper.writeValueAsString(userView);
@@ -247,7 +248,7 @@ public class RecordServiceImpTest {
 
     @Test
     public void testRemoveStorage_ValidRecordIdAndUserToken_RemovesStorage()
-            throws JsonProcessingException, RecordNotFoundException, StorageException {
+        throws JsonProcessingException, RecordNotFoundException, StorageException, InvalidJsonTokenException {
         userView.setId(10L);
         Record record = getRecord(userView.getId(), 10L);
         String token = objectMapper.writeValueAsString(userView);

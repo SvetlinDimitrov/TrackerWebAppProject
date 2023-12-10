@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.record.RecordRepository;
 import org.record.client.StorageClient;
 import org.record.client.dto.User;
+import org.record.exceptions.InvalidJsonTokenException;
 import org.record.exceptions.RecordCreationException;
 import org.record.exceptions.RecordNotFoundException;
 import org.record.exceptions.StorageException;
@@ -33,7 +34,7 @@ public class RecordServiceImp extends AbstractRecordService {
         this.storageClient = storageClient;
     }
 
-    public List<RecordView> getAllViewsByUserId(String userToken) {
+    public List<RecordView> getAllViewsByUserId(String userToken) throws InvalidJsonTokenException {
 
         User user = getUserId(userToken);
 
@@ -46,7 +47,7 @@ public class RecordServiceImp extends AbstractRecordService {
     }
 
     public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken)
-            throws RecordNotFoundException {
+        throws RecordNotFoundException, InvalidJsonTokenException {
 
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
@@ -55,7 +56,7 @@ public class RecordServiceImp extends AbstractRecordService {
     }
 
     public void addNewRecordByUserId(String userToken, String name)
-            throws RecordCreationException {
+        throws RecordCreationException, InvalidJsonTokenException {
         User user = getUserId(userToken);
 
         RecordValidator.validateRecord(user);
@@ -82,7 +83,7 @@ public class RecordServiceImp extends AbstractRecordService {
     }
 
     public void deleteById(Long recordId, String userToken)
-            throws RecordNotFoundException, StorageException {
+        throws RecordNotFoundException, StorageException, InvalidJsonTokenException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         try {
@@ -95,14 +96,14 @@ public class RecordServiceImp extends AbstractRecordService {
     }
 
     public void createNewStorage(Long recordId, String storageName, String userToken)
-            throws RecordNotFoundException {
+        throws RecordNotFoundException, InvalidJsonTokenException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         storageClient.createStorage(storageName, record.getId(), userToken);
     }
 
     public void removeStorage(Long recordId, Long storageId, String userToken)
-            throws RecordNotFoundException, StorageException {
+        throws RecordNotFoundException, StorageException, InvalidJsonTokenException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         try {

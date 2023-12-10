@@ -20,7 +20,7 @@ public class CreateCustomFood {
     @NotEmpty
     @Length(min = 3, max = 50)
     private String name;
-    @Min(0)
+    @Min(1)
     @NotNull
     private BigDecimal size;
     @Min(0)

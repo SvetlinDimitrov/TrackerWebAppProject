@@ -9,6 +9,7 @@ import org.food.domain.dtos.CreateCustomFood;
 import org.food.domain.dtos.Food;
 import org.food.domain.entity.CustomFood;
 import org.food.exception.FoodException;
+import org.food.exception.InvalidUserTokenHeaderException;
 import org.food.repositories.CustomFoodRepository;
 import org.food.utils.GsonWrapper;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,7 @@ public class CustomFoodServiceImp extends AbstractFoodService {
     private final ModelMapper modelMapper;
     private final GsonWrapper gsonWrapper;
 
-    public void addCustomFood(CreateCustomFood customFood, String userToken) throws FoodException {
+    public void addCustomFood(CreateCustomFood customFood, String userToken) throws FoodException, InvalidUserTokenHeaderException {
         Long userId = getUserId(userToken);
         CustomFood food = toCustomFood(customFood);
 
@@ -36,7 +37,7 @@ public class CustomFoodServiceImp extends AbstractFoodService {
         customFoodRepository.save(food);
     }
 
-    public void deleteCustomFood(String name, String userToken) throws FoodException {
+    public void deleteCustomFood(String name, String userToken) throws FoodException, InvalidUserTokenHeaderException {
         Long userId = getUserId(userToken);
 
         CustomFood food = customFoodRepository
@@ -46,7 +47,7 @@ public class CustomFoodServiceImp extends AbstractFoodService {
         customFoodRepository.delete(food);
     }
 
-    public List<Food> getAllCustomFoods(String userToken) {
+    public List<Food> getAllCustomFoods(String userToken) throws InvalidUserTokenHeaderException {
         Long userId = getUserId(userToken);
         return customFoodRepository
                 .findAll()
@@ -56,7 +57,7 @@ public class CustomFoodServiceImp extends AbstractFoodService {
                 .collect(Collectors.toList());
     }
 
-    public Food getCustomFoodByNameAndUserId(String name, String userToken, Double amount) throws FoodException {
+    public Food getCustomFoodByNameAndUserId(String name, String userToken, Double amount) throws FoodException, InvalidUserTokenHeaderException {
         Long userId = getUserId(userToken);
 
         CustomFood food = customFoodRepository
@@ -82,8 +83,12 @@ public class CustomFoodServiceImp extends AbstractFoodService {
         return modelMapper.map(finalFood, CustomFood.class);
     }
 
-    private Long getUserId(String userToken) {
-        return gsonWrapper.fromJson(userToken, User.class).getId();
+    private Long getUserId(String userToken) throws InvalidUserTokenHeaderException {
+        try{
+            return gsonWrapper.fromJson(userToken, User.class).getId();
+        } catch (Exception e) {
+            throw new InvalidUserTokenHeaderException("Invalid user token header.");
+        }
     }
     
    
