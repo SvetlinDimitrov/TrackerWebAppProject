@@ -20,6 +20,7 @@ public abstract class AbstractFoodService {
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);
+            baseFood.setId(food.getId());
             baseFood.setCalories(food.getCalories().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setA(food.getA().divide(multiplayer, 2, RoundingMode.HALF_UP));
             baseFood.setD(food.getD().divide(multiplayer, 2, RoundingMode.HALF_UP));
@@ -68,6 +69,7 @@ public abstract class AbstractFoodService {
             Food baseFood = new Food();
             baseFood.setName(food.getName());
             baseFood.setSize(amount);
+            baseFood.setId(food.getId());
             baseFood.setCalories(food.getCalories().multiply(multiplayer));
             baseFood.setA(food.getA().multiply(multiplayer));
             baseFood.setD(food.getD().multiply(multiplayer));
