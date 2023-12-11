@@ -58,7 +58,7 @@ For more visual details about the application, please refer to the images folder
 
 The API is fully documented with Postman and Swagger:
 
-- [Postman Collection](link-to-your-postman-collection): This collection includes all the API endpoints with example requests and responses. You can import this collection into Postman to explore and test the API.
+- [Postman Collection](https://documenter.getpostman.com/view/26519722/2s9Ykhh4Qv): This collection includes all the API endpoints with example requests and responses. You can import this collection into Postman to explore and test the API.
 
 - Swagger Documentation: The API also includes Swagger documentation, which provides an interactive interface for exploring the API. You can access the Swagger UI at `/swagger-ui.html` endpoint when you run the application.
 
