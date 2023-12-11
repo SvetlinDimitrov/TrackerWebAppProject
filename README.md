@@ -10,15 +10,32 @@ The application also includes a feature to track your personal achievements and 
 
 - Nutrition Information Provider:
 This feature offers comprehensive information about a wide array of nutrients. It includes detailed descriptions, daily intake recommendations, and statistics on which foods are particularly rich in specific nutrients. This allows users to gain a thorough understanding of their nutritional intake and make informed dietary choices.
-![Nutritioninfo image](https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutrientInfoStatisticsImage3.png)
+
+<p float="left">
+  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutrientInfoStatisticsImage3.png" width="800" height="600"/> 
+</p>
+
 - Nutrition Tracker:
 This feature allows you to track your daily nutrient intake, similar to MyFitnessPal. It also provides additional statistics for a more detailed view of your nutrition.
-![NutritionTracker image](https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage1.png)
-![NutritionTracker image2](https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage5.png)
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage1.png" width="500" height="500" />
+    </td>
+    <td>
+      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage6.png" width="500" height="400"/>
+      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage5.png" width="500" />
+    </td>
+  </tr>
+</table>
+
 - Achievement Tracker:
 This versatile feature enables you to track any goal with a measurable target. For instance, if your goal is to swim 5 km, you can easily log and track this. The Achievement Tracker provides detailed daily, weekly, monthly, and yearly progress statistics, making it simple to monitor your progress towards any goal.
-![AchievementTracker image](https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage1.png)
-![AchievementTracker image2](https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage3.png)
+
+<p float="left">
+  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage1.png" width="400" height="400"/>
+  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage3.png" width="400" height="400"/> 
+</p>
 
 For more visual details about the application, please refer to the images folder in this repository where you'll find additional screenshots showcasing various features of the application.
 
