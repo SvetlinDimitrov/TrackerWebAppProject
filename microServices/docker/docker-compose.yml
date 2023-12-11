@@ -116,6 +116,8 @@ services:
     image: svetlindimitrov/auth-server-tracker-app
     container_name: auth-server
     restart: always
+    ports:
+      - "10000:10000"
     environment:
       KAFKA_HOST: broker:29092
       DB_HOST: mysql-db-user
@@ -131,6 +133,8 @@ services:
   vitamin-server:
     image: svetlindimitrov/vitamin-server-tracker-app
     container_name: vitamin-server
+    ports:
+      - "17000:17000"
     environment:
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
@@ -141,6 +145,8 @@ services:
   mineral-server:
     image: svetlindimitrov/mineral-server-tracker-app
     container_name: mineral-server
+    ports:
+      - "11000:11000"
     environment:
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
@@ -151,6 +157,8 @@ services:
   macronutrient-server:
     image: svetlindimitrov/macronutrient-server-tracker-app
     container_name: macronutrient-server
+    ports:
+      - "13000:13000"
     environment:
       EUREKA_HOST: discovery-server
       ZIPKIN_URL: zipkin
@@ -161,6 +169,8 @@ services:
   food-server:
     image: svetlindimitrov/food-server-tracker-app
     container_name: food-server
+    ports:
+      - "12000:12000"
     environment:
       DB_HOST: mysql-db-food
       DB_PORT: 3306
@@ -176,6 +186,8 @@ services:
     restart: always
     image: svetlindimitrov/record-server-tracker-app
     container_name: record-server
+    ports:
+      - "15000:15000"
     environment:
       DB_HOST: mysql-db-record
       DB_PORT: 3306
@@ -193,6 +205,8 @@ services:
     restart: always
     image: svetlindimitrov/storage-server-tracker-app
     container_name: storage-server
+    ports:
+      - "16000:16000"
     environment:
       DB_HOST: mysql-db-storage
       DB_PORT: 3306
@@ -208,6 +222,8 @@ services:
   achievement-server:
     image: svetlindimitrov/achievement-server-tracker-app
     container_name: achievement-server
+    ports:
+      - "14000:14000"
     environment:
       DB_HOST: mysql-db-achievement
       DB_PORT: 3306
