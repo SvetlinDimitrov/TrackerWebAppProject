@@ -6,13 +6,17 @@ TrackerWebApp is a comprehensive tool designed for health enthusiasts like mysel
 
 The application also includes a feature to track your personal achievements and progress over time. 
 
+<p float="left">
+  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionInfo1.png" width="1000" height="600"/> 
+</p>
+
 ## Features
 
 - Nutrition Information Provider:
 This feature offers comprehensive information about a wide array of nutrients. It includes detailed descriptions, daily intake recommendations, and statistics on which foods are particularly rich in specific nutrients. This allows users to gain a thorough understanding of their nutritional intake and make informed dietary choices.
 
 <p float="left">
-  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutrientInfoStatisticsImage3.png" width="800" height="600"/> 
+  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutrientInfoStatisticsImage3.png" width="1000" height="600"/> 
 </p>
 
 - Nutrition Tracker:
