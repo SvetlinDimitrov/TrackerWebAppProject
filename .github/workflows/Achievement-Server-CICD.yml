@@ -11,7 +11,7 @@ on:
         required: true
   push:
     paths:
-      - 'microServices/achievement-tracker/**' 
+      - 'microServices/AchievementTrackerApp/**' 
 
 jobs:
   achievement-server-cicd:
@@ -40,5 +40,5 @@ jobs:
     - name : Test && Build && Deploy
       working-directory: ./microServices
       run: |
-        docker build -f achievement-tracker/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/achievement-server-tracker-app .
+        docker build -f AchievementTrackerApp/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/achievement-server-tracker-app .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/achievement-server-tracker-app
