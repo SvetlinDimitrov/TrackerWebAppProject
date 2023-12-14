@@ -6,42 +6,18 @@ TrackerWebApp is a comprehensive tool designed for health enthusiasts like mysel
 
 The application also includes a feature to track your personal achievements and progress over time. 
 
-<p float="left">
-  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionInfo1.png" width="1000" height="600"/> 
-</p>
-
 ## Features
 
 - Nutrition Information Provider:
 This feature offers comprehensive information about a wide array of nutrients. It includes detailed descriptions, daily intake recommendations, and statistics on which foods are particularly rich in specific nutrients. This allows users to gain a thorough understanding of their nutritional intake and make informed dietary choices.
 
-<p float="left">
-  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutrientInfoStatisticsImage3.png" width="1000" height="600"/> 
-</p>
-
 - Nutrition Tracker:
 This feature allows you to track your daily nutrient intake, similar to MyFitnessPal. It also provides additional statistics for a more detailed view of your nutrition.
-<table>
-  <tr>
-    <td>
-      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage1.png" width="500" height="500" />
-    </td>
-    <td>
-      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage6.png" width="500" height="400"/>
-      <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/NutritionTrackerImage5.png" width="500" />
-    </td>
-  </tr>
-</table>
 
 - Achievement Tracker:
 This versatile feature enables you to track any goal with a measurable target. For instance, if your goal is to swim 5 km, you can easily log and track this. The Achievement Tracker provides detailed daily, weekly, monthly, and yearly progress statistics, making it simple to monitor your progress towards any goal.
 
-<p float="left">
-  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage1.png" width="400" height="400"/>
-  <img src="https://github.com/SvetlinDimitrov/TrackerWebAppProject/blob/main/Project%20Images/AchievementTrackerImage3.png" width="400" height="400"/> 
-</p>
-
-For more visual details about the application, please refer to the images folder in this repository where you'll find additional screenshots showcasing various features of the application.
+For visual details about the application, please refer to the images folder in this repository where you'll find screenshots showcasing various features of the application.
 
 ## Technologies Used
 
@@ -58,7 +34,7 @@ For more visual details about the application, please refer to the images folder
 
 The API is fully documented with Postman and Swagger:
 
-- [Postman Collection](link-to-your-postman-collection): This collection includes all the API endpoints with example requests and responses. You can import this collection into Postman to explore and test the API.
+- [Postman Collection](https://documenter.getpostman.com/view/26519722/2s9Ykhh4Qv): This collection includes all the API endpoints with example requests and responses. You can import this collection into Postman to explore and test the API.
 
 - Swagger Documentation: The API also includes Swagger documentation, which provides an interactive interface for exploring the API. You can access the Swagger UI at `/swagger-ui.html` endpoint when you run the application.
 
