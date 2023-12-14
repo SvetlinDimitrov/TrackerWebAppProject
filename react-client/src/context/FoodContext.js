@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import api from "../util/api";
+import data from "../data/food.json";
 
 export const FoodContext = createContext();
 
@@ -8,17 +9,7 @@ const FoodContextProvider = ({ children }) => {
   const [nutrient, setNutrient] = useState({});
 
   useEffect(() => {
-    const getFoods = async () => {
-      try {
-        const getFoodsData = await api.get("/food");
-        setAllFoods(getFoodsData.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (allFoods.length === 0) {
-      getFoods();
-    }
+    setAllFoods(data);
   }, [allFoods.length]);
 
   if (allFoods.length === 0) {

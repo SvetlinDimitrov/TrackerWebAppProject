@@ -2,9 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 
 import { FoodContext } from "../../../context/FoodContext";
-import api from "../../../util/api";
 import * as PathCreator from "../../../util/PathCreator";
 import styles from "./NutritionTemplate.module.css";
+import vitamins from "../../../data/vitamin.json";
+import minerals from "../../../data/minerals.json";
+import macronutrients from "../../../data/macronutrients";
+import macroTypes from "../../../data/macronutrientTypes.json";
 
 const NutritionTemplate = () => {
   let { nutrition, nutritionType } = useParams();
@@ -14,35 +17,29 @@ const NutritionTemplate = () => {
   const [activeTab, setActiveTab] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      let response;
-      try {
-        if (nutrition === "macronutrientTypes") {
-          response = await api.get("/macronutrient/types/" + nutritionType);
-        } else {
-          response = await api.get("/" + nutrition + "/" + nutritionType);
-        }
-        const capitalizedNutrition =
-          nutrition.charAt(0).toUpperCase() + nutrition.slice(1);
-        response.data["type"] = capitalizedNutrition;
+    if (nutrition === "vitamin") {
+      setNutritionTemplate(filterArray(vitamins, nutritionType));
+      setNutrient(filterArray(vitamins, nutritionType));
+    } else if (nutrition === "mineral") {
+      setNutritionTemplate(filterArray(minerals, nutritionType));
+      setNutrient(filterArray(minerals, nutritionType));
+    } else if (nutrition === "macronutrient") {
+      setNutritionTemplate(filterArray(macronutrients, nutritionType));
+      setNutrient(filterArray(macronutrients, nutritionType));
+    } else if (nutrition === "macronutrientTypes") {
+      setNutritionTemplate(filterArray(macroTypes, nutritionType));
+      setNutrient(filterArray(macroTypes, nutritionType));
+    }
+  }, [navigate, nutrition, nutritionType, setNutrient]);
 
-        setNutritionTemplate(response.data);
-        setNutrient(response.data);
-      } catch (error) {
-        navigate("/error");
-      }
-    };
-    fetchData();
-  }, [navigate, nutrition, nutritionType , setNutrient]);
-
-  if (!nutritionTemplate.name) {
+  if (!nutritionTemplate) {
     return <div id="preloader"></div>;
   }
 
   return (
     <div className={styles.body_container_main}>
       <h2 className={styles.body_container_section_h2}>
-        {`${nutritionTemplate.type} ${nutritionTemplate.name}`}
+        {`${nutritionTemplate.name}`}
       </h2>
       <div className={styles.tabs}>
         <button
@@ -176,3 +173,8 @@ const NutritionTemplate = () => {
 };
 
 export default NutritionTemplate;
+
+const filterArray = (data, name) => {
+  const filtered = data.filter((item) => item.name === name);
+  return filtered[0];
+};

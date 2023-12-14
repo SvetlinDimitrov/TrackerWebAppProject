@@ -1,6 +1,5 @@
 package org.record.services;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -11,12 +10,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.record.RecordRepository;
 import org.record.client.StorageClient;
 import org.record.client.dto.User;
 import org.record.config.TestKafkaConfiguration;
-import org.record.model.entity.Record;
 import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.record.utils.GsonWrapper;

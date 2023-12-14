@@ -20,7 +20,7 @@
         <module>gateway-server</module>
         <module>auth-server</module>
         <module>healthTrackerApp</module>
-        <module>achievement-tracker</module>
+        <module>AchievementTrackerApp</module>
     </modules>
 
     <properties>
