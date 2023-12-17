@@ -2,16 +2,17 @@ import React, { useState, useEffect, useContext } from "react";
 import { Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
 
 import styles from "./CustomFoodSection.module.css";
-import * as PathCreator from "../../../util/PathCreator";
-import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
-import api from "../../../util/api";
+import * as PathCreator from "../../../../util/PathCreator";
+import { NotificationContext } from "../../../../context/Notification";
+import { AuthContext } from "../../../../context/UserAuth";
+import api from "../../../../util/api";
 
 const CustomFoodSection = () => {
   const location = useLocation();
   const [customFoods, setCustomFoods] = useState();
   const { recordId, storageId } = useParams();
-  const { setFailedMessage , setSuccessfulMessage} = useContext(NotificationContext);
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const CustomFoodSection = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/food/customFood/all`, {
+        const response = await api.get(`/food/all`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         setCustomFoods(response.data);
@@ -49,7 +50,7 @@ const CustomFoodSection = () => {
       return;
     }
     try {
-      await api.delete(`/food/customFood?foodName=${food.name}`, {
+      await api.delete(`/food?foodName=${food.name}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       setSuccessfulMessage({
@@ -80,25 +81,27 @@ const CustomFoodSection = () => {
             <h2>Custom Food Items</h2>
             <div className={styles.foodItems}>
               {customFoods.map((item, index) => (
-                <div key={index} className={styles.foodItem}>
+                <div
+                  key={index}
+                  className={styles.foodItem}
+                  onClick={() =>
+                    navigate(
+                      PathCreator.storagePath(recordId, storageId) +
+                        "/foodMenu/" +
+                        item.name +
+                        "?isCustom=true"
+                    )
+                  }
+                >
                   <span>{item.name}</span>
                   <div className={styles.buttonSection}>
-                    <button onClick={() => handleDelete(item)}>Delete</button>
                     <button
-                      onClick={() =>
-                        navigate(
-                          PathCreator.basicFoodPath(
-                            recordId,
-                            storageId,
-                            item.name,
-                            item.size,
-                            true,
-                            true
-                          )
-                        )
-                      }
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDelete(item);
+                      }}
                     >
-                      Add
+                      Delete
                     </button>
                   </div>
                 </div>

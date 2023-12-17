@@ -1,40 +1,21 @@
-import { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate, useParams, Outlet } from "react-router-dom";
 
 import styles from "./FoodMenu.module.css";
-import * as PathCreator from "../../../util/PathCreator";
-import api from "../../../util/api";
-import { NotificationContext } from "../../../context/Notification";
+import * as PathCreator from "../../../../util/PathCreator";
+import { FoodContext } from "../../../../context/FoodContext";
 
 export const FoodMenu = () => {
   const { recordId, storageId } = useParams();
-  const { setFailedMessage } = useContext(NotificationContext);
-  const [foods, setFoods] = useState();
+  const { allFoods } = useContext(FoodContext);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const getFoods = async () => {
-      try {
-        const getFoodsData = await api.get("/food");
-        setFoods(getFoodsData.data);
-      } catch (error) {
-        setFailedMessage({
-          message: "Something went wrong . Please try again later!",
-          flag: true,
-        });
-        navigate("/health-tracker");
-      }
-    };
-
-    getFoods();
-  }, [navigate, setFailedMessage]);
 
   const onClose = () => {
     navigate(PathCreator.storagePath(recordId, storageId));
   };
 
-  if (foods === undefined) {
+  if (allFoods === undefined) {
     return <div id="preloader"></div>;
   }
 
@@ -53,7 +34,7 @@ export const FoodMenu = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className={styles.container_foodDetails}>
-              {foods
+              {allFoods
                 .filter((food) =>
                   food.name.toLowerCase().includes(searchTerm.toLowerCase())
                 )
@@ -64,14 +45,9 @@ export const FoodMenu = () => {
                       key={index}
                       onClick={() =>
                         navigate(
-                          PathCreator.basicFoodPath(
-                            recordId,
-                            storageId,
-                            food.name,
-                            food.size,
-                            true,
-                            false
-                          )
+                          PathCreator.storagePath(recordId, storageId) +
+                            "/foodMenu/" +
+                            food.name
                         )
                       }
                     >
@@ -85,6 +61,7 @@ export const FoodMenu = () => {
           </div>
         </div>
       </div>
+      <Outlet />
     </>
   );
 };

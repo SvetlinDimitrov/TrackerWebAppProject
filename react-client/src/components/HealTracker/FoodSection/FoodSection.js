@@ -41,7 +41,7 @@ const FoodSection = () => {
   if (selectedStorage === undefined) {
     return <div id="preloader"></div>;
   }
-  
+
   return (
     <>
       <div className={styles.container}>
@@ -61,14 +61,8 @@ const FoodSection = () => {
               key={food.name + index}
               onClick={() =>
                 navigate(
-                  PathCreator.basicFoodPath(
-                    recordId,
-                    storageId,
-                    food.name,
-                    food.size,
-                    false,
-                    food.isCustom
-                  )
+                  PathCreator.storagePath(recordId, storageId) +
+                    `/${food.name}?isCustom=${food.id !== null}`
                 )
               }
             >

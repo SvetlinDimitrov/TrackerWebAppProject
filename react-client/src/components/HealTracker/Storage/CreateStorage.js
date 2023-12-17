@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useParams , useLocation} from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import * as PathCreator from "../../../util/PathCreator";
 import { NotificationContext } from "../../../context/Notification";
@@ -13,7 +13,7 @@ const CreateStorage = () => {
   const detailRecord = queryParams.get("detailsRecord") === "true";
   const { recordId } = useParams();
   const navigate = useNavigate();
-  const [storageName, setStorageName] = useState('');
+  const [storageName, setStorageName] = useState("");
   const { setFailedMessage, setSuccessfulMessage } =
     useContext(NotificationContext);
   const { user } = useContext(AuthContext);
@@ -23,9 +23,9 @@ const CreateStorage = () => {
     e.preventDefault();
     try {
       await api.post(
-        `/record/${recordId}/storage?storageName=${encodeURIComponent(
+        `/storage?storageName=${encodeURIComponent(
           storageName
-        )}`,
+        )}&recordId=${recordId}`,
         {},
         { headers: { Authorization: `Bearer ${userToken}` } }
       );
@@ -50,7 +50,7 @@ const CreateStorage = () => {
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>
-      <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={onClose}>
           X
         </button>
         <form onSubmit={handleSubmit} className={styles.form}>

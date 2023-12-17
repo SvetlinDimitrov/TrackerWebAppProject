@@ -48,7 +48,7 @@ const StorageHolder = () => {
     )
       return;
     try {
-      await api.delete(`/record/${recordId}/storage/${storageId}`, {
+      await api.delete(`/storage/delete/${storageId}/record?recordId=${recordId}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       setSuccessfulMessage({

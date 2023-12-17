@@ -1,199 +1,42 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
+import { useState, useContext } from "react";
 
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
-import styles from "./FoodItem.module.css";
-import * as PathCreator from "../../../util/PathCreator";
-import { NotificationContext } from "../../../context/Notification";
+import styles from "./FoodItemBluePrint.module.css";
 import { AuthContext } from "../../../context/UserAuth";
 
-const FoodItem = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const foodSize = queryParams.get("foodSize");
-  const fromFoodMenu = queryParams.get("fromFoodMenu") === "true";
-  const customFood = queryParams.get("custom") === "true";
-  const { recordId, storageId, foodName } = useParams();
-  const { setFailedMessage, setSuccessfulMessage } =
-    useContext(NotificationContext);
+const FoodItemBluePrint = ({
+  foodInfo,
+  handleDeleteFood,
+  handleAddFood,
+  handleEditFood,
+  onClose,
+}) => {
   const [showVitamins, setShowVitamins] = useState(false);
   const [showMinerals, setShowMinerals] = useState(false);
   const [showMacros, setShowMacros] = useState(false);
+  const [inputValue, setInputValue] = useState(foodInfo.size);
+  const [food, setFood] = useState(foodInfo);
+
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
 
-  const [inputValue, setInputValue] = useState(foodSize);
-  const [food, setFood] = useState();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!customFood) {
-        try {
-          const response = await api.get(
-            `/food/${foodName}?amount=${foodSize}`
-          );
-          setFood(response.data);
-        } catch (error) {
-          setFailedMessage({
-            message:
-              "Something went wrong with food fetching. Please try again later!",
-            flag: true,
-          });
-        }
-      } else {
-        try {
-          const response = await api.get(
-            `/food/customFood?foodName=${foodName}&amount=${foodSize}`,
-            { headers: { Authorization: `Bearer ${userToken}` } }
-          );
-          setFood(response.data);
-        } catch (error) {
-          if (error.response.status === 400) {
-            try {
-              await api.patch(
-                `/storage/${storageId}/removeFood?foodName=${foodName}&recordId=${recordId}&isCustom=${customFood}`,
-                {},
-                {
-                  headers: { Authorization: `Bearer ${userToken}` },
-                }
-              );
-            } catch (error) {}
-          } else {
-            setFailedMessage({
-              message: "Something went wrong with . Please try again later!",
-              flag: true,
-            });
-          }
-          navigate(PathCreator.storagePath(recordId, storageId));
-          return;
-        }
-      }
-    };
-
-    fetchData();
-  }, [
-    foodName,
-    setFailedMessage,
-    foodSize,
-    customFood,
-    userToken,
-    navigate,
-    recordId,
-    storageId,
-    setSuccessfulMessage,
-  ]);
-
-  const handleDeleteFood = async () => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      try {
-        await api.patch(
-          `/storage/${storageId}/removeFood?foodName=${food.name}&recordId=${recordId}&isCustom=${customFood}`,
-          {},
-          {
-            headers: { Authorization: `Bearer ${userToken}` },
-          }
-        );
-        setSuccessfulMessage({
-          message: food.name + " deleted successfully!",
-          flag: true,
-        });
-      } catch (error) {
-        setFailedMessage({
-          message:
-            "Something went wrong with food deletion. Please try again later!",
-          flag: true,
-        });
-      }
-      navigate(PathCreator.storagePath(recordId, storageId));
-    }
-  };
-
-  const handleAddFood = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to add" +
-          food.size +
-          " " +
-          food.measurement +
-          " of " +
-          food.name +
-          "?"
-      )
-    ) {
-      try {
-        await api.patch(
-          `/storage/${storageId}/addFood?recordId=${recordId}&isCustom=${customFood}`,
-          {
-            foodName: food.name,
-            amount: food.size,
-          },
-          {
-            headers: { Authorization: `Bearer ${userToken}` },
-          }
-        );
-        setSuccessfulMessage({
-          message:
-            food.size +
-            " " +
-            food.measurement +
-            " of " +
-            food.name +
-            " added successfully!",
-          flag: true,
-        });
-      } catch (error) {
-        setFailedMessage({
-          message:
-            "Something went wrong with food addition. Please try again later!",
-          flag: true,
-        });
-      }
-      onClose(false);
-      navigate(PathCreator.storagePath(recordId, storageId));
-    }
-  };
-
-  const handleEditFood = async () => {
+  const changeFoodSize = async (e) => {
+    e.preventDefault();
     try {
-      await api.patch(
-        `/storage/${storageId}/changeFood?recordId=${recordId}&isCustom=${customFood}`,
-        {
-          foodName: food.name,
-          amount: food.size,
-        },
-        {
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
+      const response = await api.patch(
+        `/food/calculate?amount=${inputValue}`,
+        food,
+        { headers: { Authorization: `Bearer ${userToken}` } }
       );
-      setSuccessfulMessage({
-        message: "successfully modified " + food.name + "!",
-        flag: true,
-      });
+      setFood(response.data);
     } catch (error) {
-      setFailedMessage({
-        message:
-          "Something went wrong with food deletion. Please try again later!",
-        flag: true,
-      });
+      console.log(error);
     }
-    navigate(PathCreator.storagePath(recordId, storageId));
   };
 
-  const onClose = () => {
-    if (customFood) {
-      navigate(PathCreator.customFoodPath(recordId, storageId));
-      return;
-    }
-    navigate(PathCreator.storagePath(recordId, storageId));
-  };
-
-  if (!food) {
-    return <div id="preloader"></div>;
-  }
   return (
     <>
       <div className={styles.overlay}>
@@ -202,11 +45,11 @@ const FoodItem = () => {
         </button>
         <div className={styles.container}>
           <div className={styles.container_row}>
-            <h3>{fromFoodMenu ? "Add Food" : "Edit Food"}</h3>
+            <h3>{handleAddFood ? "Add Food" : "Edit Food"}</h3>
             <button
               className={styles.container_row_acceptButton}
               onClick={() =>
-                fromFoodMenu ? handleAddFood() : handleEditFood()
+                handleAddFood ? handleAddFood(food) : handleEditFood(food)
               }
             >
               <FontAwesomeIcon icon={faCheck} />
@@ -237,17 +80,7 @@ const FoodItem = () => {
               <span>Serving Size In Grams</span>
               <form
                 onSubmit={(e) => {
-                  e.preventDefault();
-                  navigate(
-                    PathCreator.basicFoodPath(
-                      recordId,
-                      storageId,
-                      foodName,
-                      inputValue,
-                      fromFoodMenu,
-                      customFood
-                    )
-                  );
+                  changeFoodSize(e);
                 }}
               >
                 <input
@@ -443,10 +276,10 @@ const FoodItem = () => {
             </>
           )}
           <div className={styles.container_specialRow}>
-            {!fromFoodMenu && (
+            {!handleAddFood && (
               <button
                 className={styles.container_specialRow_DeleteButton}
-                onClick={() => handleDeleteFood()}
+                onClick={() => handleDeleteFood(food)}
               >
                 Delete Food
               </button>
@@ -454,9 +287,8 @@ const FoodItem = () => {
           </div>
         </div>
       </div>
-      <Outlet />
     </>
   );
 };
 
-export default FoodItem;
+export default FoodItemBluePrint;

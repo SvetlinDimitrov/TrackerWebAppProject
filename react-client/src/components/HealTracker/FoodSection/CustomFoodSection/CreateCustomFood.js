@@ -2,10 +2,10 @@ import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./CreateCustomFood.module.css";
 
-import { AuthContext } from "../../../context/UserAuth";
-import { NotificationContext } from "../../../context/Notification";
-import api from "../../../util/api";
-import * as PathCreator from "../../../util/PathCreator";
+import { AuthContext } from "../../../../context/UserAuth";
+import { NotificationContext } from "../../../../context/Notification";
+import api from "../../../../util/api";
+import * as PathCreator from "../../../../util/PathCreator";
 
 const groups = {
   vitamin: [
@@ -110,7 +110,7 @@ const CreateCustomFood = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await api.post("food/customFood", foodItem, {
+      await api.post("food", foodItem, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       setSuccessfulMessage({

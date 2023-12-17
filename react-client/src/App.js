@@ -11,11 +11,12 @@ import SelectAchievement from "./components/AchievementTracker/SelectAchievement
 import Error from "./components/Error/Error";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
-import CreateCustomFood from "./components/HealTracker/FoodSection/CreateCustomFood";
-import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection";
-import FoodItem from "./components/HealTracker/FoodSection/FoodItem";
-import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu";
+import CreateCustomFood from "./components/HealTracker/FoodSection/CustomFoodSection/CreateCustomFood";
+import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection/CustomFoodSection";
+import FoodMenuItem from "./components/HealTracker/FoodSection/FoodMenu/FoodMenuItem";
+import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu/FoodMenu";
 import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
+import FoodSectionItem from "./components/HealTracker/FoodSection/FoodSectionItem";
 import NutrientFeatureTemplate from "./components/HealTracker/Nutrients/NutrientFeatureTemplate";
 import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
 import NutritionTemplate from "./components/HealTracker/Nutrients/NutritionTemplate";
@@ -101,13 +102,16 @@ function App() {
                     </Route>
                     <Route
                       path="feature/:featureType"
-                      element={<NutrientFeatureTemplate />}>
+                      element={<NutrientFeatureTemplate />}
+                    >
                       <Route
                         path="description"
-                        element={<NutrientTemplateDescriptionFeature />}/>
-                      <Route 
+                        element={<NutrientTemplateDescriptionFeature />}
+                      />
+                      <Route
                         path="barCharStatistic"
-                        element={<NutrientTemplateFeatureBarCharInfo />}/>
+                        element={<NutrientTemplateFeatureBarCharInfo />}
+                      />
                     </Route>
                   </Route>
                   <Route path="/settings" element={<Settings />} />
@@ -138,19 +142,16 @@ function App() {
                         path="storage/:storageId"
                         element={<FoodSection />}
                       >
-                        <Route path="foodMenu" element={<FoodMenu />} />
-                        <Route
-                          path="foodItem/:foodName"
-                          element={<FoodItem />}
-                        />
+                        <Route path="foodMenu" element={<FoodMenu />}>
+                          <Route path=":foodName" element={<FoodMenuItem />} />
+                        </Route>
+                        <Route path=":foodName" element={<FoodSectionItem />} />
                         <Route
                           path="customFood"
                           element={<CustomFoodSection />}
                         >
-                          <Route
-                            path="create"
-                            element={<CreateCustomFood />}
-                          ></Route>
+                          <Route path="create" element={<CreateCustomFood />} />
+                          <Route path=":foodName" element={<FoodMenuItem />} />
                         </Route>
                       </Route>
                     </Route>
