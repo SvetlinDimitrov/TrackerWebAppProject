@@ -7,7 +7,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 public class PathChecker {
 
-    public static boolean nonAuthServices(ServerWebExchange exchange) {
+    public static boolean authPath(ServerWebExchange exchange) {
         return getExchangePath(exchange).contains("auth");
     }
 

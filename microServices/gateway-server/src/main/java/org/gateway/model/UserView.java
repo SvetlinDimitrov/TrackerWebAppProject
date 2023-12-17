@@ -1,15 +1,15 @@
 package org.gateway.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @EqualsAndHashCode
 public class UserView {
 

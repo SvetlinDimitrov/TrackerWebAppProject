@@ -11,6 +11,7 @@ import org.storage.model.errorResponses.ErrorResponse;
 
 @ControllerAdvice
 public class StorageControllerAdviser {
+    
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ErrorResponse> catchRecordNotFoundException(StorageException e) {
 

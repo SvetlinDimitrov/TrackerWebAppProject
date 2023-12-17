@@ -34,7 +34,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        if (PathChecker.nonAuthServices(exchange)) {
+        if (PathChecker.authPath(exchange)) {
             return chain.filter(exchange);
         } else {
 

@@ -1,4 +1,5 @@
 package org.gateway.utils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,15 +26,16 @@ public class JwtUtil {
                 token = token.substring(7);
                 Map<String, Claim> claimMap = decodeToken(token).getClaims();
 
-                return Optional.ofNullable(UserView.builder().id(claimMap.get("id")
-                        .asLong()).username(claimMap.get("username").asString())
-                        .email(claimMap.get("email").asString())
-                        .kilograms(claimMap.get("kilograms").asString())
-                        .height(claimMap.get("height").asString())
-                        .workoutState(claimMap.get("workoutState").asString())
-                        .gender(claimMap.get("gender").asString())
-                        .userDetails(claimMap.get("userDetails").asString())
-                        .age(claimMap.get("age").asInt()).build());
+                return Optional.ofNullable(new UserView(
+                        claimMap.get("id").asLong(),
+                        claimMap.get("username").asString(),
+                        claimMap.get("email").asString(),
+                        claimMap.get("kilograms").asString(),
+                        claimMap.get("height").asString(),
+                        claimMap.get("workoutState").asString(),
+                        claimMap.get("gender").asString(),
+                        claimMap.get("userDetails").asString(),
+                        claimMap.get("age").asInt()));
             }
         } catch (Exception e) {
             return Optional.empty();

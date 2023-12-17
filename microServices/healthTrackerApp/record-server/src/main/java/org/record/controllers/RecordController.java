@@ -78,30 +78,4 @@ public interface RecordController {
             @Parameter(description = "ID of the record to be deleted.", example = "1") @PathVariable Long recordId,
             @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader("X-ViewUser") String userToken)
             throws RecordNotFoundException, StorageException, InvalidJsonTokenException;
-
-    @Operation(summary = "Create a storage", responses = {
-            @ApiResponse(responseCode = "204", description = "Storage created", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Record not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorSingleResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json Token", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorSingleResponse.class)))
-
-    })
-    @PostMapping("/{recordId}/storage")
-    public ResponseEntity<HttpStatus> createStorage(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader("X-ViewUser") String userToken,
-            @Parameter(description = "ID of the record where the storage will be created.", example = "1") @PathVariable Long recordId,
-            @Parameter(description = "Name of the new storage.", example = "My Storage") @RequestParam(required = false) String storageName)
-            throws RecordNotFoundException, InvalidJsonTokenException;
-
-    @Operation(summary = "Remove a storage", responses = {
-            @ApiResponse(responseCode = "204", description = "Storage removed", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Record not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorSingleResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json Token", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorSingleResponse.class)))
-
-    })
-    @DeleteMapping("/{recordId}/storage/{storageId}")
-    public ResponseEntity<HttpStatus> removeStorage(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader("X-ViewUser") String userToken,
-            @Parameter(description = "ID of the record where the storage will be removed.", example = "1") @PathVariable Long recordId,
-            @Parameter(description = "ID of the storage to be removed.", example = "1") @PathVariable Long storageId)
-            throws RecordNotFoundException, StorageException, InvalidJsonTokenException;
 }

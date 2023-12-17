@@ -8,6 +8,7 @@ import org.record.exceptions.RecordNotFoundException;
 import org.record.exceptions.StorageException;
 import org.record.exceptions.UserNotFoundException;
 import org.record.model.dtos.RecordView;
+import org.record.services.RecordKafkaService;
 import org.record.services.RecordServiceImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class RecordControllerImp implements RecordController {
 
     private final RecordServiceImp recordService;
+    private final RecordKafkaService recordKafkaService;
 
     @Override
     public ResponseEntity<List<RecordView>> getAllRecords(String userToken)
@@ -38,7 +40,7 @@ public class RecordControllerImp implements RecordController {
     @Override
     public ResponseEntity<HttpStatus> createNewRecord(String userToken, String name)
             throws RecordCreationException, InvalidJsonTokenException {
-        recordService.addNewRecordByUserId(userToken, name);
+        recordKafkaService.addNewRecordByUserId(userToken, name);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -46,23 +48,8 @@ public class RecordControllerImp implements RecordController {
     @Override
     public ResponseEntity<HttpStatus> deleteRecord(Long recordId, String userToken)
             throws RecordNotFoundException, StorageException, InvalidJsonTokenException {
-        recordService.deleteById(recordId, userToken);
+        recordKafkaService.deleteById(recordId, userToken);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    @Override
-    public ResponseEntity<HttpStatus> createStorage(String userToken, Long recordId, String storageName)
-            throws RecordNotFoundException, InvalidJsonTokenException {
-        recordService.createNewStorage(recordId, storageName, userToken);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @Override
-    public ResponseEntity<HttpStatus> removeStorage(String userToken, Long recordId, Long storageId)
-            throws RecordNotFoundException, StorageException, InvalidJsonTokenException {
-        recordService.removeStorage(recordId, storageId, userToken);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
 }

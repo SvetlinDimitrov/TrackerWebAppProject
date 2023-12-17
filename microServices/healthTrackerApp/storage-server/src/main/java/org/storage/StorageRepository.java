@@ -16,4 +16,5 @@ public interface StorageRepository extends JpaRepository<Storage, Long> {
     Optional<Storage> findByIdAndRecordIdAndUserId(Long id, Long recordId, Long userId);
 
     Optional<Storage> findByNameAndRecordIdAndUserId(String name, Long recordId, Long userId);
+    void deleteAllByRecordId(Long recordId);
 }

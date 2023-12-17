@@ -1,4 +1,4 @@
-package org.auth.config.kafka;
+package org.record.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +22,14 @@ public class KafkaProducerConfiguration {
     public String servers;
 
     @Bean
-    NewTopic recordCreationTopic() {
-        return TopicBuilder.name("USER_FIRST_CREATION")
+    NewTopic recordFirstCreationTopic() {
+        return TopicBuilder.name("RECORD_FIRST_CREATION")
                 .build();
     }
 
     @Bean
     NewTopic recordDeletionTopic() {
-        return TopicBuilder.name("USER_DELETION")
+        return TopicBuilder.name("RECORD_DELETION")
                 .build();
     }
 
@@ -37,7 +37,8 @@ public class KafkaProducerConfiguration {
     KafkaTemplate<String, String> kafkaTemplate() {
 
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
+        String serverToProduce = servers.split(",")[1];
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, serverToProduce);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 

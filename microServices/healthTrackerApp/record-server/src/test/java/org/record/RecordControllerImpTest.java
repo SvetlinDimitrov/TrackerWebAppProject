@@ -1,6 +1,5 @@
 package org.record;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -22,9 +21,11 @@ import org.record.utils.GsonWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,6 +48,9 @@ public class RecordControllerImpTest {
 
     @Autowired
     private GsonWrapper gson;
+
+    @MockBean
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     private User userView;
 
@@ -285,87 +289,6 @@ public class RecordControllerImpTest {
     public void deleteById_InvalidRecordId_StatusNotFound() throws Exception {
         Long invalidRecordId = 666L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/record/" + invalidRecordId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void createStorage_ValidInputEmptyName_StatusNoContent() throws Exception {
-
-        Record record = new Record();
-        record.setId(7L);
-        userView.setId(7L);
-        record.setUserId(userView.getId());
-        record = recordRepository.save(record);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/record/" + record.getId() + "/storage")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))
-                .param("storageName", ""))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        assertFalse(recordRepository.findById(record.getId()).isEmpty());
-    }
-
-    @Test
-    public void createStorage_InvalidRecordId_StatusBadRequest() throws Exception {
-
-        Long invalidRecordId = 666L;
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/record/" + invalidRecordId + "/storage")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))
-                .param("storageName", "test"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void deleteStorage_ValidInput_StatusNoContent() throws Exception {
-
-        Record record = new Record();
-        Long validStorageId = 1L;
-        record.setId(8L);
-        userView.setId(8L);
-        record.setUserId(userView.getId());
-        record = recordRepository.save(record);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/record/" + record.getId() + "/storage/" + validStorageId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        assertFalse(recordRepository.findById(record.getId()).isEmpty());
-    }
-
-    @Test
-    public void deleteStorage_InvalidRecordIdInput_StatusBadRequest() throws Exception {
-        Long invalidRecordId = 666L;
-        Long invalidStorageId = 666L;
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/record/" + invalidRecordId + "/storage/" + invalidStorageId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-ViewUser", gson.toJson(userView))
-                .param("storageId", "1"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void deleteStorage_InvalidStorageIdInput_StatusBadRequest() throws Exception {
-        Long invalidStorageId = 666L;
-
-        Record record = new Record();
-        record.setId(9L);
-        userView.setId(9L);
-        record.setUserId(userView.getId());
-        record = recordRepository.save(record);
-
-        when(storageClient.deleteStorage(invalidStorageId, record.getId(), gson.toJson(userView)))
-                .thenThrow(new RuntimeException());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/record/" + record.getId() + "/storage/" + invalidStorageId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("X-ViewUser", gson.toJson(userView)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());

@@ -89,6 +89,17 @@ public class CustomFoodServiceImp extends AbstractFoodService {
             throw new InvalidUserTokenHeaderException("Invalid user token header.");
         }
     }
+
+    public Food calculateNutrients(Food food, Double amount) throws FoodException {
+        if (amount.compareTo(0.0) == 0){
+            return generateEmptyFood(food.getName() , food.getId());
+        }
+        if(amount.compareTo(0.0) < 0){
+            throw new FoodException("Amount cannot be negative.");
+        }
+
+        return calculateFoodByAmount(food, amount);
+    }
     
    
 

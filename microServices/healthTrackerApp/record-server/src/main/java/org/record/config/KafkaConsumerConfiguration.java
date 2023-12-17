@@ -33,9 +33,10 @@ public class KafkaConsumerConfiguration {
     ConsumerFactory<String, String> consumerFactoryUserFirstCreation() {
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
+        String firstServer = servers.split(",")[0];
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, firstServer);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_user_creation_1");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -56,9 +57,10 @@ public class KafkaConsumerConfiguration {
     ConsumerFactory<String, String> consumerFactoryUserDeletion() {
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
+        String firstServer = servers.split(",")[0];
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, firstServer);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_user_deletion_1");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

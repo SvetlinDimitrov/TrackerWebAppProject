@@ -7,19 +7,16 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'eureka'
-    metrics_path: '/actuator/prometheus' 
-    static_configs:
-      - targets: ['localhost:8761/eureka/apps'] 
+  - job_name: 'eureka-discovery'
+    scrape_interval: 15s
+    scrape_timeout: 15s
+    eureka_sd_configs:
+    - server: http://localhost:8761/eureka
+      refresh_interval: 30s
     relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 'localhost:9090'
-    metric_relabel_configs:
-      - source_labels: [instance]
-        regex: '.*'
-        replacement: '${1}'
-        target_label: instance
+    - source_labels: [__meta_eureka_app_name]
+      target_label: application
+    - source_labels: [__meta_eureka_app_instance_metadata_metrics_path]
+      target_label: __metrics_path__
+    - source_labels: [__address__]
+      target_label: instance

@@ -11,15 +11,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GateWayKafkaService {
 
-    
-    private GsonWrapper gsonWrapper;
-    private GateWayBlockedUsers blockedUsers;
+    private final GsonWrapper gsonWrapper;
+    private final GateWayBlockedUsers blockedUsers;
 
     @KafkaListener(topics = "USER_DELETION", groupId = "gateway_user_deletion", containerFactory = "kafkaListenerUserDeletion")
     public void addNewRecordByUserId(String userToken) {
 
         UserView user = gsonWrapper.fromJson(userToken, UserView.class);
-       
+
         blockedUsers.blockUser(user);
     }
+
 }

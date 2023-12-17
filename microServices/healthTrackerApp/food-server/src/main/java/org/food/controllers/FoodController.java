@@ -9,14 +9,15 @@ import org.food.exception.FoodException;
 import org.food.exception.InvalidUserTokenHeaderException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,8 +29,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@RequestMapping(path = "/api/food/customFood")
-@Controller
+@RequestMapping(path = "/api/food")
+@RestController
 @Tag(name = "Custom Food", description = "The Custom Food API")
 public interface FoodController {
 
@@ -77,4 +78,10 @@ public interface FoodController {
             @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
             @Parameter(description = "Name of the custom food to be deleted.", example = "Custom Apple") @RequestParam(name = "foodName") String name)
             throws FoodException, InvalidUserTokenHeaderException;
+
+    @PatchMapping("/calculate")
+    public ResponseEntity<Food> getMethodName(@org.springframework.web.bind.annotation.RequestBody Food food,
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @RequestParam(name = "amount") Double amount) throws FoodException;
+
 }

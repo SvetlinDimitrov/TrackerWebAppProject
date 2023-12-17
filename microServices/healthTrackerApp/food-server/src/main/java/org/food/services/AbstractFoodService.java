@@ -8,7 +8,7 @@ import org.food.domain.dtos.Food;
 public abstract class AbstractFoodService {
 
     protected Food calculateFoodByAmount(Food food, Double size) {
-
+        
         BigDecimal amount = BigDecimal.valueOf(size);
 
         if (food.getSize().compareTo(amount) == 0) {

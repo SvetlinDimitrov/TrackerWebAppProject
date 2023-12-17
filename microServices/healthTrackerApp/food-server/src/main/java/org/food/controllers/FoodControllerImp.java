@@ -9,31 +9,19 @@ import org.food.exception.InvalidUserTokenHeaderException;
 import org.food.services.CustomFoodServiceImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class FoodControllerImp implements FoodController {
 
     private final CustomFoodServiceImp foodService;
 
-    /**
-     * Adds a new custom food.
-     *
-     * @param createCustomFood the details of the food to add
-     * @param bindingResult    holds the result of the validation of the
-     *                         createCustomFood object
-     * @param userToken        the token of the user who is adding the food
-     * @return a ResponseEntity with the HTTP status code
-     * @throws FoodException                   if there is an error while adding the
-     *                                         food
-     * @throws InvalidUserTokenHeaderException if the user token is invalid
-     */
     @Override
     public ResponseEntity<HttpStatus> addFood(
             @Valid @RequestBody CreateCustomFood createCustomFood,
@@ -47,13 +35,6 @@ public class FoodControllerImp implements FoodController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    /**
-     * Retrieves all custom foods for a user.
-     *
-     * @param userToken the token of the user whose foods are to be retrieved
-     * @return a ResponseEntity with the list of foods and the HTTP status code
-     * @throws InvalidUserTokenHeaderException if the user token is invalid
-     */
     @Override
     public ResponseEntity<List<Food>> getAllCustomFoods(String userToken) throws InvalidUserTokenHeaderException {
 
@@ -61,17 +42,6 @@ public class FoodControllerImp implements FoodController {
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
-    /**
-     * Retrieves a custom food by its name and the user's ID.
-     *
-     * @param userToken the token of the user who owns the food
-     * @param name      the name of the food to retrieve
-     * @param amount    the amount of the food to retrieve
-     * @return a ResponseEntity with the food and the HTTP status code
-     * @throws FoodException                   if there is an error while retrieving
-     *                                         the food
-     * @throws InvalidUserTokenHeaderException if the user token is invalid
-     */
     @Override
     public ResponseEntity<Food> getCustomFood(String userToken, String name, Double amount)
             throws FoodException, InvalidUserTokenHeaderException {
@@ -79,17 +49,16 @@ public class FoodControllerImp implements FoodController {
         return new ResponseEntity<>(food, HttpStatus.OK);
     }
 
-    /**
-     * Deletes a custom food.
-     *
-     * @param userToken the token of the user who owns the food
-     * @param name      the name of the food to delete
-     * @return a ResponseEntity with the HTTP status code
-     */
     @Override
     public ResponseEntity<HttpStatus> deleteCustomFood(String userToken, String name)
             throws FoodException, InvalidUserTokenHeaderException {
         foodService.deleteCustomFood(name, userToken);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Food> getMethodName(Food food, String userToken, Double amount) throws FoodException {
+
+        return new ResponseEntity<>(foodService.calculateNutrients(food, amount), HttpStatus.OK);
     }
 }
