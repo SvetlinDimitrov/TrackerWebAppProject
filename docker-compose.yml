@@ -13,9 +13,9 @@ services:
       - zookeeper-data:/var/lib/zookeeper/data
       - zookeeper-log:/var/lib/zookeeper/log
       - zookeeper-secrets:/etc/zookeeper/secrets
-  broker:
+  authBroker:
     image: confluentinc/cp-kafka:7.0.1
-    container_name: broker
+    container_name: authBroker
     ports:
       - "9092:9092"
     depends_on:
@@ -23,14 +23,36 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://authBroker:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     volumes:
       - kafka-secrets:/etc/kafka/secrets
       - kafka-data:/var/lib/kafka/data
+  recordBroker:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: recordBroker
+    ports:
+      - "9093:9093"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://recordBroker:29093,EXTERNAL://localhost:9093
+      KAFKA_LISTENERS: INTERNAL://:29093,EXTERNAL://:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-secrets2:/etc/kafka/secrets
+      - kafka-data2:/var/lib/kafka/data
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -40,8 +62,6 @@ services:
     container_name: mysql-db-record
     restart: always
     image: mysql:latest
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: record
@@ -51,8 +71,6 @@ services:
     container_name: mysql-db-user
     restart: always
     image: mysql:latest
-    ports:
-      - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: users
@@ -62,8 +80,6 @@ services:
     container_name: mysql-db-storage
     restart: always
     image: mysql:latest
-    ports:
-      - "3305:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: storage
@@ -73,8 +89,6 @@ services:
     container_name: mysql-db-food
     restart: always
     image: mysql:latest
-    ports:
-      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: food
@@ -84,8 +98,6 @@ services:
     container_name: mysql-db-achievement
     restart: always
     image: mysql:latest
-    ports:
-      - "3309:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: achievement
@@ -95,8 +107,7 @@ services:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
     environment:
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
     ports:
@@ -105,101 +116,72 @@ services:
     image: svetlindimitrov/gateway-server-tracker-app
     container_name: gateway-server
     environment:
-      ZIPKIN_URL: zipkin
-      EUREKA_HOST: discovery-server
+      - SPRING_PROFILES_ACTIVE=docker
     ports:
       - "8080:8080"
     depends_on:
       - zipkin
       - discovery-server
+      - authBroker
   auth-server:
     image: svetlindimitrov/auth-server-tracker-app
     container_name: auth-server
     restart: always
-    ports:
-      - "10000:10000"
     environment:
-      KAFKA_HOST: broker:29092
-      DB_HOST: mysql-db-user
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - mysql-db-user
       - gateway-server
       - discovery-server
-      - broker
+      - authBroker
   food-server:
     image: svetlindimitrov/food-server-tracker-app
     container_name: food-server
-    ports:
-      - "12000:12000"
     environment:
-      DB_HOST: mysql-db-food
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - mysql-db-food
       - discovery-server
       - gateway-server
+      - authBroker
   record-server:
     restart: always
     image: svetlindimitrov/record-server-tracker-app
     container_name: record-server
-    ports:
-      - "15000:15000"
     environment:
-      DB_HOST: mysql-db-record
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - mysql-db-record
-      - mysql-db-user
       - gateway-server
       - discovery-server
-      - broker
+      - recordBroker
+      - authBroker
   storage-server:
     restart: always
     image: svetlindimitrov/storage-server-tracker-app
     container_name: storage-server
-    ports:
-      - "16000:16000"
     environment:
-      DB_HOST: mysql-db-storage
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - mysql-db-storage
       - gateway-server
       - discovery-server
-      - broker
+      - record-server
+      - recordBroker
   achievement-server:
     image: svetlindimitrov/achievement-server-tracker-app
     container_name: achievement-server
-    ports:
-      - "14000:14000"
     environment:
-      DB_HOST: mysql-db-achievement
-      DB_PORT: 3306
-      EUREKA_HOST: discovery-server
-      ZIPKIN_URL: zipkin
-      KAFKA_HOST: broker:29092
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - mysql-db-achievement
       - gateway-server
       - discovery-server
-      - broker
   prometheus:
     image: prom/prometheus:v2.37.1
     container_name: prometheus
@@ -209,8 +191,6 @@ services:
     volumes:
       - ./runProjectConfig/prometheus.yaml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
-    depends_on:
-      - record-server
   grafana:
     image: grafana/grafana-oss:8.5.2
     container_name: grafana
@@ -233,17 +213,25 @@ services:
     ports:
       - '3001:80'
     depends_on:
+      - discovery-server
       - gateway-server
+      - auth-server
+      - food-server
+      - record-server
+      - storage-server
+      - achievement-server
 volumes:
   user-data:
   storage-data:
   record-data:
   food-data:
   achievement-data:
-  grafana-data:
-  prometheus-data:
   kafka-data:
+  kafka-data2:
   kafka-secrets:
+  kafka-secrets2:
   zookeeper-data:
   zookeeper-log:
   zookeeper-secrets:
+  prometheus-data:
+  grafana-data:
