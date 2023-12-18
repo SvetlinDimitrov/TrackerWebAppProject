@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 import { NotificationContext } from "../../../context/Notification";
 
@@ -77,7 +77,6 @@ const Login = () => {
               setUser({ ...user, email: e.target.value });
             }}
             required
-            
           />
 
           <input

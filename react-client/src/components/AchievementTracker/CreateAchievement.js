@@ -5,7 +5,7 @@ import * as PathCreator from "../../util/PathCreator";
 import api from "../../util/api";
 import styles from "./CreateAchievement.module.css";
 import { NotificationContext } from "../../context/Notification";
-import { AuthContext } from "../../context/UserAuth";
+import { AuthContext } from "../../context/UserCredentials";
 
 const CreateAchievement = () => {
   const navigate = useNavigate();

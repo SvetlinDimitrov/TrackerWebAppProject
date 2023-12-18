@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 import styles from "./AchievementInfo.module.css";
 import { NotificationContext } from "../../context/Notification";
-import { AuthContext } from "../../context/UserAuth";
+import { AuthContext } from "../../context/UserCredentials";
 import * as PathCreator from "../../util/PathCreator";
 
 import api from "../../util/api";

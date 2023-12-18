@@ -3,14 +3,15 @@ import { useNavigate, useParams, Outlet } from "react-router-dom";
 
 import * as PathCreator from "../../../util/PathCreator";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 import styles from "./StorageHolder.module.css";
 
 const StorageHolder = () => {
   const navigate = useNavigate();
   const { recordId, storageId } = useParams();
-  const { setFailedMessage , setSuccessfulMessage} = useContext(NotificationContext);
+  const { setFailedMessage, setSuccessfulMessage } =
+    useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
 
@@ -48,9 +49,12 @@ const StorageHolder = () => {
     )
       return;
     try {
-      await api.delete(`/storage/delete/${storageId}/record?recordId=${recordId}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
+      await api.delete(
+        `/storage/delete/${storageId}/record?recordId=${recordId}`,
+        {
+          headers: { Authorization: `Bearer ${userToken}` },
+        }
+      );
       setSuccessfulMessage({
         message: "Storage " + storage.name + " was successful!",
         flag: true,

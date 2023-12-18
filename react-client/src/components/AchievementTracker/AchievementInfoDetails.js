@@ -27,7 +27,7 @@ const AchievementInfoDetails = () => {
       let processedData = processDataByType(data, type);
       processedData = sortData(processedData, sort, type);
       const sections = groupDataIntoSections(processedData, type);
-
+      
       setSectionData(sections);
       setSelectedSection(0);
       setParams({ type, sort }); 

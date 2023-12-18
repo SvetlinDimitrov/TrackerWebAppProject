@@ -4,7 +4,7 @@ import styles from "./SelectRecord.module.css";
 
 import * as PathCreator from "../../../util/PathCreator";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 
 const SelectRecord = () => {
@@ -50,11 +50,7 @@ const SelectRecord = () => {
         </button>
         <h2 className={styles.header}>Select Record</h2>
         <select
-          onChange={(e) =>
-            navigate(
-              PathCreator.recordPath(e.target.value)
-            )
-          }
+          onChange={(e) => navigate(PathCreator.recordPath(e.target.value))}
           className={styles.select}
         >
           <option value={-1}>Choose Storage</option>

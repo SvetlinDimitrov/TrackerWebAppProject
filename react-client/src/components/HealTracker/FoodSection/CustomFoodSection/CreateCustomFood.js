@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./CreateCustomFood.module.css";
 
-import { AuthContext } from "../../../../context/UserAuth";
+import { AuthContext } from "../../../../context/UserCredentials";
 import { NotificationContext } from "../../../../context/Notification";
 import api from "../../../../util/api";
 import * as PathCreator from "../../../../util/PathCreator";

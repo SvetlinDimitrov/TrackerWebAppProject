@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "./AchievementUpdate.module.css";
 
 import { NotificationContext } from "../../context/Notification";
-import { AuthContext } from "../../context/UserAuth";
+import { AuthContext } from "../../context/UserCredentials";
 import * as PathCreator from "../../util/PathCreator";
 import api from "../../util/api";
 
@@ -16,7 +16,7 @@ const AchievementUpdate = () => {
   const userToken = user.tokenInfo.token;
   const [achievement, setAchievement] = useState({
     progress: 0,
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split("T")[0],
     replace: false,
   });
 

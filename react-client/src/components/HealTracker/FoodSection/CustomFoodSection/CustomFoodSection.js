@@ -4,7 +4,7 @@ import { Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
 import styles from "./CustomFoodSection.module.css";
 import * as PathCreator from "../../../../util/PathCreator";
 import { NotificationContext } from "../../../../context/Notification";
-import { AuthContext } from "../../../../context/UserAuth";
+import { AuthContext } from "../../../../context/UserCredentials";
 import api from "../../../../util/api";
 
 const CustomFoodSection = () => {

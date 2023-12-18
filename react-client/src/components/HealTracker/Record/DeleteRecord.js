@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as PathCreator from "../../../util/PathCreator";
 import api from "../../../util/api";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import styles from "./DeleteRecord.module.css";
 
 const DeleteRecord = () => {
@@ -45,7 +45,7 @@ const DeleteRecord = () => {
   return (
     <div className={styles.overlay}>
       <div className={styles.container}>
-      <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={onClose}>
           X
         </button>
         <h2 className={styles.container_header}>Delete Record</h2>

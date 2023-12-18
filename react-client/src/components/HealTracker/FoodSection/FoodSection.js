@@ -5,7 +5,7 @@ import styles from "./FoodSection.module.css";
 import * as PathCreator from "../../../util/PathCreator";
 import api from "../../../util/api";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 
 const FoodSection = () => {
   const { recordId, storageId } = useParams();

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { FoodContext } from "../../../context/FoodContext";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import * as nutrientCalculations from "../../../util/NutrientCalculator";
 import * as PathCreator from "../../../util/PathCreator";
 import styles from "./NutrientFeatureTemplate.module.css";
@@ -12,18 +12,22 @@ const NutrientFeatureTemplate = () => {
   const { allFoods, setNutrient } = useContext(FoodContext);
   const { featureType } = useParams();
   const [data, setData] = useState();
-  const [title , setTitle] = useState();
+  const [title, setTitle] = useState();
   const [activeTab, setActiveTab] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataToSet = nutrientCalculations.featureNutritionDate(allFoods, user, featureType);
+      const dataToSet = nutrientCalculations.featureNutritionDate(
+        allFoods,
+        user,
+        featureType
+      );
       setData(dataToSet);
       setNutrient(dataToSet);
-      setTitle(featureType.replace(/([A-Z])/g, ' $1').trim());
+      setTitle(featureType.replace(/([A-Z])/g, " $1").trim());
     };
     fetchData();
-  }, [ allFoods, user, featureType, setNutrient]);
+  }, [allFoods, user, featureType, setNutrient]);
 
   if (data === undefined) {
     return <div id="preloader"></div>;

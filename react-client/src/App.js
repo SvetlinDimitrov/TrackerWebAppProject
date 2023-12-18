@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 
-import UserAuthProvider from "./context/UserAuth";
-import UserAuthGuard from "./context/UserAuthGuard";
+import UserAuthGuard from "./context/UserCredentials";
+import UserCredentials from "./context/UserAuthGuard";
 
 import AchievementInfo from "./components/AchievementTracker/AchievementInfo";
 import AchievementTracker from "./components/AchievementTracker/AchievementTracker";
@@ -46,123 +46,120 @@ import NutritionTemplateBarCharInfo from "./components/HealTracker/Nutrients/Nut
 import NutrientTemplateDescription from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateDescription";
 import NutrientTemplateDescriptionFeature from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBonus";
 import NutrientTemplateFeatureBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBarCharInfo";
+
 function App() {
   return (
     <>
-      <UserAuthProvider>
+      <UserAuthGuard>
         <NotificationProvider>
-          <FoodContextProvider>
-            <AchievementContextProvider>
-              <Header />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/nutrientInfo" element={<NutritionInfo />} />
-                <Route path="*" element={<Error />} />
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<UserCredentials />}>
+              <Route
+                path="/nutrientInfo"
+                element={
+                  <FoodContextProvider>
+                    <NutritionInfo />
+                  </FoodContextProvider>
+                }
+              >
+                <Route
+                  path=":nutrition/:nutritionType"
+                  element={<NutritionTemplate />}
+                >
+                  <Route
+                    path="functions"
+                    element={<NutrientTemplateFunctions />}
+                  />
+                  <Route
+                    path="sources"
+                    element={<NutritionTemplateSources />}
+                  />
+                  <Route
+                    path="healthConsiderations"
+                    element={<NutritionTemplateHealthConsideration />}
+                  />
+                  <Route path="types" element={<NutritionTemplateTypes />} />
+                  <Route
+                    path="dietaryConsiderations"
+                    element={<NutritionTemplateDietaryConsiderations />}
+                  />
+                  <Route path="intake" element={<NutritionTemplateIntake />} />
+                  <Route
+                    path="barCharStatistic"
+                    element={<NutritionTemplateBarCharInfo />}
+                  />
+                  <Route
+                    path="description"
+                    element={<NutrientTemplateDescription />}
+                  />
+                </Route>
+                <Route
+                  path="feature/:featureType"
+                  element={<NutrientFeatureTemplate />}
+                >
+                  <Route
+                    path="description"
+                    element={<NutrientTemplateDescriptionFeature />}
+                  />
+                  <Route
+                    path="barCharStatistic"
+                    element={<NutrientTemplateFeatureBarCharInfo />}
+                  />
+                </Route>
+              </Route>
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/editUser" element={<EditUser />} />
+              <Route
+                path="/achievements"
+                element={
+                  <AchievementContextProvider>
+                    <AchievementTracker />
+                  </AchievementContextProvider>
+                }
+              >
+                <Route path="select" element={<SelectAchievement />} />
+                <Route path="create" element={<CreateAchievement />} />
 
-                <Route element={<UserAuthGuard />}>
-                  <Route path="/nutrientInfo" element={<NutritionInfo />}>
-                    <Route
-                      path=":nutrition/:nutritionType"
-                      element={<NutritionTemplate />}
-                    >
-                      <Route
-                        path="functions"
-                        element={<NutrientTemplateFunctions />}
-                      />
-                      <Route
-                        path="sources"
-                        element={<NutritionTemplateSources />}
-                      />
-                      <Route
-                        path="healthConsiderations"
-                        element={<NutritionTemplateHealthConsideration />}
-                      />
-                      <Route
-                        path="types"
-                        element={<NutritionTemplateTypes />}
-                      />
-                      <Route
-                        path="dietaryConsiderations"
-                        element={<NutritionTemplateDietaryConsiderations />}
-                      />
-                      <Route
-                        path="intake"
-                        element={<NutritionTemplateIntake />}
-                      />
-                      <Route
-                        path="barCharStatistic"
-                        element={<NutritionTemplateBarCharInfo />}
-                      />
-                      <Route
-                        path="description"
-                        element={<NutrientTemplateDescription />}
-                      />
+                <Route path=":achId" element={<AchievementInfo />}>
+                  <Route path="addProgress" element={<AchievementUpdate />} />
+                  <Route path="reports" element={<AchievementInfoDetails />} />
+                </Route>
+              </Route>
+              <Route
+                path="/health-tracker"
+                element={
+                  <FoodContextProvider>
+                    <RecordHolder />
+                  </FoodContextProvider>
+                }
+              >
+                <Route path="selectRecord" element={<SelectRecord />} />
+                <Route path="createRecord" element={<CreateRecord />} />
+                <Route path="record/:recordId" element={<StorageHolder />}>
+                  <Route path="deleteRecord" element={<DeleteRecord />} />
+                  <Route path="selectStorage" element={<SelectStorage />} />
+                  <Route path="createStorage" element={<CreateStorage />} />
+                  <Route path="storage/:storageId" element={<FoodSection />}>
+                    <Route path="foodMenu" element={<FoodMenu />}>
+                      <Route path=":foodName" element={<FoodMenuItem />} />
                     </Route>
-                    <Route
-                      path="feature/:featureType"
-                      element={<NutrientFeatureTemplate />}
-                    >
-                      <Route
-                        path="description"
-                        element={<NutrientTemplateDescriptionFeature />}
-                      />
-                      <Route
-                        path="barCharStatistic"
-                        element={<NutrientTemplateFeatureBarCharInfo />}
-                      />
-                    </Route>
-                  </Route>
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/settings/editUser" element={<EditUser />} />
-                  <Route path="/achievements" element={<AchievementTracker />}>
-                    <Route path="select" element={<SelectAchievement />} />
-                    <Route path="create" element={<CreateAchievement />} />
-
-                    <Route path=":achId" element={<AchievementInfo />}>
-                      <Route
-                        path="addProgress"
-                        element={<AchievementUpdate />}
-                      />
-                      <Route
-                        path="reports"
-                        element={<AchievementInfoDetails />}
-                      />
-                    </Route>
-                  </Route>
-                  <Route path="/health-tracker" element={<RecordHolder />}>
-                    <Route path="selectRecord" element={<SelectRecord />} />
-                    <Route path="createRecord" element={<CreateRecord />} />
-                    <Route path="record/:recordId" element={<StorageHolder />}>
-                      <Route path="deleteRecord" element={<DeleteRecord />} />
-                      <Route path="selectStorage" element={<SelectStorage />} />
-                      <Route path="createStorage" element={<CreateStorage />} />
-                      <Route
-                        path="storage/:storageId"
-                        element={<FoodSection />}
-                      >
-                        <Route path="foodMenu" element={<FoodMenu />}>
-                          <Route path=":foodName" element={<FoodMenuItem />} />
-                        </Route>
-                        <Route path=":foodName" element={<FoodSectionItem />} />
-                        <Route
-                          path="customFood"
-                          element={<CustomFoodSection />}
-                        >
-                          <Route path="create" element={<CreateCustomFood />} />
-                          <Route path=":foodName" element={<FoodMenuItem />} />
-                        </Route>
-                      </Route>
+                    <Route path=":foodName" element={<FoodSectionItem />} />
+                    <Route path="customFood" element={<CustomFoodSection />}>
+                      <Route path="create" element={<CreateCustomFood />} />
                     </Route>
                   </Route>
                 </Route>
-              </Routes>
-              <Footer />
-            </AchievementContextProvider>
-          </FoodContextProvider>
+              </Route>
+            </Route>
+            <Route path="*" element={<Error />} />
+          </Routes>
+          <Footer />
         </NotificationProvider>
-      </UserAuthProvider>
+      </UserAuthGuard>
     </>
   );
 }

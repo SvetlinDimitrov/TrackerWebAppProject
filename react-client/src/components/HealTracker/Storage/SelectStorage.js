@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import * as PathCreator from "../../../util/PathCreator";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 import styles from "./SelectStorage.module.css";
 

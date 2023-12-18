@@ -4,11 +4,11 @@ import styles from "./SelectAchievement.module.css";
 
 import * as PathCreator from "../../util/PathCreator";
 import { NotificationContext } from "../../context/Notification";
-import { AuthContext } from "../../context/UserAuth";
+import { AuthContext } from "../../context/UserCredentials";
 import api from "../../util/api";
 
 const SelectAchievement = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const { setFailedMessage } = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
@@ -40,12 +40,17 @@ const SelectAchievement = () => {
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>
-        <button className={styles.closeButton} onClick={() => navigate(PathCreator.basicAchievementPath())}>
+        <button
+          className={styles.closeButton}
+          onClick={() => navigate(PathCreator.basicAchievementPath())}
+        >
           X
         </button>
         <h2 className={styles.header}>Select Achievements</h2>
         <select
-          onChange={(e) => navigate(PathCreator.achievementPathId(e.target.value))}
+          onChange={(e) =>
+            navigate(PathCreator.achievementPathId(e.target.value))
+          }
           className={styles.select}
         >
           <option value={-1}>Choose Achievement</option>

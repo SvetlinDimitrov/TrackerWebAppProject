@@ -1,20 +1,16 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import FoodItemBluePrint from "../FoodItemBluePrint";
 import api from "../../../../util/api";
-import { AuthContext } from "../../../../context/UserCredentials";
+import { AuthContext } from "../../../../context/UserAuth";
 import { FoodContext } from "../../../../context/FoodContext";
 import { NotificationContext } from "../../../../context/Notification";
 
 import * as PathCreator from "../../../../util/PathCreator";
 
-const FoodMenuItem = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+const CustomFoodSectionItem = () => {
   const navigate = useNavigate();
-
-  const isCustom = queryParams.get("isCustom") === "true";
   const { user } = useContext(AuthContext);
   const { allFoods } = useContext(FoodContext);
   const { setSuccessfulMessage, setFailedMessage } =
@@ -22,39 +18,10 @@ const FoodMenuItem = () => {
   const userToken = user.tokenInfo.token;
   const { recordId, storageId, foodName } = useParams();
   const [food, setFood] = useState(null);
-
   useEffect(() => {
-    const getData = async () => {
-      if (isCustom) {
-        try {
-          const customFood = await api.get(`/food?foodName=${foodName}`, {
-            headers: { Authorization: `Bearer ${userToken}` },
-          });
-          setFood(customFood.data);
-        } catch (error) {
-          setFailedMessage({
-            message:
-              "Something went wrong with food addition. Please try again later!",
-            flag: true,
-          });
-          navigate(PathCreator.storagePath(recordId, storageId));
-        }
-      } else {
-        const food = allFoods.find((food) => food.name === foodName);
-        setFood(food);
-      }
-    };
-    getData();
-  }, [
-    allFoods,
-    foodName,
-    isCustom,
-    navigate,
-    recordId,
-    setFailedMessage,
-    storageId,
-    userToken,
-  ]);
+    const food = allFoods.find((food) => food.name === foodName);
+    setFood(food);
+  }, [allFoods, foodName]);
 
   const handleAddFood = async (food) => {
     if (
@@ -98,13 +65,8 @@ const FoodMenuItem = () => {
   };
 
   const onClose = () => {
-    if (isCustom) {
-      navigate(PathCreator.storagePath(recordId, storageId) + "/customFood");
-      return;
-    }
     navigate(PathCreator.storagePath(recordId, storageId));
   };
-
   if (!food) {
     return <div id="preloader"></div>;
   }
@@ -116,5 +78,4 @@ const FoodMenuItem = () => {
     />
   );
 };
-
-export default FoodMenuItem;
+export default CustomFoodSectionItem;

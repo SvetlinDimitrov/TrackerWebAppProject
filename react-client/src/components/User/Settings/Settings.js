@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 import { NotificationContext } from "../../../context/Notification";
 import styles from "./Settings.module.css";

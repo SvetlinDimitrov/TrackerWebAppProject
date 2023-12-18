@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import FoodItemBluePrint from "./FoodItemBluePrint";
 import api from "../../../util/api";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import { NotificationContext } from "../../../context/Notification";
 
 import * as PathCreator from "../../../util/PathCreator";
@@ -82,7 +82,10 @@ const FoodSectionItem = () => {
     }
   };
   const handleDeleteFood = async (food) => {
-    if(window.confirm("Are you sure you want to delete " + food.name + " ?") === false){
+    if (
+      window.confirm("Are you sure you want to delete " + food.name + " ?") ===
+      false
+    ) {
       return;
     }
     try {

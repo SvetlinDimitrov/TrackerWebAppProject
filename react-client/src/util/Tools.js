@@ -575,7 +575,9 @@ export function BarChart2({ height, info, dataLength }) {
   );
 }
 export function GroupedBarChart({ height, info, dataLength }) {
+  
   info = info.slice(0, dataLength);
+  
   const dataNames = info.map((item) => item.dataNames);
   const data = info.map((item) => item.data);
   const typeData = info.map((item) => item.typeData);

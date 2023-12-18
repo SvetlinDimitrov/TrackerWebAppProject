@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import { validatedUserToken } from "../../../util/UserUtils";
 
 import api from "../../../util/api";
@@ -58,7 +58,7 @@ const EditUser = () => {
     });
     navigate("/logout");
     return;
-  } 
+  }
   return (
     <>
       {currentUser !== undefined ? (
@@ -125,7 +125,10 @@ const EditUser = () => {
                   onChange={(e) =>
                     setCurrentUser({
                       ...currentUser,
-                      workoutState: e.target.value === "" ? currentUser.workoutState : e.target.value,
+                      workoutState:
+                        e.target.value === ""
+                          ? currentUser.workoutState
+                          : e.target.value,
                     })
                   }
                 >
@@ -144,7 +147,13 @@ const EditUser = () => {
                   name="gender"
                   value={currentUser.gender ? currentUser.gender : ""}
                   onChange={(e) =>
-                    setCurrentUser({ ...currentUser, gender: e.target.value === "" ? currentUser.gender : e.target.value })
+                    setCurrentUser({
+                      ...currentUser,
+                      gender:
+                        e.target.value === ""
+                          ? currentUser.gender
+                          : e.target.value,
+                    })
                   }
                 >
                   <option value="">Choose Gender</option>

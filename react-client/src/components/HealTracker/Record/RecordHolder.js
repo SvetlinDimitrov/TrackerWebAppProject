@@ -5,7 +5,7 @@ import { Outlet, useNavigate, useParams, useLocation } from "react-router-dom";
 import * as PathCreator from "../../../util/PathCreator";
 import DetailsOfRecord from "./DetailsOfRecord";
 import { NotificationContext } from "../../../context/Notification";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 import api from "../../../util/api";
 import AlertMessage from "../../Notifications/AlertMessage";
 
@@ -80,8 +80,12 @@ function RecordHolder() {
               onClick={() => {
                 navigate(
                   storageId
-                    ? PathCreator.storagePath(recordId , storageId) + "?detailRecord=" + !detailRecord
-                    : PathCreator.recordPath(recordId) + "?detailRecord=" + !detailRecord
+                    ? PathCreator.storagePath(recordId, storageId) +
+                        "?detailRecord=" +
+                        !detailRecord
+                    : PathCreator.recordPath(recordId) +
+                        "?detailRecord=" +
+                        !detailRecord
                 );
               }}
             >

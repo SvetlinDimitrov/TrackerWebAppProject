@@ -5,7 +5,7 @@ import { useState, useContext } from "react";
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
 import styles from "./FoodItemBluePrint.module.css";
-import { AuthContext } from "../../../context/UserAuth";
+import { AuthContext } from "../../../context/UserCredentials";
 
 const FoodItemBluePrint = ({
   foodInfo,
@@ -185,10 +185,10 @@ const FoodItemBluePrint = ({
                 <span>Potassium</span>
                 <span>{food.potassium.toFixed(2)} mg</span>
               </div>
-              <div className={styles.container_row}>
+              {/* <div className={styles.container_row}>
                 <span>Chloride</span>
                 <span>{food.chloride.toFixed(2)} mg</span>
-              </div>
+              </div> */}
               <div className={styles.container_row}>
                 <span>Iron</span>
                 <span>{food.iron.toFixed(2)} mg</span>
@@ -213,14 +213,14 @@ const FoodItemBluePrint = ({
                 <span>Selenium</span>
                 <span>{food.selenium.toFixed(2)} mcg</span>
               </div>
-              <div className={styles.container_row}>
+              {/* <div className={styles.container_row}>
                 <span>Fluoride</span>
                 <span>{food.fluoride.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
+              </div> */}
+              {/* <div className={styles.container_row}>
                 <span>Chromium</span>
                 <span>{food.chromium.toFixed(2)} mcg</span>
-              </div>
+              </div> */}
               <div className={styles.container_row}>
                 <span>Molybdenum</span>
                 <span>{food.molybdenum.toFixed(2)} mcg</span>
