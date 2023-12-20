@@ -16,7 +16,7 @@ const FoodMenuItem = () => {
 
   const isCustom = queryParams.get("isCustom") === "true";
   const { user } = useContext(AuthContext);
-  const { allFoods } = useContext(FoodContext);
+  const { allFoods , convertComplexFoodIntoSimpleFood , convertSimpleFoodIntroComplexFood} = useContext(FoodContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const userToken = user.tokenInfo.token;
@@ -30,8 +30,9 @@ const FoodMenuItem = () => {
           const customFood = await api.get(`/food?foodName=${foodName}`, {
             headers: { Authorization: `Bearer ${userToken}` },
           });
-          setFood(customFood.data);
+          setFood(convertSimpleFoodIntroComplexFood(customFood.data));
         } catch (error) {
+          console.log(error);
           setFailedMessage({
             message:
               "Something went wrong with food addition. Please try again later!",
@@ -40,7 +41,10 @@ const FoodMenuItem = () => {
           navigate(PathCreator.storagePath(recordId, storageId));
         }
       } else {
-        const food = allFoods.find((food) => food.name === foodName);
+        const food = allFoods
+          .map((food) => food.data)
+          .flat()
+          .find((food) => food.description === foodName);
         setFood(food);
       }
     };
@@ -71,7 +75,7 @@ const FoodMenuItem = () => {
       try {
         await api.patch(
           `/storage/${storageId}/addFood?recordId=${recordId}`,
-          food,
+          convertComplexFoodIntoSimpleFood(food),
           {
             headers: { Authorization: `Bearer ${userToken}` },
           }
@@ -82,7 +86,7 @@ const FoodMenuItem = () => {
             " " +
             food.measurement +
             " of " +
-            food.name +
+            food.description +
             " added successfully!",
           flag: true,
         });
@@ -102,7 +106,7 @@ const FoodMenuItem = () => {
       navigate(PathCreator.storagePath(recordId, storageId) + "/customFood");
       return;
     }
-    navigate(PathCreator.storagePath(recordId, storageId));
+    navigate(PathCreator.storagePath(recordId, storageId) + "/foodMenu");
   };
 
   if (!food) {

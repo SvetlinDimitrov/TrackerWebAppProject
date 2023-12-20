@@ -5,6 +5,7 @@ import { useState, useContext } from "react";
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
 import styles from "./FoodItemBluePrint.module.css";
+import { FoodContext } from "../../../context/FoodContext";
 import { AuthContext } from "../../../context/UserCredentials";
 
 const FoodItemBluePrint = ({
@@ -20,6 +21,10 @@ const FoodItemBluePrint = ({
   const [inputValue, setInputValue] = useState(foodInfo.size);
   const [food, setFood] = useState(foodInfo);
 
+  const {
+    convertComplexFoodIntoSimpleFood,
+    convertSimpleFoodIntroComplexFood,
+  } = useContext(FoodContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
 
@@ -28,15 +33,18 @@ const FoodItemBluePrint = ({
     try {
       const response = await api.patch(
         `/food/calculate?amount=${inputValue}`,
-        food,
+        convertComplexFoodIntoSimpleFood(food),
         { headers: { Authorization: `Bearer ${userToken}` } }
       );
-      setFood(response.data);
+      setFood(convertSimpleFoodIntroComplexFood(response.data));
     } catch (error) {
       console.log(error);
     }
   };
 
+  if (!food) {
+    return <div id="preloader"></div>;
+  }
   return (
     <>
       <div className={styles.overlay}>
@@ -57,11 +65,13 @@ const FoodItemBluePrint = ({
           </div>
 
           <div className={styles.container_row}>
-            <span>{food.name}</span>
+            <span>{food.description}</span>
           </div>
           <div className={styles.container_row}>
-            <span>Calories</span>
-            <span>{food.calories}</span>
+            <span>{food.calories.name}</span>
+            <span>
+              {formatNumber(food.calories.amount)} {food.calories.unit}
+            </span>
           </div>
           <div className={styles.container_gauge}>
             <Gauge2
@@ -70,9 +80,18 @@ const FoodItemBluePrint = ({
               diameter={120}
               legendRectSize={15}
               legendSpacing={15}
-              fat={food.fat}
-              protein={food.protein}
-              carbohydrates={food.carbohydrates}
+              fat={
+                food.macronutrients.find((macro) => macro.name === "Fat").amount
+              }
+              protein={
+                food.macronutrients.find((macro) => macro.name === "Protein")
+                  .amount
+              }
+              carbohydrates={
+                food.macronutrients.find(
+                  (macro) => macro.name === "Carbohydrates"
+                ).amount
+              }
             />
           </div>
           <div className={styles.container_row}>
@@ -103,58 +122,17 @@ const FoodItemBluePrint = ({
           </div>
           {showVitamins && (
             <>
-              <div className={styles.container_row}>
-                <span>Vitamin A</span>
-                <span>{food.a.toFixed(2)} IU</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin D</span>
-                <span>{food.d.toFixed(2)} IU</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin E</span>
-                <span>{food.e.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin K</span>
-                <span>{food.k.toFixed(2)} mcg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin C</span>
-                <span>{food.c.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B1</span>
-                <span>{food.b1.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B2</span>
-                <span>{food.b2.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B3</span>
-                <span>{food.b3.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B5</span>
-                <span>{food.b5.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B6</span>
-                <span>{food.b6.toFixed(2)} mcg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B7</span>
-                <span>{food.b7.toFixed(2)} mcg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B9</span>
-                <span>{food.b9.toFixed(2)} mcg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Vitamin B12</span>
-                <span>{food.b12.toFixed(2)} mcg</span>
-              </div>
+              {food.vitaminNutrients.map((vitaminNutrient, index) => {
+                return (
+                  <div className={styles.container_row} key={index}>
+                    <span>{vitaminNutrient.name}</span>
+                    <span>
+                      {formatNumber(vitaminNutrient.amount)}{" "}
+                      {vitaminNutrient.unit}
+                    </span>
+                  </div>
+                );
+              })}
             </>
           )}
           <div
@@ -165,66 +143,17 @@ const FoodItemBluePrint = ({
           </div>
           {showMinerals && (
             <>
-              <div className={styles.container_row}>
-                <span>Calcium</span>
-                <span>{food.calcium.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Phosphorus</span>
-                <span>{food.phosphorus.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Magnesium</span>
-                <span>{food.magnesium.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Sodium</span>
-                <span>{food.sodium.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Potassium</span>
-                <span>{food.potassium.toFixed(2)} mg</span>
-              </div>
-              {/* <div className={styles.container_row}>
-                <span>Chloride</span>
-                <span>{food.chloride.toFixed(2)} mg</span>
-              </div> */}
-              <div className={styles.container_row}>
-                <span>Iron</span>
-                <span>{food.iron.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Zinc</span>
-                <span>{food.zinc.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Copper</span>
-                <span>{food.copper.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Manganese</span>
-                <span>{food.manganese.toFixed(2)} mg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Iodine</span>
-                <span>{food.iodine.toFixed(2)} mcg</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Selenium</span>
-                <span>{food.selenium.toFixed(2)} mcg</span>
-              </div>
-              {/* <div className={styles.container_row}>
-                <span>Fluoride</span>
-                <span>{food.fluoride.toFixed(2)} mg</span>
-              </div> */}
-              {/* <div className={styles.container_row}>
-                <span>Chromium</span>
-                <span>{food.chromium.toFixed(2)} mcg</span>
-              </div> */}
-              <div className={styles.container_row}>
-                <span>Molybdenum</span>
-                <span>{food.molybdenum.toFixed(2)} mcg</span>
-              </div>
+              {food.mineralNutrients.map((vitaminNutrient, index) => {
+                return (
+                  <div className={styles.container_row} key={index}>
+                    <span>{vitaminNutrient.name}</span>
+                    <span>
+                      {formatNumber(vitaminNutrient.amount)}{" "}
+                      {vitaminNutrient.unit}
+                    </span>
+                  </div>
+                );
+              })}
             </>
           )}
           <div
@@ -235,44 +164,17 @@ const FoodItemBluePrint = ({
           </div>
           {showMacros && (
             <>
-              <div className={styles.container_row}>
-                <span>Protein</span>
-                <span>{food.protein.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Carbohydrates</span>
-                <span>{food.carbohydrates.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Fiber</span>
-                <span>{food.fiber.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Sugar</span>
-                <span>{food.sugar.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Fat</span>
-                <span>{food.fat.toFixed(2)} g</span>
-              </div>
-
-              <div className={styles.container_row}>
-                <span>Trans Fat</span>
-                <span>{food.transFat.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Saturated Fat</span>
-                <span>{food.saturatedFat.toFixed(2)} g</span>
-              </div>
-
-              <div className={styles.container_row}>
-                <span>Polyunsaturated Fat</span>
-                <span>{food.polyunsaturatedFat.toFixed(2)} g</span>
-              </div>
-              <div className={styles.container_row}>
-                <span>Monounsaturated Fat</span>
-                <span>{food.monounsaturatedFat.toFixed(2)} g</span>
-              </div>
+              {food.macronutrients.map((vitaminNutrient, index) => {
+                return (
+                  <div className={styles.container_row} key={index}>
+                    <span>{vitaminNutrient.name}</span>
+                    <span>
+                      {formatNumber(vitaminNutrient.amount)}{" "}
+                      {vitaminNutrient.unit}
+                    </span>
+                  </div>
+                );
+              })}
             </>
           )}
           <div className={styles.container_specialRow}>
@@ -292,3 +194,10 @@ const FoodItemBluePrint = ({
 };
 
 export default FoodItemBluePrint;
+function formatNumber(num) {
+  if (Math.abs(Math.round(num) - num) < 0.01) {
+    return num;
+  } else {
+    return num.toFixed(3);
+  }
+}

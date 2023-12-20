@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import FoodItemBluePrint from "./FoodItemBluePrint";
 import api from "../../../util/api";
 import { AuthContext } from "../../../context/UserCredentials";
+import { FoodContext } from "../../../context/FoodContext";
 import { NotificationContext } from "../../../context/Notification";
 
 import * as PathCreator from "../../../util/PathCreator";
@@ -15,6 +16,7 @@ const FoodSectionItem = () => {
 
   const isCustom = queryParams.get("isCustom") === "true";
   const { user } = useContext(AuthContext);
+  const { convertComplexFoodIntoSimpleFood , convertSimpleFoodIntroComplexFood} = useContext(FoodContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const userToken = user.tokenInfo.token;
@@ -31,7 +33,7 @@ const FoodSectionItem = () => {
             headers: { Authorization: `Bearer ${userToken}` },
           }
         );
-        setFood(food.data);
+        setFood(convertSimpleFoodIntroComplexFood(food.data));
       } catch (error) {
         setFailedMessage({
           message:
@@ -56,7 +58,7 @@ const FoodSectionItem = () => {
     try {
       await api.patch(
         `/storage/${storageId}/changeFood?recordId=${recordId}`,
-        food,
+        convertComplexFoodIntoSimpleFood(food),
         {
           headers: { Authorization: `Bearer ${userToken}` },
         }
@@ -67,7 +69,7 @@ const FoodSectionItem = () => {
           " " +
           food.measurement +
           " of " +
-          food.name +
+          food.description +
           " edited successfully!",
         flag: true,
       });
@@ -90,7 +92,7 @@ const FoodSectionItem = () => {
     }
     try {
       await api.patch(
-        `/storage/${storageId}/removeFood?recordId=${recordId}&foodName=${food.name}&isCustom=${isCustom}`,
+        `/storage/${storageId}/removeFood?recordId=${recordId}&foodName=${food.description}&isCustom=${isCustom}`,
         {},
         {
           headers: { Authorization: `Bearer ${userToken}` },

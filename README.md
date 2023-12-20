@@ -42,12 +42,11 @@ The API is fully documented with Postman and Swagger:
 
 The application is containerized using Docker and can be easily set up with Docker Compose. Follow these steps to get it running:
 
-1. Navigate to the `microservice/docker` directory in the project repository.
-2. Run the `docker-compose` file. This will automatically download the necessary Docker images from the project's Docker repository and start the application.
+1. Run the `docker-compose` file. This will automatically download the necessary Docker images from the project's Docker repository and start the application.
 
 Please ensure that you have Docker and Docker Compose installed on your machine before proceeding.
 
-**Note:** When you first start the application, it may take a while for the Eureka server and gateway to fetch all the servers. During this time, you may see an error message in the console, and the server may return a 503 error. This is normal and should resolve itself within about a minute. If you see a loading screen, just refresh it a few times until the application loads.
+**Note:** When you first start the application, it may take a while for the Eureka server and gateway to fetch all the servers. During this time, you may see an error message in the console, and the server may return a 503 error. This is normal and should resolve itself within about a minute.
 
 ## Usage
 

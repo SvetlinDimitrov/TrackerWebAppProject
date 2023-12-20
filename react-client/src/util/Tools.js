@@ -488,23 +488,30 @@ export function Gauge2({
 }
 export function BarChart2({ height, info, dataLength }) {
 
+  
   dataLength = dataLength < 0 ? 0 : dataLength;
   let widthIncreaser = info.length > dataLength ? dataLength : info.length;
 
-
-  info = info.slice(0, dataLength);
-  const dataNames = info.map((item) => item.dataNames);
-  const data = info.map((item) => item.data);
+  info = info
+  .filter((v, i, a) => a.findIndex(t => (t.dataNames === v.dataNames)) === i)
+  .slice(0, dataLength);
+  
+  const dataNames = info.map((item, index) => {
+    let truncatedName = item.dataNames.split(" ").slice(0, 2).join(" "); 
+    return truncatedName + " " +index;
+  });  const data = info.map((item) => item.data);
   const typeData = info.map((item) => item.typeData);
 
+  
   const margin = { top: 10, right: 10, bottom: 40, left: 40 };
 
   const width = 100 * widthIncreaser;
+
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
   const x = scaleBand().range([0, chartWidth]).padding(0.2).domain(dataNames);
-
+  
   const y = scaleLinear()
     .range([chartHeight, 0])
     .domain([0, Math.max(...data)]);

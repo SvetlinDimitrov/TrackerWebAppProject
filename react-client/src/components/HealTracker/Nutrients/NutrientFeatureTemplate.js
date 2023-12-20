@@ -1,37 +1,19 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Outlet } from "react-router-dom";
-import { FoodContext } from "../../../context/FoodContext";
-import { AuthContext } from "../../../context/UserCredentials";
-import * as nutrientCalculations from "../../../util/NutrientCalculator";
+
 import * as PathCreator from "../../../util/PathCreator";
 import styles from "./NutrientFeatureTemplate.module.css";
 
 const NutrientFeatureTemplate = () => {
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { allFoods, setNutrient } = useContext(FoodContext);
-  const { featureType } = useParams();
-  const [data, setData] = useState();
   const [title, setTitle] = useState();
   const [activeTab, setActiveTab] = useState("");
+  const { featureType } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const dataToSet = nutrientCalculations.featureNutritionDate(
-        allFoods,
-        user,
-        featureType
-      );
-      setData(dataToSet);
-      setNutrient(dataToSet);
-      setTitle(featureType.replace(/([A-Z])/g, " $1").trim());
-    };
-    fetchData();
-  }, [allFoods, user, featureType, setNutrient]);
+    setTitle(featureType.replace(/([A-Z])/g, " $1").trim());
+  }, [featureType]);
 
-  if (data === undefined) {
-    return <div id="preloader"></div>;
-  }
   return (
     <div className={styles.body_container_main}>
       <h2 className={styles.body_container_section_h2}>{title}</h2>
