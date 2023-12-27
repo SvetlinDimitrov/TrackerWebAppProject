@@ -1,9 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 
-import UserAuthGuard from "./context/UserCredentials";
 import UserCredentials from "./context/UserAuthGuard";
-
+import UserAuthGuard from "./context/UserCredentials";
+import NutrientContextProvider from "./context/NutrientContextProvider";
 import AchievementInfo from "./components/AchievementTracker/AchievementInfo";
+import AchievementInfoDetails from "./components/AchievementTracker/AchievementInfoDetails";
 import AchievementTracker from "./components/AchievementTracker/AchievementTracker";
 import AchievementUpdate from "./components/AchievementTracker/AchievementUpdate";
 import CreateAchievement from "./components/AchievementTracker/CreateAchievement";
@@ -13,13 +14,23 @@ import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import CreateCustomFood from "./components/HealTracker/FoodSection/CustomFoodSection/CreateCustomFood";
 import CustomFoodSection from "./components/HealTracker/FoodSection/CustomFoodSection/CustomFoodSection";
-import FoodMenuItem from "./components/HealTracker/FoodSection/FoodMenu/FoodMenuItem";
 import FoodMenu from "./components/HealTracker/FoodSection/FoodMenu/FoodMenu";
+import FoodMenuItem from "./components/HealTracker/FoodSection/FoodMenu/FoodMenuItem";
 import FoodSection from "./components/HealTracker/FoodSection/FoodSection";
 import FoodSectionItem from "./components/HealTracker/FoodSection/FoodSectionItem";
 import NutrientFeatureTemplate from "./components/HealTracker/Nutrients/NutrientFeatureTemplate";
 import NutritionInfo from "./components/HealTracker/Nutrients/NutritionInfo";
 import NutritionTemplate from "./components/HealTracker/Nutrients/NutritionTemplate";
+import NutrientTemplateDescription from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateDescription";
+import NutrientTemplateFunctions from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateFunctions";
+import NutritionTemplateBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateBarCharInfo";
+import NutritionTemplateDietaryConsiderations from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateDietaryConsiderations";
+import NutritionTemplateHealthConsideration from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateHealthConsideration";
+import NutritionTemplateIntake from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateIntake";
+import NutritionTemplateSources from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateSources";
+import NutritionTemplateTypes from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateTypes";
+// import NutrientTemplateFeatureBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBarCharInfo";
+import NutrientTemplateDescriptionFeature from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBonus";
 import CreateRecord from "./components/HealTracker/Record/CreateRecord";
 import DeleteRecord from "./components/HealTracker/Record/DeleteRecord";
 import RecordHolder from "./components/HealTracker/Record/RecordHolder";
@@ -32,20 +43,8 @@ import EditUser from "./components/User/EditUser/EditUser";
 import Login from "./components/User/RegisterLogin/Login";
 import Register from "./components/User/RegisterLogin/Register";
 import Settings from "./components/User/Settings/Settings";
-import FoodContextProvider from "./context/FoodContext";
-import NotificationProvider from "./context/Notification";
-import AchievementInfoDetails from "./components/AchievementTracker/AchievementInfoDetails";
 import AchievementContextProvider from "./context/AchievementContextProvider";
-import NutrientTemplateFunctions from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateFunctions";
-import NutritionTemplateSources from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateSources";
-import NutritionTemplateHealthConsideration from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateHealthConsideration";
-import NutritionTemplateTypes from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateTypes";
-import NutritionTemplateDietaryConsiderations from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateDietaryConsiderations";
-import NutritionTemplateIntake from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateIntake";
-import NutritionTemplateBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutritionTemplateBarCharInfo";
-import NutrientTemplateDescription from "./components/HealTracker/Nutrients/NutritionTemplateBonusInfo/NutrientTemplateDescription";
-import NutrientTemplateDescriptionFeature from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBonus";
-import NutrientTemplateFeatureBarCharInfo from "./components/HealTracker/Nutrients/NutritionTemplateFeatureBonus/NutritionTemplateFeatureBarCharInfo";
+import NotificationProvider from "./context/Notification";
 
 function App() {
   return (
@@ -58,17 +57,14 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<UserCredentials />}>
-              <Route
-                path="/nutrientInfo"
-                element={
-                  <FoodContextProvider>
-                    <NutritionInfo />
-                  </FoodContextProvider>
-                }
-              >
+              <Route path="/nutrientInfo" element={<NutritionInfo />}>
                 <Route
                   path=":nutrition/:nutritionType"
-                  element={<NutritionTemplate />}
+                  element={
+                    <NutrientContextProvider>
+                      <NutritionTemplate />
+                    </NutrientContextProvider>
+                  }
                 >
                   <Route
                     path="functions"
@@ -105,10 +101,10 @@ function App() {
                     path="description"
                     element={<NutrientTemplateDescriptionFeature />}
                   />
-                  <Route
+                  {/* <Route
                     path="barCharStatistic"
                     element={<NutrientTemplateFeatureBarCharInfo />}
-                  />
+                  /> */}
                 </Route>
               </Route>
               <Route path="/settings" element={<Settings />} />
@@ -129,14 +125,7 @@ function App() {
                   <Route path="reports" element={<AchievementInfoDetails />} />
                 </Route>
               </Route>
-              <Route
-                path="/health-tracker"
-                element={
-                  <FoodContextProvider>
-                    <RecordHolder />
-                  </FoodContextProvider>
-                }
-              >
+              <Route path="/health-tracker" element={<RecordHolder />}>
                 <Route path="selectRecord" element={<SelectRecord />} />
                 <Route path="createRecord" element={<CreateRecord />} />
                 <Route path="record/:recordId" element={<StorageHolder />}>

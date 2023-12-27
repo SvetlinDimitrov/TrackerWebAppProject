@@ -1,10 +1,10 @@
 import { useContext } from "react";
 
-import { FoodContext } from "../../../../context/FoodContext";
+import { NutrientContext } from "../../../../context/NutrientContextProvider";
 import styles from "../NutritionTemplate.module.css";
 
 const NutritionTemplateIntake = () => {
-  const { nutrient } = useContext(FoodContext);
+  const { nutrient } = useContext(NutrientContext);
 
   return (
     <div className={styles.body_container_section}>

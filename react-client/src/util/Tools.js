@@ -487,7 +487,6 @@ export function Gauge2({
   );
 }
 export function BarChart2({ height, info, dataLength }) {
-
   
   dataLength = dataLength < 0 ? 0 : dataLength;
   let widthIncreaser = info.length > dataLength ? dataLength : info.length;

@@ -5,7 +5,7 @@ import { useState, useContext } from "react";
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
 import styles from "./FoodItemBluePrint.module.css";
-import { FoodContext } from "../../../context/FoodContext";
+import { convertComplexFoodIntoSimpleFood , convertSimpleFoodIntroComplexFood} from "../../../util/FoodUtils";
 import { AuthContext } from "../../../context/UserCredentials";
 
 const FoodItemBluePrint = ({
@@ -20,11 +20,6 @@ const FoodItemBluePrint = ({
   const [showMacros, setShowMacros] = useState(false);
   const [inputValue, setInputValue] = useState(foodInfo.size);
   const [food, setFood] = useState(foodInfo);
-
-  const {
-    convertComplexFoodIntoSimpleFood,
-    convertSimpleFoodIntroComplexFood,
-  } = useContext(FoodContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
 

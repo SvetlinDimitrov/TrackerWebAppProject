@@ -1,0 +1,590 @@
+[
+  {
+    "name": "Calcium , Ca",
+    "description": "Calcium is a vital macromineral that plays a crucial role in the formation and maintenance of bones and teeth. It is also involved in various physiological functions, including muscle contraction, blood clotting, and nerve transmission.",
+    "functions": [
+      {
+        "key": "Bone Health",
+        "value": "Calcium is a primary component of bone structure, providing strength and rigidity to the skeleton."
+      },
+      {
+        "key": "Muscle Contraction",
+        "value": "Calcium is essential for muscle contraction, including the heart muscles."
+      },
+      {
+        "key": "Blood Clotting",
+        "value": "Calcium is necessary for the blood clotting process, preventing excessive bleeding."
+      },
+      {
+        "key": "Nerve Transmission",
+        "value": "Calcium ions play a role in transmitting nerve signals, facilitating communication between nerve cells."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Dairy Products",
+        "value": "milk, cheese, yogurt"
+      },
+      {
+        "key": "Leafy Greens",
+        "value": "kale, broccoli, bok choy"
+      },
+      {
+        "key": "Fish",
+        "value": "sardines, salmon"
+      },
+      {
+        "key": "Fortified Foods",
+        "value": "fortified plant-based milk, fortified cereals"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Calcium absorption can be influenced by factors such as vitamin D levels, age, and certain medications."
+      }
+    ],
+    "measure": "milligrams (mg)",
+    "maleLowerBoundIntake": 1000,
+    "maleHigherBoundIntake": 1300,
+    "femaleLowerBoundIntake": 1000,
+    "femaleHigherBoundIntake": 1300
+  },
+  {
+    "name": "Phosphorus , P",
+    "description": "Phosphorus is a macromineral that works in conjunction with calcium to support bone and teeth health. It is involved in various physiological processes, including energy metabolism and DNA synthesis.",
+    "functions": [
+      {
+        "key": "Bone and Teeth Health",
+        "value": "Phosphorus, along with calcium, contributes to the formation and maintenance of bone and teeth structure."
+      },
+      {
+        "key": "Energy Metabolism",
+        "value": "Phosphorus is a key component of ATP, the primary energy currency of cells."
+      },
+      {
+        "key": "DNA Synthesis",
+        "value": "Phosphorus is involved in the synthesis of DNA and RNA, essential for genetic processes."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Dairy Products",
+        "value": "milk, cheese, yogurt"
+      },
+      {
+        "key": "Meat",
+        "value": "beef, pork, poultry"
+      },
+      {
+        "key": "Seafood",
+        "value": "salmon, tuna"
+      },
+      {
+        "key": "Whole Grains",
+        "value": "whole wheat, oats, barley"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Phosphorus levels are typically balanced by the kidneys. Individuals with kidney issues may require monitoring of phosphorus intake."
+      }
+    ],
+    "measure": "milligrams (mg)",
+    "maleLowerBoundIntake": 700,
+    "maleHigherBoundIntake": 1250,
+    "femaleLowerBoundIntake": 700,
+    "femaleHigherBoundIntake": 1250
+  },
+  {
+    "name": "Magnesium , Mg",
+    "description": "Magnesium is a macromineral that plays a crucial role in various physiological functions, including muscle and nerve function, blood glucose control, and bone health.",
+    "functions": [
+      {
+        "key": "Muscle and Nerve Function",
+        "value": "Magnesium is essential for muscle contraction and nerve transmission, contributing to proper muscle function and sensation."
+      },
+      {
+        "key": "Blood Glucose Control",
+        "value": "Magnesium helps regulate blood glucose levels and is involved in insulin action."
+      },
+      {
+        "key": "Bone Health",
+        "value": "Magnesium is a component of bone structure and contributes to bone health."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Nuts and Seeds",
+        "value": "almonds, cashews, pumpkin seeds"
+      },
+      {
+        "key": "Leafy Greens",
+        "value": "spinach, kale, Swiss chard"
+      },
+      {
+        "key": "Whole Grains",
+        "value": "brown rice, quinoa, whole wheat"
+      },
+      {
+        "key": "Legumes",
+        "value": "black beans, lentils, chickpeas"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Maintaining an adequate level of magnesium is important for overall health. Magnesium deficiency can lead to muscle cramps, fatigue, and other health issues."
+      }
+    ],
+    "measure": "milligrams (mg)",
+    "maleLowerBoundIntake": 400,
+    "maleHigherBoundIntake": 420,
+    "femaleLowerBoundIntake": 310,
+    "femaleHigherBoundIntake": 320
+  },
+  {
+    "name": "Sodium , Na",
+    "description": "Sodium is a macromineral that plays a critical role in maintaining various bodily functions. It is essential for fluid balance, nerve transmission, muscle function, and blood pressure regulation.",
+    "functions": [
+      {
+        "key": "Fluid Balance",
+        "value": "Sodium is crucial for maintaining fluid balance within cells and their surroundings. It helps regulate osmotic pressure, determining the movement of water in and out of cells."
+      },
+      {
+        "key": "Nerve Transmission",
+        "value": "Sodium is essential for generating electrical signals that enable nerve cells to communicate with each other and with muscles. This is vital for proper muscle function and sensation."
+      },
+      {
+        "key": "Muscle Contraction",
+        "value": "Sodium plays a central role in muscle contraction. Adequate levels of sodium are necessary for muscles, including the heart, to contract and relax properly."
+      },
+      {
+        "key": "Blood Pressure Regulation",
+        "value": "Sodium intake is closely linked to blood pressure regulation. It helps counteract the effects of potassium by promoting the excretion of potassium through urine, which can help regulate blood pressure."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Table Salt",
+        "value": "common salt used in cooking"
+      },
+      {
+        "key": "Processed Foods",
+        "value": "canned soups, snacks, processed meats"
+      },
+      {
+        "key": "Dairy Products",
+        "value": "milk, cheese"
+      },
+      {
+        "key": "Vegetables",
+        "value": "celery, beets, carrots"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "While sodium is essential for bodily functions, excessive intake can contribute to high blood pressure and other health issues. It's important to balance sodium intake, especially for individuals with hypertension."
+      }
+    ],
+    "measure": "milligrams (mg)",
+    "maleLowerBoundIntake": 1500,
+    "maleHigherBoundIntake": 2300,
+    "femaleLowerBoundIntake": 1500,
+    "femaleHigherBoundIntake": 2300
+  },
+  {
+    "name": "Potassium , K",
+    "description": "Potassium is an essential mineral and electrolyte that plays a critical role in maintaining various bodily functions. It works in tandem with sodium to help regulate fluid balance, nerve transmission, muscle function, and blood pressure. Potassium is abundant in many foods, and maintaining a proper balance of potassium in the body is crucial for overall health.",
+    "functions": [
+      {
+        "key": "Fluid Balance",
+        "value": "Potassium is a key player in maintaining fluid balance within cells and their surroundings. It helps regulate osmotic pressure, which determines the movement of water in and out of cells."
+      },
+      {
+        "key": "Nerve Transmission",
+        "value": "Potassium is essential for generating electrical signals that enable nerve cells to communicate with each other and with muscles. This is vital for proper muscle function and sensation."
+      },
+      {
+        "key": "Muscle Contraction",
+        "value": "Potassium plays a central role in muscle contraction. Adequate levels of potassium are necessary for muscles, including the heart, to contract and relax properly."
+      },
+      {
+        "key": "Blood Pressure Regulation",
+        "value": "Potassium intake is closely linked to blood pressure regulation. It helps counteract the effects of sodium by promoting the excretion of sodium through urine, which can help lower blood pressure."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Fruits",
+        "value": "bananas, oranges, melons, avocados"
+      },
+      {
+        "key": "Vegetables",
+        "value": "spinach, potatoes, tomatoes"
+      },
+      {
+        "key": "Legumes",
+        "value": "beans, lentils"
+      },
+      {
+        "key": "Dairy Products",
+        "value": "milk, yogurt"
+      },
+      {
+        "key": "Nuts and Seeds",
+        "value": "almonds, pistachios"
+      },
+      {
+        "key": "Whole Grains",
+        "value": "brown rice, whole wheat"
+      },
+      {
+        "key": "Fish",
+        "value": "salmon, tuna"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Maintaining a proper balance of potassium is important for overall health, but excessive intake of potassium supplements can be harmful, especially for individuals with certain medical conditions like kidney problems. Kidneys play a critical role in regulating potassium levels in the body, and compromised kidney function can lead to potassium imbalances."
+      }
+    ],
+    "measure": "milligrams (mg)",
+    "maleLowerBoundIntake": 2000,
+    "maleHigherBoundIntake": 3400,
+    "femaleLowerBoundIntake": 2000,
+    "femaleHigherBoundIntake": 3400
+  },
+  {
+    "name": "Iron , Fe",
+    "description": "Iron is a micromineral that plays a crucial role in the formation of hemoglobin, the protein responsible for carrying oxygen in red blood cells. It is essential for oxygen transport and various metabolic processes.",
+    "functions": [
+      {
+        "key": "Oxygen Transport",
+        "value": "Iron is a key component of hemoglobin, allowing red blood cells to transport oxygen from the lungs to the rest of the body."
+      },
+      {
+        "key": "Energy Metabolism",
+        "value": "Iron is involved in the production of ATP, the energy currency of cells."
+      },
+      {
+        "key": "Immune Function",
+        "value": "Iron supports the function of immune cells, helping the body defend against infections."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Red Meat",
+        "value": "beef, lamb, pork"
+      },
+      {
+        "key": "Poultry",
+        "value": "chicken, turkey"
+      },
+      {
+        "key": "Fish",
+        "value": "salmon, tuna"
+      },
+      {
+        "key": "Legumes",
+        "value": "beans, lentils"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Iron deficiency can lead to anemia, characterized by fatigue, weakness, and reduced cognitive function. Excessive iron intake can be harmful; therefore, iron levels should be monitored."
+      }
+    ],
+    "maleLowerBoundIntake": 8,
+    "maleHigherBoundIntake": 11,
+    "femaleLowerBoundIntake": 8,
+    "femaleHigherBoundIntake": 11,
+    "measure": "milligrams (mg)"
+  },
+  {
+    "name": "Zinc , Zn",
+    "description": "Zinc is a micromineral that plays a crucial role in various physiological processes, including immune function, wound healing, and DNA synthesis. It is essential for the proper functioning of numerous enzymes.",
+    "functions": [
+      {
+        "key": "Immune Function",
+        "value": "Zinc is essential for the development and function of immune cells, helping the body fight infections."
+      },
+      {
+        "key": "Wound Healing",
+        "value": "Zinc is involved in the synthesis of collagen, a protein crucial for wound healing and tissue repair."
+      },
+      {
+        "key": "Enzyme Function",
+        "value": "Zinc acts as a cofactor for many enzymes, participating in various metabolic processes."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Meat",
+        "value": "beef, lamb, pork"
+      },
+      {
+        "key": "Shellfish",
+        "value": "oysters, crab, lobster"
+      },
+      {
+        "key": "Nuts and Seeds",
+        "value": "pumpkin seeds, cashews"
+      },
+      {
+        "key": "Legumes",
+        "value": "beans, lentils"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "While zinc is essential for health, excessive intake can lead to adverse effects. Adequate intake is important, especially for individuals at risk of zinc deficiency."
+      }
+    ],
+    "maleLowerBoundIntake": 11,
+    "maleHigherBoundIntake": 11,
+    "femaleLowerBoundIntake": 8,
+    "femaleHigherBoundIntake": 8,
+    "measure": "milligrams (mg)"
+  },
+  {
+    "name": "Copper , Cu",
+    "description": "Copper is a micromineral that plays a key role in various physiological processes, including the formation of red blood cells, maintenance of connective tissues, and the function of enzymes.",
+    "functions": [
+      {
+        "key": "Red Blood Cell Formation",
+        "value": "Copper is essential for the production of hemoglobin and the formation of red blood cells."
+      },
+      {
+        "key": "Connective Tissue Maintenance",
+        "value": "Copper is involved in the synthesis of collagen, a protein important for the maintenance of connective tissues, skin, and bones."
+      },
+      {
+        "key": "Enzyme Function",
+        "value": "Copper acts as a cofactor for various enzymes, playing a role in numerous metabolic processes."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Shellfish",
+        "value": "oysters, crabs, lobster"
+      },
+      {
+        "key": "Nuts and Seeds",
+        "value": "cashews, sunflower seeds"
+      },
+      {
+        "key": "Organ Meats",
+        "value": "liver, kidney"
+      },
+      {
+        "key": "Legumes",
+        "value": "lentils, chickpeas"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Copper is important for health, but excessive intake can lead to copper toxicity. Adequate intake is crucial, and it's often obtained through a balanced diet."
+      }
+    ],
+    "maleLowerBoundIntake": 0.9,
+    "maleHigherBoundIntake": 2.3,
+    "femaleLowerBoundIntake": 0.9,
+    "femaleHigherBoundIntake": 2.3,
+    "measure": "milligrams (mg)"
+  },
+  {
+    "name": "Manganese , Mn",
+    "description": "Manganese is a micromineral that serves as a cofactor for various enzymes involved in bone formation, energy metabolism, and antioxidant defense.",
+    "functions": [
+      {
+        "key": "Bone Formation",
+        "value": "Manganese plays a role in the formation and maintenance of bone structure, working with other minerals like calcium and phosphorus."
+      },
+      {
+        "key": "Energy Metabolism",
+        "value": "Manganese is involved in the metabolism of carbohydrates, amino acids, and cholesterol, contributing to overall energy production."
+      },
+      {
+        "key": "Antioxidant Defense",
+        "value": "Manganese participates in antioxidant processes, helping protect cells from oxidative stress and damage."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Nuts and Seeds",
+        "value": "almonds, pecans, sunflower seeds"
+      },
+      {
+        "key": "Whole Grains",
+        "value": "brown rice, oats, whole wheat"
+      },
+      {
+        "key": "Leafy Greens",
+        "value": "spinach, kale, collard greens"
+      },
+      {
+        "key": "Tea",
+        "value": "green tea, black tea"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "While manganese is essential for health, excessive intake from supplements can lead to toxicity. Adequate intake is usually achieved through a balanced diet."
+      }
+    ],
+    "maleLowerBoundIntake": 2.3,
+    "maleHigherBoundIntake": 11,
+    "femaleLowerBoundIntake": 1.8,
+    "femaleHigherBoundIntake": 11,
+    "measure": "milligrams (mg)"
+  },
+  {
+    "name": "Iodine , I",
+    "description": "Iodine is a micromineral that is crucial for the synthesis of thyroid hormones, which regulate metabolism, growth, and development. Iodine deficiency can lead to thyroid-related disorders.",
+    "functions": [
+      {
+        "key": "Thyroid Hormone Synthesis",
+        "value": "Iodine is a key component in the synthesis of thyroid hormones (thyroxine and triiodothyronine), which play a crucial role in regulating metabolism, growth, and development."
+      },
+      {
+        "key": "Brain Development",
+        "value": "Adequate iodine is essential for proper brain development, particularly during pregnancy and infancy."
+      },
+      {
+        "key": "Metabolic Regulation",
+        "value": "Thyroid hormones, influenced by iodine, help regulate the body's metabolic processes."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Seafood",
+        "value": "seaweed, fish, shrimp"
+      },
+      {
+        "key": "Dairy Products",
+        "value": "milk, cheese, yogurt"
+      },
+      {
+        "key": "Iodized Salt",
+        "value": "table salt fortified with iodine"
+      },
+      {
+        "key": "Eggs",
+        "value": "especially from chickens raised in areas with iodine-rich soil"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Iodine deficiency can lead to thyroid-related disorders, including goiter and hypothyroidism. However, excessive iodine intake can also have adverse effects, and it's important to maintain a balanced iodine level."
+      }
+    ],
+    "maleLowerBoundIntake": 150,
+    "maleHigherBoundIntake": 290,
+    "femaleLowerBoundIntake": 150,
+    "femaleHigherBoundIntake": 290,
+    "measure": "micrograms (mcg)"
+  },
+  {
+    "name": "Selenium , Se",
+    "description": "Selenium is a micromineral that serves as a cofactor for antioxidant enzymes, helping protect cells from oxidative damage. It also plays a role in thyroid hormone metabolism.",
+    "functions": [
+      {
+        "key": "Antioxidant Defense",
+        "value": "Selenium is a crucial component of antioxidant enzymes, such as glutathione peroxidase, which help neutralize harmful free radicals."
+      },
+      {
+        "key": "Thyroid Hormone Metabolism",
+        "value": "Selenium is involved in the conversion of thyroid hormones, supporting proper thyroid function."
+      },
+      {
+        "key": "Immune System Support",
+        "value": "Selenium plays a role in the proper functioning of the immune system."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Brazil Nuts",
+        "value": "a particularly rich source of selenium"
+      },
+      {
+        "key": "Seafood",
+        "value": "fish, shrimp, crab"
+      },
+      {
+        "key": "Poultry",
+        "value": "chicken, turkey"
+      },
+      {
+        "key": "Whole Grains",
+        "value": "brown rice, oats, barley"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "While selenium is essential for health, excessive intake can lead to toxicity. Adequate intake is generally achieved through a balanced diet, and selenium supplements should be used with caution."
+      }
+    ],
+    "maleLowerBoundIntake": 55,
+    "maleHigherBoundIntake": 400,
+    "femaleLowerBoundIntake": 55,
+    "femaleHigherBoundIntake": 400,
+    "measure": "micrograms (mcg)"
+  },
+  {
+    "name": "Molybdenum , Mo",
+    "description": "Molybdenum is a micromineral that serves as a cofactor for enzymes involved in the metabolism of amino acids, purines, and sulfur-containing compounds.",
+    "functions": [
+      {
+        "key": "Amino Acid Metabolism",
+        "value": "Molybdenum is essential for the metabolism of certain amino acids, including the conversion of sulfite to sulfate."
+      },
+      {
+        "key": "Purine Metabolism",
+        "value": "Molybdenum is involved in the breakdown of purines, compounds that are part of DNA and RNA."
+      },
+      {
+        "key": "Sulfur Metabolism",
+        "value": "Molybdenum plays a role in the metabolism of sulfur-containing compounds."
+      }
+    ],
+    "sources": [
+      {
+        "key": "Legumes",
+        "value": "lentils, peas, beans"
+      },
+      {
+        "key": "Grains",
+        "value": "particularly in whole grains"
+      },
+      {
+        "key": "Nuts",
+        "value": "almonds, peanuts"
+      },
+      {
+        "key": "Dairy Products",
+        "value": "milk, cheese"
+      }
+    ],
+    "healthConsiderations": [
+      {
+        "key": "-",
+        "value": "Molybdenum is generally obtained through a balanced diet, and deficiencies are rare. Excessive intake from supplements is uncommon and may lead to adverse effects."
+      }
+    ],
+    "maleLowerBoundIntake": 45,
+    "maleHigherBoundIntake": 2000,
+    "femaleLowerBoundIntake": 45,
+    "femaleHigherBoundIntake": 2000,
+    "measure": "micrograms (mcg)"
+  }
+]

@@ -3,8 +3,8 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import FoodItemBluePrint from "./FoodItemBluePrint";
 import api from "../../../util/api";
+import { convertSimpleFoodIntroComplexFood , convertComplexFoodIntoSimpleFood} from "../../../util/FoodUtils"; 
 import { AuthContext } from "../../../context/UserCredentials";
-import { FoodContext } from "../../../context/FoodContext";
 import { NotificationContext } from "../../../context/Notification";
 
 import * as PathCreator from "../../../util/PathCreator";
@@ -16,7 +16,6 @@ const FoodSectionItem = () => {
 
   const isCustom = queryParams.get("isCustom") === "true";
   const { user } = useContext(AuthContext);
-  const { convertComplexFoodIntoSimpleFood , convertSimpleFoodIntroComplexFood} = useContext(FoodContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const userToken = user.tokenInfo.token;

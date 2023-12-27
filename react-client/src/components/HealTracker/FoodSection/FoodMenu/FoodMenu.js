@@ -1,13 +1,13 @@
-import { useState, useContext, useMemo , useEffect} from "react";
+import { useState, useMemo , useEffect} from "react";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 
 import styles from "./FoodMenu.module.css";
 import * as PathCreator from "../../../../util/PathCreator";
-import { FoodContext } from "../../../../context/FoodContext";
 
 export const FoodMenu = () => {
   const { recordId, storageId } = useParams();
-  const { allFoods } = useContext(FoodContext);
+  // const { allFoods } = useContext(FoodContext);
+  const [allFoods, setAllFoods] = useState(undefined);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
