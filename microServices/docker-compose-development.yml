@@ -91,17 +91,19 @@ services:
       MYSQL_DATABASE: storage
     volumes:
       - storage-data:/var/lib/mysql
-  mysql-db-food:
-    container_name: mysql-db-food
-    restart: always
-    image: mysql:latest
+  mongodb:
+    image: mongo
+    container_name: mongodb-container
     ports:
-      - "3307:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: food
+      - "27017:27017"
     volumes:
-      - food-data:/var/lib/mysql
+      - ../runProjectConfig/mongo_food_data:/data/db
+      - mongodb_config:/data/configdb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: foods
+    init: true
   mysql-db-achievement:
     container_name: mysql-db-achievement
     restart: always
@@ -117,7 +119,7 @@ volumes:
   user-data:
   storage-data:
   record-data:
-  food-data:
+  mongodb_config:
   achievement-data:
   kafka-data:
   kafka-data2:

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class FoodControllerImpTest {
+class CustomFoodControllerImpTest {
     
     @Autowired
     private MockMvc mockMvc;
