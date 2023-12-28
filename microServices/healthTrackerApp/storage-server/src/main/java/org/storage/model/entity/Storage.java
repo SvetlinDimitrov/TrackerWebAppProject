@@ -4,50 +4,34 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKeyColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
+@Document(collection = "storages")
 public class Storage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private BigDecimal consumedCalories;
 
-    private Long recordId;
+    private String recordId;
 
-    private Long userId;
+    private String userId;
 
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "storage_foods", joinColumns = @JoinColumn(name = "storage_id"))
-    @MapKeyColumn(name = "food_name")
-    @Column(name = "food")
     private Map<String, Food> foods;
-
-    @ElementCollection
-    @CollectionTable(name = "custom_storage_foods", joinColumns = @JoinColumn(name = "storage_id"))
-    @MapKeyColumn(name = "custom_food_name")
-    @Column(name = "custom_food")
     private Map<String, Food> customFoods;
 
-    public Storage(String name, Long recordId, Long userId) {
+    public Storage(String name, String recordId, String userId) {
         this.name = name;
         this.recordId = recordId;
         consumedCalories = BigDecimal.ZERO;

@@ -58,39 +58,6 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
-  mysql-db-record:
-    container_name: mysql-db-record
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: record
-    volumes:
-      - record-data:/var/lib/mysql
-  mysql-db-user:
-    container_name: mysql-db-user
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: users
-    volumes:
-      - user-data:/var/lib/mysql
-  mysql-db-storage:
-    container_name: mysql-db-storage
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3305:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: storage
-    volumes:
-      - storage-data:/var/lib/mysql
   mongodb:
     image: mongo
     container_name: mongodb-container
@@ -98,29 +65,12 @@ services:
       - "27017:27017"
     volumes:
       - ../runProjectConfig/mongo_food_data:/data/db
-      - mongodb_config:/data/configdb
+      - mongodb-config-foods:/data/configdb
     environment:
       MONGO_INITDB_ROOT_USERNAME: user
       MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: foods
-    init: true
-  mysql-db-achievement:
-    container_name: mysql-db-achievement
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3309:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: achievement
-    volumes:
-      - achievement-data:/var/lib/mysql
 volumes:
-  user-data:
-  storage-data:
-  record-data:
-  mongodb_config:
-  achievement-data:
+  mongodb-config-foods:
   kafka-data:
   kafka-data2:
   kafka-secrets:

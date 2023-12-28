@@ -1,14 +1,7 @@
 package org.storage.services;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.storage.StorageRepository;
 import org.storage.client.User;
 import org.storage.exception.FoodException;
@@ -17,10 +10,14 @@ import org.storage.exception.StorageException;
 import org.storage.model.dto.FoodInsertDto;
 import org.storage.model.dto.StorageView;
 import org.storage.model.entity.Food;
+import org.storage.model.entity.Nutrient;
 import org.storage.model.entity.Storage;
 import org.storage.utils.GsonWrapper;
 
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -29,9 +26,9 @@ public class StorageService {
     private final StorageRepository storageRepository;
     private final GsonWrapper gsonWrapper;
 
-    public StorageView getStorageByIdAndRecordId(Long storageId, Long recordId, String userToken)
+    public StorageView getStorageByIdAndRecordId(String storageId, String recordId, String userToken)
             throws StorageException, InvalidJsonTokenException {
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         return toStorageView(
                 storageRepository
@@ -41,9 +38,9 @@ public class StorageService {
 
     }
 
-    public List<StorageView> getAllByRecordId(Long recordId, String userToken) throws InvalidJsonTokenException {
+    public List<StorageView> getAllByRecordId(String recordId, String userToken) throws InvalidJsonTokenException {
 
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         List<Storage> storages = storageRepository.findAllByRecordIdAndUserId(recordId, userId);
 
@@ -58,28 +55,25 @@ public class StorageService {
 
     }
 
-    public void createStorage(Long recordId, String storageName, String userToken) throws InvalidJsonTokenException {
-        Long userId = getUserId(userToken);
+    public void createStorage(String recordId, String storageName, String userToken) throws InvalidJsonTokenException {
+        String userId = getUserId(userToken);
 
         Storage storage = new Storage();
         storage.setUserId(userId);
         storage.setRecordId(recordId);
         storage.setConsumedCalories(BigDecimal.ZERO);
+        storage.setCustomFoods(new HashMap<>());
+        storage.setFoods(new HashMap<>());
 
-        if (storageName == null) {
-            storage.setName("Default" + generateRandomNumbers(5));
-        } else {
-            storage.setName(storageName);
-        }
+        storage.setName(Objects.requireNonNullElseGet(storageName, () -> "Default" + generateRandomNumbers()));
 
         storageRepository.save(storage);
     }
 
-    @Transactional
-    public void deleteStorage(Long recordId, Long storageId, String userToken)
+    public void deleteStorage(String recordId, String storageId, String userToken)
             throws StorageException, InvalidJsonTokenException {
 
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
@@ -88,42 +82,40 @@ public class StorageService {
         storageRepository.delete(storage);
     }
 
-    @Transactional
-    public void deleteAllByRecordIdAndUserId(Long recordId, String userToken) throws InvalidJsonTokenException {
-        Long userId = getUserId(userToken);
+    public void deleteAllByRecordIdAndUserId(String recordId, String userToken) throws InvalidJsonTokenException {
+        String userId = getUserId(userToken);
 
         storageRepository.deleteAllByRecordIdAndUserId(recordId, userId);
     }
 
-    @Transactional
-    public void addFood(Long storageId, Long recordId, FoodInsertDto foodDto, String userToken)
+    public void addFood(String storageId, String recordId, FoodInsertDto foodDto, String userToken)
             throws StorageException, FoodException, InvalidJsonTokenException {
         Food food = foodDto.toFood();
 
         validateFood(food);
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
                                 + userId));
 
-        if (food.getId() == null) {
+        if (!food.getFoodClass().equals("Custom")) {
 
-            if (storage.getFoods().containsKey(food.getName())) {
-                Food currentFood = storage.getFoods().get(food.getName());
+            if (storage.getFoods().containsKey(food.getId())) {
+                Food currentFood = storage.getFoods().get(food.getId());
                 combineFoods(currentFood, food);
             } else {
-                storage.getFoods().put(food.getName(), food);
+                storage.getFoods().put(food.getId(), food);
             }
 
         } else {
 
-            if (storage.getCustomFoods().containsKey(food.getName())) {
-                Food currentFood = storage.getCustomFoods().get(food.getName());
+            if (storage.getCustomFoods().containsKey(food.getId())) {
+                Food currentFood = storage.getCustomFoods().get(food.getId());
                 combineFoods(currentFood, food);
             } else {
-                storage.getCustomFoods().put(food.getName(), food);
+                storage.getCustomFoods().put(food.getId(), food);
             }
 
         }
@@ -134,30 +126,29 @@ public class StorageService {
 
     }
 
-    @Transactional
-    public void changeFood(Long storageId, Long recordId, FoodInsertDto foodDto, String userToken)
+    public void changeFood(String storageId, String recordId, FoodInsertDto foodDto, String userToken)
             throws StorageException, FoodException, InvalidJsonTokenException {
         Food food = foodDto.toFood();
 
         validateFood(food);
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
                         "Storage with ID: " + storageId + " not found with record id: " + recordId + " and user id: "
                                 + userId));
 
-        if (food.getId() == null) {
-            if (storage.getFoods().containsKey(food.getName())) {
-                storage.getFoods().put(food.getName(), food);
+        if (!food.getFoodClass().equals("Custom")) {
+            if (storage.getFoods().containsKey(food.getId())) {
+                storage.getFoods().put(food.getId(), food);
             } else {
-                throw new FoodException("Food with name: " + food.getName() + " not found.");
+                throw new FoodException("Food with name: " + food.getId() + " not found.");
             }
         } else {
-            if (storage.getCustomFoods().containsKey(food.getName())) {
-                storage.getCustomFoods().put(food.getName(), food);
+            if (storage.getCustomFoods().containsKey(food.getId())) {
+                storage.getCustomFoods().put(food.getId(), food);
             } else {
-                throw new FoodException("Custom food with name: " + food.getName() + " not found.");
+                throw new FoodException("Custom food with name: " + food.getId() + " not found.");
             }
         }
 
@@ -167,10 +158,10 @@ public class StorageService {
 
     }
 
-    public void removeFood(Long storageId, Long recordId, String foodName, String userToken, Boolean isCustom)
+    public void removeFood(String storageId, String recordId, String foodId, String userToken, Boolean isCustom)
             throws FoodException, StorageException, InvalidJsonTokenException {
 
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(
@@ -178,16 +169,16 @@ public class StorageService {
                                 + userId));
 
         if (!isCustom) {
-            if (storage.getFoods().containsKey(foodName)) {
-                storage.getFoods().remove(foodName);
+            if (storage.getFoods().containsKey(foodId)) {
+                storage.getFoods().remove(foodId);
             } else {
-                throw new FoodException("Food with name: " + foodName + " not found.");
+                throw new FoodException("Food with ID: " + foodId + " not found.");
             }
         } else {
-            if (storage.getCustomFoods().containsKey(foodName)) {
-                storage.getCustomFoods().remove(foodName);
+            if (storage.getCustomFoods().containsKey(foodId)) {
+                storage.getCustomFoods().remove(foodId);
             } else {
-                throw new FoodException("Custom food with name: " + foodName + " not found.");
+                throw new FoodException("Custom food with ID: " + foodId + " not found.");
             }
         }
 
@@ -196,56 +187,33 @@ public class StorageService {
         storageRepository.save(storage);
     }
 
-    private Food combineFoods(Food food, Food foodToCombine) {
+    private void combineFoods(Food food, Food foodToCombine) {
 
         food.setSize(food.getSize().add(foodToCombine.getSize()));
-        food.setCalories(food.getCalories().add(foodToCombine.getCalories()));
+        food.getCalories().setAmount(food.getCalories().getAmount().add(foodToCombine.getCalories().getAmount()));
 
-        food.setA(food.getA().add(foodToCombine.getA()));
-        food.setD(food.getD().add(foodToCombine.getD()));
-        food.setE(food.getE().add(foodToCombine.getE()));
-        food.setK(food.getK().add(foodToCombine.getK()));
-        food.setC(food.getC().add(foodToCombine.getC()));
-        food.setB1(food.getB1().add(foodToCombine.getB1()));
-        food.setB2(food.getB2().add(foodToCombine.getB2()));
-        food.setB3(food.getB3().add(foodToCombine.getB3()));
-        food.setB5(food.getB5().add(foodToCombine.getB5()));
-        food.setB6(food.getB6().add(foodToCombine.getB6()));
-        food.setB7(food.getB7().add(foodToCombine.getB7()));
-        food.setB9(food.getB9().add(foodToCombine.getB9()));
-        food.setB12(food.getB12().add(foodToCombine.getB12()));
-
-        food.setCalcium(food.getCalcium().add(foodToCombine.getCalcium()));
-        food.setPhosphorus(food.getPhosphorus().add(foodToCombine.getPhosphorus()));
-        food.setMagnesium(food.getMagnesium().add(foodToCombine.getMagnesium()));
-        food.setSodium(food.getSodium().add(foodToCombine.getSodium()));
-        food.setPotassium(food.getPotassium().add(foodToCombine.getPotassium()));
-        food.setChloride(food.getChloride().add(foodToCombine.getChloride()));
-        food.setIron(food.getIron().add(foodToCombine.getIron()));
-        food.setZinc(food.getZinc().add(foodToCombine.getZinc()));
-        food.setCopper(food.getCopper().add(foodToCombine.getCopper()));
-        food.setManganese(food.getManganese().add(foodToCombine.getManganese()));
-        food.setIodine(food.getIodine().add(foodToCombine.getIodine()));
-        food.setSelenium(food.getSelenium().add(foodToCombine.getSelenium()));
-        food.setFluoride(food.getFluoride().add(foodToCombine.getFluoride()));
-        food.setChromium(food.getChromium().add(foodToCombine.getChromium()));
-        food.setMolybdenum(food.getMolybdenum().add(foodToCombine.getMolybdenum()));
-
-        food.setCarbohydrates(food.getCarbohydrates().add(foodToCombine.getCarbohydrates()));
-        food.setProtein(food.getProtein().add(foodToCombine.getProtein()));
-        food.setFat(food.getFat().add(foodToCombine.getFat()));
-
-        food.setFiber(food.getFiber().add(foodToCombine.getFiber()));
-        food.setTransFat(food.getTransFat().add(foodToCombine.getTransFat()));
-        food.setSaturatedFat(food.getSaturatedFat().add(foodToCombine.getSaturatedFat()));
-        food.setSugar(food.getSugar().add(foodToCombine.getSugar()));
-        food.setPolyunsaturatedFat(food.getPolyunsaturatedFat().add(foodToCombine.getPolyunsaturatedFat()));
-        food.setMonounsaturatedFat(food.getMonounsaturatedFat().add(foodToCombine.getMonounsaturatedFat()));
-
-        return food;
+        fillNutrients(food.getVitaminNutrients(), foodToCombine.getVitaminNutrients());
+        fillNutrients(food.getMineralNutrients(), foodToCombine.getMineralNutrients());
+        fillNutrients(food.getMacronutrients(), foodToCombine.getMacronutrients());
     }
 
-    private Long getUserId(String getUserId) throws InvalidJsonTokenException {
+    private static void fillNutrients(List<Nutrient> real, List<Nutrient> toAdd) {
+        for(Nutrient nutrient : toAdd) {
+            boolean found = false;
+            for(Nutrient nutrientToAdd : real) {
+                if(nutrient.getName().equals(nutrientToAdd.getName())) {
+                    nutrientToAdd.setAmount(nutrientToAdd.getAmount().add(nutrient.getAmount()));
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                real.add(nutrient);
+            }
+        }
+    }
+
+    private String getUserId(String getUserId) throws InvalidJsonTokenException {
         try {
             return gsonWrapper.fromJson(getUserId, User.class).getId();
         } catch (Exception e) {
@@ -253,10 +221,10 @@ public class StorageService {
         }
     }
 
-    private String generateRandomNumbers(int num) {
+    private String generateRandomNumbers() {
         Random rand = new Random();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num; i++) {
+        for (int i = 0; i < 5; i++) {
             int randomNum = rand.nextInt(100);
             sb.append(randomNum);
         }
@@ -281,23 +249,151 @@ public class StorageService {
 
     private void setStorageConsumedCalories(Storage storage) {
         BigDecimal consumedCalories = Stream.concat(
-                storage.getFoods().values().stream(),
-                storage.getCustomFoods().values().stream())
-                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories()), BigDecimal::add);
+                        storage.getFoods().values().stream(),
+                        storage.getCustomFoods().values().stream())
+                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b.getCalories().getAmount()), BigDecimal::add);
 
         storage.setConsumedCalories(consumedCalories);
     }
 
     private void validateFood(Food food) throws FoodException {
-        if (food == null || food.getName() == null || food.getName().isEmpty()) {
+        if (food == null) {
+            throw new FoodException("Food is required.");
+        }
+        if (food.getDescription() == null || food.getDescription().isEmpty()) {
             throw new FoodException("Food name is required.");
+        }
+        if (food.getId() == null || food.getId().isEmpty()) {
+            throw new FoodException("Food id is required.");
+        }
+        if (food.getMeasurement() == null || food.getMeasurement().isEmpty()) {
+            throw new FoodException("Measurement is required.");
+        }
+        if (food.getSize() == null || food.getSize().compareTo(BigDecimal.ZERO) < 0) {
+            throw new FoodException("Invalid size.");
+        }
+        validateFoodClass(food);
+        validateCalories(food);
+        validateMinerals(food.getMineralNutrients());
+        validateVitamins(food.getVitaminNutrients());
+        validateMacronutrients(food.getMacronutrients());
+    }
+
+    private void validateFoodClass(Food food) throws FoodException {
+        Set<String> macronutrientNames = Set.of(
+                "Custom",
+                "Branded",
+                "FinalFood",
+                "Survey");
+        if (food.getFoodClass() == null || food.getFoodClass().isEmpty() || !macronutrientNames.contains(food.getFoodClass())) {
+            throw new FoodException("Invalid food class. Valid names: " + String.join(", ", macronutrientNames));
+        }
+
+    }
+
+    private void validateCalories(Food food) throws FoodException {
+        if (food.getCalories() == null ||
+                food.getCalories().getAmount().compareTo(BigDecimal.ZERO) < 0 ||
+                food.getCalories().getUnit() == null || food.getCalories().getUnit().isEmpty() || !food.getCalories().getUnit().equals("kcal") ||
+                food.getCalories().getName() == null || food.getCalories().getName().isEmpty() || !food.getCalories().getName().equals("Energy"))  {
+            throw new FoodException("Invalid calories.");
         }
     }
 
-    public Food getFoodByStorage(Long storageId, Long recordId, String foodName, String userToken, Boolean isCustom)
+    private void validateMacronutrients(List<Nutrient> macronutrients) throws FoodException {
+        Set<String> macronutrientNames = Set.of(
+                "Carbohydrates",
+                "Protein",
+                "Fat",
+                "Fiber",
+                "Trans Fat",
+                "Saturated Fat",
+                "Sugar",
+                "Polyunsaturated Fat",
+                "Monounsaturated Fat"
+        );
+        if (macronutrients.isEmpty()) {
+            return;
+        }
+        for (Nutrient nutrient : macronutrients) {
+            if (nutrient.getName() == null || nutrient.getName().isEmpty() ||
+                    nutrient.getAmount() == null || nutrient.getAmount().compareTo(BigDecimal.ZERO) < 0 ||
+                    nutrient.getUnit() == null || nutrient.getUnit().isEmpty()) {
+                throw new FoodException("Invalid macronutrient.");
+            }
+            if (!macronutrientNames.contains(nutrient.getName())) {
+                throw new FoodException("Invalid macronutrient. "+ nutrient.getName() + " Valid names: "+ String.join(", ", macronutrientNames));
+            }
+        }
+    }
+
+    private void validateVitamins(List<Nutrient> vitaminNutrients) throws FoodException {
+        Set<String> vitaminNames = Set.of(
+                "Vitamin A",
+                "Vitamin D (D2 + D3)",
+                "Vitamin E",
+                "Vitamin K",
+                "Vitamin C",
+                "Vitamin B1 (Thiamin)",
+                "Vitamin B2 (Riboflavin)",
+                "Vitamin B3 (Niacin)",
+                "Vitamin B5 (Pantothenic acid)",
+                "Vitamin B6",
+                "Vitamin B7 (Biotin)",
+                "Vitamin B9 (Folate)",
+                "Vitamin B12"
+        );
+        if (vitaminNutrients.isEmpty()) {
+            return;
+        }
+        for (Nutrient nutrient : vitaminNutrients) {
+            if (nutrient.getName() == null || nutrient.getName().isEmpty() ||
+                    nutrient.getAmount() == null || nutrient.getAmount().compareTo(BigDecimal.ZERO) < 0 ||
+                    nutrient.getUnit() == null || nutrient.getUnit().isEmpty()) {
+                throw new FoodException("Invalid vitamin nutrient.");
+            }
+            if (!vitaminNames.contains(nutrient.getName())) {
+                throw new FoodException("Invalid vitamin nutrient. "+ nutrient.getName() +
+                        " Valid names: " + String.join(", ", vitaminNames));
+            }
+        }
+    }
+
+    private void validateMinerals(List<Nutrient> mineralNutrients) throws FoodException {
+        Set<String> mineralNames = Set.of(
+                "Calcium , Ca",
+                "Phosphorus , P",
+                "Magnesium , Mg",
+                "Sodium , Na",
+                "Potassium , K",
+                "Iron , Fe",
+                "Zinc , Zn",
+                "Copper , Cu",
+                "Manganese , Mn",
+                "Iodine , I",
+                "Selenium , Se",
+                "Molybdenum , Mo"
+        );
+        if (mineralNutrients.isEmpty()) {
+            return;
+        }
+        for (Nutrient nutrient : mineralNutrients) {
+            if (nutrient.getName() == null || nutrient.getName().isEmpty() ||
+                    nutrient.getAmount() == null || nutrient.getAmount().compareTo(BigDecimal.ZERO) < 0 ||
+                    nutrient.getUnit() == null || nutrient.getUnit().isEmpty()) {
+                throw new FoodException("Invalid mineral nutrient.");
+            }
+            if (!mineralNames.contains(nutrient.getName())) {
+                throw new FoodException("Invalid mineral nutrient. " + nutrient.getName() +
+                        " Valid names: " + String.join(", ", mineralNames));
+            }
+        }
+    }
+
+    public Food getFoodByStorage(String storageId, String recordId, String foodName, String userToken, Boolean isCustom)
             throws InvalidJsonTokenException, StorageException, FoodException {
 
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
 
         Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
                 .orElseThrow(() -> new StorageException(

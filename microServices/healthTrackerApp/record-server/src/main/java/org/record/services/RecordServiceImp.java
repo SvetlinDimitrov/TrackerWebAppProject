@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RecordServiceImp extends AbstractRecordService {
 
-    private final StorageClient storageClient;;
+    private final StorageClient storageClient;
 
     public RecordServiceImp(
             RecordRepository recordRepository,
@@ -30,7 +30,7 @@ public class RecordServiceImp extends AbstractRecordService {
 
     public List<RecordView> getAllViewsByUserId(String userToken) throws InvalidJsonTokenException {
 
-        User user = getUserId(userToken);
+        User user = getUser(userToken);
 
         return recordRepository
                 .findAllByUserId(user.getId())
@@ -40,13 +40,13 @@ public class RecordServiceImp extends AbstractRecordService {
                 .collect(Collectors.toList());
     }
 
-    public RecordView getViewByRecordIdAndUserId(Long recordId, String userToken)
+    public RecordView getViewByRecordIdAndUserId(String recordId, String userToken)
         throws RecordNotFoundException, InvalidJsonTokenException {
 
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         return toRecordView(record, storageClient.getAllStorages(record.getId(), userToken).getBody(),
-                getUserId(userToken));
+                getUser(userToken));
     }
 
     

@@ -1,12 +1,6 @@
 package org.record.utils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
 import org.record.client.dto.MacronutrientDto;
 import org.record.client.dto.MineralDto;
 import org.record.client.dto.VitaminDto;
@@ -15,7 +9,12 @@ import org.record.model.enums.Gender;
 import org.record.model.enums.WorkoutState;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -58,15 +57,15 @@ public class NutrientIntakeCreator {
                 .forEach(macro -> {
                     BigDecimal lowerBoundIntake = inactiveState(workoutState)
                             ? caloriesPerDay.multiply(
-                                    BigDecimal.valueOf(macro.getInactiveState()))
+                            BigDecimal.valueOf(macro.getInactiveState()))
                             : caloriesPerDay.multiply(
-                                    BigDecimal.valueOf(macro.getActiveState()));
+                            BigDecimal.valueOf(macro.getActiveState()));
 
                     BigDecimal upperBoundIntake = inactiveState(workoutState)
                             ? caloriesPerDay.multiply(
-                                    BigDecimal.valueOf(macro.getInactiveState()))
+                            BigDecimal.valueOf(macro.getInactiveState()))
                             : caloriesPerDay.multiply(
-                                    BigDecimal.valueOf(macro.getActiveState()));
+                            BigDecimal.valueOf(macro.getActiveState()));
 
                     if (macro.getName().equals("Fat")) {
                         upperBoundIntake = (upperBoundIntake.divide(new BigDecimal("9"),
@@ -156,104 +155,104 @@ public class NutrientIntakeCreator {
     private List<VitaminDto> vitaminNutrients() {
         return Arrays.asList(
                 VitaminDto.builder()
-                        .name("A")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin A")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("600"))
                         .maleHigherBoundIntake(new BigDecimal("900"))
                         .femaleLowerBoundIntake(new BigDecimal("600"))
                         .femaleHigherBoundIntake(new BigDecimal("900"))
                         .build(),
                 VitaminDto.builder()
-                        .name("D")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin D (D2 + D3)")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("10"))
                         .maleHigherBoundIntake(new BigDecimal("20"))
                         .femaleLowerBoundIntake(new BigDecimal("10"))
                         .femaleHigherBoundIntake(new BigDecimal("20"))
                         .build(),
                 VitaminDto.builder()
-                        .name("E")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin E")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("15"))
                         .maleHigherBoundIntake(new BigDecimal("15"))
                         .femaleLowerBoundIntake(new BigDecimal("15"))
                         .femaleHigherBoundIntake(new BigDecimal("15"))
                         .build(),
                 VitaminDto.builder()
-                        .name("K")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin K")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("120"))
                         .maleHigherBoundIntake(new BigDecimal("120"))
                         .femaleLowerBoundIntake(new BigDecimal("90"))
                         .femaleHigherBoundIntake(new BigDecimal("90"))
                         .build(),
                 VitaminDto.builder()
-                        .name("C")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin C")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("90"))
                         .maleHigherBoundIntake(new BigDecimal("90"))
                         .femaleLowerBoundIntake(new BigDecimal("75"))
                         .femaleHigherBoundIntake(new BigDecimal("75"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B1")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin B1 (Thiamin)")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("1.2"))
                         .maleHigherBoundIntake(new BigDecimal("1.2"))
                         .femaleLowerBoundIntake(new BigDecimal("1.1"))
                         .femaleHigherBoundIntake(new BigDecimal("1.1"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B2")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin B2 (Riboflavin)")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("1.3"))
                         .maleHigherBoundIntake(new BigDecimal("1.3"))
                         .femaleLowerBoundIntake(new BigDecimal("1.1"))
                         .femaleHigherBoundIntake(new BigDecimal("1.1"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B3")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin B3 (Niacin)")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("16"))
                         .maleHigherBoundIntake(new BigDecimal("16"))
                         .femaleLowerBoundIntake(new BigDecimal("14"))
                         .femaleHigherBoundIntake(new BigDecimal("14"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B5")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin B5 (Pantothenic acid)")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("5"))
                         .maleHigherBoundIntake(new BigDecimal("5"))
                         .femaleLowerBoundIntake(new BigDecimal("5"))
                         .femaleHigherBoundIntake(new BigDecimal("5"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B6")
-                        .measure("milligrams (mg)")
+                        .name("Vitamin B6")
+                        .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("1.3"))
                         .maleHigherBoundIntake(new BigDecimal("1.3"))
                         .femaleLowerBoundIntake(new BigDecimal("1.3"))
                         .femaleHigherBoundIntake(new BigDecimal("1.3"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B7")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin B7 (Biotin)")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("30"))
                         .maleHigherBoundIntake(new BigDecimal("30"))
                         .femaleLowerBoundIntake(new BigDecimal("30"))
                         .femaleHigherBoundIntake(new BigDecimal("30"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B9")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin B9 (Folate)")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("400"))
                         .maleHigherBoundIntake(new BigDecimal("400"))
                         .femaleLowerBoundIntake(new BigDecimal("400"))
                         .femaleHigherBoundIntake(new BigDecimal("400"))
                         .build(),
                 VitaminDto.builder()
-                        .name("B12")
-                        .measure("micrograms (mcg)")
+                        .name("Vitamin B12")
+                        .measure("µg")
                         .maleLowerBoundIntake(new BigDecimal("2.4"))
                         .maleHigherBoundIntake(new BigDecimal("2.4"))
                         .femaleLowerBoundIntake(new BigDecimal("2.4"))
@@ -266,124 +265,100 @@ public class NutrientIntakeCreator {
     private List<MineralDto> mineralNutrients() {
         return List.of(
                 MineralDto.builder()
-                        .name("Iron")
+                        .name("Iron , Fe")
                         .maleHigherBoundIntake(new BigDecimal("11"))
                         .maleLowerBoundIntake(new BigDecimal("8"))
                         .femaleHigherBoundIntake(new BigDecimal("11"))
                         .femaleLowerBoundIntake(new BigDecimal("8"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Zinc")
+                        .name("Zinc , Zn")
                         .maleHigherBoundIntake(new BigDecimal("11"))
                         .maleLowerBoundIntake(new BigDecimal("11"))
                         .femaleHigherBoundIntake(new BigDecimal("8"))
                         .femaleLowerBoundIntake(new BigDecimal("8"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Copper")
+                        .name("Copper , Cu")
                         .maleHigherBoundIntake(new BigDecimal("2.3"))
                         .maleLowerBoundIntake(new BigDecimal("0.9"))
                         .femaleHigherBoundIntake(new BigDecimal("2.3"))
                         .femaleLowerBoundIntake(new BigDecimal("0.9"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Manganese")
+                        .name("Manganese , Mn")
                         .maleHigherBoundIntake(new BigDecimal("11"))
                         .maleLowerBoundIntake(new BigDecimal("2.3"))
                         .femaleHigherBoundIntake(new BigDecimal("11"))
                         .femaleLowerBoundIntake(new BigDecimal("1.8"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Iodine")
+                        .name("Iodine , I")
                         .maleHigherBoundIntake(new BigDecimal("290"))
                         .maleLowerBoundIntake(new BigDecimal("150"))
                         .femaleHigherBoundIntake(new BigDecimal("290"))
                         .femaleLowerBoundIntake(new BigDecimal("150"))
-                        .measure("micrograms (mcg)")
+                        .measure("µg")
                         .build(),
                 MineralDto.builder()
-                        .name("Selenium")
+                        .name("Selenium , Se")
                         .maleHigherBoundIntake(new BigDecimal("400"))
                         .maleLowerBoundIntake(new BigDecimal("55"))
                         .femaleHigherBoundIntake(new BigDecimal("400"))
                         .femaleLowerBoundIntake(new BigDecimal("55"))
-                        .measure("micrograms (mcg)")
+                        .measure("µg")
                         .build(),
                 MineralDto.builder()
-                        .name("Fluoride")
-                        .maleHigherBoundIntake(new BigDecimal("4"))
-                        .maleLowerBoundIntake(new BigDecimal("3"))
-                        .femaleHigherBoundIntake(new BigDecimal("4"))
-                        .femaleLowerBoundIntake(new BigDecimal("3"))
-                        .measure("milligrams (mg)")
-                        .build(),
-                MineralDto.builder()
-                        .name("Chromium")
-                        .maleHigherBoundIntake(new BigDecimal("35"))
-                        .maleLowerBoundIntake(new BigDecimal("30"))
-                        .femaleHigherBoundIntake(new BigDecimal("25"))
-                        .femaleLowerBoundIntake(new BigDecimal("20"))
-                        .measure("micrograms (mcg)")
-                        .build(),
-                MineralDto.builder()
-                        .name("Molybdenum")
+                        .name("Molybdenum , Mo")
                         .maleHigherBoundIntake(new BigDecimal("2000"))
                         .maleLowerBoundIntake(new BigDecimal("45"))
                         .femaleHigherBoundIntake(new BigDecimal("2000"))
                         .femaleLowerBoundIntake(new BigDecimal("45"))
-                        .measure("micrograms (mcg)")
+                        .measure("µg")
                         .build(),
                 MineralDto.builder()
-                        .name("Calcium")
+                        .name("Calcium , Ca")
                         .maleHigherBoundIntake(new BigDecimal("1300"))
                         .maleLowerBoundIntake(new BigDecimal("1000"))
                         .femaleHigherBoundIntake(new BigDecimal("1300"))
                         .femaleLowerBoundIntake(new BigDecimal("1000"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Phosphorus")
+                        .name("Phosphorus , P")
                         .maleHigherBoundIntake(new BigDecimal("1250"))
                         .maleLowerBoundIntake(new BigDecimal("700"))
                         .femaleHigherBoundIntake(new BigDecimal("1250"))
                         .femaleLowerBoundIntake(new BigDecimal("700"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Magnesium")
+                        .name("Magnesium , Mg")
                         .maleHigherBoundIntake(new BigDecimal("420"))
                         .maleLowerBoundIntake(new BigDecimal("400"))
                         .femaleHigherBoundIntake(new BigDecimal("320"))
                         .femaleLowerBoundIntake(new BigDecimal("310"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Sodium")
+                        .name("Sodium , Na")
                         .maleHigherBoundIntake(new BigDecimal("2300"))
                         .maleLowerBoundIntake(new BigDecimal("2300"))
                         .femaleHigherBoundIntake(new BigDecimal("2300"))
                         .femaleLowerBoundIntake(new BigDecimal("2300"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build(),
                 MineralDto.builder()
-                        .name("Potassium")
+                        .name("Potassium , K")
                         .maleHigherBoundIntake(new BigDecimal("4700"))
                         .maleLowerBoundIntake(new BigDecimal("3500"))
                         .femaleHigherBoundIntake(new BigDecimal("4700"))
                         .femaleLowerBoundIntake(new BigDecimal("3500"))
-                        .measure("milligrams (mg)")
-                        .build(),
-                MineralDto.builder()
-                        .name("Chloride")
-                        .maleHigherBoundIntake(new BigDecimal("3600"))
-                        .maleLowerBoundIntake(new BigDecimal("2300"))
-                        .femaleHigherBoundIntake(new BigDecimal("3600"))
-                        .femaleLowerBoundIntake(new BigDecimal("2300"))
-                        .measure("milligrams (mg)")
+                        .measure("mg")
                         .build()
 
         );
@@ -415,9 +390,9 @@ public class NutrientIntakeCreator {
             Gender gender) {
 
         NutritionIntake saturatedFat = NutritionIntake.builder()
-                .nutrientName("SaturatedFat")
+                .nutrientName("Saturated Fat")
                 .nutrientType("Fat")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
                 .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
                 .dailyConsumed(BigDecimal.ZERO)
@@ -425,9 +400,9 @@ public class NutrientIntakeCreator {
         nutritionIntakeEntities.put(saturatedFat.getNutrientName(), saturatedFat);
 
         NutritionIntake monoFat = NutritionIntake.builder()
-                .nutrientName("MonounsaturatedFat")
+                .nutrientName("Monounsaturated Fat")
                 .nutrientType("Fat")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.15)))
                 .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.2)))
                 .dailyConsumed(BigDecimal.ZERO)
@@ -435,9 +410,9 @@ public class NutrientIntakeCreator {
         nutritionIntakeEntities.put(monoFat.getNutrientName(), monoFat);
 
         NutritionIntake polyFat = NutritionIntake.builder()
-                .nutrientName("PolyunsaturatedFat")
+                .nutrientName("Polyunsaturated Fat")
                 .nutrientType("Fat")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(fat.multiply(BigDecimal.valueOf(0.05)))
                 .upperBoundIntake(fat.multiply(BigDecimal.valueOf(0.1)))
                 .dailyConsumed(BigDecimal.ZERO)
@@ -445,9 +420,9 @@ public class NutrientIntakeCreator {
         nutritionIntakeEntities.put(polyFat.getNutrientName(), polyFat);
 
         NutritionIntake transFat = NutritionIntake.builder()
-                .nutrientName("TransFat")
+                .nutrientName("Trans Fat")
                 .nutrientType("Fat")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(BigDecimal.ZERO)
                 .upperBoundIntake(BigDecimal.ZERO)
                 .dailyConsumed(BigDecimal.ZERO)
@@ -457,7 +432,7 @@ public class NutrientIntakeCreator {
         NutritionIntake sugarCarbs = NutritionIntake.builder()
                 .nutrientName("Sugar")
                 .nutrientType("Carbohydrates")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(totalCalories
                         .multiply(BigDecimal.valueOf(0.05).divide(BigDecimal.valueOf(4), 2,
                                 RoundingMode.HALF_UP)))
@@ -471,7 +446,7 @@ public class NutrientIntakeCreator {
         NutritionIntake fiberCarbs = NutritionIntake.builder()
                 .nutrientName("Fiber")
                 .nutrientType("Carbohydrates")
-                .measurement("grams (g)")
+                .measurement("g")
                 .lowerBoundIntake(
                         gender == Gender.MALE ? BigDecimal.valueOf(38) : BigDecimal.valueOf(25))
                 .upperBoundIntake(

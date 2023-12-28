@@ -32,7 +32,7 @@ public class AchievementControllerImp implements AchievementController {
     }
 
     @Override
-    public ResponseEntity<AchievementTrackerView> getAchievementHolderById(String userToken, Long id)
+    public ResponseEntity<AchievementTrackerView> getAchievementHolderById(String userToken, String id)
             throws InvalidJsonTokenException {
         AchievementTrackerView foods = achievementServiceImp.getAchievementViewById(userToken, id);
         return new ResponseEntity<>(foods, HttpStatus.OK);
@@ -51,21 +51,21 @@ public class AchievementControllerImp implements AchievementController {
     }
 
     @Override
-    public ResponseEntity<HttpStatus> updateAchievement(String userToken, Long achId, Boolean replaceDailyProgress,
+    public ResponseEntity<HttpStatus> updateAchievement(String userToken, String achId, Boolean replaceDailyProgress,
             Achievement achievement) throws InvalidJsonTokenException {
         achievementServiceImp.updateAchievement(userToken, achievement, achId, replaceDailyProgress);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<HttpStatus> changeAchievementTracker(String userToken, Long achId,
+    public ResponseEntity<HttpStatus> changeAchievementTracker(String userToken, String achId,
             AchievementTrackerEditDto dto) throws InvalidJsonTokenException {
         achievementServiceImp.editTracker(userToken, dto, achId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAchievement(String userToken, Long id) throws InvalidJsonTokenException {
+    public ResponseEntity<Void> deleteAchievement(String userToken, String id) throws InvalidJsonTokenException {
         achievementServiceImp.deleteAchievement(userToken, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

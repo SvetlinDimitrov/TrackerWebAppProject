@@ -1,15 +1,11 @@
 package org.record.services;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.record.RecordRepository;
 import org.record.client.dto.User;
 import org.record.exceptions.InvalidJsonTokenException;
 import org.record.exceptions.RecordCreationException;
 import org.record.exceptions.RecordNotFoundException;
-import org.record.exceptions.StorageException;
 import org.record.model.entity.Record;
 import org.record.utils.GsonWrapper;
 import org.record.utils.RecordUtils;
@@ -18,8 +14,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,13 +43,12 @@ public class RecordKafkaService {
         record.setDailyCalories(caloriesPerDay);
         record.setUserId(user.getId());
 
-        recordRepository.saveAndFlush(record);
+        recordRepository.save(record);
 
         String recordToken = gson.toJson(record);
         kafkaTemplate.send("RECORD_FIRST_CREATION", recordToken);
     }
 
-    @Transactional
     @KafkaListener(topics = "USER_DELETION", groupId = "group_user_deletion_1", containerFactory = "kafkaListenerUserDeletion")
     public void deleteUser(String userToken) throws InvalidJsonTokenException {
         User user = getUserId(userToken);
@@ -88,14 +84,14 @@ public class RecordKafkaService {
         record.setDailyCalories(caloriesPerDay);
         record.setUserId(user.getId());
 
-        recordRepository.saveAndFlush(record);
+        recordRepository.save(record);
 
         String recordToken = gson.toJson(record);
         kafkaTemplate.send("RECORD_FIRST_CREATION", recordToken);
     }
 
-    public void deleteById(Long recordId, String userToken)
-            throws RecordNotFoundException, StorageException, InvalidJsonTokenException {
+    public void deleteById(String recordId, String userToken)
+            throws RecordNotFoundException, InvalidJsonTokenException {
         Record record = getRecordByIdAndUserId(recordId, userToken);
 
         kafkaTemplate.send("RECORD_DELETION", gson.toJson(record));
@@ -111,9 +107,9 @@ public class RecordKafkaService {
         }
     }
 
-    private Record getRecordByIdAndUserId(Long recordId, String userToken)
+    private Record getRecordByIdAndUserId(String recordId, String userToken)
             throws RecordNotFoundException, InvalidJsonTokenException {
-        Long userId = getUserId(userToken).getId();
+        String userId = getUserId(userToken).getId();
 
         return recordRepository.findByIdAndUserId(recordId, userId)
                 .orElseThrow(() -> new RecordNotFoundException(

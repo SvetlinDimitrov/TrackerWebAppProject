@@ -24,7 +24,7 @@ public class AchievementServiceImp {
     private final GsonWrapper gsonWrapper;
     
     public List<AchievementTrackerView> getAllAchievementViewsWitherUserId(String userToken) throws InvalidJsonTokenException {
-        Long userId = getUserId(userToken);
+        String userId = getUserId(userToken);
         
         return achievementRepository.findAllByUserId(userId)
             .stream()
@@ -36,8 +36,8 @@ public class AchievementServiceImp {
             ).toList();
     }
     
-    public AchievementTrackerView getAchievementViewById(String userToken, Long id) throws InvalidJsonTokenException {
-        Long userId = getUserId(userToken);
+    public AchievementTrackerView getAchievementViewById(String userToken, String id) throws InvalidJsonTokenException {
+        String userId = getUserId(userToken);
         AchievementTracker achTracker = achievementRepository.findByIdAndUserId(id, userId)
             .orElseThrow(() -> new AchievementException("Achievement not found"));
         
@@ -49,8 +49,8 @@ public class AchievementServiceImp {
     
     
     public void createAchievement(String userToken, AchievementHolderCreateDto dto) throws InvalidJsonTokenException {
-        
-        Long userId = getUserId(userToken);
+
+        String userId = getUserId(userToken);
         
         if (achievementRepository.findByNameAndUserId(dto.getName(), userId).isPresent()) {
             throw new AchievementException("Achievement with name " + dto.getName() + " already exists");
@@ -59,10 +59,10 @@ public class AchievementServiceImp {
         AchievementTracker entity = dto.toEntity();
         entity.setStartDate(LocalDate.now());
         entity.setUserId(userId);
-        achievementRepository.saveAndFlush(entity);
+        achievementRepository.save(entity);
     }
     
-    public void updateAchievement(String userToken, Achievement achievementToAdd, Long achId,
+    public void updateAchievement(String userToken, Achievement achievementToAdd, String achId,
                                   Boolean replaceDailyProgress) throws InvalidJsonTokenException {
         
         AchievementTracker achievementTracker = achievementRepository
@@ -95,10 +95,10 @@ public class AchievementServiceImp {
             }
         }
         
-        achievementRepository.saveAndFlush(achievementTracker);
+        achievementRepository.save(achievementTracker);
     }
     
-    public void deleteAchievement(String userToken, Long id) throws InvalidJsonTokenException {
+    public void deleteAchievement(String userToken, String id) throws InvalidJsonTokenException {
         AchievementTracker achievementTracker = achievementRepository
             .findByIdAndUserId(id, getUserId(userToken))
             .orElseThrow(() -> new AchievementException("Achievement not found"));
@@ -106,7 +106,7 @@ public class AchievementServiceImp {
         achievementRepository.delete(achievementTracker);
     }
     
-    public void editTracker(String userToken, AchievementTrackerEditDto dto, Long achId) throws InvalidJsonTokenException {
+    public void editTracker(String userToken, AchievementTrackerEditDto dto, String achId) throws InvalidJsonTokenException {
         AchievementTracker achievementTracker = achievementRepository
             .findByIdAndUserId(achId, getUserId(userToken))
             .orElseThrow(() -> new AchievementException("Achievement not found"));
@@ -130,10 +130,10 @@ public class AchievementServiceImp {
         if (dto.getGoal() != null && dto.getGoal().compareTo(BigDecimal.ZERO) >= 0) {
             achievementTracker.setGoal(dto.getGoal());
         }
-        achievementRepository.saveAndFlush(achievementTracker);
+        achievementRepository.save(achievementTracker);
     }
     
-    private Long getUserId(String userToken) throws InvalidJsonTokenException {
+    private String getUserId(String userToken) throws InvalidJsonTokenException {
         try {
             return gsonWrapper.fromJson(userToken, User.class).getId();
         } catch (Exception e) {

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class User {
 
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private BigDecimal kilograms;
@@ -20,7 +20,7 @@ public class User {
     private WorkoutState workoutState;
     private Gender gender;
 
-    public User (Long id){
+    public User (String id){
         this.id = id;
     }
 }

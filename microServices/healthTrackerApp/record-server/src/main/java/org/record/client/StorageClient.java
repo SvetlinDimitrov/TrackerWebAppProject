@@ -20,29 +20,29 @@ public interface StorageClient {
 
     @GetMapping(value = "/api/storage/all")
     ResponseEntity<List<StorageView>> getAllStorages(
-            @RequestParam Long recordId,
+            @RequestParam String recordId,
             @RequestHeader("X-ViewUser") String viewUser);
 
     @PostMapping(value = "/api/storage")
     ResponseEntity<HttpResponse> createStorage(
             @RequestParam(required = false) String storageName,
-            @RequestParam Long recordId,
+            @RequestParam String recordId,
             @RequestHeader("X-ViewUser") String viewUser);
 
     @PostMapping(value = "/api/storage/firstCreation")
     ResponseEntity<HttpResponse> createStorageFirstCreation(
-            @RequestParam Long recordId,
+            @RequestParam String recordId,
             @RequestHeader("X-ViewUser") String viewUser);
 
     @DeleteMapping(value = "/api/storage/delete/all")
     ResponseEntity<HttpResponse> deleteAllStoragesByRecordId(
-            @RequestParam Long recordId,
+            @RequestParam String recordId,
             @RequestHeader("X-ViewUser") String viewUser);
 
     @DeleteMapping(value = "/api/storage/delete/{storageId}/record")
     public ResponseEntity<HttpStatus> deleteStorage(
-            @PathVariable Long storageId,
-            @RequestParam Long recordId,
+            @PathVariable String storageId,
+            @RequestParam String recordId,
             @RequestHeader("X-ViewUser") String viewUser);
 
 }

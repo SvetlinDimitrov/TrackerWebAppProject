@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private Long id;
+    private String id;
     private String username;
     private String password;
     private List<GrantedAuthority> grantedAuthorityList;

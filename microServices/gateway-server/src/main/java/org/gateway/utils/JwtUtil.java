@@ -16,8 +16,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 @Component
 public class JwtUtil {
 
-    private final String secret = "topSecret12345";
-
     public Optional<UserView> verifyAndExtractUser(HttpHeaders headers) {
         try {
             List<String> authHeader = headers.get(HttpHeaders.AUTHORIZATION);
@@ -26,8 +24,8 @@ public class JwtUtil {
                 token = token.substring(7);
                 Map<String, Claim> claimMap = decodeToken(token).getClaims();
 
-                return Optional.ofNullable(new UserView(
-                        claimMap.get("id").asLong(),
+                return Optional.of(new UserView(
+                        claimMap.get("id").asString(),
                         claimMap.get("username").asString(),
                         claimMap.get("email").asString(),
                         claimMap.get("kilograms").asString(),
@@ -45,6 +43,7 @@ public class JwtUtil {
     }
 
     private DecodedJWT decodeToken(String token) {
+        String secret = "topSecret12345";
         return JWT.require(Algorithm.HMAC256(secret))
                 .build()
                 .verify(token);

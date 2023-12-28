@@ -14,8 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class StorageView {
 
-    private Long id;
-    private Long recordId;
+    private String id;
+    private String recordId;
     private String name;
     private BigDecimal consumedCalories;
     private List<Food> foods;

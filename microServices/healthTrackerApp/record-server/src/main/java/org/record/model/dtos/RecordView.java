@@ -15,12 +15,12 @@ import lombok.Setter;
 @Builder
 public class RecordView {
 
-    private Long id;
+    private String id;
     private List<StorageView> storageViews;
     private List<NutritionIntake> nutritionIntakesViews;
     private BigDecimal dailyCaloriesToConsume;
     private BigDecimal dailyConsumedCalories;
-    private Long userID;
+    private String userID;
     private String name;
     private String date;
 }

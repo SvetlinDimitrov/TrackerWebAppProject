@@ -10,10 +10,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class UserView {
 
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private String kilograms;

@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Record {
 
-    private Long id;
+    private String id;
     private String name;
     private BigDecimal dailyCalories = BigDecimal.ZERO;
-    private Long userId;
+    private String userId;
     private LocalDate date;
 
 }

@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Document(collection = "customFood")
 public class CustomFoodEntity extends FoodBaseEntity{
-    private Long userId;
+    private String userId;
 }

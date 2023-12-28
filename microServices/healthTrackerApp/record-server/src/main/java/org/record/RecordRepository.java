@@ -1,16 +1,17 @@
 package org.record;
 
+import org.record.model.entity.Record;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.record.model.entity.Record;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 
 @Repository
-public interface RecordRepository extends JpaRepository<Record, Long> {
-    Optional<Record> findByIdAndUserId(Long recordId , Long userId);
-    List<Record> findAllByUserId(Long userId);
-    void deleteAllByUserId(Long userId);
+public interface RecordRepository extends MongoRepository<Record, String> {
+    Optional<Record> findByIdAndUserId(String recordId, String userId);
+
+    List<Record> findAllByUserId(String userId);
+
 }

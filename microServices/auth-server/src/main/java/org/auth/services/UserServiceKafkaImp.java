@@ -34,7 +34,7 @@ public class UserServiceKafkaImp extends AbstractUserService {
         User user = userDto.toUser();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setFirstRecord(false);
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
 
         if (validator.validateFullRegistration(user)) {
 
@@ -48,7 +48,7 @@ public class UserServiceKafkaImp extends AbstractUserService {
 
     }
 
-    public UserView editUserEntity(EditUserDto userDto, Long userId) throws UserNotFoundException {
+    public UserView editUserEntity(EditUserDto userDto, String userId) throws UserNotFoundException {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("user with id :" + userId + " was not found"));
 
@@ -80,11 +80,11 @@ public class UserServiceKafkaImp extends AbstractUserService {
             kafkaTemplate.send("USER_FIRST_CREATION", token);
         }
 
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         return new UserView(user);
     }
 
-    public void deleteUserById(Long userId) throws UserNotFoundException {
+    public void deleteUserById(String userId) throws UserNotFoundException {
         User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("user with id :" + userId + " was not found"));
 

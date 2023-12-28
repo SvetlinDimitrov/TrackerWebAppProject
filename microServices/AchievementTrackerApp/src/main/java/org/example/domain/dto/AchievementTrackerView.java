@@ -15,8 +15,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class AchievementTrackerView {
-    private Long id;
-    private Long userId;
+    private String id;
+    private String userId;
     private String name;
     private String description;
     private BigDecimal goal;

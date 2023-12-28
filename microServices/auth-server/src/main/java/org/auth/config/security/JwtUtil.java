@@ -57,18 +57,18 @@ public class JwtUtil {
     }
 
     public Optional<UserPrincipal> convert(DecodedJWT token) {
-        return Optional.ofNullable(userRepository.findById(Long.parseLong(token.getSubject()))
+        return Optional.ofNullable(userRepository.findById(token.getSubject())
                 .map(UserPrincipal::new)
                 .orElseThrow(() -> new UsernameNotFoundException("No suck  user exist")));
 
     }
 
-    public Long extractUserId(String token) {
+    public String extractUserId(String token) {
 
         token = token.substring(7);
         Map<String, Claim> claimMap = decodeToken(token).get().getClaims();
 
-        return claimMap.get("id").asLong();
+        return claimMap.get("id").asString();
 
     }
 

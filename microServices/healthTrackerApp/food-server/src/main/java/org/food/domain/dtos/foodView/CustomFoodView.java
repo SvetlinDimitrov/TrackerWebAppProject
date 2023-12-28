@@ -8,5 +8,5 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class CustomFoodView extends FoodView {
-    private Long userId;
+    private String userId;
 }

@@ -28,7 +28,7 @@ public class UserServiceImp extends AbstractUserService {
         throw new WrongUserCredentialsException();
     }
 
-    public UserView getUserViewById(Long userId) {
+    public UserView getUserViewById(String userId) {
         return userRepository.findById(userId)
                 .map(UserView::new)
                 .orElseThrow();

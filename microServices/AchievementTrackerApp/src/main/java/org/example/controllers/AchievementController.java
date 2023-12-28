@@ -37,72 +37,38 @@ import jakarta.validation.Valid;
 public interface AchievementController {
 
     @GetMapping(path = "/all")
-    @Operation(summary = "Get all achievement holders by ID", responses = {
-            @ApiResponse(responseCode = "200", description = "List of all achievement holders", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AchievementTrackerView.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    })
-    public ResponseEntity<List<AchievementTrackerView>> getAllAchievementHoldersById(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken)
+    ResponseEntity<List<AchievementTrackerView>> getAllAchievementHoldersById(
+            @RequestHeader(name = "X-ViewUser") String userToken)
             throws InvalidJsonTokenException;
 
     @GetMapping
-    @Operation(summary = "Get achievement holder by ID", responses = {
-            @ApiResponse(responseCode = "200", description = "Achievement holder details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AchievementTrackerView.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    })
     public ResponseEntity<AchievementTrackerView> getAchievementHolderById(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
-            @Parameter(description = "Achievement holder ID.", example = "1") @RequestParam Long id)
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @RequestParam String id)
             throws InvalidJsonTokenException;
 
     @PostMapping
-    @Operation(summary = "Create achievement holder", responses = {
-            @ApiResponse(responseCode = "201", description = "Achievement holder created", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = AchievementHolderCreateDto.class), examples = @ExampleObject(name = "achievementHolderCreateDto", value = "{\"name\":\"Achievement1\",\"description\":\"This is a sample achievement\",\"goal\":50,\"measurement\":\"kilograms\"}"))))
     public ResponseEntity<HttpStatus> createAchievementHolder(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
+            @RequestHeader(name = "X-ViewUser") String userToken,
             @Valid @RequestBody AchievementHolderCreateDto dto,
             BindingResult result) throws InvalidJsonTokenException;
 
     @PatchMapping("/{achId}/addProgress")
-    @Operation(summary = "Update achievement", responses = {
-            @ApiResponse(responseCode = "200", description = "Achievement updated", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class), examples = @ExampleObject(name = "achievement", value = "{\"date\":\"2022-12-31\",\"progress\":50}"))))
     public ResponseEntity<HttpStatus> updateAchievement(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
-            @Parameter(description = "Achievement ID.", example = "1") @PathVariable Long achId,
-            @Parameter(description = "Replace daily progress.", example = "false") @RequestParam(defaultValue = "false") Boolean replaceDailyProgress,
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @PathVariable String achId,
+            @RequestParam(defaultValue = "false") Boolean replaceDailyProgress,
             @RequestBody Achievement achievement) throws InvalidJsonTokenException;
     
     @PatchMapping("/{achId}")
-    @Operation(summary = "Change achievement tracker", responses = {
-            @ApiResponse(responseCode = "204", description = "Achievement tracker changed", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = AchievementTrackerEditDto.class), examples = @ExampleObject(name = "achievementHolderCreateDto", value = "{\"name\":\"Achievement1\",\"description\":\"This is a sample achievement\",\"goal\":100,\"measurement\":\"kilograms\"}"))))
     public ResponseEntity<HttpStatus> changeAchievementTracker(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
-            @Parameter(description = "Achievement ID.", example = "1") @PathVariable Long achId,
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @PathVariable String achId,
             @RequestBody AchievementTrackerEditDto dto) throws InvalidJsonTokenException;
     
     @DeleteMapping
-    @Operation(summary = "Delete achievement", responses = {
-            @ApiResponse(responseCode = "204", description = "Achievement deleted", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid json header", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SingleErrorResponse.class)))
-
-    })
     public ResponseEntity<Void> deleteAchievement(
-            @Parameter(description = "User token.", example = "{\"id\":1,\"username\":\"user123\",\"email\":\"user123@example.com\",\"kilograms\":70,\"height\":170,\"age\":30,\"workoutState\":\"LIGHTLY_ACTIVE\",\"gender\":\"MALE\"}") @RequestHeader(name = "X-ViewUser") String userToken,
-            @Parameter(description = "Achievement ID.", example = "1") @RequestParam Long id)
+            @RequestHeader(name = "X-ViewUser") String userToken,
+            @RequestParam String id)
             throws InvalidJsonTokenException ;
 }

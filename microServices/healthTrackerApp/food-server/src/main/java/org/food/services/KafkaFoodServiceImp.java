@@ -17,7 +17,7 @@ public class KafkaFoodServiceImp {
     @Transactional
     @KafkaListener(topics = "USER_DELETION", groupId = "delete", containerFactory = "kafkaListenerUserDeletion")
     public void deleteUser(String userToken) throws InvalidUserTokenHeaderException {
-        Long userId = foodUtils.getUserId(userToken);
+        String userId = foodUtils.getUserId(userToken);
 
         customFoodRepository.deleteAllByUserId(userId);
     }
