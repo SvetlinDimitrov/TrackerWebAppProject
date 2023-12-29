@@ -49,7 +49,9 @@ function RecordHolder() {
       <div className={styles.container}>
         <h1 className={styles.title}>Record Menu</h1>
         {record && (
-          <p className={styles.recordInfo}>Selected Record {record.name} </p>
+          <>
+            <p className={styles.recordInfo}>Selected Record {record.name} / Calories {record.dailyCaloriesToConsume.toFixed(2)} kcal</p>
+          </>
         )}
         <div className={styles.options}>
           <button

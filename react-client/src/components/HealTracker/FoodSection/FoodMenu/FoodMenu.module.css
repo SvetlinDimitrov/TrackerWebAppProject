@@ -93,3 +93,31 @@
 .closeButton:hover {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
+.selectStyle {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.searchInput {
+  flex: 0.9;
+  margin-right: 10px;
+}
+
+.searchButton {
+  flex: 0.2;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}

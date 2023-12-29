@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import api from "../../../../util/api";
-import { NutrientContext } from "../../../../context/NutrientContextProvider";
+import { NotificationContext } from "../../../../context/Notification";
 import { AuthContext } from "../../../../context/UserCredentials";
 import * as PathCreator from "../../../../util/PathCreator";
 import { BarChart2 } from "../../../../util/Tools";
@@ -10,7 +10,7 @@ import styles from "../NutritionTemplate.module.css";
 
 const NutritionTemplateBarCharInfo = () => {
   const navigate = useNavigate();
-  const { nutrient } = useContext(NutrientContext);
+  const { setFailedMessage } = useContext(NotificationContext);
   const { user } = useContext(AuthContext);
   const userToken = user.tokenInfo.token;
   const query = new URLSearchParams(useLocation().search);
@@ -19,43 +19,71 @@ const NutritionTemplateBarCharInfo = () => {
   const limit = query.get("limit");
   const min = query.get("min");
   const max = query.get("max");
+  const type = query.get("type");
   const [data, setData] = useState();
-  const [selectedOptionsOfData, setSelectedOptionsOfData] =
-    useState("finalFoods");
+
+  const [modifyData, setModifyData] = useState({
+    sort,
+    limit,
+    min,
+    max,
+    selectedOptionsOfData: type,
+  });
 
   useEffect(() => {
     setData(undefined);
     const fetchData = async () => {
-      const response = await api.get(
-        `/food/embedded/${selectedOptionsOfData}/filter?nutrientName=${
-          nutrient.name
-        }&limit=${limit}&desc=${
-          sort === "DO" ? true : false
-        }&min=${min}&max=${max}`,
-        {
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      );
-      setData(
-        response.data.map((food) => {
-          return {
-            data: food.amount,
-            dataNames: food.description,
-            typeData: food.amount,
-          };
-        })
-      );
+      try{
+        const response = await api.get(
+          `/food/embedded/${
+            type
+          }/filter?nutrientName=${encodeURIComponent(nutritionType)}&limit=${limit}&desc=${
+            sort === "DO" ? true : false
+          }&min=${min}&max=${max}`,
+          {
+            headers: { Authorization: `Bearer ${userToken}` },
+          }
+        );
+        setData(
+          response.data.map((food) => {
+            return {
+              data: food.amount,
+              dataNames: food.description,
+              typeData: food.amount,
+            };
+          })
+        );
+      }catch(error){
+        setFailedMessage({
+          flag: true,
+          message: error.response.data.message,
+        });
+        navigate(`/nutrientInfo/${nutrition}/${nutritionType}`);
+      }
     };
+
     fetchData();
-  }, [
-    userToken,
-    nutrient.name,
-    limit,
-    sort,
-    min,
-    max,
-    selectedOptionsOfData,
-  ]);
+  }, [nutrition, nutritionType, sort, limit, min, max, type, userToken, navigate , setFailedMessage]);
+
+  const handleOnClick = () => {
+    navigate(
+      PathCreator.nutrientInfo(
+        nutrition,
+        nutritionType,
+        "barCharStatistic" +
+          "?limit=" +
+          modifyData.limit +
+          "&sort=" +
+          modifyData.sort +
+          "&min=" +
+          modifyData.min +
+          "&max=" +
+          modifyData.max +
+          "&type=" +
+          modifyData.selectedOptionsOfData
+      )
+    );
+  };
 
   if (data === undefined) {
     return <div id="preloader"></div>;
@@ -78,41 +106,63 @@ const NutritionTemplateBarCharInfo = () => {
         .
       </p>
       <div className={styles.diagram_container}>
-        <h3 className={styles.reportsH3}>Modify Data</h3>
+        <div className={styles.containerHolder2}>
+          <h3 className={styles.reportsH3}>Modify Data</h3>
+          <button
+            style={{
+              marginTop: "20px",
+              padding: "10px 20px",
+              backgroundColor: "#007bff",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "16px",
+            }}
+            onClick={handleOnClick}
+          >
+            Submit
+          </button>
+        </div>
         <div>
           <label>
             Limit:
             <input
               type="number"
               className={styles.reportOptions}
-              defaultValue={50}
+              value={modifyData.limit}
               onChange={(e) =>
-                navigate(
-                  PathCreator.nutrientInfo(
-                    nutrition,
-                    nutritionType,
-                    "barCharStatistic" +
-                      "?limit=" +
-                      e.target.value +
-                      "&sort=" +
-                      sort +
-                      "&min=" +
-                      min +
-                      "&max=" +
-                      max
-                  )
-                )
+                setModifyData({ ...modifyData, limit: e.target.value })
               }
             />
           </label>
+          <label>
+            Sorting:
+            <select
+              className={styles.reportOptions}
+              selected={modifyData.sort}
+              onChange={(e) =>
+                setModifyData({ ...modifyData, sort: e.target.value })
+              }
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </label>
         </div>
         <div>
+          <h3>Food Type</h3>
           <label>
             <input
               type="checkbox"
               value="finalFoods"
-              checked={selectedOptionsOfData === "finalFoods"}
-              onChange={() => setSelectedOptionsOfData("finalFoods")}
+              checked={modifyData.selectedOptionsOfData === "finalFoods"}
+              onChange={() =>
+                setModifyData({
+                  ...modifyData,
+                  selectedOptionsOfData: "finalFoods",
+                })
+              }
             />
             FoundationFoods
           </label>
@@ -120,8 +170,13 @@ const NutritionTemplateBarCharInfo = () => {
             <input
               type="checkbox"
               value="surveyFoods"
-              checked={selectedOptionsOfData === "surveyFoods"}
-              onChange={() => setSelectedOptionsOfData("surveyFoods")}
+              checked={modifyData.selectedOptionsOfData === "surveyFoods"}
+              onChange={() =>
+                setModifyData({
+                  ...modifyData,
+                  selectedOptionsOfData: "surveyFoods",
+                })
+              }
             />
             SurveyFoods
           </label>
@@ -129,8 +184,13 @@ const NutritionTemplateBarCharInfo = () => {
             <input
               type="checkbox"
               value="brandedFoods"
-              checked={selectedOptionsOfData === "brandedFoods"}
-              onChange={() => setSelectedOptionsOfData("brandedFoods")}
+              checked={modifyData.selectedOptionsOfData === "brandedFoods"}
+              onChange={() =>
+                setModifyData({
+                  ...modifyData,
+                  selectedOptionsOfData: "brandedFoods",
+                })
+              }
             />
             BrandedFoods
           </label>
@@ -142,23 +202,9 @@ const NutritionTemplateBarCharInfo = () => {
             Min Value:
             <input
               type="number"
-              value={min}
+              value={modifyData.min}
               onChange={(e) =>
-                navigate(
-                  PathCreator.nutrientInfo(
-                    nutrition,
-                    nutritionType,
-                    "barCharStatistic" +
-                      "?limit=" +
-                      limit +
-                      "&sort=" +
-                      sort +
-                      "&min=" +
-                      e.target.value +
-                      "&max=" +
-                      max
-                  )
-                )
+                setModifyData({ ...modifyData, min: e.target.value })
               }
               style={{ width: "100%", padding: "5px" }}
             />
@@ -167,53 +213,13 @@ const NutritionTemplateBarCharInfo = () => {
             Max Value:
             <input
               type="number"
-              value={max}
+              value={modifyData.max}
               onChange={(e) =>
-                navigate(
-                  PathCreator.nutrientInfo(
-                    nutrition,
-                    nutritionType,
-                    "barCharStatistic" +
-                      "?limit=" +
-                      limit +
-                      "&sort=" +
-                      sort +
-                      "&min=" +
-                      min +
-                      "&max=" +
-                      e.target.value
-                  )
-                )
+                setModifyData({ ...modifyData, max: e.target.value })
               }
               style={{ width: "100%", padding: "5px" }}
             />
           </label>
-        </div>
-        <div>
-          <select
-            className={styles.reportOptions}
-            defaultValue={sort}
-            onChange={(e) =>
-              navigate(
-                PathCreator.nutrientInfo(
-                  nutrition,
-                  nutritionType,
-                  "barCharStatistic" +
-                    "?limit=" +
-                    limit +
-                    "&sort=" +
-                    e.target.value +
-                    "&min=" +
-                    min +
-                    "&max=" +
-                    max
-                )
-              )
-            }
-          >
-            <option value="AO">Ascending Order</option>
-            <option value="DO">Descending Order</option>
-          </select>
         </div>
       </div>
       <div className={styles.container_BarChar2}>

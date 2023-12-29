@@ -1,48 +1,37 @@
-import { useState, useMemo , useEffect} from "react";
+import { useState , useContext } from "react";
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 
 import styles from "./FoodMenu.module.css";
+import { AuthContext } from "../../../../context/UserCredentials";
+import api from "../../../../util/api";
 import * as PathCreator from "../../../../util/PathCreator";
 
 export const FoodMenu = () => {
   const { recordId, storageId } = useParams();
-  // const { allFoods } = useContext(FoodContext);
-  const [allFoods, setAllFoods] = useState(undefined);
+  const { user } = useContext(AuthContext);
+  const [allFoods, setAllFoods] = useState([]);
   const navigate = useNavigate();
+  const [selectedType, setSelectedType] = useState("surveyFoods");
   const [searchTerm, setSearchTerm] = useState("");
-
-  function useDebounce(value, delay) {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
-    }, [value, delay]);
-
-    return debouncedValue;
-  }
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  const filteredFoods = useMemo(() => {
-    return allFoods
-      .map((food) => food.data)
-      .flat()
-      .filter((food) =>
-        food.description
-          .toLowerCase()
-          .includes(debouncedSearchTerm.toLowerCase())
-      );
-  }, [allFoods, debouncedSearchTerm]);
+  const userToken = user.tokenInfo.token;
 
   const onClose = () => {
     navigate(PathCreator.storagePath(recordId, storageId));
   };
+
+  const getFoodsBySearch = async () => {
+    try {
+      const response = await api.get(
+        `/food/embedded/${selectedType}/search?description=${searchTerm}`,
+        {
+          headers: { Authorization: `Bearer ${userToken}` },
+        }
+      );
+      setAllFoods(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (allFoods === undefined) {
     return <div id="preloader"></div>;
@@ -57,24 +46,32 @@ export const FoodMenu = () => {
         <div className={styles.container}>
           <div className={styles.container_CloseButton}>
             <h1 className={styles.foodMenuTitle}>List Of Foods</h1>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <select
+              className={styles.selectStyle}
+              onChange={(e) => setSelectedType(e.target.value)}
+              value={selectedType}
+            >
+              <option value="finalFoods">Foundation Foods</option>
+              <option value="surveyFoods">Survey Foods</option>
+              <option value="brandedFoods">Branded Foods</option>
+            </select>
+            <div className={styles.flexContainer}>
+              <input
+                type="text"
+                value={searchTerm}
+                placeholder="Write at least 3 chars..."
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles.searchInput}
+              />
+              <button className={styles.searchButton} onClick={getFoodsBySearch} disabled={searchTerm.length < 3}>Search</button>
+            </div>
             <div className={styles.container_foodDetails}>
-              {filteredFoods.map((food, index) => {
+              {allFoods.map((food) => {
                 return (
                   <div
                     className={styles.container_foodDetails_food}
-                    key={index}
-                    onClick={() =>
-                      navigate(
-                        PathCreator.storagePath(recordId, storageId) +
-                          "/foodMenu/" +
-                          food.description
-                      )
-                    }
+                    key={food.id}
+                    onClick={() => navigate(PathCreator.storagePath(recordId, storageId)+`/foodMenu/${food.foodClass}/${food.id}?isCustom=${false}`)}
                   >
                     <p className={styles.container_foodDetails_food_info}>
                       {food.description}

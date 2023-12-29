@@ -45,16 +45,18 @@ const CustomFoodSection = () => {
   };
   const handleDelete = async (food) => {
     if (
-      !window.confirm("Are you sure you want to delete " + food.name + " ?")
+      !window.confirm(
+        "Are you sure you want to delete " + food.description + " ?"
+      )
     ) {
       return;
     }
     try {
-      await api.delete(`/food?foodName=${food.name}`, {
+      await api.delete(`/food/${food.id}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       setSuccessfulMessage({
-        message: "Successfully deleted " + food.name + " !",
+        message: "Successfully deleted " + food.description + " !",
         flag: true,
       });
       navigate(PathCreator.customFoodPath(recordId, storageId));
@@ -88,12 +90,14 @@ const CustomFoodSection = () => {
                     navigate(
                       PathCreator.storagePath(recordId, storageId) +
                         "/foodMenu/" +
-                        item.name +
+                        item.foodClass +
+                        "/" +
+                        item.id +
                         "?isCustom=true"
                     )
                   }
                 >
-                  <span>{item.name}</span>
+                  <span>{item.description}</span>
                   <div className={styles.buttonSection}>
                     <button
                       onClick={(event) => {

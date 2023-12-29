@@ -134,9 +134,9 @@ function App() {
                   <Route path="createStorage" element={<CreateStorage />} />
                   <Route path="storage/:storageId" element={<FoodSection />}>
                     <Route path="foodMenu" element={<FoodMenu />}>
-                      <Route path=":foodName" element={<FoodMenuItem />} />
+                      <Route path=":foodType/:foodId" element={<FoodMenuItem />} />
                     </Route>
-                    <Route path=":foodName" element={<FoodSectionItem />} />
+                    <Route path=":foodId" element={<FoodSectionItem />} />
                     <Route path="customFood" element={<CustomFoodSection />}>
                       <Route path="create" element={<CreateCustomFood />} />
                     </Route>

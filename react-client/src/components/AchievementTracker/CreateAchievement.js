@@ -52,52 +52,66 @@ const CreateAchievement = () => {
         </button>
         <form onSubmit={handleSubmit} className={styles.form}>
           <h2 className={styles.header}>Create Achievement</h2>
-          <input
-            type="text"
-            value={ach.name}
-            minLength={3}
-            onChange={(e) =>
-              setAch((value) => ({ ...value, name: e.target.value }))
-            }
-            className={styles.input}
-            placeholder="Achievement Name"
-            required
-          />
-          <input
-            type="text"
-            value={ach.description}
-            minLength={3}
-            onChange={(e) =>
-              setAch((value) => ({ ...value, description: e.target.value }))
-            }
-            className={styles.input}
-            placeholder="Achievement Description"
-            required
-          />
 
-          <input
-            type="number"
-            value={ach.goal}
-            min={0}
-            step={0.01}
-            onChange={(e) =>
-              setAch((value) => ({ ...value, goal: e.target.value }))
-            }
-            className={styles.input}
-            placeholder="Achievement Goal"
-            required
-          />
+          <label className={styles.label}>
+            Achievement Name
+            <input
+              type="text"
+              value={ach.name}
+              minLength={3}
+              onChange={(e) =>
+                setAch((value) => ({ ...value, name: e.target.value }))
+              }
+              className={styles.input}
+              placeholder="e.g. Swimming"
+              required
+            />
+          </label>
 
-          <input
-            type="text"
-            value={ach.measurement}
-            onChange={(e) =>
-              setAch((value) => ({ ...value, measurement: e.target.value }))
-            }
-            className={styles.input}
-            placeholder="Achievement Measurement"
-            required
-          />
+          <label className={styles.label}>
+            Achievement Description
+            <input
+              type="text"
+              value={ach.description}
+              minLength={3}
+              onChange={(e) =>
+                setAch((value) => ({ ...value, description: e.target.value }))
+              }
+              className={styles.input}
+              placeholder="e.g. Swimming is what I do!"
+              required
+            />
+          </label>
+
+          <label className={styles.label}>
+            Achievement Goal
+            <input
+              type="number"
+              value={ach.goal}
+              min={0}
+              step={0.01}
+              onChange={(e) =>
+                setAch((value) => ({ ...value, goal: e.target.value }))
+              }
+              className={styles.input}
+              required
+            />
+          </label>
+
+          <label className={styles.label}>
+            Achievement Measurement
+            <input
+              type="text"
+              value={ach.measurement}
+              onChange={(e) =>
+                setAch((value) => ({ ...value, measurement: e.target.value }))
+              }
+              className={styles.input}
+              placeholder="e.g. km"
+              required
+            />
+          </label>
+
           <button type="submit" className={styles.button}>
             Create
           </button>

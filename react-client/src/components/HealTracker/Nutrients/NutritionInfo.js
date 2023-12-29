@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Link, Outlet } from "react-router-dom";
 import styles from "./NutritionInfo.module.css";
+import AlertMessage from "../../Notifications/AlertMessage";
 
 const allNutritious = {
   allMacronutrients: ["Carbohydrates", "Protein", "Fat"],
@@ -50,6 +51,7 @@ const NutritionInfo = () => {
   };
   return (
     <>
+    <AlertMessage />
       <section id="services" className="services sections-bg">
         <div key={"MainContainer"} className="container" data-aos="fade-up">
           <div key={"title"} className="section-header">

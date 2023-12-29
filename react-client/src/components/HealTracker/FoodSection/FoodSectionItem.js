@@ -3,7 +3,6 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import FoodItemBluePrint from "./FoodItemBluePrint";
 import api from "../../../util/api";
-import { convertSimpleFoodIntroComplexFood , convertComplexFoodIntoSimpleFood} from "../../../util/FoodUtils"; 
 import { AuthContext } from "../../../context/UserCredentials";
 import { NotificationContext } from "../../../context/Notification";
 
@@ -19,7 +18,7 @@ const FoodSectionItem = () => {
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const userToken = user.tokenInfo.token;
-  const { recordId, storageId, foodName } = useParams();
+  const { recordId, storageId, foodId } = useParams();
 
   const [food, setFood] = useState(null);
 
@@ -27,12 +26,12 @@ const FoodSectionItem = () => {
     const getFood = async () => {
       try {
         const food = await api.get(
-          `/storage/${storageId}/getFood?recordId=${recordId}&isCustom=${isCustom}&foodName=${foodName}`,
+          `/storage/${storageId}/getFood?recordId=${recordId}&isCustom=${isCustom}&foodId=${foodId}`,
           {
             headers: { Authorization: `Bearer ${userToken}` },
           }
         );
-        setFood(convertSimpleFoodIntroComplexFood(food.data));
+        setFood(food.data);
       } catch (error) {
         setFailedMessage({
           message:
@@ -46,7 +45,7 @@ const FoodSectionItem = () => {
   }, [
     recordId,
     storageId,
-    foodName,
+    foodId,
     userToken,
     setFailedMessage,
     navigate,
@@ -57,7 +56,7 @@ const FoodSectionItem = () => {
     try {
       await api.patch(
         `/storage/${storageId}/changeFood?recordId=${recordId}`,
-        convertComplexFoodIntoSimpleFood(food),
+        food,
         {
           headers: { Authorization: `Bearer ${userToken}` },
         }
@@ -84,21 +83,21 @@ const FoodSectionItem = () => {
   };
   const handleDeleteFood = async (food) => {
     if (
-      window.confirm("Are you sure you want to delete " + food.name + " ?") ===
+      window.confirm("Are you sure you want to delete " + food.description + " ?") ===
       false
     ) {
       return;
     }
     try {
       await api.patch(
-        `/storage/${storageId}/removeFood?recordId=${recordId}&foodName=${food.description}&isCustom=${isCustom}`,
+        `/storage/${storageId}/removeFood?recordId=${recordId}&foodId=${food.id}&isCustom=${food.foodClass === "Custom" ? true : false}`,
         {},
         {
           headers: { Authorization: `Bearer ${userToken}` },
         }
       );
       setSuccessfulMessage({
-        message: food.name + " deleted successfully!",
+        message: food.description + " deleted successfully!",
         flag: true,
       });
       navigate(PathCreator.storagePath(recordId, storageId));

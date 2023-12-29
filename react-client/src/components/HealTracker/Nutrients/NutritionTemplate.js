@@ -163,7 +163,7 @@ const NutritionTemplate = () => {
               PathCreator.nutrientInfo(
                 nutrition,
                 nutritionType,
-                "barCharStatistic?sort=DO&limit=50&min=0&max=100"
+                "barCharStatistic?sort=DO&limit=50&min=0&max=100&type=finalFoods"
               )
             );
           }}

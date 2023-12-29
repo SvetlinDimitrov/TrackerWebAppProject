@@ -1,12 +1,12 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 
+import { NotificationContext } from "../../../context/Notification";
+import { AuthContext } from "../../../context/UserCredentials";
 import { Gauge2 } from "../../../util/Tools";
 import api from "../../../util/api";
 import styles from "./FoodItemBluePrint.module.css";
-import { convertComplexFoodIntoSimpleFood , convertSimpleFoodIntroComplexFood} from "../../../util/FoodUtils";
-import { AuthContext } from "../../../context/UserCredentials";
 
 const FoodItemBluePrint = ({
   foodInfo,
@@ -21,19 +21,34 @@ const FoodItemBluePrint = ({
   const [inputValue, setInputValue] = useState(foodInfo.size);
   const [food, setFood] = useState(foodInfo);
   const { user } = useContext(AuthContext);
+  const { setFailedMessage } = useContext(NotificationContext);
   const userToken = user.tokenInfo.token;
 
   const changeFoodSize = async (e) => {
     e.preventDefault();
+
+    let foodTypeConverted;
+    if (food.foodClass === "FinalFood") {
+      foodTypeConverted = "foundationFoods";
+    } else if (food.foodClass === "Survey") {
+      foodTypeConverted = "surveyFoods";
+    } else if (food.foodClass === "Branded") {
+      foodTypeConverted = "brandedFoods";
+    }
+    const url =
+      foodTypeConverted === undefined
+        ? `/food/calculate?amount=${inputValue}`
+        : `/food/embedded/${foodTypeConverted}/calculate?amount=${inputValue}`;
     try {
-      const response = await api.patch(
-        `/food/calculate?amount=${inputValue}`,
-        convertComplexFoodIntoSimpleFood(food),
-        { headers: { Authorization: `Bearer ${userToken}` } }
-      );
-      setFood(convertSimpleFoodIntroComplexFood(response.data));
+      const response = await api.patch(url, food, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+      setFood(response.data);
     } catch (error) {
-      console.log(error);
+      setFailedMessage({
+        message: "Something went wrong with food size change!",
+        flag: true,
+      });
     }
   };
 
@@ -75,18 +90,9 @@ const FoodItemBluePrint = ({
               diameter={120}
               legendRectSize={15}
               legendSpacing={15}
-              fat={
-                food.macronutrients.find((macro) => macro.name === "Fat").amount
-              }
-              protein={
-                food.macronutrients.find((macro) => macro.name === "Protein")
-                  .amount
-              }
-              carbohydrates={
-                food.macronutrients.find(
-                  (macro) => macro.name === "Carbohydrates"
-                ).amount
-              }
+              fat={findMacronutrientAmount(food, "Fat")}
+              protein={findMacronutrientAmount(food, "Protein")}
+              carbohydrates={findMacronutrientAmount(food, "Carbohydrate")}
             />
           </div>
           <div className={styles.container_row}>
@@ -159,7 +165,7 @@ const FoodItemBluePrint = ({
           </div>
           {showMacros && (
             <>
-              {food.macronutrients.map((vitaminNutrient, index) => {
+              {food.macroNutrients.map((vitaminNutrient, index) => {
                 return (
                   <div className={styles.container_row} key={index}>
                     <span>{vitaminNutrient.name}</span>
@@ -196,3 +202,7 @@ function formatNumber(num) {
     return num.toFixed(3);
   }
 }
+const findMacronutrientAmount = (food, name) => {
+  const result = food.macroNutrients.find((macro) => macro.name === name);
+  return result ? result.amount : 0;
+};

@@ -31,7 +31,7 @@ const NutrientFeatureTemplate = () => {
         >
           Description
         </button>
-        <button
+        {/* <button
           className={
             activeTab === "barCharStatistic" ? styles.activeTab : styles.tab
           }
@@ -47,7 +47,7 @@ const NutrientFeatureTemplate = () => {
           }}
         >
           Statistics
-        </button>
+        </button> */}
       </div>
 
       <div className={styles.tabContent}>

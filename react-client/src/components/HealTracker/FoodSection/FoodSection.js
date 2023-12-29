@@ -62,16 +62,16 @@ const FoodSection = () => {
               onClick={() =>
                 navigate(
                   PathCreator.storagePath(recordId, storageId) +
-                    `/${food.name}?isCustom=${food.id !== null}`
+                    `/${food.id}?isCustom=${food.foodClass === 'Custom' ? true : false}`
                 )
               }
             >
               <div className={styles.container_foodDetails_food_info}>
-                <div>{food.name}</div>
-                <div>{food.size} gram</div>
+                <div>{food.description}</div>
+                <div>{food.size} {food.measurement}</div>
               </div>
               <div className={styles.container_foodDetails_food_info}>
-                <div>Calories: {food.calories}</div>
+                <div>{food.calories.name}: {food.calories.amount} {food.calories.unit}</div>
               </div>
             </div>
           ))}

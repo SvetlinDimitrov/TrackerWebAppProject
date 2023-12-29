@@ -15,7 +15,7 @@
   background: #3a6186; /* slightly different blue */
   padding: 20px;
   border-radius: 4px;
-  width: 40%;
+  width: 30%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -32,21 +32,20 @@
 
 .form {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   max-height: 500px;
-  overflow-y: scroll;
-  padding-left: 10px;
-  padding-right: 10px;
+  gap: 20px;
+  padding: 10px;
+  width: 100%;
+
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  width: 46%; /* adjust as needed */
-  margin-bottom: 20px;
-  margin-left: 10px;
-  margin-right: 10px;
+  width: 60%; /* adjust as needed */
 }
 
 .label {
@@ -56,22 +55,21 @@
 }
 
 .input {
-  padding: 5px;
   font-size: 14px;
   border: 1px solid #fff; /* white border */
+  border-radius: 5px;
   background: #5E8B92; /* lighter blue */
   color: #fff; /* white text */
+  padding: 10px;
 }
 
 .submitButton {
-  padding: 10px 20px;
   font-size: 16px;
   background-color: #88BBD6; /* light blue */
   color: #fff; /* white text */
   border: none;
   cursor: pointer;
-  width: 100%;
-  margin-top: 20px;
+  width: 60%;
   border-radius: 4px;
   transition: background 0.3s ease;
 }
@@ -123,4 +121,16 @@
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
   transform: scale(1.1); /* make it larger */
   background: #B0CFE7; /* even lighter blue */
+}
+
+.container {
+  overflow-y: auto;
+  max-height: 300px;
+  border: 1px solid #000; /* black border */
+  padding: 10px;
+  width: 70%;
+}
+
+.nutrient {
+  margin-bottom: 10px;
 }

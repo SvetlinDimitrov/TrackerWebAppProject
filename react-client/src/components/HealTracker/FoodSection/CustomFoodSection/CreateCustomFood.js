@@ -7,110 +7,222 @@ import { NotificationContext } from "../../../../context/Notification";
 import api from "../../../../util/api";
 import * as PathCreator from "../../../../util/PathCreator";
 
-const groups = {
-  vitamin: [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "k",
-    "b1",
-    "b2",
-    "b3",
-    "b5",
-    "b6",
-    "b7",
-    "b9",
-    "b12",
-  ],
-  macro: [
-    "fat",
-    "saturatedFat",
-    "transFat",
-    "monounsaturatedFat",
-    "polyunsaturatedFat",
-    "carbohydrates",
-    "sugar",
-    "fiber",
-    "protein",
-  ],
-  mineral: [
-    "calcium",
-    "iron",
-    "magnesium",
-    "phosphorus",
-    "potassium",
-    "sodium",
-    "zinc",
-    "copper",
-    "manganese",
-    "selenium",
-    "chromium",
-    "molybdenum",
-    "iodine",
-    "fluoride",
-    "chloride",
-  ],
+const nutrientsCreationInfoBluePrint = {
+  "Vitamin A": {
+    name: "Vitamin A",
+    unit: "µg",
+    amount: 0,
+  },
+  "Vitamin D (D2 + D3)": {
+    name: "Vitamin D (D2 + D3)",
+    unit: "µg",
+    amount: 0,
+  },
+  "Vitamin E": {
+    name: "Vitamin E",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin K": {
+    name: "Vitamin K",
+    unit: "µg",
+    amount: 0,
+  },
+  "Vitamin C": {
+    name: "Vitamin C",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B1 (Thiamin)": {
+    name: "Vitamin B1 (Thiamin)",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B2 (Riboflavin)": {
+    name: "Vitamin B2 (Riboflavin)",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B3 (Niacin)": {
+    name: "Vitamin B3 (Niacin)",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B5 (Pantothenic acid)": {
+    name: "Vitamin B5 (Pantothenic acid)",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B6": {
+    name: "Vitamin B6",
+    unit: "mg",
+    amount: 0,
+  },
+  "Vitamin B7 (Biotin)": {
+    name: "Vitamin B7 (Biotin)",
+    unit: "µg",
+    amount: 0,
+  },
+  "Vitamin B9 (Folate)": {
+    name: "Vitamin B9 (Folate)",
+    unit: "µg",
+    amount: 0,
+  },
+  "Vitamin B12": {
+    name: "Vitamin B12",
+    unit: "µg",
+    amount: 0,
+  },
+  "Calcium , Ca": {
+    name: "Calcium , Ca",
+    unit: "mg",
+    amount: 0,
+  },
+  "Phosphorus , P": {
+    name: "Phosphorus , P",
+    unit: "mg",
+    amount: 0,
+  },
+  "Magnesium , Mg": {
+    name: "Magnesium , Mg",
+    unit: "mg",
+    amount: 0,
+  },
+  "Sodium , Na": {
+    name: "Sodium , Na",
+    unit: "mg",
+    amount: 0,
+  },
+  "Potassium , K": {
+    name: "Potassium , K",
+    unit: "mg",
+    amount: 0,
+  },
+  "Iron , Fe": {
+    name: "Iron , Fe",
+    unit: "mg",
+    amount: 0,
+  },
+  "Zinc , Zn": {
+    name: "Zinc , Zn",
+    unit: "mg",
+    amount: 0,
+  },
+  "Copper , Cu": {
+    name: "Copper , Cu",
+    unit: "mg",
+    amount: 0,
+  },
+  "Manganese , Mn": {
+    name: "Manganese , Mn",
+    unit: "mg",
+    amount: 0,
+  },
+  "Selenium , Se": {
+    name: "Selenium , Se",
+    unit: "µg",
+    amount: 0,
+  },
+  "Iodine , I": {
+    name: "Iodine , I",
+    unit: "µg",
+    amount: 0,
+  },
+  "Molybdenum , Mo": {
+    name: "Molybdenum , Mo",
+    unit: "µg",
+    amount: 0,
+  },
+  Carbohydrate: {
+    name: "Carbohydrate",
+    unit: "g",
+    amount: 0,
+  },
+  Protein: {
+    name: "Protein",
+    unit: "g",
+    amount: 0,
+  },
+  Fat: {
+    name: "Fat",
+    unit: "g",
+    amount: 0,
+  },
+  Fiber: {
+    name: "Fiber",
+    unit: "g",
+    amount: 0,
+  },
+  Sugar: {
+    name: "Sugar",
+    unit: "g",
+    amount: 0,
+  },
+  "Saturated Fat": {
+    name: "Saturated Fat",
+    unit: "g",
+    amount: 0,
+  },
+  "Monounsaturated Fat": {
+    name: "Monounsaturated Fat",
+    unit: "g",
+    amount: 0,
+  },
+  "Trans Fat": {
+    name: "Trans Fat",
+    unit: "g",
+    amount: 0,
+  },
+  "Polyunsaturated Fat": {
+    name: "Polyunsaturated Fat",
+    unit: "g",
+    amount: 0,
+  },
 };
 const CreateCustomFood = () => {
   const [foodItem, setFoodItem] = useState({
-    name: "",
+    description: "",
     size: "100.00",
     calories: "0.00",
-    chromium: "0.00",
-    fluoride: "0.00",
-    iodine: "0.00",
-    selenium: "0.00",
-    molybdenum: "0.00",
-    polyunsaturatedFat: "0.00",
-    monounsaturatedFat: "0.00",
-    fat: "0.00",
-    saturatedFat: "0.00",
-    protein: "0.00",
-    fiber: "0.00",
-    carbohydrates: "0.00",
-    transFat: "0.00",
-    sugar: "0.00",
-    b9: "0.00",
-    phosphorus: "0.00",
-    calcium: "0.00",
-    iron: "0.00",
-    chloride: "0.00",
-    zinc: "0.00",
-    b7: "0.00",
-    manganese: "0.00",
-    sodium: "0.00",
-    copper: "0.00",
-    b3: "0.00",
-    b12: "0.00",
-    potassium: "0.00",
-    b5: "0.00",
-    b6: "0.00",
-    magnesium: "0.00",
-    d: "0.00",
-    k: "0.00",
-    b1: "0.00",
-    b2: "0.00",
-    e: "0.00",
-    a: "0.00",
-    c: "0.00",
+    vitaminNutrients: [],
+    macroNutrients: [],
+    mineralNutrients: [],
   });
+  const [nutrientsCreationInfo, setNutrientsCreationInfo] = useState(
+    nutrientsCreationInfoBluePrint
+  );
   const { user } = useContext(AuthContext);
   const { setSuccessfulMessage, setFailedMessage } =
     useContext(NotificationContext);
   const { recordId, storageId } = useParams();
-  const [activeGroup, setActiveGroup] = useState("");
+  const [addNutrientsState, setAddNutrientsState] = useState();
+  const [addNutrient, setAddNutrient] = useState("");
   const navigate = useNavigate();
   const userToken = user.tokenInfo.token;
 
-  const handleChange = (event) => {
-    setFoodItem({ ...foodItem, [event.target.name]: event.target.value });
+  const handleChange = (e) => {
+    setFoodItem({
+      ...foodItem,
+      [e.target.name]: e.target.value,
+    });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    Object.keys(nutrientsCreationInfo).forEach((key) => {
+      if (nutrientsCreationInfo[key].amount > 0) {
+        if (key.includes("Vitamin")) {
+          foodItem.vitaminNutrients.push(nutrientsCreationInfo[key]);
+        } else if (key.includes(",")) {
+          foodItem.mineralNutrients.push(nutrientsCreationInfo[key]);
+        } else {
+          foodItem.macroNutrients.push(nutrientsCreationInfo[key]);
+        }
+      }
+    });
+
     try {
-      await api.post("food", foodItem, {
+      await api.post("/food", foodItem, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       setSuccessfulMessage({
@@ -118,7 +230,6 @@ const CreateCustomFood = () => {
         flag: true,
       });
     } catch (error) {
-      console.log(error.response.data);
       if (
         error.response.status === 400 &&
         error.response.data.message ===
@@ -152,52 +263,123 @@ const CreateCustomFood = () => {
         <div className={styles.buttonGroup}>
           <button
             className={styles.groupButton}
-            onClick={() =>
-              setActiveGroup((group) => (group === "vitamin" ? "" : "vitamin"))
-            }
+            onClick={() => {
+              setAddNutrient("");
+              setAddNutrientsState(!addNutrientsState);
+            }}
           >
-            Vitamin
-          </button>
-          <button
-            className={styles.groupButton}
-            onClick={() =>
-              setActiveGroup((group) => (group === "macro" ? "" : "macro"))
-            }
-          >
-            Macro
-          </button>
-          <button
-            className={styles.groupButton}
-            onClick={() =>
-              setActiveGroup((group) => (group === "mineral" ? "" : "mineral"))
-            }
-          >
-            Mineral
+            Show Nutrients
           </button>
         </div>
         <form className={styles.form} onSubmit={handleSubmit}>
-          {Object.keys(foodItem).map(
-            (key) =>
-              ((activeGroup && groups[activeGroup].includes(key)) ||
-                ["name", "size", "calories"].includes(key)) && (
-                <div key={key} className={styles.inputGroup}>
-                  <label className={styles.label} htmlFor={key}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
+          <div className={styles.inputGroup}>
+            <label className={styles.label} htmlFor="description">
+              Description
+            </label>
+            <input
+              id="description"
+              name="description"
+              required
+              type="text"
+              minLength={3}
+              className={styles.input}
+              value={foodItem.description}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label} htmlFor="size">
+              Size
+            </label>
+            <input
+              id="size"
+              name="size"
+              required
+              type="number"
+              min={1}
+              className={styles.input}
+              value={foodItem.size}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label} htmlFor="calories">
+              Calories
+            </label>
+            <input
+              id="calories"
+              min={1}
+              type="number"
+              required
+              name="calories"
+              className={styles.input}
+              value={foodItem.calories}
+              onChange={handleChange}
+            />
+          </div>
+
+          {addNutrientsState && (
+            <>
+              <div className={styles.inputGroup}>
+                <label className={styles.label} htmlFor="group">
+                  Choose Nutrient To Add
+                </label>
+                <select
+                  id="group"
+                  name="group"
+                  className={styles.input}
+                  onChange={(e) => setAddNutrient(e.target.value)}
+                  selected={addNutrient}
+                >
+                  <option value="">Select Nutrient</option>
+                  {Object.keys(nutrientsCreationInfo).map((key, index) => (
+                    <option key={index} value={nutrientsCreationInfo[key].name}>
+                      {nutrientsCreationInfo[key].name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {addNutrient !== "" && (
+                <div className={styles.inputGroup}>
+                  <label className={styles.label} htmlFor="amount">
+                    {nutrientsCreationInfo[addNutrient].name} /{" "}
+                    {nutrientsCreationInfo[addNutrient].unit} / Amount
                   </label>
                   <input
+                    id="amount"
+                    min={0}
+                    required
+                    name="amount"
                     className={styles.input}
-                    type={key === "name" ? "Text" : "Number"}
-                    id={key}
-                    name={key}
-                    value={foodItem[key]}
-                    onChange={handleChange}
-                    required={key === "name" || key === "calories"}
-                    min={key !== "name" ? 0 : undefined}
-                    minLength={key === "name" ? 3 : undefined}
-                    max={key !== "name" ? 1000000 : undefined}
+                    value={nutrientsCreationInfo[addNutrient].amount}
+                    onChange={(e) =>
+                      setNutrientsCreationInfo({
+                        ...nutrientsCreationInfo,
+                        [addNutrient]: {
+                          ...nutrientsCreationInfo[addNutrient],
+                          amount: e.target.value,
+                        },
+                      })
+                    }
                   />
                 </div>
-              )
+              )}
+            </>
+          )}
+          {!addNutrientsState && (
+            <div className={styles.container}>
+              {Object.keys(nutrientsCreationInfo).map((key, index) => (
+                <div key={index} className={styles.nutrient}>
+                  {nutrientsCreationInfo[key].amount > 0 && (
+                    <p>
+                      {nutrientsCreationInfo[key].name} /{" "}
+                      {nutrientsCreationInfo[key].unit} /{" "}
+                      {nutrientsCreationInfo[key].amount}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
           <button className={styles.submitButton} type="submit">
             Create Food
