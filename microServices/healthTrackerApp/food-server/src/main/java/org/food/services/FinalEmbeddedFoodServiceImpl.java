@@ -21,23 +21,23 @@ public class FinalEmbeddedFoodServiceImpl extends DefaultEmbeddedFoodService {
 
     @Override
     public List<NotCompleteFoodView> getAllEmbeddedFoods() {
-        return embeddedFoodRepository.findAllProjectedByDescriptionAndName("finalFoods");
+        return embeddedFoodRepository.findAllProjectedByDescriptionAndName("FinalFood");
     }
 
     @Override
     protected List<FilteredFoodView> getAllEmbeddedFoodsByFilterImp(FilterDataInfo dataInfo , String type){
-        return embeddedFoodRepository.executeAggregation(type , dataInfo , "finalFoods");
+        return embeddedFoodRepository.executeAggregation(type , dataInfo , "FinalFood");
     }
 
     @Override
     public FinalFoodView getFinalFoodById(String id) throws FoodException {
-        return embeddedFoodRepository.findById(id, FinalFoodView.class, "finalFoods")
+        return embeddedFoodRepository.findById(id, FinalFoodView.class)
                 .orElseThrow(() -> new FoodException("Food not found with id: " + id + " in finalFood category !"));
     }
 
 
     @Override
     public List<NotCompleteFoodView> getAllEmbeddedFoodsSearchDescriptionImp(String description){
-        return embeddedFoodRepository.findAllProjectedByRegex(description , "finalFoods");
+        return embeddedFoodRepository.findAllProjectedByRegex(description , "FinalFood");
     }
 }

@@ -17,7 +17,7 @@ public class CreateCustomFood {
     private BigDecimal calories;
     private BigDecimal size;
     private List<Nutrient> vitaminNutrients;
-    private List<Nutrient> macronutrients;
+    private List<Nutrient> macroNutrients;
     private List<Nutrient> mineralNutrients;
 
 }

@@ -76,7 +76,7 @@ public abstract class AbstractRecordService {
             for (Food food : storage.getFoods()) {
                 fillNutrientsMap(nutationsMap, food.getMineralNutrients());
                 fillNutrientsMap(nutationsMap, food.getVitaminNutrients());
-                fillNutrientsMap(nutationsMap, food.getMacronutrients());
+                fillNutrientsMap(nutationsMap, food.getMacroNutrients());
 
             }
             if (storage.getConsumedCalories() != null) {

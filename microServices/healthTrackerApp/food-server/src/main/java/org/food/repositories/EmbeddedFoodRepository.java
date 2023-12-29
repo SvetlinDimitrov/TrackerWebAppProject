@@ -22,27 +22,30 @@ public class EmbeddedFoodRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<NotCompleteFoodView> findAllProjectedByDescriptionAndName(String collectionName) {
+    public List<NotCompleteFoodView> findAllProjectedByDescriptionAndName(String foodClass) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("foodClass").is(foodClass));
         query.fields().include("description").include("foodClass");
-        return mongoTemplate.find(query, NotCompleteFoodView.class, collectionName);
+        return mongoTemplate.find(query, NotCompleteFoodView.class, "foods");
     }
 
-    public <T> Optional<T> findById(String id, Class<T> clazz , String collectionName){
-        return Optional.ofNullable(mongoTemplate.findById(id, clazz, collectionName));
+    public <T> Optional<T> findById(String id, Class<T> clazz ){
+        return Optional.ofNullable(mongoTemplate.findById(id, clazz, "foods"));
     }
 
-    public List<NotCompleteFoodView> findAllProjectedByRegex(String regexWord, String collectionName) {
+    public List<NotCompleteFoodView> findAllProjectedByRegex(String regexWord, String foodClass) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("foodClass").is(foodClass));
         query.addCriteria(Criteria.where("description").regex(regexWord, "i"));
         query.fields().include("description").include("foodClass");
-        return mongoTemplate.find(query, NotCompleteFoodView.class, collectionName);
+        return mongoTemplate.find(query, NotCompleteFoodView.class, "foods");
     }
 
-    public List<FilteredFoodView> executeAggregation(String nutrientType , FilterDataInfo info, String collectionName) {
+    public List<FilteredFoodView> executeAggregation(String nutrientType , FilterDataInfo info, String foodClass) {
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.unwind(nutrientType),
+                Aggregation.match(Criteria.where("foodClass").is(foodClass)),
                 Aggregation.match(Criteria.where(nutrientType + ".name").is(info.getNutrientName())),
+                Aggregation.unwind(nutrientType),
                 Aggregation.project("_id", "description")
                         .and(nutrientType + ".name").as("nutrient")
                         .and(nutrientType + ".amount").as("amount")
@@ -52,7 +55,7 @@ public class EmbeddedFoodRepository {
                 Aggregation.limit(info.getLimit())
         );
 
-        AggregationResults<FilteredFoodView> results = mongoTemplate.aggregate(aggregation, collectionName, FilteredFoodView.class);
+        AggregationResults<FilteredFoodView> results = mongoTemplate.aggregate(aggregation, "foods", FilteredFoodView.class);
 
         return results.getMappedResults();
     }

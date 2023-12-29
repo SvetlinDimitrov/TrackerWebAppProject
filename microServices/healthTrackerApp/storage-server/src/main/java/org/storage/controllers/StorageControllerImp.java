@@ -107,9 +107,9 @@ public class StorageControllerImp implements StorageController {
             String storageId,
             String recordId,
             Boolean isCustom,
-            String foodName,
+            String foodId,
             String userToken) throws InvalidJsonTokenException, StorageException, FoodException {
-        return new ResponseEntity<>(storageService.getFoodByStorage(storageId, recordId, foodName, userToken, isCustom),
+        return new ResponseEntity<>(storageService.getFoodByStorage(storageId, recordId, foodId, userToken, isCustom),
                 HttpStatus.OK);
     }
 

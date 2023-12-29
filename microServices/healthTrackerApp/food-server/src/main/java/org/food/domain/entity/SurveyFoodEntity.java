@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Document(collection = "surveyFoods")
 public class SurveyFoodEntity extends FoodBaseEntity{
     private List<FoodPortion> foodPortions;
 }

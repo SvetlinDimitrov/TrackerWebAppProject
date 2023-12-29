@@ -367,7 +367,7 @@ public class NutrientIntakeCreator {
     private List<MacronutrientDto> macronutrientNutrients() {
         return List.of(
                 MacronutrientDto.builder()
-                        .name("Carbohydrates")
+                        .name("Carbohydrate")
                         .activeState(0.5)
                         .inactiveState(0.5)
                         .build(),

@@ -3,11 +3,9 @@ package org.food.utils;
 import lombok.RequiredArgsConstructor;
 import org.food.clients.dto.User;
 import org.food.domain.dtos.CreateCustomFood;
-import org.food.domain.dtos.FilterDataInfo;
-import org.food.domain.dtos.foodView.storageFoodView.CaloriesView;
 import org.food.domain.dtos.foodView.FoodView;
+import org.food.domain.dtos.foodView.storageFoodView.CaloriesView;
 import org.food.domain.dtos.foodView.storageFoodView.NutrientView;
-import org.food.domain.entity.CustomFoodEntity;
 import org.food.domain.entity.storageEntity.Nutrient;
 import org.food.exception.FoodException;
 import org.food.exception.InvalidUserTokenHeaderException;
@@ -35,42 +33,47 @@ public class FoodUtils {
             return;
         }
 
-        BigDecimal multiplayer = amount.divide(food.getSize(), 2, RoundingMode.HALF_UP);
+        BigDecimal multiplayer = amount.divide(food.getSize(), 20, RoundingMode.HALF_UP);
 
-        food.setCalories(new CaloriesView(food.getCalories().getAmount().multiply(multiplayer)));
+        food.setCalories(new CaloriesView(food.getCalories().getAmount().multiply(multiplayer).setScale(2, RoundingMode.HALF_UP)));
+        food.setSize(amount);
 
         List<NutrientView> vitaminNutrients = new ArrayList<>();
-        food.getMineralNutrients().forEach(nutrient -> {
-            NutrientView nutrientView = new NutrientView();
-            nutrientView.setName(nutrient.getName());
-            nutrientView.setUnit(nutrient.getUnit());
-            nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer));
-            vitaminNutrients.add(nutrientView);
-        });
+        if (food.getVitaminNutrients() != null) {
+            food.getVitaminNutrients().forEach(nutrient -> {
+                NutrientView nutrientView = new NutrientView();
+                nutrientView.setName(nutrient.getName());
+                nutrientView.setUnit(nutrient.getUnit());
+                nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer).setScale(2, RoundingMode.HALF_UP));
+                vitaminNutrients.add(nutrientView);
+            });
+        }
         food.setVitaminNutrients(vitaminNutrients);
-
         List<NutrientView> mineralNutrients = new ArrayList<>();
-        food.getMineralNutrients().forEach(nutrient -> {
-            NutrientView nutrientView = new NutrientView();
-            nutrientView.setName(nutrient.getName());
-            nutrientView.setUnit(nutrient.getUnit());
-            nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer));
-            mineralNutrients.add(nutrientView);
-        });
+        if (food.getMineralNutrients() != null) {
+            food.getMineralNutrients().forEach(nutrient -> {
+                NutrientView nutrientView = new NutrientView();
+                nutrientView.setName(nutrient.getName());
+                nutrientView.setUnit(nutrient.getUnit());
+                nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer).setScale(2, RoundingMode.HALF_UP));
+                mineralNutrients.add(nutrientView);
+            });
+        }
         food.setMineralNutrients(mineralNutrients);
-
         List<NutrientView> macronutrients = new ArrayList<>();
-        food.getMacronutrients().forEach(nutrient -> {
-            NutrientView nutrientView = new NutrientView();
-            nutrientView.setName(nutrient.getName());
-            nutrientView.setUnit(nutrient.getUnit());
-            nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer));
-            macronutrients.add(nutrientView);
-        });
-        food.setMacronutrients(macronutrients);
+        if (food.getMacroNutrients() != null) {
+            food.getMacroNutrients().forEach(nutrient -> {
+                NutrientView nutrientView = new NutrientView();
+                nutrientView.setName(nutrient.getName());
+                nutrientView.setUnit(nutrient.getUnit());
+                nutrientView.setAmount(nutrient.getAmount().multiply(multiplayer).setScale(2, RoundingMode.HALF_UP));
+                macronutrients.add(nutrientView);
+            });
+        }
+        food.setMacroNutrients(macronutrients);
     }
 
-    public <F,T> F toFoodView(T food, Class<F> foodViewClass) {
+    public <F, T> F toFoodView(T food, Class<F> foodViewClass) {
         return modelMapper.map(food, foodViewClass);
     }
 
@@ -97,12 +100,12 @@ public class FoodUtils {
         }
         validateMinerals(food.getMineralNutrients());
         validateVitamins(food.getVitaminNutrients());
-        validateMacronutrients(food.getMacronutrients());
+        validateMacronutrients(food.getMacroNutrients());
     }
 
-    private void validateMacronutrients(List<Nutrient> macronutrients) throws FoodException {
+    private void validateMacronutrients(List<Nutrient> macroNutrients) throws FoodException {
         Set<String> macronutrientNames = Set.of(
-                "Carbohydrates",
+                "Carbohydrate",
                 "Protein",
                 "Fat",
                 "Fiber",
@@ -112,17 +115,17 @@ public class FoodUtils {
                 "Polyunsaturated Fat",
                 "Monounsaturated Fat"
         );
-        if (macronutrients.isEmpty()) {
+        if (macroNutrients == null || macroNutrients.isEmpty()) {
             return;
         }
-        for (Nutrient nutrient : macronutrients) {
+        for (Nutrient nutrient : macroNutrients) {
             if (nutrient.getName() == null || nutrient.getName().isEmpty() ||
                     nutrient.getAmount() == null || nutrient.getAmount().compareTo(BigDecimal.ZERO) < 0 ||
                     nutrient.getUnit() == null || nutrient.getUnit().isEmpty()) {
                 throw new FoodException("Invalid macronutrient.");
             }
             if (!macronutrientNames.contains(nutrient.getName())) {
-                throw new FoodException("Invalid macronutrient. "+ nutrient.getName() + " Valid names: "+ String.join(", ", macronutrientNames));
+                throw new FoodException("Invalid macronutrient. " + nutrient.getName() + " Valid names: " + String.join(", ", macronutrientNames));
             }
         }
     }
@@ -143,7 +146,7 @@ public class FoodUtils {
                 "Vitamin B9 (Folate)",
                 "Vitamin B12"
         );
-        if (vitaminNutrients.isEmpty()) {
+        if (vitaminNutrients == null || vitaminNutrients.isEmpty()) {
             return;
         }
         for (Nutrient nutrient : vitaminNutrients) {
@@ -153,7 +156,7 @@ public class FoodUtils {
                 throw new FoodException("Invalid vitamin nutrient.");
             }
             if (!vitaminNames.contains(nutrient.getName())) {
-                throw new FoodException("Invalid vitamin nutrient. "+ nutrient.getName() +
+                throw new FoodException("Invalid vitamin nutrient. " + nutrient.getName() +
                         " Valid names: " + String.join(", ", vitaminNames));
             }
         }
@@ -174,7 +177,7 @@ public class FoodUtils {
                 "Selenium , Se",
                 "Molybdenum , Mo"
         );
-        if (mineralNutrients.isEmpty()) {
+        if (mineralNutrients == null || mineralNutrients.isEmpty()) {
             return;
         }
         for (Nutrient nutrient : mineralNutrients) {

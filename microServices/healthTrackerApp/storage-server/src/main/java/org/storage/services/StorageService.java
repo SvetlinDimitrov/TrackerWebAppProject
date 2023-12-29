@@ -194,7 +194,7 @@ public class StorageService {
 
         fillNutrients(food.getVitaminNutrients(), foodToCombine.getVitaminNutrients());
         fillNutrients(food.getMineralNutrients(), foodToCombine.getMineralNutrients());
-        fillNutrients(food.getMacronutrients(), foodToCombine.getMacronutrients());
+        fillNutrients(food.getMacroNutrients(), foodToCombine.getMacroNutrients());
     }
 
     private static void fillNutrients(List<Nutrient> real, List<Nutrient> toAdd) {
@@ -276,7 +276,7 @@ public class StorageService {
         validateCalories(food);
         validateMinerals(food.getMineralNutrients());
         validateVitamins(food.getVitaminNutrients());
-        validateMacronutrients(food.getMacronutrients());
+        validateMacronutrients(food.getMacroNutrients());
     }
 
     private void validateFoodClass(Food food) throws FoodException {
@@ -302,7 +302,7 @@ public class StorageService {
 
     private void validateMacronutrients(List<Nutrient> macronutrients) throws FoodException {
         Set<String> macronutrientNames = Set.of(
-                "Carbohydrates",
+                "Carbohydrate",
                 "Protein",
                 "Fat",
                 "Fiber",
@@ -390,7 +390,7 @@ public class StorageService {
         }
     }
 
-    public Food getFoodByStorage(String storageId, String recordId, String foodName, String userToken, Boolean isCustom)
+    public Food getFoodByStorage(String storageId, String recordId, String foodId, String userToken, Boolean isCustom)
             throws InvalidJsonTokenException, StorageException, FoodException {
 
         String userId = getUserId(userToken);
@@ -401,15 +401,15 @@ public class StorageService {
                                 + userId));
 
         if (isCustom) {
-            if (storage.getCustomFoods().get(foodName) == null) {
-                throw new FoodException("Food with name: " + foodName + " not found.");
+            if (storage.getCustomFoods().get(foodId) == null) {
+                throw new FoodException("Food with name: " + foodId + " not found.");
             }
-            return storage.getCustomFoods().get(foodName);
+            return storage.getCustomFoods().get(foodId);
         } else {
-            if (storage.getFoods().get(foodName) == null) {
-                throw new FoodException("Food with name: " + foodName + " not found.");
+            if (storage.getFoods().get(foodId) == null) {
+                throw new FoodException("Food with name: " + foodId + " not found.");
             }
-            return storage.getFoods().get(foodName);
+            return storage.getFoods().get(foodId);
         }
     }
 }

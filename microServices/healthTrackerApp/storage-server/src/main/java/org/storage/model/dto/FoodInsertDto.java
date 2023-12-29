@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.storage.model.entity.Food;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-
 import lombok.Getter;
 
 @Getter
@@ -23,7 +21,7 @@ public class FoodInsertDto {
     private String measurement;
     private BigDecimal size;
     private List<NutrientView> vitaminNutrients;
-    private List<NutrientView> macronutrients;
+    private List<NutrientView> macroNutrients;
     private List<NutrientView> mineralNutrients;
 
     public Food toFood() {
@@ -35,7 +33,7 @@ public class FoodInsertDto {
         food.setMeasurement(measurement);
         food.setSize(size);
         food.setVitaminNutrients(vitaminNutrients.stream().map(NutrientView::toNutrient).toList());
-        food.setMacronutrients(macronutrients.stream().map(NutrientView::toNutrient).toList());
+        food.setMacroNutrients(macroNutrients.stream().map(NutrientView::toNutrient).toList());
         food.setMineralNutrients(mineralNutrients.stream().map(NutrientView::toNutrient).toList());
         return food;
     }

@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "finalFoods")
 @Setter
 @Getter
 public class FinalFoodEntity extends FoodBaseEntity {

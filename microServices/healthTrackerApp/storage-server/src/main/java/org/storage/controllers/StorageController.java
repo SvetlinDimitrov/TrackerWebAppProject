@@ -79,6 +79,6 @@ public interface StorageController {
             @PathVariable String storageId,
             @RequestParam String recordId,
             @RequestParam(defaultValue = "false") Boolean isCustom,
-            @RequestParam String foodName,
+            @RequestParam String foodId,
             @RequestHeader(name = "X-ViewUser") String userToken) throws InvalidJsonTokenException, StorageException, FoodException;
 }

@@ -21,22 +21,22 @@ public class SurveyFoodsServiceImpEmbedded extends DefaultEmbeddedFoodService {
 
     @Override
     public List<NotCompleteFoodView> getAllEmbeddedFoods() {
-        return surveyFoodsRepository.findAllProjectedByDescriptionAndName("surveyFoods");
+        return surveyFoodsRepository.findAllProjectedByDescriptionAndName("Survey");
     }
 
     @Override
     protected List<NotCompleteFoodView> getAllEmbeddedFoodsSearchDescriptionImp(String description) {
-        return surveyFoodsRepository.findAllProjectedByRegex(description, "surveyFoods");
+        return surveyFoodsRepository.findAllProjectedByRegex(description, "Survey");
     }
 
     @Override
     protected List<FilteredFoodView> getAllEmbeddedFoodsByFilterImp(FilterDataInfo dataInfo, String type) {
-        return surveyFoodsRepository.executeAggregation(type, dataInfo, "surveyFoods");
+        return surveyFoodsRepository.executeAggregation(type, dataInfo, "Survey");
     }
 
     @Override
     public SurveyFoodView getFinalFoodById(String id) throws FoodException {
-        return surveyFoodsRepository.findById(id, SurveyFoodView.class, "surveyFoods")
+        return surveyFoodsRepository.findById(id, SurveyFoodView.class)
                 .map(food -> foodUtils.toFoodView(food, SurveyFoodView.class))
                 .orElseThrow(() -> new FoodException("Food not found with id: " + id + " in surveyFood category !"));
     }

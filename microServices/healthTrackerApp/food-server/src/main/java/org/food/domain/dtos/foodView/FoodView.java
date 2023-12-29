@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.food.domain.dtos.foodView.storageFoodView.CaloriesView;
-import org.food.domain.dtos.foodView.storageFoodView.FoodPortionView;
 import org.food.domain.dtos.foodView.storageFoodView.NutrientView;
 
 import java.math.BigDecimal;
@@ -22,7 +21,7 @@ public class FoodView {
     private String measurement;
     private BigDecimal size;
     private List<NutrientView> vitaminNutrients;
-    private List<NutrientView> macronutrients;
+    private List<NutrientView> macroNutrients;
     private List<NutrientView> mineralNutrients;
 
 }

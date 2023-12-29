@@ -2,20 +2,17 @@ package org.food.services;
 
 import lombok.RequiredArgsConstructor;
 import org.food.domain.dtos.CreateCustomFood;
-import org.food.domain.dtos.FilterDataInfo;
 import org.food.domain.dtos.foodView.CustomFoodView;
 import org.food.domain.dtos.foodView.FoodView;
 import org.food.domain.dtos.foodView.NotCompleteFoodView;
 import org.food.domain.entity.CustomFoodEntity;
 import org.food.domain.entity.storageEntity.Calories;
-import org.food.domain.entity.storageEntity.Nutrient;
 import org.food.exception.FoodException;
 import org.food.exception.InvalidUserTokenHeaderException;
 import org.food.repositories.CustomFoodRepository;
 import org.food.utils.FoodUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,7 +87,7 @@ public class CustomFoodServiceImp{
         foodEntity.setCalories(new Calories(entity.getCalories()));
         foodEntity.setMineralNutrients(entity.getMineralNutrients());
         foodEntity.setVitaminNutrients(entity.getVitaminNutrients());
-        foodEntity.setMacronutrients(entity.getMacronutrients());
+        foodEntity.setMacroNutrients(entity.getMacroNutrients());
 
         foodUtils.calculateFoodByAmount(foodUtils.toFoodView(foodEntity , FoodView.class), 100.0);
 

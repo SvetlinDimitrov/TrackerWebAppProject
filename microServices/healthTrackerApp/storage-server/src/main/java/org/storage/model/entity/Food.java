@@ -1,6 +1,7 @@
 package org.storage.model.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class Food {
     private Calories calories;
     private String measurement;
     private BigDecimal size;
-    private List<Nutrient> vitaminNutrients;
-    private List<Nutrient> macronutrients;
-    private List<Nutrient> mineralNutrients;
+    private List<Nutrient> vitaminNutrients = new ArrayList<>();
+    private List<Nutrient> macroNutrients = new ArrayList<>();
+    private List<Nutrient> mineralNutrients = new ArrayList<>();
 
 }

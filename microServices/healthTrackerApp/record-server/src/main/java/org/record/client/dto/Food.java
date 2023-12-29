@@ -20,7 +20,7 @@ public class Food {
     private String measurement;
     private BigDecimal size;
     private List<Nutrient> vitaminNutrients;
-    private List<Nutrient> macronutrients;
+    private List<Nutrient> macroNutrients;
     private List<Nutrient> mineralNutrients;
 
 }

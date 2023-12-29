@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.food.domain.dtos.FilterDataInfo;
 import org.food.domain.dtos.foodView.BrandedFoodView;
 import org.food.domain.dtos.foodView.FilteredFoodView;
-import org.food.domain.dtos.foodView.FoodView;
 import org.food.domain.dtos.foodView.NotCompleteFoodView;
 import org.food.exception.FoodException;
 import org.food.repositories.EmbeddedFoodRepository;
@@ -22,22 +21,22 @@ public class BrandedEmbeddedFoodServiceImp extends DefaultEmbeddedFoodService {
 
     @Override
     public List<NotCompleteFoodView> getAllEmbeddedFoods() {
-        return brandedFoodRepository.findAllProjectedByDescriptionAndName("brandedFoods");
+        return brandedFoodRepository.findAllProjectedByDescriptionAndName("Branded");
     }
 
     @Override
-    protected List<NotCompleteFoodView> getAllEmbeddedFoodsSearchDescriptionImp(String regex){
-        return brandedFoodRepository.findAllProjectedByRegex(regex , "brandedFoods");
+    protected List<NotCompleteFoodView> getAllEmbeddedFoodsSearchDescriptionImp(String regex) {
+        return brandedFoodRepository.findAllProjectedByRegex(regex, "Branded");
     }
 
     @Override
-    protected List<FilteredFoodView> getAllEmbeddedFoodsByFilterImp(FilterDataInfo dataInfo , String type) throws FoodException {
-        return brandedFoodRepository.executeAggregation(type , dataInfo , "brandedFoods");
+    protected List<FilteredFoodView> getAllEmbeddedFoodsByFilterImp(FilterDataInfo dataInfo, String type) {
+        return brandedFoodRepository.executeAggregation(type, dataInfo, "Branded");
     }
 
     @Override
     public BrandedFoodView getFinalFoodById(String id) throws FoodException {
-        return brandedFoodRepository.findById(id , BrandedFoodView.class , "brandedFoods")
+        return brandedFoodRepository.findById(id, BrandedFoodView.class)
                 .map(food -> foodUtils.toFoodView(food, BrandedFoodView.class))
                 .orElseThrow(() -> new FoodException("Food with id " + id + " does not exist in brandedFoods type."));
     }

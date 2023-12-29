@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "customFood")
+@Document(collection = "foods")
 public class CustomFoodEntity extends FoodBaseEntity{
     private String userId;
 }
