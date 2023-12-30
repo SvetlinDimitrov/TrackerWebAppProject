@@ -58,51 +58,17 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
-  mysql-db-record:
-    container_name: mysql-db-record
-    restart: always
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: record
+  mongoDB:
+    image: mongo
+    container_name: mongoDB
+    ports:
+      - "27017:27017"
     volumes:
-      - record-data:/var/lib/mysql
-  mysql-db-user:
-    container_name: mysql-db-user
-    restart: always
-    image: mysql:latest
+      - ./runProjectConfig/mongo_food_data:/data/db
+      - mongodb-config:/data/configdb
     environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: users
-    volumes:
-      - user-data:/var/lib/mysql
-  mysql-db-storage:
-    container_name: mysql-db-storage
-    restart: always
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: storage
-    volumes:
-      - storage-data:/var/lib/mysql
-  mysql-db-food:
-    container_name: mysql-db-food
-    restart: always
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: food
-    volumes:
-      - food-data:/var/lib/mysql
-  mysql-db-achievement:
-    container_name: mysql-db-achievement
-    restart: always
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: achievement
-    volumes:
-      - achievement-data:/var/lib/mysql
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
   discovery-server:
     image: svetlindimitrov/discovery-server-tracker-app
     container_name: discovery-server
@@ -131,7 +97,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
-      - mysql-db-user
+      - mongoDB
       - gateway-server
       - discovery-server
       - authBroker
@@ -142,7 +108,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
-      - mysql-db-food
+      - mongoDB
       - discovery-server
       - gateway-server
       - authBroker
@@ -154,7 +120,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
-      - mysql-db-record
+      - mongoDB
       - gateway-server
       - discovery-server
       - recordBroker
@@ -167,7 +133,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
-      - mysql-db-storage
+      - mongoDB
       - gateway-server
       - discovery-server
       - record-server
@@ -179,7 +145,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
-      - mysql-db-achievement
+      - mongoDB
       - gateway-server
       - discovery-server
   prometheus:
@@ -221,11 +187,7 @@ services:
       - storage-server
       - achievement-server
 volumes:
-  user-data:
-  storage-data:
-  record-data:
-  food-data:
-  achievement-data:
+  mongodb-config:
   kafka-data:
   kafka-data2:
   kafka-secrets:
