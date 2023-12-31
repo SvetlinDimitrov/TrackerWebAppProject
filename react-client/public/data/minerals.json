@@ -44,7 +44,7 @@
         "value": "Calcium absorption can be influenced by factors such as vitamin D levels, age, and certain medications."
       }
     ],
-    "measure": "milligrams (mg)",
+    "measure": "mg",
     "maleLowerBoundIntake": 1000,
     "maleHigherBoundIntake": 1300,
     "femaleLowerBoundIntake": 1000,
@@ -91,7 +91,7 @@
         "value": "Phosphorus levels are typically balanced by the kidneys. Individuals with kidney issues may require monitoring of phosphorus intake."
       }
     ],
-    "measure": "milligrams (mg)",
+    "measure": "mg",
     "maleLowerBoundIntake": 700,
     "maleHigherBoundIntake": 1250,
     "femaleLowerBoundIntake": 700,
@@ -138,7 +138,7 @@
         "value": "Maintaining an adequate level of magnesium is important for overall health. Magnesium deficiency can lead to muscle cramps, fatigue, and other health issues."
       }
     ],
-    "measure": "milligrams (mg)",
+    "measure": "mg",
     "maleLowerBoundIntake": 400,
     "maleHigherBoundIntake": 420,
     "femaleLowerBoundIntake": 310,
@@ -189,10 +189,10 @@
         "value": "While sodium is essential for bodily functions, excessive intake can contribute to high blood pressure and other health issues. It's important to balance sodium intake, especially for individuals with hypertension."
       }
     ],
-    "measure": "milligrams (mg)",
-    "maleLowerBoundIntake": 1500,
+    "measure": "mg",
+    "maleLowerBoundIntake": 2300,
     "maleHigherBoundIntake": 2300,
-    "femaleLowerBoundIntake": 1500,
+    "femaleLowerBoundIntake": 2300,
     "femaleHigherBoundIntake": 2300
   },
   {
@@ -252,11 +252,11 @@
         "value": "Maintaining a proper balance of potassium is important for overall health, but excessive intake of potassium supplements can be harmful, especially for individuals with certain medical conditions like kidney problems. Kidneys play a critical role in regulating potassium levels in the body, and compromised kidney function can lead to potassium imbalances."
       }
     ],
-    "measure": "milligrams (mg)",
-    "maleLowerBoundIntake": 2000,
+    "measure": "mg",
+    "maleLowerBoundIntake": 3000,
     "maleHigherBoundIntake": 3400,
-    "femaleLowerBoundIntake": 2000,
-    "femaleHigherBoundIntake": 3400
+    "femaleLowerBoundIntake": 2300,
+    "femaleHigherBoundIntake": 2600
   },
   {
     "name": "Iron , Fe",
@@ -303,7 +303,7 @@
     "maleHigherBoundIntake": 11,
     "femaleLowerBoundIntake": 8,
     "femaleHigherBoundIntake": 11,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Zinc , Zn",
@@ -350,7 +350,7 @@
     "maleHigherBoundIntake": 11,
     "femaleLowerBoundIntake": 8,
     "femaleHigherBoundIntake": 8,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Copper , Cu",
@@ -397,7 +397,7 @@
     "maleHigherBoundIntake": 2.3,
     "femaleLowerBoundIntake": 0.9,
     "femaleHigherBoundIntake": 2.3,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Manganese , Mn",
@@ -444,7 +444,7 @@
     "maleHigherBoundIntake": 11,
     "femaleLowerBoundIntake": 1.8,
     "femaleHigherBoundIntake": 11,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Iodine , I",
@@ -488,10 +488,10 @@
       }
     ],
     "maleLowerBoundIntake": 150,
-    "maleHigherBoundIntake": 290,
+    "maleHigherBoundIntake": 150,
     "femaleLowerBoundIntake": 150,
-    "femaleHigherBoundIntake": 290,
-    "measure": "micrograms (mcg)"
+    "femaleHigherBoundIntake": 150,
+    "measure": "µg"
   },
   {
     "name": "Selenium , Se",
@@ -535,10 +535,10 @@
       }
     ],
     "maleLowerBoundIntake": 55,
-    "maleHigherBoundIntake": 400,
+    "maleHigherBoundIntake": 55,
     "femaleLowerBoundIntake": 55,
-    "femaleHigherBoundIntake": 400,
-    "measure": "micrograms (mcg)"
+    "femaleHigherBoundIntake": 55,
+    "measure": "µg"
   },
   {
     "name": "Molybdenum , Mo",
@@ -582,9 +582,9 @@
       }
     ],
     "maleLowerBoundIntake": 45,
-    "maleHigherBoundIntake": 2000,
+    "maleHigherBoundIntake": 45,
     "femaleLowerBoundIntake": 45,
-    "femaleHigherBoundIntake": 2000,
-    "measure": "micrograms (mcg)"
+    "femaleHigherBoundIntake": 50,
+    "measure": "µg"
   }
 ]

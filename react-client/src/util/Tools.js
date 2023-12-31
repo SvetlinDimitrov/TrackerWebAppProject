@@ -225,6 +225,7 @@ export function PipeChar({ width, height, data }) {
           {data.max.toFixed(2)}
         </span>
       </div>
+      
       {data.consumed === 0 && (
         <div
           style={{
@@ -254,18 +255,10 @@ export function PipeChar({ width, height, data }) {
               />
             </Link>
           )}
-          {data.type === "Macronutrient" && (
-            <Link to={"/nutrientInfo/macronutrient/" + data.name}>
-              {" "}
-              <FontAwesomeIcon
-                icon={faInfoCircle}
-                style={{ fontSize: "24px", marginRight: "5px" }}
-              />
-            </Link>
-          )}
+          
         </div>
       )}
-      {data.type === "Vitamin" && data.consumed !== 0 && (
+      {data.type === "Vitamin" && data.consumed && data.consumed !== 0 && (
         <div
           style={{
             color: "#67C240",
@@ -275,8 +268,8 @@ export function PipeChar({ width, height, data }) {
             textAlign: "justify",
           }}
         >
-          Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />{" "}
-          {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of Vitamin{" "}
+          Consumed <AnimatedNumber value={data.consumed && data.consumed.toFixed(2)} />{" "}
+          {" "} {data.measurement} of Vitamin{" "}
           {data.name}.
           <Link to={"/nutrientInfo/vitamin/" + data.name}>
             {" "}
@@ -298,7 +291,7 @@ export function PipeChar({ width, height, data }) {
           }}
         >
           Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />
-          {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
+          {" "} {data.measurement} of{" "}
           {data.name}.
           <Link to={"/nutrientInfo/mineral/" + data.name}>
             {" "}
@@ -336,10 +329,10 @@ export function PipeChar({ width, height, data }) {
           }}
         >
           Consumed <AnimatedNumber value={data.consumed.toFixed(2)} />
-          {data.measurement.match(/\(([^)]+)\)/)[1].toLowerCase()} of{" "}
+          {" "} {data.measurement} of{" "}
           {data.name.replace(/([A-Z])/g, " $1").trim()}.
           {data.type === "Macronutrient" ? (
-            <Link to={"/nutrientInfo/macronutrient/" + data.name}>
+            <Link to={`/nutrientInfo/macronutrient/${data.name === "Carbohydrate" ? "Carbohydrates" : data.name}`}>
               {" "}
               <FontAwesomeIcon
                 icon={faInfoCircle}
@@ -350,7 +343,7 @@ export function PipeChar({ width, height, data }) {
             <Link
               to={
                 "/nutrientInfo/macronutrientTypes/" +
-                data.name.replace(/([A-Z])/g, " $1").trim()
+                data.name
               }
             >
               {" "}

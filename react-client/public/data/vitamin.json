@@ -30,11 +30,11 @@
         "value": "Found in plant-based foods, primarily in the form of beta-carotene. Beta-carotene is a pigment that gives fruits and vegetables their orange, red, and yellow colors. The body can convert provitamin A carotenoids into active vitamin A as needed. Foods rich in beta-carotene include carrots, sweet potatoes, spinach, kale, and butternut squash."
       }
     ],
-    "maleLowerBoundIntake": 700,
+    "maleLowerBoundIntake": 600,
     "maleHigherBoundIntake": 900,
     "femaleLowerBoundIntake": 600,
-    "femaleHigherBoundIntake": 700,
-    "measure": "micrograms of retinol activity equivalents (RAE)"
+    "femaleHigherBoundIntake": 900,
+    "measure": "µg"
   },
   {
     "name": "Vitamin D (D2 + D3)",
@@ -67,11 +67,11 @@
         "value": "While there are fewer natural dietary sources of vitamin D, some foods are fortified with it. Dietary sources include fatty fish (salmon, mackerel, sardines), cod liver oil, egg yolks, and fortified foods like milk, orange juice, and cereal."
       }
     ],
-    "maleLowerBoundIntake": 600,
-    "maleHigherBoundIntake": 800,
-    "femaleLowerBoundIntake": 600,
-    "femaleHigherBoundIntake": 800,
-    "measure": "international units (IU)"
+    "maleLowerBoundIntake": 10,
+    "maleHigherBoundIntake": 20,
+    "femaleLowerBoundIntake": 10,
+    "femaleHigherBoundIntake": 20,
+    "measure": "µg"
   },
   {
     "name": "Vitamin E",
@@ -116,7 +116,7 @@
     "maleHigherBoundIntake": 15,
     "femaleLowerBoundIntake": 15,
     "femaleHigherBoundIntake": 15,
-    "measure": "milligrams (mg) of alpha-tocopherol"
+    "measure": "mg"
   },
   {
     "name": "Vitamin K",
@@ -153,7 +153,7 @@
     "maleHigherBoundIntake": 120,
     "femaleLowerBoundIntake": 90,
     "femaleHigherBoundIntake": 90,
-    "measure": "micrograms (mcg)"
+    "measure": "µg"
   },
   {
     "name": "Vitamin C",
@@ -218,7 +218,7 @@
     "maleHigherBoundIntake": 90,
     "femaleLowerBoundIntake": 75,
     "femaleHigherBoundIntake": 75,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Vitamin B1 (Thiamin)",
@@ -275,7 +275,7 @@
     "maleHigherBoundIntake": 1.2,
     "femaleLowerBoundIntake": 1.1,
     "femaleHigherBoundIntake": 1.1,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Vitamin B2 (Riboflavin)",
@@ -330,9 +330,9 @@
     ],
     "maleLowerBoundIntake": 1.3,
     "maleHigherBoundIntake": 1.3,
-    "femaleLowerBoundIntake": 1.1,
-    "femaleHigherBoundIntake": 1.1,
-    "measure": "milligrams (mg)"
+    "femaleLowerBoundIntake": 1.3,
+    "femaleHigherBoundIntake": 1.3,
+    "measure": "mg"
   },
   {
     "name": "Vitamin B3 (Niacin)",
@@ -397,7 +397,7 @@
     "maleHigherBoundIntake": 16,
     "femaleLowerBoundIntake": 14,
     "femaleHigherBoundIntake": 14,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Vitamin B5 (Pantothenic acid)",
@@ -458,7 +458,7 @@
     "maleHigherBoundIntake": 5,
     "femaleLowerBoundIntake": 5,
     "femaleHigherBoundIntake": 5,
-    "measure": "milligrams (mg)"
+    "measure": "mg"
   },
   {
     "name": "Vitamin B6",
@@ -520,10 +520,10 @@
       }
     ],
     "maleLowerBoundIntake": 1.3,
-    "maleHigherBoundIntake": 1.7,
+    "maleHigherBoundIntake": 1.3,
     "femaleLowerBoundIntake": 1.3,
-    "femaleHigherBoundIntake": 1.5,
-    "measure": "milligrams (mg)"
+    "femaleHigherBoundIntake": 1.3,
+    "measure": "mg"
   },
   {
     "name": "Vitamin B7 (Biotin)",
@@ -584,7 +584,7 @@
     "maleHigherBoundIntake": 30,
     "femaleLowerBoundIntake": 30,
     "femaleHigherBoundIntake": 30,
-    "measure": "micrograms (mg)"
+    "measure": "µg"
   },
   {
     "name": "Vitamin B9 (Folate)",
@@ -645,7 +645,7 @@
     "maleHigherBoundIntake": 400,
     "femaleLowerBoundIntake": 400,
     "femaleHigherBoundIntake": 400,
-    "measure": "micrograms (mcg)"
+    "measure": "µg"
   },
   {
     "name": "Vitamin B12",
@@ -694,6 +694,6 @@
     "maleHigherBoundIntake": 2.4,
     "femaleLowerBoundIntake": 2.4,
     "femaleHigherBoundIntake": 2.4,
-    "measure": "micrograms (mcg)"
+    "measure": "µg"
   }
 ]

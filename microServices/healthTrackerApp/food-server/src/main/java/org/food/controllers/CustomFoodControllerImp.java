@@ -34,7 +34,7 @@ public class CustomFoodControllerImp implements CustomFoodController {
     }
 
     @Override
-    public CustomFoodView getCustomFood(String userToken, String id)
+    public CustomFoodView getCustomFoodById(String userToken, String id)
             throws FoodException, InvalidUserTokenHeaderException {
         return foodService.getCustomFoodByNameAndUserId(id, userToken);
     }

@@ -1,9 +1,14 @@
 package org.food.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.food.domain.dtos.CreateCustomFood;
 import org.food.domain.dtos.foodView.CustomFoodView;
-import org.food.domain.dtos.foodView.FoodView;
 import org.food.domain.dtos.foodView.NotCompleteFoodView;
 import org.food.exception.FoodException;
 import org.food.exception.InvalidUserTokenHeaderException;
@@ -13,39 +18,72 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping(path = "/api/food")
 @RestController
+@RequestMapping(path = "/api/food")
+@Tag(name = "Custom Food", description = "The Custom Food API provides operations for interacting with custom foods.")
 public interface CustomFoodController {
 
-
+    @Operation(summary = "Get all custom foods", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(schema = @Schema(implementation = NotCompleteFoodView.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid User Token Header",
+                    content = @Content(schema = @Schema(implementation = InvalidUserTokenHeaderException.class)))})
     @GetMapping(path = "/all")
-    List<NotCompleteFoodView> getAllCustomFoods(@RequestHeader(name = "X-ViewUser") String userToken) throws InvalidUserTokenHeaderException;
+    List<NotCompleteFoodView> getAllCustomFoods(
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken)
+            throws InvalidUserTokenHeaderException;
 
+    @Operation(summary = "Search all embedded foods by description", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(schema = @Schema(implementation = NotCompleteFoodView.class))),
+            @ApiResponse(responseCode = "400", description = "Food Exception or Invalid User Token Header",
+                    content = @Content(schema = @Schema(implementation = FoodException.class)))})
     @GetMapping(path = "/search")
-    List<NotCompleteFoodView> getAllEmbeddedFoodSearchDescription(@RequestParam String description , @RequestHeader(name = "X-ViewUser") String userToken) throws FoodException, InvalidUserTokenHeaderException;
-
-    @GetMapping(path = "{id}")
-    CustomFoodView getCustomFood(
-            @RequestHeader(name = "X-ViewUser") String userToken,
-            @PathVariable String id)
+    List<NotCompleteFoodView> getAllEmbeddedFoodSearchDescription(
+            @Parameter(description = "Description") @RequestParam String description,
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken)
             throws FoodException, InvalidUserTokenHeaderException;
 
+    @Operation(summary = "Get custom food by id", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(schema = @Schema(implementation = CustomFoodView.class))),
+            @ApiResponse(responseCode = "400", description = "Food Exception or Invalid User Token Header",
+                    content = @Content(schema = @Schema(implementation = FoodException.class)))})
+    @GetMapping(path = "/{id}")
+    CustomFoodView getCustomFoodById(
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken,
+            @Parameter(description = "Id") @PathVariable String id)
+            throws FoodException, InvalidUserTokenHeaderException;
+
+    @Operation(summary = "Add food", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Food Exception or Invalid User Token Header",
+                    content = @Content(schema = @Schema(implementation = FoodException.class)))})
     @PostMapping
     ResponseEntity<Void> addFood(
             @Valid @RequestBody CreateCustomFood createCustomFood,
             BindingResult bindingResult,
-            @RequestHeader(name = "X-ViewUser") String userToken)
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken)
             throws FoodException, InvalidUserTokenHeaderException;
 
+    @Operation(summary = "Delete custom food", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Food Exception or Invalid User Token Header",
+                    content = @Content(schema = @Schema(implementation = FoodException.class)))})
     @DeleteMapping(path = "{id}")
     void deleteCustomFood(
-            @RequestHeader(name = "X-ViewUser") String userToken,
-            @PathVariable(name = "id") String id)
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken,
+            @Parameter(description = "Id") @PathVariable(name = "id") String id)
             throws FoodException, InvalidUserTokenHeaderException;
 
+    @Operation(summary = "Calculate food", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(schema = @Schema(implementation = CustomFoodView.class))),
+            @ApiResponse(responseCode = "400", description = "Food Exception",
+                    content = @Content(schema = @Schema(implementation = FoodException.class)))})
     @PatchMapping("/calculate")
-    public CustomFoodView calculateFood (@RequestBody CustomFoodView food,
-                                  @RequestHeader(name = "X-ViewUser") String userToken,
-                                  @RequestParam(name = "amount") Double amount) throws FoodException;
-
+    public CustomFoodView calculateFood(
+            @RequestBody CustomFoodView food,
+            @Parameter(description = "User token") @RequestHeader(name = "X-ViewUser") String userToken,
+            @Parameter(description = "Amount") @RequestParam(name = "amount") Double amount) throws FoodException;
 }

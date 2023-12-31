@@ -17,18 +17,32 @@ export const calculatedPrecentedValues = (rawData, type) => {
       }));
   }
   if (type === "Calories") {
-    return rawData.storageViews
-      .map((item) => ({
-        name: item.name,
-        precented: (item.consumedCalories / rawData.dailyConsumedCalories) * 100,
-        consumed: item.consumedCalories,
-        max: rawData.dailyConsumedCalories,
-        type: "Calories",
-        measurement: "kcal",
-        fat: item.foods.reduce((total, food) => total + food.fat, 0),
-        carbohydrates: item.foods.reduce((total, food) => total + food.carbohydrates, 0),
-        protein: item.foods.reduce((total, food) => total + food.protein, 0),
-      }));
+    return rawData.storageViews.map((item) => ({
+      name: item.name,
+      precented: (item.consumedCalories / rawData.dailyConsumedCalories) * 100,
+      consumed: item.consumedCalories,
+      max: rawData.dailyConsumedCalories,
+      type: "Calories",
+      measurement: "kcal",
+      fat: item.foods.reduce((total, food) => {
+        const fatNutrient = food.macroNutrients.find(
+          (nutrient) => nutrient.name === "Fat"
+        );
+        return total + (fatNutrient ? fatNutrient.amount : 0);
+      }, 0),
+      carbohydrates: item.foods.reduce((total, food) => {
+        const fatNutrient = food.macroNutrients.find(
+          (nutrient) => nutrient.name === "Carbohydrate"
+        );
+        return total + (fatNutrient ? fatNutrient.amount : 0);
+      }, 0),
+      protein: item.foods.reduce((total, food) => {
+        const fatNutrient = food.macroNutrients.find(
+          (nutrient) => nutrient.name === "Protein"
+        );
+        return total + (fatNutrient ? fatNutrient.amount : 0);
+      }, 0),
+    }));
   }
   return rawData.nutritionIntakesViews
     .filter((item) => item.nutrientType === type)

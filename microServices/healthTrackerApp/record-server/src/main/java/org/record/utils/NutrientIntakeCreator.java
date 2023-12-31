@@ -207,8 +207,8 @@ public class NutrientIntakeCreator {
                         .measure("mg")
                         .maleLowerBoundIntake(new BigDecimal("1.3"))
                         .maleHigherBoundIntake(new BigDecimal("1.3"))
-                        .femaleLowerBoundIntake(new BigDecimal("1.1"))
-                        .femaleHigherBoundIntake(new BigDecimal("1.1"))
+                        .femaleLowerBoundIntake(new BigDecimal("1.3"))
+                        .femaleHigherBoundIntake(new BigDecimal("1.3"))
                         .build(),
                 VitaminDto.builder()
                         .name("Vitamin B3 (Niacin)")
@@ -258,7 +258,6 @@ public class NutrientIntakeCreator {
                         .femaleLowerBoundIntake(new BigDecimal("2.4"))
                         .femaleHigherBoundIntake(new BigDecimal("2.4"))
                         .build()
-
         );
     }
 
@@ -290,33 +289,33 @@ public class NutrientIntakeCreator {
                         .build(),
                 MineralDto.builder()
                         .name("Manganese , Mn")
-                        .maleHigherBoundIntake(new BigDecimal("11"))
+                        .maleHigherBoundIntake(new BigDecimal("2.3"))
                         .maleLowerBoundIntake(new BigDecimal("2.3"))
-                        .femaleHigherBoundIntake(new BigDecimal("11"))
+                        .femaleHigherBoundIntake(new BigDecimal("1.8"))
                         .femaleLowerBoundIntake(new BigDecimal("1.8"))
                         .measure("mg")
                         .build(),
                 MineralDto.builder()
                         .name("Iodine , I")
-                        .maleHigherBoundIntake(new BigDecimal("290"))
+                        .maleHigherBoundIntake(new BigDecimal("150"))
                         .maleLowerBoundIntake(new BigDecimal("150"))
-                        .femaleHigherBoundIntake(new BigDecimal("290"))
+                        .femaleHigherBoundIntake(new BigDecimal("150"))
                         .femaleLowerBoundIntake(new BigDecimal("150"))
                         .measure("µg")
                         .build(),
                 MineralDto.builder()
                         .name("Selenium , Se")
-                        .maleHigherBoundIntake(new BigDecimal("400"))
+                        .maleHigherBoundIntake(new BigDecimal("55"))
                         .maleLowerBoundIntake(new BigDecimal("55"))
-                        .femaleHigherBoundIntake(new BigDecimal("400"))
+                        .femaleHigherBoundIntake(new BigDecimal("55"))
                         .femaleLowerBoundIntake(new BigDecimal("55"))
                         .measure("µg")
                         .build(),
                 MineralDto.builder()
                         .name("Molybdenum , Mo")
-                        .maleHigherBoundIntake(new BigDecimal("2000"))
+                        .maleHigherBoundIntake(new BigDecimal("45"))
                         .maleLowerBoundIntake(new BigDecimal("45"))
-                        .femaleHigherBoundIntake(new BigDecimal("2000"))
+                        .femaleHigherBoundIntake(new BigDecimal("50"))
                         .femaleLowerBoundIntake(new BigDecimal("45"))
                         .measure("µg")
                         .build(),
@@ -354,10 +353,10 @@ public class NutrientIntakeCreator {
                         .build(),
                 MineralDto.builder()
                         .name("Potassium , K")
-                        .maleHigherBoundIntake(new BigDecimal("4700"))
-                        .maleLowerBoundIntake(new BigDecimal("3500"))
-                        .femaleHigherBoundIntake(new BigDecimal("4700"))
-                        .femaleLowerBoundIntake(new BigDecimal("3500"))
+                        .maleHigherBoundIntake(new BigDecimal("3400"))
+                        .maleLowerBoundIntake(new BigDecimal("3000"))
+                        .femaleHigherBoundIntake(new BigDecimal("2600"))
+                        .femaleLowerBoundIntake(new BigDecimal("2300"))
                         .measure("mg")
                         .build()
 

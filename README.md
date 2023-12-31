@@ -1,7 +1,4 @@
 # TrackerWebApp
-
-Sure, here's a revised description for your web application:
-
 TrackerWebApp is a comprehensive tool designed for health enthusiasts like myself who appreciate the importance of tracking daily nutrient intake. This application provides detailed information about a wide range of nutrients, including daily intake recommendations and which foods are rich in specific nutrients. 
 
 The application also includes a feature to track your personal achievements and progress over time. 
@@ -36,7 +33,8 @@ The API is fully documented with Postman and Swagger:
 
 - [Postman Collection](https://documenter.getpostman.com/view/26519722/2s9Ykhh4Qv): This collection includes all the API endpoints with example requests and responses. You can import this collection into Postman to explore and test the API.
 
-- Swagger Documentation: The API also includes Swagger documentation, which provides an interactive interface for exploring the API. You can access the Swagger UI at `/swagger-ui.html` endpoint when you run the application.
+- Swagger Documentation: The API also includes Swagger documentation, which provides an interactive interface for exploring the API. You can access the Swagger UI at `/swagger-ui.html` endpoint when you run the application. 
+**Note:** There were some issues with the Swagger UI. The exception message inaccurately states that the app throws a stack trace, which is not the case. Due to additional problems with Swagger, it is recommended to use Postman instead.
 
 ## Installation
 
@@ -44,7 +42,11 @@ The application is containerized using Docker and can be easily set up with Dock
 
 1. Run the `docker-compose` file. This will automatically download the necessary Docker images from the project's Docker repository and start the application.
 
-Please ensure that you have Docker and Docker Compose installed on your machine before proceeding.
+Please ensure that you have Docker and Docker installed on your machine before proceeding.
+
+2. Download the MongoDB data for all embedded foods from here: [Mongo Data](https://drive.google.com/file/d/1ET8DJ1abIAuj_iTWZOPZZZDvDodgK5rx/view?usp=sharing)
+
+3. In the docker-compose file, on line 67, replace this line ("./runProjectConfig/mongo_food_data") with the path where you downloaded the MongoDB data.
 
 **Note:** When you first start the application, it may take a while for the Eureka server and gateway to fetch all the servers. During this time, you may see an error message in the console, and the server may return a 503 error. This is normal and should resolve itself within about a minute.
 

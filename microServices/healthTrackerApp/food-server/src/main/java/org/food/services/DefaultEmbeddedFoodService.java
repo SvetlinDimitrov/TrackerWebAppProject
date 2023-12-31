@@ -86,7 +86,7 @@ public abstract class DefaultEmbeddedFoodService {
                 "Vitamin B12"
         );
         Set<String> macronutrientNames = Set.of(
-                "Carbohydrates",
+                "Carbohydrate",
                 "Protein",
                 "Fat",
                 "Fiber",
@@ -119,7 +119,7 @@ public abstract class DefaultEmbeddedFoodService {
         if(vitaminNames.contains(name)) {
             return "vitaminNutrients";
         }else if (macronutrientNames.contains(name)){
-            return "macronutrients";
+            return "macroNutrients";
         }else if (mineralNames.contains(name)){
             return "mineralNutrients";
         }

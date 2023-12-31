@@ -32,12 +32,13 @@ const NutritionTemplateBarCharInfo = () => {
 
   useEffect(() => {
     setData(undefined);
+    const nutrientName = nutritionType === "Carbohydrates" ? "Carbohydrate" : nutritionType;
     const fetchData = async () => {
       try{
         const response = await api.get(
           `/food/embedded/${
             type
-          }/filter?nutrientName=${encodeURIComponent(nutritionType)}&limit=${limit}&desc=${
+          }/filter?nutrientName=${encodeURIComponent(nutrientName)}&limit=${limit}&desc=${
             sort === "DO" ? true : false
           }&min=${min}&max=${max}`,
           {
@@ -141,12 +142,13 @@ const NutritionTemplateBarCharInfo = () => {
             <select
               className={styles.reportOptions}
               selected={modifyData.sort}
+              value={modifyData.sort}
               onChange={(e) =>
                 setModifyData({ ...modifyData, sort: e.target.value })
               }
             >
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
+              <option value="AO">Ascending</option>
+              <option value="DO">Descending</option>
             </select>
           </label>
         </div>
