@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+
+  <changeSet id="insert-users-1" author="Svetlin Dimitrov">
+    <sql>
+        <![CDATA[
+      SET @physical_profile_id = (SELECT id FROM physical_profiles LIMIT 1);
+      ]]>
+    </sql>
+    <sql>
+        <![CDATA[
+      SET @physical_profile_id2 = (SELECT id FROM (SELECT @rownum := @rownum + 1 AS rownum, id FROM physical_profiles, (SELECT @rownum := 0) r ORDER BY id) AS ranked WHERE rownum = 2);
+      ]]>
+    </sql>
+    <insert tableName="users">
+      <column name="id" value="6862b004-7820-4050-8ab4-8c37477a021c"/>
+      <column name="username" value="test"/>
+      <column name="email" value="test@abv.bg"/>
+      <column name="physical_profile_id" valueComputed="@physical_profile_id"/>
+    </insert>
+
+    <insert tableName="users">
+      <column name="id" value="b91efddb-f7e7-40e2-ba0a-eff06f20030f"/>
+      <column name="username" value="test"/>
+      <column name="email" value="test2@abv.bg"/>
+      <column name="physical_profile_id" valueComputed="@physical_profile_id2"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>

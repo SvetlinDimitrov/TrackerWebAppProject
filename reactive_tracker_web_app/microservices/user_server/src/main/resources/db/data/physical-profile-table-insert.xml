@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="insert-physical_profiles-1" author="Svetlin Dimitrov">
+        <insert tableName="physical_profiles">
+            <column name="id" value="5d1432c8-0cb8-4c1f-8096-86dbe7e6a361"/>
+            <column name="kilograms" value="75.5"/>
+            <column name="height" value="180.0"/>
+            <column name="age" value="30"/>
+            <column name="workout_state" value="VERY_ACTIVE"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+
+        <insert tableName="physical_profiles">
+            <column name="id" value="690b9723-cb45-4427-9870-1bcedd87d244"/>
+            <column name="kilograms" value="65.0"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
