@@ -19,17 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import org.trackerwebapp.user_server.config.UserPrincipal;
-import org.trackerwebapp.user_server.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-
-  private final UserRepository userRepository;
 
   @Value("${jwt.secret-word}")
   private String SECRET_WORD;
@@ -45,9 +42,9 @@ public class JwtTokenProvider {
     this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
   }
 
-  public JwtToken createToken(UserPrincipal principal) {
+  public JwtToken createToken(User user) {
 
-    Claims claims = Jwts.claims().setSubject(principal.getEmail());
+    Claims claims = Jwts.claims().setSubject(user.getUsername());
 
     Date now = new Date();
     Date validity = new Date(now.getTime() + VALID_DURATION_TIME_MINUTES);
@@ -70,11 +67,9 @@ public class JwtTokenProvider {
         .getBody();
 
     String userEmail = claims.getSubject();
+    User user = new User(userEmail, "", List.of());
 
-    return userRepository.findByEmail(userEmail)
-        .map(UserPrincipal::new)
-        .map(userPrincipal -> new UsernamePasswordAuthenticationToken(userPrincipal, token,
-            List.of()));
+    return Mono.just(new UsernamePasswordAuthenticationToken(user, token, List.of()));
   }
 
   public boolean validateToken(String token) {

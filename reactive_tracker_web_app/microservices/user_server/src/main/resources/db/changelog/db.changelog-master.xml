@@ -5,8 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
-    <include file="physical-profile-table.xml" relativeToChangelogFile="true"/>
-    <include file="../data/physical-profile-table-insert.xml" relativeToChangelogFile="true"/>
     <include file="users-table.xml" relativeToChangelogFile="true"/>
     <include file="../data/users-table-insert.xml" relativeToChangelogFile="true"/>
 

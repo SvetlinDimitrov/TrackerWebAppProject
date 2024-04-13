@@ -15,13 +15,6 @@
       <column name="email" type="varchar(50)">
         <constraints nullable="false" unique="true"/>
       </column>
-      <column name="physical_profile_id" type="varchar(255)">
-        <constraints nullable="false"
-          foreignKeyName="fk_physical-profile_users"
-          referencedTableName="physical_profiles"
-          referencedColumnNames="id"
-          deleteCascade="true"/>
-      </column>
     </createTable>
   </changeSet>
 

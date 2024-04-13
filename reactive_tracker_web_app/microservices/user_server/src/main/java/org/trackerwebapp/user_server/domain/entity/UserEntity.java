@@ -10,14 +10,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 public class UserEntity {
 
-  @Id
+  @Column("id")
   private String id;
   @Column("username")
   private String username;
   @Column("email")
   private String email;
-  @Column("physical_profile_id")
-  private String physicalProfileDetailsId;
 
   public UserEntity() {
     this.id = UUID.randomUUID().toString();

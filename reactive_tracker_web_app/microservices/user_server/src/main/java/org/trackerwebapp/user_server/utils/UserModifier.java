@@ -1,8 +1,8 @@
 package org.trackerwebapp.user_server.utils;
 
+import org.trackerwebapp.shared_interfaces.domain.exception.BadRequestException;
 import org.trackerwebapp.user_server.domain.dtos.UserDto;
 import org.trackerwebapp.user_server.domain.entity.UserEntity;
-import org.trackerwebapp.user_server.exeption.UserException;
 import reactor.core.publisher.Mono;
 
 public class UserModifier {
@@ -14,7 +14,7 @@ public class UserModifier {
             u.setUsername(dto.username());
             return Mono.just(u);
           } else {
-            return Mono.error(new UserException("Invalid username length"));
+            return Mono.error(new BadRequestException("Invalid username length"));
           }
         })
         .switchIfEmpty(Mono.just(user));
