@@ -6,7 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
 
-  <changeSet id="insert-users-1" author="Svetlin Dimitrov">
+  <changeSet id="users-insertion" author="Svetlin Dimitrov">
     <insert tableName="users">
       <column name="id" value="6862b004-7820-4050-8ab4-8c37477a021c"/>
       <column name="username" value="test"/>

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.shared_interfaces.domain.exception.BadRequestException;
-import org.trackerwebapp.user_server.UserRepository;
+import org.trackerwebapp.user_server.repository.UserRepository;
 import org.trackerwebapp.user_server.domain.dtos.JwtResponse;
 import org.trackerwebapp.user_server.domain.dtos.UserDto;
 import org.trackerwebapp.user_server.domain.dtos.UserView;

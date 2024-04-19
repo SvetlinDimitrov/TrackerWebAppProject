@@ -20,7 +20,8 @@
   <modules>
     <module>user_server</module>
     <module>record_server</module>
-    <module>userDetails_server</module>
+    <module>meal_server</module>
+    <module>customFood_server</module>
   </modules>
 
   <properties>
@@ -30,10 +31,6 @@
 
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>

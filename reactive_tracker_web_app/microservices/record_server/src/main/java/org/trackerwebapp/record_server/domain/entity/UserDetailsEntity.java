@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.trackerwebapp.shared_interfaces.domain.enums.Gender;
+import org.trackerwebapp.shared_interfaces.domain.enums.Goals;
 import org.trackerwebapp.shared_interfaces.domain.enums.WorkoutState;
 
 @Table(name = "user_details")

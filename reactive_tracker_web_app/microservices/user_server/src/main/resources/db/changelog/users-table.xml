@@ -6,7 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
 
-  <changeSet id="2" author="Svetlin Dimitrov">
+  <changeSet id="users-creation" author="Svetlin Dimitrov">
     <createTable tableName="users">
       <column name="id" type="varchar(255)">
         <constraints primaryKey="true" nullable="false"/>

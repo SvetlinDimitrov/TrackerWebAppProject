@@ -1,88 +1,139 @@
 package org.trackerwebapp.record_server;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.record_server.domain.dto.CreateRecord;
-import org.trackerwebapp.record_server.domain.dto.ModifyRecord;
+import org.trackerwebapp.record_server.domain.dto.DistributedMacros;
 import org.trackerwebapp.record_server.domain.dto.RecordView;
-import org.trackerwebapp.record_server.domain.entity.RecordEntity;
-import org.trackerwebapp.record_server.repository.RecordRepository;
+import org.trackerwebapp.record_server.domain.entity.CalorieEntity;
+import org.trackerwebapp.record_server.domain.entity.UserDetailsEntity;
+import org.trackerwebapp.record_server.repository.CalorieRepository;
+import org.trackerwebapp.record_server.repository.NutritionRepository;
 import org.trackerwebapp.record_server.repository.UserDetailsRepository;
-import org.trackerwebapp.record_server.utils.DailyCaloriesCalculator;
-import org.trackerwebapp.record_server.utils.RecordModifier;
-import org.trackerwebapp.record_server.utils.UserDetailsValidator;
-import org.trackerwebapp.shared_interfaces.domain.exception.BadRequestException;
-import reactor.core.publisher.Flux;
+import org.trackerwebapp.record_server.utils.*;
+import org.trackerwebapp.shared_interfaces.domain.dto.NutritionIntakeView;
+import org.trackerwebapp.shared_interfaces.domain.enums.Goals;
+import org.trackerwebapp.shared_interfaces.domain.utils.BMRCalc;
+import org.trackerwebapp.shared_interfaces.domain.utils.DailyCaloriesCalculator;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RecordService {
 
-  private final RecordRepository repository;
   private final UserDetailsRepository detailsRepository;
+  private final CalorieRepository calorieRepository;
+  private final NutritionRepository nutritionRepository;
 
-  public Flux<RecordView> getRecordsByUserId(String userId, BigDecimal moreThenDailyCalorie) {
-    return repository
-        .findAllByUserId(userId)
-        .filter(data ->
-            Optional.ofNullable(moreThenDailyCalorie)
-                .map(calories -> data.getDailyCalories().compareTo(calories) > 0)
-                .orElse(true)
-        )
-        .map(RecordView::toView);
-  }
-
-  public Mono<RecordView> getRecordByIdAndUserId(String recordId, String userId) {
-    return getByIdAndUserId(recordId, userId)
-        .map(RecordView::toView);
-  }
-
-  public Mono<RecordView> createRecord(CreateRecord dto, String userId) {
-    return detailsRepository.findByIdAndUserId(dto.userDetailId(), userId)
+  public Mono<RecordView> viewRecord(CreateRecord dto, String userId) {
+    return detailsRepository.findByUserId(userId)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
         .flatMap(UserDetailsValidator::validateUserDetails)
-        .map(userDetails -> {
-          RecordEntity entity = new RecordEntity();
-          entity.setUserId(userId);
-          entity.setDate(LocalDateTime.now());
-          entity.setDailyCalories(DailyCaloriesCalculator.getCaloriesPerDay(userDetails));
-          return entity;
-        })
-        .flatMap(entity -> RecordModifier.updateName(entity, dto))
-        .flatMap(repository::save)
-        .map(RecordView::toView);
+        .flatMap(details -> Mono.zip(
+            Mono.just(details),
+            fetchRecordViewData(details, dto.goal())
+        ))
+        .flatMap(data -> setNutritionViews(data.getT1(), data.getT2(), dto.distributedMacros()));
   }
 
-  public Mono<Void> deleteByIdAndUserId(String recordId, String userId) {
-    return getByIdAndUserId(recordId, userId)
-        .flatMap(record -> repository.deleteByIdAndUserId(record.getId(), record.getUserId()));
+  private Mono<RecordView> fetchRecordViewData(UserDetailsEntity details, Goals goal) {
+    return Mono.just(details)
+        .flatMap(userDetails -> {
+          RecordView view = new RecordView();
+          view.setDailyCaloriesToConsume(
+              DailyCaloriesCalculator.getCaloriesPerDay(
+                  BMRCalc.calculateBMR(
+                      userDetails.getGender(),
+                      userDetails.getKilograms(),
+                      userDetails.getHeight(),
+                      userDetails.getAge()
+                  ),
+                  userDetails.getWorkoutState(),
+                  Optional.ofNullable(goal)
+                      .orElse(Goals.MaintainWeight)
+              ).setScale(0, RoundingMode.DOWN)
+          );
+          return Mono.zip(
+              Mono.just(userDetails),
+              Mono.just(view)
+          );
+        }).flatMap(data -> calorieRepository.findByUserId(data.getT1().getUserId())
+            .collectList()
+            .map(list -> list.stream()
+                .map(CalorieEntity::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(0, RoundingMode.DOWN)
+            )
+            .map(dailyConsumedCalories -> {
+              data.getT2().setDailyCaloriesConsumed(dailyConsumedCalories);
+              return data.getT2();
+            })
+        );
+
   }
 
-  public Mono<RecordView> modifyRecord(String recordId, String userId, ModifyRecord dto) {
-    return getByIdAndUserId(recordId, userId)
-        .flatMap(entity -> RecordModifier.updateName(entity, dto))
-        .flatMap(entity -> RecordModifier.updateDailyCalories(entity, dto))
-        .flatMap(entity ->
-            repository.updateRecordByIdAndUserId(
-                    entity.getName(),
-                    entity.getDailyCalories(),
-                    entity.getId(),
-                    entity.getUserId()
-                )
-                .then(Mono.just(entity))
-        )
-        .map(RecordView::toView);
+  private Mono<RecordView> setNutritionViews(UserDetailsEntity details, RecordView view,
+                                             DistributedMacros distributedMacros) {
+
+    return DistributedMacrosValidator.validate(distributedMacros)
+        .flatMap(validatedDistribution ->
+            Mono.zip(
+                Mono.just(view),
+                Mono.just(new HashMap<String, NutritionIntakeView>())
+                    .map(map -> {
+                      MineralCreator.fillMinerals(map, details.getGender(), details.getAge());
+                      VitaminCreator.fillVitamins(map, details.getGender(), details.getAge());
+                      MacronutrientCreator.fillMacros(map, view.getDailyCaloriesToConsume(), details.getGender(), validatedDistribution, details.getAge());
+                      return map;
+                    }),
+                nutritionRepository.findByUserId(details.getUserId())
+                    .collectList()
+            ))
+        .map(data -> {
+          Map<String, NutritionIntakeView> nutritions = data.getT2();
+          data.getT3().forEach(entity -> {
+            NutritionIntakeView intakeView = nutritions.get(entity.getName());
+            intakeView.setDailyConsumed(intakeView.getDailyConsumed().add(entity.getAmount()).setScale(0, RoundingMode.DOWN));
+          });
+          setVitaminIntakes(data.getT1(), nutritions);
+          setMineralsIntakes(data.getT1(), nutritions);
+          setMacrosIntakes(data.getT1(), nutritions);
+          return data.getT1();
+        });
   }
 
-  private Mono<RecordEntity> getByIdAndUserId(String recordId, String userId) {
-    return repository.findByIdAndUserId(recordId, userId)
-        .switchIfEmpty(
-            Mono.error(new BadRequestException("Record with id:" + recordId + " does not exist")));
+  private void setVitaminIntakes(RecordView view, Map<String, NutritionIntakeView> intakeViewMap) {
+    view.setVitaminIntake(
+        intakeViewMap.values()
+            .stream()
+            .filter(nutritionIntakeView -> VitaminCreator.allAllowedVitamins.contains(
+                nutritionIntakeView.getName()))
+            .toList());
+  }
+
+  private void setMineralsIntakes(RecordView view, Map<String, NutritionIntakeView> intakeViewMap) {
+    view.setMineralIntakes(
+        intakeViewMap.values()
+            .stream()
+            .filter(nutritionIntakeView -> MineralCreator.allAllowedMinerals.contains(
+                nutritionIntakeView.getName()))
+            .toList());
+  }
+
+  private void setMacrosIntakes(RecordView view, Map<String, NutritionIntakeView> intakeViewMap) {
+    view.setMacroIntakes(
+        intakeViewMap.values()
+            .stream()
+            .filter(nutritionIntakeView -> MacronutrientCreator.allAllowedMacros.contains(
+                nutritionIntakeView.getName()))
+            .toList());
   }
 }

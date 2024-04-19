@@ -1,18 +1,16 @@
 package org.trackerwebapp.record_server.domain.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import org.trackerwebapp.record_server.domain.entity.RecordEntity;
+import java.util.List;
+import lombok.Data;
+import org.trackerwebapp.shared_interfaces.domain.dto.NutritionIntakeView;
 
-public record RecordView(
-    String id,
-    String name,
-    BigDecimal dailyCalories,
-    String userId,
-    LocalDateTime date) {
+@Data
+public class RecordView {
 
-  public static RecordView toView(RecordEntity entity) {
-    return new RecordView(entity.getId(), entity.getName(), entity.getDailyCalories(),
-        entity.getUserId(), entity.getDate());
-  }
+  private BigDecimal dailyCaloriesToConsume;
+  private BigDecimal dailyCaloriesConsumed;
+  private List<NutritionIntakeView> vitaminIntake;
+  private List<NutritionIntakeView> mineralIntakes;
+  private List<NutritionIntakeView> macroIntakes;
 }

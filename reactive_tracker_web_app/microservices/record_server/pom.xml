@@ -21,20 +21,19 @@
   </properties>
 
   <dependencies>
-  <dependency>
-    <groupId>com.mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <scope>runtime</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.asyncer</groupId>
-    <artifactId>r2dbc-mysql</artifactId>
-    <scope>runtime</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-core</artifactId>
-  </dependency>
-</dependencies>
-
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.asyncer</groupId>
+      <artifactId>r2dbc-mysql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+    </dependency>
+  </dependencies>
 </project>

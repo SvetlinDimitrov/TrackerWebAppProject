@@ -7,5 +7,6 @@
 
     <include file="users-table.xml" relativeToChangelogFile="true"/>
     <include file="../data/users-table-insert.xml" relativeToChangelogFile="true"/>
+    <include file="user-details-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

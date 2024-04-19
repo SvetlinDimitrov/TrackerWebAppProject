@@ -3,6 +3,7 @@ package org.trackerwebapp.user_server.domain.entity;
 import java.util.UUID;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
