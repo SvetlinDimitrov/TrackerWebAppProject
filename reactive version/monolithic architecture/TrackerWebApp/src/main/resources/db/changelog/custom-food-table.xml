@@ -12,7 +12,7 @@
         <constraints primaryKey="true" nullable="false" unique="true"/>
       </column>
       <column name="name" type="varchar(50)">
-        <constraints nullable="false"/>
+        <constraints nullable="false" unique="true"/>
       </column>
       <column name="measurement" type="varchar(50)"/>
       <column name="size" type="DECIMAL(19,2)">

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
+import org.trackerwebapp.trackerwebapp.domain.entity.CustomCalorieEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,5 +37,21 @@ public class CalorieRepository {
     return entityTemplate.select(
         query(where("mealId").is(mealId)), CalorieEntity.class
     );
+  }
+
+  public Flux<CustomCalorieEntity> findByIdCustom(String id) {
+    return entityTemplate.select(
+        query(where("id").is(id)), CustomCalorieEntity.class
+    );
+  }
+
+  public Mono<CustomCalorieEntity> findByFoodIdCustom(String foodId) {
+    return entityTemplate.selectOne(
+        query(where("foodId").is(foodId)), CustomCalorieEntity.class
+    );
+  }
+
+  public Mono<CustomCalorieEntity> saveCustom(CustomCalorieEntity entity) {
+    return entityTemplate.insert(entity);
   }
 }

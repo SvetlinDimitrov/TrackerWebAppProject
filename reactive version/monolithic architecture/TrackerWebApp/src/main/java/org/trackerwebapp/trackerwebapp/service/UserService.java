@@ -48,14 +48,15 @@ public class UserService {
         .flatMap(user -> repository.deleteById(user.getId()));
   }
 
-  public Mono<? extends Object> createUser(UserCreate userDto) {
+  public Mono<UserView> createUser(UserCreate userDto) {
     if (userDto.email() == null || userDto.email().isBlank()) {
       return Mono.error(new BadRequestException("Invalid email"));
     }
 
     return repository.findByEmail(userDto.email())
         .flatMap(user -> Mono.error(new BadRequestException("User with email " + userDto.email() + " already exists")))
-        .switchIfEmpty(createUserAndSave(userDto));
+        .switchIfEmpty(createUserAndSave(userDto))
+        .cast(UserView.class);
   }
 
   private Mono<UserView> createUserAndSave(UserCreate userDto) {

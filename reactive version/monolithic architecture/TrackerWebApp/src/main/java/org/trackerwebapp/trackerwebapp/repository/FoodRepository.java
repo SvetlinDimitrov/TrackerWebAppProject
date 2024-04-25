@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.trackerwebapp.trackerwebapp.domain.entity.CustomFoodEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.FoodEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,5 +52,44 @@ public class FoodRepository {
     );
   }
 
+  public Mono<CustomFoodEntity> findByIdCustom(String id) {
+    return entityTemplate.selectOne(
+        query(where("id").is(id)), CustomFoodEntity.class
+    );
+  }
+
+  public Mono<CustomFoodEntity> findByIdAndUserIdCustom(String id, String userId) {
+    return entityTemplate.selectOne(
+        query(
+            where("id").is(id)
+                .and("userId").is(userId)
+        ), CustomFoodEntity.class
+    );
+  }
+
+  public Flux<CustomFoodEntity> findAllByUserIdCustom(String userId) {
+    return entityTemplate.select(
+        query(where("userId").is(userId)), CustomFoodEntity.class
+    );
+  }
+
+  @Modifying
+  public Mono<Void> deleteByIdCustom(String id) {
+    return entityTemplate.delete(CustomFoodEntity.class)
+        .matching(
+            query(where("id").is(id))
+        ).all()
+        .then();
+  }
+
+  public Mono<CustomFoodEntity> saveCustom(CustomFoodEntity entity) {
+    return entityTemplate.insert(entity);
+  }
+
+  public Mono<CustomFoodEntity> findByNameCustom(String name) {
+    return entityTemplate.selectOne(
+        query(where("name").is(name)), CustomFoodEntity.class
+    );
+  }
 
 }
