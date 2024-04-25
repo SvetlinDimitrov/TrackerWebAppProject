@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 public class UserModifier {
 
-  private static final String regexEmail = "^\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b$";
+  private static final String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
   public static Mono<UserEntity> modifyAndSaveUsername(UserEntity user, UserDto dto) {
     return Mono.just(user)
@@ -25,6 +25,7 @@ public class UserModifier {
   }
 
   public static Mono<UserEntity> validateAndModifyUserCreation(UserEntity user, UserCreate dto) {
+
     if(dto.username() != null && !dto.username().isBlank() && dto.username().trim().length() >= 2){
       user.setUsername(dto.username());
     }else{

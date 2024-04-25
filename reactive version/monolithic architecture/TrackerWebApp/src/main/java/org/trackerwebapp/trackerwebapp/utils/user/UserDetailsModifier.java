@@ -41,11 +41,11 @@ public class UserDetailsModifier {
     return Mono.just(entity)
         .filter(e -> dto.height() != null)
         .flatMap(e -> {
-          if (dto.height().compareTo(BigDecimal.ZERO) > 0) {
+          if (dto.height().compareTo(BigDecimal.valueOf(20)) >= 0) {
             e.setHeight(dto.height());
             return Mono.just(e);
           } else {
-            return Mono.error(new BadRequestException("Height cannot be 0 or less"));
+            return Mono.error(new BadRequestException("Height cannot be less then 20"));
           }
         })
         .switchIfEmpty(Mono.just(entity));

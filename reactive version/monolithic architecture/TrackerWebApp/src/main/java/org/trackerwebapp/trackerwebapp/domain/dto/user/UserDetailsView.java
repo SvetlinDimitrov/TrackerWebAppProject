@@ -7,24 +7,20 @@ import org.trackerwebapp.trackerwebapp.domain.enums.WorkoutState;
 import java.math.BigDecimal;
 
 public record UserDetailsView(
-    String id,
     BigDecimal kilograms,
     BigDecimal height,
     Integer age,
     WorkoutState workoutState,
-    Gender gender,
-    String userId
+    Gender gender
 ) {
 
   public static UserDetailsView toView(UserDetails entity) {
     return
         new UserDetailsView(
-            entity.getId(),
             entity.getKilograms(),
             entity.getHeight(),
             entity.getAge(),
             entity.getWorkoutState(),
-            entity.getGender(),
-            entity.getUserId());
+            entity.getGender());
   }
 }

@@ -22,8 +22,9 @@ public class UserController {
   private final UserService userServiceImp;
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public Mono<UserView> createUser(@RequestBody UserCreate userDto) {
-    return (Mono<UserView>) userServiceImp.createUser(userDto);
+    return userServiceImp.createUser(userDto);
   }
 
   @GetMapping
@@ -33,15 +34,15 @@ public class UserController {
   }
 
   @DeleteMapping
-  @ResponseStatus(HttpStatus.OK)
-  public Mono<Void> deleteUser(@AuthenticationPrincipal User user) {
-    return userServiceImp.deleteUserById(user.getUsername());
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public Mono<Void> deleteUser(@AuthenticationPrincipal UserPrincipal user) {
+    return userServiceImp.deleteUserById(user.getId());
   }
 
   @PatchMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserView> modifyUsername(@AuthenticationPrincipal User user, @RequestBody UserDto userDto) {
-    return userServiceImp.modifyUsername(user.getUsername(), userDto);
+  public Mono<UserView> modifyUsername(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDto userDto) {
+    return userServiceImp.modifyUsername(user.getId(), userDto);
   }
 
   @ExceptionHandler(BadRequestException.class)

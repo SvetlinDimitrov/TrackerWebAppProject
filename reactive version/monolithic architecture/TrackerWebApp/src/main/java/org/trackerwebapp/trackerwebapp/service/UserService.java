@@ -42,8 +42,7 @@ public class UserService {
   }
 
   public Mono<Void> deleteUserById(String id) {
-    return repository
-        .findById(id)
+    return repository.findById(id)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
         .flatMap(user -> repository.deleteById(user.getId()));
   }

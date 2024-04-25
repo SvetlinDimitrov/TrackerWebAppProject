@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserWithDetails;
 import org.trackerwebapp.trackerwebapp.domain.entity.UserDetails;
 import org.trackerwebapp.trackerwebapp.domain.entity.UserEntity;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.data.relational.core.query.Criteria.where;
@@ -30,6 +31,10 @@ public class UserRepository {
     return entityTemplate.selectOne(
         query(where("id").is(id)), UserEntity.class
     );
+  }
+
+  public Flux<UserEntity> findAll() {
+    return entityTemplate.select(UserEntity.class).all();
   }
 
   public Mono<UserEntity> findByEmail(String email) {
