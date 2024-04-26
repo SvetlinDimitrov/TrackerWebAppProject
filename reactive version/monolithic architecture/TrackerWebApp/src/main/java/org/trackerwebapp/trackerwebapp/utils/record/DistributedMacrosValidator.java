@@ -18,11 +18,11 @@ public class DistributedMacrosValidator {
           BigDecimal.valueOf(0.10)
       ));
     }
-    if (macros.fat() == null ||
-        macros.carbs() == null ||
-        macros.protein() == null ||
-        macros.omega6() == null ||
-        macros.omega3() == null) {
+    if ((macros.fat() == null || macros.fat().compareTo(BigDecimal.ONE) >= 0) ||
+        (macros.carbs() == null || macros.carbs().compareTo(BigDecimal.ONE) >= 0) ||
+        (macros.protein() == null || macros.protein().compareTo(BigDecimal.ONE) >= 0) ||
+        (macros.omega3() == null || macros.omega3().compareTo(BigDecimal.ONE) >= 0) ||
+        (macros.omega6() == null || macros.omega6().compareTo(BigDecimal.ONE) >= 0)) {
       return Mono.error(new BadRequestException(
           "if one distributed macro is fill all must be filled with positive numbers less then 1"));
     }

@@ -20,7 +20,6 @@ public class RecordController {
 
   private final RecordService service;
 
-  //TODO: CREATE A WAY TO SET CUSTOM DALY NUTRITION VALUES IF THE PROVIDED ONES ARE NOT APPROPRIATED FROM THE VIEWER
   @PostMapping
   public Mono<RecordView> viewRecord(@AuthenticationPrincipal UserPrincipal user, @RequestBody CreateRecord dto) {
     return service.viewRecord(dto, user.getId());

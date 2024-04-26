@@ -2,7 +2,6 @@ package org.trackerwebapp.trackerwebapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.trackerwebapp.trackerwebapp.config.security.UserPrincipal;
@@ -25,11 +24,12 @@ public class FoodController {
   }
 
   @DeleteMapping("/{foodId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   private Mono<Void> deleteFoodFromMeal(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId, @PathVariable String foodId) {
     return service.deleteFoodById(user.getId(), mealId, foodId);
   }
 
-  @PatchMapping("/{foodId}")
+  @PutMapping("/{foodId}")
   private Mono<Void> changeFood(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId, @PathVariable String foodId, @RequestBody InsertFoodDto dto) {
     return service.changeFood(user.getId(), mealId, foodId, dto);
   }

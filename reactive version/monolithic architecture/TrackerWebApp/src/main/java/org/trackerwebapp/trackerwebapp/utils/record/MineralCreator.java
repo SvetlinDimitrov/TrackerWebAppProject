@@ -26,7 +26,10 @@ public class MineralCreator {
           AllowedNutrients.Manganese_Mn.getNutrientName(),
           AllowedNutrients.Iodine_I.getNutrientName(),
           AllowedNutrients.Selenium_Se.getNutrientName(),
-          AllowedNutrients.Molybdenum_Mo.getNutrientName()
+          AllowedNutrients.Molybdenum_Mo.getNutrientName(),
+          AllowedNutrients.Chloride.getNutrientName(),
+          AllowedNutrients.Chromium_Cr.getNutrientName(),
+          AllowedNutrients.Fluoride.getNutrientName()
       );
 
   public static Map<String, NutritionIntakeView> fillMinerals(Map<String, NutritionIntakeView> map, Gender gender, Integer age) {
@@ -52,7 +55,7 @@ public class MineralCreator {
     NutritionIntakeView calcium = NutritionIntakeView
         .builder()
         .name(AllowedNutrients.Calcium_Ca.getNutrientName())
-        .measurement(AllowedNutrients.Copper_Cu.getNutrientUnit())
+        .measurement(AllowedNutrients.Calcium_Ca.getNutrientUnit())
         .dailyConsumed(BigDecimal.ZERO).build();
 
     BigDecimal dailyIntake = BigDecimal.ZERO;

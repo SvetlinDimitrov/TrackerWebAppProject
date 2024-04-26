@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.trackerwebapp.domain.dto.NutritionIntakeView;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.CreateRecord;
+import org.trackerwebapp.trackerwebapp.domain.dto.record.CustomNutritionView;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.DistributedMacros;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.RecordView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
@@ -16,17 +17,16 @@ import org.trackerwebapp.trackerwebapp.repository.NutritionRepository;
 import org.trackerwebapp.trackerwebapp.repository.UserDetailsRepository;
 import org.trackerwebapp.trackerwebapp.utils.BMRCalc;
 import org.trackerwebapp.trackerwebapp.utils.DailyCaloriesCalculator;
-import org.trackerwebapp.trackerwebapp.utils.record.DistributedMacrosValidator;
-import org.trackerwebapp.trackerwebapp.utils.record.MacronutrientCreator;
-import org.trackerwebapp.trackerwebapp.utils.record.MineralCreator;
-import org.trackerwebapp.trackerwebapp.utils.record.VitaminCreator;
+import org.trackerwebapp.trackerwebapp.utils.record.*;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +41,15 @@ public class RecordService {
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
         .flatMap(details -> Mono.zip(
             Mono.just(details),
+            CustomNutritionsValidator.validate(dto.nutritions())
+                .switchIfEmpty(Mono.just(List.of())),
             fetchRecordViewData(details, dto.goal())
         ))
-        .flatMap(data -> setNutritionViews(data.getT1(), data.getT2(), dto.distributedMacros()));
+        .flatMap(data -> Mono.zip(
+            setNutritionViews(data.getT1(), data.getT3(), dto.distributedMacros()),
+            Mono.just(data.getT2())
+        ))
+        .flatMap(data -> customizeRecordView(data.getT1(), data.getT2()));
   }
 
   private Mono<RecordView> fetchRecordViewData(UserDetails details, Goals goal) {
@@ -115,8 +121,7 @@ public class RecordService {
     view.setVitaminIntake(
         intakeViewMap.values()
             .stream()
-            .filter(nutritionIntakeView -> VitaminCreator.allAllowedVitamins.contains(
-                nutritionIntakeView.getName()))
+            .filter(nutritionIntakeView -> VitaminCreator.allAllowedVitamins.contains(nutritionIntakeView.getName()))
             .toList());
   }
 
@@ -136,5 +141,34 @@ public class RecordService {
             .filter(nutritionIntakeView -> MacronutrientCreator.allAllowedMacros.contains(
                 nutritionIntakeView.getName()))
             .toList());
+  }
+
+  private Mono<RecordView> customizeRecordView(RecordView record, List<CustomNutritionView> customNutritionViews) {
+
+    if(customNutritionViews == null || customNutritionViews.isEmpty()){
+      return Mono.just(record);
+    }
+
+    Map<String, BigDecimal> customIntakeMap = customNutritionViews.stream()
+        .collect(Collectors.toMap(CustomNutritionView::name, CustomNutritionView::recommendedIntake));
+
+    return Mono.fromCallable(() -> {
+      record.getMineralIntakes().forEach(intake -> {
+        if (customIntakeMap.containsKey(intake.getName())) {
+          intake.setRecommendedIntake(customIntakeMap.get(intake.getName()));
+        }
+      });
+      record.getMacroIntakes().forEach(intake -> {
+        if (customIntakeMap.containsKey(intake.getName())) {
+          intake.setRecommendedIntake(customIntakeMap.get(intake.getName()));
+        }
+      });
+      record.getVitaminIntake().forEach(intake -> {
+        if (customIntakeMap.containsKey(intake.getName())) {
+          intake.setRecommendedIntake(customIntakeMap.get(intake.getName()));
+        }
+      });
+      return record;
+    });
   }
 }

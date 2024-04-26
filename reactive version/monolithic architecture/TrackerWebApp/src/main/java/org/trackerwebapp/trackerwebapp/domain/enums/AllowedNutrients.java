@@ -14,6 +14,7 @@ public enum AllowedNutrients {
   Omega3("α-Linolenic Acid", "g"),
   Cholesterol("Cholesterol", "mg"),
   Water("Water" , "L"),
+
   VitaminA("Vitamin A", "µg"),
   VitaminD_D2_D3("Vitamin D (D2 + D3)", "µg"),
   VitaminE("Vitamin E", "mg"),
@@ -28,6 +29,7 @@ public enum AllowedNutrients {
   VitaminB9_Folate("Vitamin B9 (Folate)", "µg"),
   VitaminB12("Vitamin B12", "µg"),
   Choline("Choline" , "mg"),
+
   Calcium_Ca("Calcium , Ca", "mg"),
   Chromium_Cr("Chromium , Cr", "μg"),
   Phosphorus_P("Phosphorus , P", "mg"),

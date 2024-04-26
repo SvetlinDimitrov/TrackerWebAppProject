@@ -14,6 +14,8 @@ public enum Credentials {
   VALID_DETAIL_AGE("25"),
   VALID_DETAIL_WORKOUT(WorkoutState.LIGHTLY_ACTIVE.name()),
   VALID_DETAIL_GENDER(Gender.MALE.name()),
+  VALID_MEAL_NAME("Split Bro"),
+  VALID_FOOD_NAME("Salmon"),
   ;
 
   private final String value;

@@ -22,16 +22,17 @@ public class MealController {
   private final MealService service;
 
   @GetMapping
-  private Flux<MealView> getAllByRecordId(@AuthenticationPrincipal UserPrincipal user) {
+  private Flux<MealView> getAllMealsByUserId(@AuthenticationPrincipal UserPrincipal user) {
     return service.getAllByUserId(user.getId());
   }
 
   @GetMapping("/{mealId}")
-  private Mono<MealView> getMealByIdAndRecordId(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId) {
+  private Mono<MealView> getMealById(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId) {
     return service.getByIdAndUserId(mealId, user.getId());
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   private Mono<MealView> createMeal(@AuthenticationPrincipal UserPrincipal user, @RequestBody CreateMeal dto) {
     return service.createMeal(user.getId(), dto);
   }
@@ -42,7 +43,7 @@ public class MealController {
   }
 
   @DeleteMapping("/{mealId}")
-  private Mono<Void> deleteMealByIdAndRecordId(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId) {
+  private Mono<Void> deleteMealById(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId) {
     return service.deleteByIdAndUserId(mealId, user.getId());
   }
 

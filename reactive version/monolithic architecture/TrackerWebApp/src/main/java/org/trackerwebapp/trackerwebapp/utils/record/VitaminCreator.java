@@ -26,7 +26,8 @@ public class VitaminCreator {
           AllowedNutrients.VitaminB6.getNutrientName(),
           AllowedNutrients.VitaminB7_Biotin.getNutrientName(),
           AllowedNutrients.VitaminB9_Folate.getNutrientName(),
-          AllowedNutrients.VitaminB12.getNutrientName()
+          AllowedNutrients.VitaminB12.getNutrientName(),
+          AllowedNutrients.Choline.getNutrientName()
       );
 
   public static Map<String, NutritionIntakeView> fillVitamins(Map<String, NutritionIntakeView> map, Gender gender, Integer age) {

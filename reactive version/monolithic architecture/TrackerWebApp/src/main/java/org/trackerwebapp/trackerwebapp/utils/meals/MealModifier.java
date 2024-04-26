@@ -9,7 +9,7 @@ public class MealModifier {
 
   public static Mono<MealEntity> updateName(MealEntity entity, CreateMeal dto) {
     return Mono.just(entity)
-        .filter(u -> dto.name() != null && !dto.name().isBlank())
+        .filter(u -> dto.name() != null)
         .flatMap(u -> {
           if (dto.name().trim().length() >= 2) {
             u.setName(dto.name());

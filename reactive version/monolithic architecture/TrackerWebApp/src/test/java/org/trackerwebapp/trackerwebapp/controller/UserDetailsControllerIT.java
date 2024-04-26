@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.web.header.Header;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -27,8 +28,7 @@ import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -72,35 +72,19 @@ class UserDetailsControllerIT {
   @Test
   void givenValidAuth_whenGetUserDetails_thenServerShouldReturnUserDetailsAndStatusOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
+    webTestClient.get()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .consumeWith(response -> {
-          webTestClient.get()
-              .uri("/api/user/details")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserDetailsView.class)
-              .consumeWith(detailsResponse -> {
-                UserDetailsView detailsView = detailsResponse.getResponseBody();
-                assertNull(detailsView.age());
-                assertNull(detailsView.height());
-                assertNull(detailsView.workoutState());
-                assertNull(detailsView.kilograms());
-                assertNull(detailsView.gender());
-              });
-        });
-
+        .expectStatus().isOk()
+        .expectBody(UserDetailsView.class)
+        .value(detailsView -> assertNull(detailsView.age()))
+        .value(detailsView -> assertNull(detailsView.height()))
+        .value(detailsView -> assertNull(detailsView.workoutState()))
+        .value(detailsView -> assertNull(detailsView.kilograms()))
+        .value(detailsView -> assertNull(detailsView.gender()));
   }
 
   @Test
@@ -134,11 +118,8 @@ class UserDetailsControllerIT {
   @Test
   void givenValidAuth_whenModifyUserDetailsWithValidCredentials_thenServerShouldReturnUserDetailsAndStatusOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
     UserDetailsDto validDetails = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
         new BigDecimal(Credentials.VALID_DETAIL_HEIGHT.getValue()),
@@ -147,37 +128,25 @@ class UserDetailsControllerIT {
         Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
+    webTestClient.patch()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(validDetails)
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .consumeWith(response -> {
-          webTestClient.patch()
-              .uri("/api/user/details")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .bodyValue(validDetails)
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserDetailsView.class)
-              .value(detailsView -> assertEquals(validDetails.gender(), detailsView.gender()))
-              .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.height())))
-              .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
-              .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()))
-              .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.workoutState()));
-        });
-
+        .expectStatus().isOk()
+        .expectBody(UserDetailsView.class)
+        .value(detailsView -> assertEquals(validDetails.gender(), detailsView.gender()))
+        .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.height())))
+        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
+        .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()))
+        .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.workoutState()));
   }
 
   @Test
   void givenValidAuth_whenModifyPartOfUserDetailsWithValidCredentials_thenServerShouldReturnUserDetailsAndStatusOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
     UserDetailsDto validDetails = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
         null,
@@ -186,38 +155,24 @@ class UserDetailsControllerIT {
         null
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
+    webTestClient.patch()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(validDetails)
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .consumeWith(response -> {
-          webTestClient.patch()
-              .uri("/api/user/details")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .bodyValue(validDetails)
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserDetailsView.class)
-              .value(detailsView -> assertNull(detailsView.gender()))
-              .value(detailsView -> assertNull(detailsView.workoutState()))
-              .value(detailsView -> assertNull(detailsView.height()))
-              .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
-              .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()));
-
-        });
-
+        .expectStatus().isOk()
+        .expectBody(UserDetailsView.class)
+        .value(detailsView -> assertNull(detailsView.gender()))
+        .value(detailsView -> assertNull(detailsView.workoutState()))
+        .value(detailsView -> assertNull(detailsView.height()))
+        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
+        .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()));
   }
 
   @Test
   void givenValidAuth_whenModifyUserDetailsWithInvalidKilograms_thenServerShouldReturnBadRequest() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     List<String> INVALID_KILOGRAMS = List.of(
         "-1",
@@ -234,38 +189,19 @@ class UserDetailsControllerIT {
           Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
       );
 
-      webTestClient.post()
-          .uri("/api/user")
-          .bodyValue(newUser)
+      webTestClient.patch()
+          .uri("/api/user/details")
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .bodyValue(validDetails)
           .exchange()
-          .expectStatus().isCreated()
-          .expectBody(UserView.class)
-          .consumeWith(response -> {
-            webTestClient.patch()
-                .uri("/api/user/details")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                .bodyValue(validDetails)
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody()
-                .consumeWith(result -> {
-                  userRepository.findAll()
-                      .flatMap(user -> userRepository.deleteById(user.getId()))
-                      .then()
-                      .block();
-                });
-          });
+          .expectStatus().isBadRequest();
     }
   }
 
   @Test
   void givenValidAuth_whenModifyUserDetailsWithInvalidHeight_thenServerShouldReturnBadRequest() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     List<String> INVALID_HEIGHT = List.of(
         "-1",
@@ -285,39 +221,21 @@ class UserDetailsControllerIT {
           Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
       );
 
-      webTestClient.post()
-          .uri("/api/user")
-          .bodyValue(newUser)
+      webTestClient.patch()
+          .uri("/api/user/details")
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .bodyValue(validDetails)
           .exchange()
-          .expectStatus().isCreated()
-          .expectBody(UserView.class)
-          .consumeWith(response -> {
-            webTestClient.patch()
-                .uri("/api/user/details")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                .bodyValue(validDetails)
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody()
-                .consumeWith(result -> {
-                  userRepository.findAll()
-                      .flatMap(user -> userRepository.deleteById(user.getId()))
-                      .then()
-                      .block();
-                });
-          });
+          .expectStatus().isBadRequest();
     }
   }
 
   @Test
-  void givenValidAuth_whenModifyUserDetailsWithInvalidAge_thenServerShouldReturnBadRequest() {
+  void givenValidAuth_whenModifyUserDetailsWithInvalidAge_thenServerShouldReturnBadRequest() throws InterruptedException {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
-
+    Header authHeader = setUpUserAndReturnAuthHeader();
+    System.out.println(authHeader.getName());
+    System.out.println(authHeader.getValues().getFirst());
     List<String> INVALID_AGES = List.of(
         "-1",
         "0",
@@ -333,38 +251,19 @@ class UserDetailsControllerIT {
           Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
       );
 
-      webTestClient.post()
-          .uri("/api/user")
-          .bodyValue(newUser)
+      webTestClient.patch()
+          .uri("/api/user/details")
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .bodyValue(validDetails)
           .exchange()
-          .expectStatus().isCreated()
-          .expectBody(UserView.class)
-          .consumeWith(response -> {
-            webTestClient.patch()
-                .uri("/api/user/details")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                .bodyValue(validDetails)
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody()
-                .consumeWith(result -> {
-                  userRepository.findAll()
-                      .flatMap(user -> userRepository.deleteById(user.getId()))
-                      .then()
-                      .block();
-                });
-          });
+          .expectStatus().isBadRequest();
     }
   }
 
   @Test
   void givenValidAuth_whenModifyUserDetailsWithAllPossibleGenderTypes_thenServerShouldReturnOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     for (Gender gender : Gender.values()) {
       UserDetailsDto validDetails = createDetails(
@@ -375,38 +274,21 @@ class UserDetailsControllerIT {
           gender
       );
 
-      webTestClient.post()
-          .uri("/api/user")
-          .bodyValue(newUser)
+      webTestClient.patch()
+          .uri("/api/user/details")
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .bodyValue(validDetails)
           .exchange()
-          .expectStatus().isCreated()
-          .expectBody(UserView.class)
-          .consumeWith(response -> {
-            webTestClient.patch()
-                .uri("/api/user/details")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                .bodyValue(validDetails)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .consumeWith(result -> {
-                  userRepository.findAll()
-                      .flatMap(user -> userRepository.deleteById(user.getId()))
-                      .then()
-                      .block();
-                });
-          });
+          .expectStatus().isOk()
+          .expectBody(UserDetailsView.class)
+          .returnResult();
     }
   }
 
   @Test
   void givenValidAuth_whenModifyUserDetailsWithAllPossibleWorkoutTypes_thenServerShouldReturnOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     for (WorkoutState workoutState : WorkoutState.values()) {
       UserDetailsDto validDetails = createDetails(
@@ -417,38 +299,21 @@ class UserDetailsControllerIT {
           Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
       );
 
-      webTestClient.post()
-          .uri("/api/user")
-          .bodyValue(newUser)
+      webTestClient.patch()
+          .uri("/api/user/details")
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .bodyValue(validDetails)
           .exchange()
-          .expectStatus().isCreated()
-          .expectBody(UserView.class)
-          .consumeWith(response -> {
-            webTestClient.patch()
-                .uri("/api/user/details")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                .bodyValue(validDetails)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .consumeWith(result -> {
-                  userRepository.findAll()
-                      .flatMap(user -> userRepository.deleteById(user.getId()))
-                      .then()
-                      .block();
-                });
-          });
+          .expectStatus().isOk()
+          .expectBody(UserDetailsView.class)
+          .returnResult();
     }
   }
 
   @Test
   void givenValidAuth_whenModifyUserDetailsAndGettingWithChangedValues_thenServerShouldReturnOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     UserDetailsDto validDetails = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
@@ -458,51 +323,41 @@ class UserDetailsControllerIT {
         Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
+    webTestClient.get()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .consumeWith(response -> {
-          webTestClient.get()
-              .uri("/api/user/details")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserDetailsView.class)
-              .value(detailsView -> assertNull(detailsView.gender()))
-              .value(detailsView -> assertNull(detailsView.age()))
-              .value(detailsView -> assertNull(detailsView.workoutState()))
-              .value(detailsView -> assertNull(detailsView.kilograms()))
-              .value(detailsView -> assertNull(detailsView.height()))
-              .consumeWith(response2 -> {
-                webTestClient.patch()
-                    .uri("/api/user/details")
-                    .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                    .bodyValue(validDetails)
-                    .exchange()
-                    .expectStatus().isOk()
-                    .expectBody()
-                    .consumeWith(response3 -> {
-                      webTestClient.get()
-                          .uri("/api/user/details")
-                          .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                          .exchange()
-                          .expectStatus().isOk()
-                          .expectBody(UserDetailsView.class)
-                          .value(detailsView -> assertEquals(validDetails.gender(), detailsView.gender()))
-                          .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.height())))
-                          .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
-                          .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()))
-                          .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.workoutState()));
-                    });
-              });
-        });
+        .expectStatus().isOk()
+        .expectBody(UserDetailsView.class)
+        .value(detailsView -> assertNull(detailsView.gender()))
+        .value(detailsView -> assertNull(detailsView.age()))
+        .value(detailsView -> assertNull(detailsView.workoutState()))
+        .value(detailsView -> assertNull(detailsView.kilograms()))
+        .value(detailsView -> assertNull(detailsView.height()))
+        .returnResult();
 
+    webTestClient.patch()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(validDetails)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody()
+        .returnResult();
+
+    webTestClient.get()
+        .uri("/api/user/details")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(UserDetailsView.class)
+        .value(detailsView -> assertEquals(validDetails.gender(), detailsView.gender()))
+        .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.height())))
+        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
+        .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()))
+        .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.workoutState()))
+        .returnResult();
   }
-
-
 
   private UserCreate createUser(String username, String email, String password) {
     return new UserCreate(username, email, password);
@@ -510,5 +365,24 @@ class UserDetailsControllerIT {
 
   private UserDetailsDto createDetails(BigDecimal kilograms, BigDecimal height, Integer age, WorkoutState workoutState, Gender gender) {
     return new UserDetailsDto(kilograms, height, age, workoutState, gender);
+  }
+
+  private Header setUpUserAndReturnAuthHeader() {
+
+    UserCreate newUser = createUser(
+        Credentials.VALID_USERNAME.getValue(),
+        Credentials.VALID_EMAIL.getValue(),
+        Credentials.VALID_PASSWORD.getValue()
+    );
+
+    webTestClient.post()
+        .uri("/api/user")
+        .bodyValue(newUser)
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(UserView.class)
+        .returnResult();
+
+    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
   }
 }
