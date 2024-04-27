@@ -22,26 +22,28 @@ public class CustomFoodController {
   private final CustomFoodService service;
 
   @GetMapping
-  private Flux<CustomFoodView> getAll(@AuthenticationPrincipal UserPrincipal user) {
+  private Flux<CustomFoodView> getAllCustomFoods(@AuthenticationPrincipal UserPrincipal user) {
     return service.getAllFoods(user.getId());
   }
 
   @GetMapping("/{foodId}")
-  private Mono<CustomFoodView> getAll(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId) {
+  private Mono<CustomFoodView> getCustomFoodById(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId) {
     return service.getById(user.getId(), foodId);
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   private Mono<Void> addFood(@AuthenticationPrincipal UserPrincipal user, @RequestBody CustomInsertFoodDto dto) {
     return service.createFood(user.getId(), dto);
   }
 
   @DeleteMapping("/{foodId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   private Mono<Void> deleteFoodFromMeal(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId) {
     return service.deleteFood(user.getId(), foodId);
   }
 
-  @PatchMapping("/{foodId}")
+  @PutMapping("/{foodId}")
   private Mono<CustomFoodView> changeFood(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId, @RequestBody CustomInsertFoodDto dto) {
     return service.changeFood(user.getId(), foodId, dto);
   }

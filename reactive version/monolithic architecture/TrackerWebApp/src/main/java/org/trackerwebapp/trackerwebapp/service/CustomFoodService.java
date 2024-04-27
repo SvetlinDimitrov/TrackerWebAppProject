@@ -28,7 +28,6 @@ public class CustomFoodService {
   private final FoodRepository repository;
   private final NutritionRepository nutritionRepository;
   private final CalorieRepository calorieRepository;
-  private final FoodRepository foodRepository;
 
   public Flux<CustomFoodView> getAllFoods(String userId) {
     return repository.findAllByUserIdCustom(userId)
@@ -47,7 +46,7 @@ public class CustomFoodService {
 
   public Mono<Void> createFood(String userId, CustomInsertFoodDto dto) {
     return createAndFillFoodEntity(dto, userId)
-        .flatMap(food -> foodRepository.findByNameCustom(food.getName())
+        .flatMap(food -> repository.findByNameCustom(food.getName())
             .flatMap(customFoodEntity -> Mono.error(new BadRequestException("Food name already exists")))
             .switchIfEmpty(Mono.just(food))
             .cast(CustomFoodEntity.class)
@@ -66,8 +65,11 @@ public class CustomFoodService {
   }
 
   public Mono<CustomFoodView> changeFood(String userId, String foodId, CustomInsertFoodDto dto) {
-    return createAndFillFoodEntity(dto, userId)
-        .flatMap(food -> foodRepository.findByNameCustom(food.getName())
+    return
+        repository.findByIdCustom(foodId)
+            .switchIfEmpty(Mono.error(new BadRequestException("Custom Food with id: " + foodId + " does not exist")))
+            .flatMap(food -> createAndFillFoodEntity(dto, userId))
+            .flatMap(food -> repository.findByNameCustom(food.getName())
             .flatMap(customFoodEntity -> {
                   if (foodId.equals(customFoodEntity.getId())) {
                     return Mono.empty();
