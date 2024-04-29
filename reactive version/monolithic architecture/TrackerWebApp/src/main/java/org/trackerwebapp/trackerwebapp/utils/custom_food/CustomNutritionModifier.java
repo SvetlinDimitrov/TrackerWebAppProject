@@ -1,7 +1,7 @@
 package org.trackerwebapp.trackerwebapp.utils.custom_food;
 
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomNutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CustomNutritionEntity;
 import org.trackerwebapp.trackerwebapp.domain.enums.AllowedNutrients;
 import org.trackerwebapp.trackerwebapp.utils.Validator;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class CustomNutritionModifier {
 
-  public static Mono<CustomNutritionEntity> validateAndUpdateName(CustomNutritionEntity entity, CustomNutritionView dto) {
+  public static Mono<CustomNutritionEntity> validateAndUpdateName(CustomNutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
         .filter(u -> dto.name() != null &&
             Arrays.stream(AllowedNutrients.values())
@@ -26,7 +26,7 @@ public class CustomNutritionModifier {
         );
   }
 
-  public static Mono<CustomNutritionEntity> validateAndUpdateUnit(CustomNutritionEntity entity, CustomNutritionView dto) {
+  public static Mono<CustomNutritionEntity> validateAndUpdateUnit(CustomNutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
         .filter(u -> dto.name() != null && dto.unit() != null &&
             Arrays.stream(AllowedNutrients.values())
@@ -42,7 +42,7 @@ public class CustomNutritionModifier {
         );
   }
 
-  public static Mono<CustomNutritionEntity> validateAndUpdateAmount(CustomNutritionEntity entity, CustomNutritionView dto) {
+  public static Mono<CustomNutritionEntity> validateAndUpdateAmount(CustomNutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
         .filter(data -> Validator.validateBigDecimal(dto.amount(), BigDecimal.ONE))
         .flatMap(u -> {

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.trackerwebapp.trackerwebapp.config.security.UserPrincipal;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.ExceptionResponse;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomFoodView;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomInsertFoodDto;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.FoodView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
 import org.trackerwebapp.trackerwebapp.service.CustomFoodService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,18 +22,18 @@ public class CustomFoodController {
   private final CustomFoodService service;
 
   @GetMapping
-  private Flux<CustomFoodView> getAllCustomFoods(@AuthenticationPrincipal UserPrincipal user) {
+  private Flux<FoodView> getAllCustomFoods(@AuthenticationPrincipal UserPrincipal user) {
     return service.getAllFoods(user.getId());
   }
 
   @GetMapping("/{foodId}")
-  private Mono<CustomFoodView> getCustomFoodById(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId) {
+  private Mono<FoodView> getCustomFoodById(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId) {
     return service.getById(user.getId(), foodId);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  private Mono<Void> addFood(@AuthenticationPrincipal UserPrincipal user, @RequestBody CustomInsertFoodDto dto) {
+  private Mono<Void> addFood(@AuthenticationPrincipal UserPrincipal user, @RequestBody InsertFoodDto dto) {
     return service.createFood(user.getId(), dto);
   }
 
@@ -44,7 +44,7 @@ public class CustomFoodController {
   }
 
   @PutMapping("/{foodId}")
-  private Mono<CustomFoodView> changeFood(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId, @RequestBody CustomInsertFoodDto dto) {
+  private Mono<FoodView> changeFood(@AuthenticationPrincipal UserPrincipal user, @PathVariable String foodId, @RequestBody InsertFoodDto dto) {
     return service.changeFood(user.getId(), foodId, dto);
   }
 

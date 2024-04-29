@@ -8,20 +8,21 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table(name = "inserted_foods")
+@Table(name = "custom_servings")
 @Data
-public class FoodEntity {
-
+public class CustomServingEntity {
   @Id
   private String id;
-  @Column("name")
-  private String name;
-  @Column("meal_id")
-  private String mealId;
-  @Column("user_id")
-  private String userId;
+  @Column("amount")
+  private BigDecimal amount;
+  @Column("serving_weight")
+  private BigDecimal servingWeight;
+  @Column("metric")
+  private String metric;
+  @Column("food_id")
+  private String foodId;
 
-  public FoodEntity() {
+  public CustomServingEntity() {
     this.id = UUID.randomUUID().toString();
   }
 }

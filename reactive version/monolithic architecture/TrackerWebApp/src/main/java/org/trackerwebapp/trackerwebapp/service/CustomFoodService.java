@@ -3,19 +3,19 @@ package org.trackerwebapp.trackerwebapp.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomCalorieView;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomFoodView;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomInsertFoodDto;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomNutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
 import org.trackerwebapp.trackerwebapp.domain.entity.CustomCalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.CustomFoodEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.CustomNutritionEntity;
+import org.trackerwebapp.trackerwebapp.domain.entity.CustomServingEntity;
 import org.trackerwebapp.trackerwebapp.repository.CalorieRepository;
 import org.trackerwebapp.trackerwebapp.repository.FoodRepository;
 import org.trackerwebapp.trackerwebapp.repository.NutritionRepository;
-import org.trackerwebapp.trackerwebapp.utils.custom_food.CustomCalorieModifier;
+import org.trackerwebapp.trackerwebapp.repository.ServingRepository;
 import org.trackerwebapp.trackerwebapp.utils.custom_food.CustomFoodModifier;
 import org.trackerwebapp.trackerwebapp.utils.custom_food.CustomNutritionModifier;
+import org.trackerwebapp.trackerwebapp.utils.meals.CalorieModifier;
+import org.trackerwebapp.trackerwebapp.utils.meals.ServingValidator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,13 +28,14 @@ public class CustomFoodService {
   private final FoodRepository repository;
   private final NutritionRepository nutritionRepository;
   private final CalorieRepository calorieRepository;
+  private final ServingRepository servingRepository;
 
-  public Flux<CustomFoodView> getAllFoods(String userId) {
+  public Flux<FoodView> getAllFoods(String userId) {
     return repository.findAllByUserIdCustom(userId)
         .flatMap(this::toFoodView);
   }
 
-  public Mono<CustomFoodView> getById(String userId, String foodId) {
+  public Mono<FoodView> getById(String userId, String foodId) {
     return getFoodEntityMono(userId, foodId)
         .flatMap(this::toFoodView);
   }
@@ -44,7 +45,7 @@ public class CustomFoodService {
         .flatMap(entity -> repository.deleteByIdCustom(entity.getId()));
   }
 
-  public Mono<Void> createFood(String userId, CustomInsertFoodDto dto) {
+  public Mono<Void> createFood(String userId, InsertFoodDto dto) {
     return createAndFillFoodEntity(dto, userId)
         .flatMap(food -> repository.findByNameCustom(food.getName())
             .flatMap(customFoodEntity -> Mono.error(new BadRequestException("Food name already exists")))
@@ -54,17 +55,19 @@ public class CustomFoodService {
         .flatMap(foodEntity -> Mono.zip(
             Mono.just(foodEntity),
             createAndFillCalorieEntity(dto.calories(), foodEntity.getId()),
-            createAndFillNutritions(dto.nutrients(), foodEntity.getId())
+            createAndFillNutritions(dto.nutrients(), foodEntity.getId()),
+            createAndFillServings(dto.serving() , foodEntity.getId())
         ))
         .flatMap(data ->
             repository.saveCustom(data.getT1())
                 .then(calorieRepository.saveCustom(data.getT2()))
+                .then(servingRepository.saveCustom(data.getT4()))
                 .thenMany(nutritionRepository.saveAllCustom(data.getT3()))
                 .then()
         );
   }
 
-  public Mono<CustomFoodView> changeFood(String userId, String foodId, CustomInsertFoodDto dto) {
+  public Mono<FoodView> changeFood(String userId, String foodId, InsertFoodDto dto) {
     return
         repository.findByIdCustom(foodId)
             .switchIfEmpty(Mono.error(new BadRequestException("Custom Food with id: " + foodId + " does not exist")))
@@ -83,12 +86,14 @@ public class CustomFoodService {
         .flatMap(foodEntity -> Mono.zip(
             Mono.just(foodEntity),
             createAndFillCalorieEntity(dto.calories(), foodEntity.getId()),
-            createAndFillNutritions(dto.nutrients(), foodEntity.getId())
+            createAndFillNutritions(dto.nutrients(), foodEntity.getId()),
+            createAndFillServings(dto.serving(), foodEntity.getId())
         ))
         .flatMap(data ->
             repository.deleteByIdCustom(foodId)
                 .then(repository.saveCustom(data.getT1()))
                 .then(calorieRepository.saveCustom(data.getT2()))
+                .then(servingRepository.saveCustom(data.getT4()))
                 .thenMany(nutritionRepository.saveAllCustom(data.getT3()))
                 .then(getById(userId, data.getT1().getId()))
         );
@@ -100,17 +105,35 @@ public class CustomFoodService {
             Mono.error(new BadRequestException("No such food exists with id: " + foodId)));
   }
 
-  private Mono<CustomFoodView> toFoodView(CustomFoodEntity entity) {
+  private Mono<FoodView> toFoodView(CustomFoodEntity entity) {
     return calorieRepository.findByFoodIdCustom(entity.getId())
-        .map(CustomCalorieView::toView)
+        .map(CalorieView::toView)
         .zipWith(nutritionRepository
             .findAllByFoodIdCustom(entity.getId())
-            .map(CustomNutritionView::toView)
+            .map(NutritionView::toView)
             .collectList())
-        .map(data -> CustomFoodView.toView(entity, data.getT1(), data.getT2()));
+        .zipWith(servingRepository
+            .findByFoodIdCustom(entity.getId())
+            .map(ServingView::toView)
+        )
+        .map(data -> FoodView.toView(entity, data.getT1().getT2(), data.getT1().getT1(), List.of(data.getT2())));
   }
 
-  private Mono<CustomCalorieEntity> createAndFillCalorieEntity(CustomCalorieView dto, String foodId) {
+  private Mono<CustomServingEntity> createAndFillServings(List<ServingView> dto, String foodId) {
+    if (dto == null || dto.isEmpty()) {
+      return Mono.error(new BadRequestException("Serving cannot be null"));
+    }
+    return Mono.just(new CustomServingEntity())
+        .flatMap(entity -> {
+          entity.setFoodId(foodId);
+          return Mono.just(entity);
+        })
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateWeight(calorieEntity, dto.getFirst()))
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateMetric(calorieEntity, dto.getFirst()))
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateAmount(calorieEntity, dto.getFirst()));
+  }
+
+  private Mono<CustomCalorieEntity> createAndFillCalorieEntity(CalorieView dto, String foodId) {
     if (dto == null) {
       return Mono.error(new BadRequestException("calorie cannot be null"));
     }
@@ -119,10 +142,10 @@ public class CustomFoodService {
           entity.setFoodId(foodId);
           return Mono.just(entity);
         })
-        .flatMap(calorieEntity -> CustomCalorieModifier.validateAndUpdateSize(calorieEntity, dto));
+        .flatMap(calorieEntity -> CalorieModifier.validateAndUpdateSize(calorieEntity, dto));
   }
 
-  private Mono<List<CustomNutritionEntity>> createAndFillNutritions(List<CustomNutritionView> dtoList, String foodId) {
+  private Mono<List<CustomNutritionEntity>> createAndFillNutritions(List<NutritionView> dtoList, String foodId) {
     if (dtoList == null) {
       return Mono.error(new BadRequestException("nutrients cannot be null"));
     }
@@ -140,14 +163,12 @@ public class CustomFoodService {
         .collectList();
   }
 
-  private Mono<CustomFoodEntity> createAndFillFoodEntity(CustomInsertFoodDto dto, String userId) {
+  private Mono<CustomFoodEntity> createAndFillFoodEntity(InsertFoodDto dto, String userId) {
     if (dto == null) {
       return Mono.error(new BadRequestException("food cannot be null"));
     }
     return Mono.just(new CustomFoodEntity())
-        .flatMap(foodEntity -> CustomFoodModifier.validateAndUpdateMeasurement(foodEntity, dto))
         .flatMap(foodEntity -> CustomFoodModifier.validateAndUpdateName(foodEntity, dto))
-        .flatMap(foodEntity -> CustomFoodModifier.validateAndUpdateSize(foodEntity, dto))
         .flatMap(foodEntity -> {
           foodEntity.setUserId(userId);
           return Mono.just(foodEntity);

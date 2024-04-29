@@ -14,10 +14,6 @@
       <column name="name" type="varchar(50)">
         <constraints nullable="false" unique="true"/>
       </column>
-      <column name="measurement" type="varchar(50)"/>
-      <column name="size" type="DECIMAL(19,2)">
-        <constraints nullable="false"/>
-      </column>
       <column name="user_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>

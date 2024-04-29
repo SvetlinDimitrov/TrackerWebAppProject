@@ -14,13 +14,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomCalorieView;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomFoodView;
 import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomInsertFoodDto;
-import org.trackerwebapp.trackerwebapp.domain.dto.custom_food.CustomNutritionView;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserCreate;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserView;
-import org.trackerwebapp.trackerwebapp.domain.enums.AllowedFoodUnits;
 import org.trackerwebapp.trackerwebapp.domain.enums.AllowedNutrients;
 import org.trackerwebapp.trackerwebapp.enums.Credentials;
 import org.trackerwebapp.trackerwebapp.repository.UserRepository;
@@ -29,7 +25,6 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 

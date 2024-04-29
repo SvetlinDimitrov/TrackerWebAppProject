@@ -6,16 +6,16 @@ import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.CalorieView;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.ServingView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.FoodEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.NutritionEntity;
-import org.trackerwebapp.trackerwebapp.repository.CalorieRepository;
-import org.trackerwebapp.trackerwebapp.repository.FoodRepository;
-import org.trackerwebapp.trackerwebapp.repository.MealRepository;
-import org.trackerwebapp.trackerwebapp.repository.NutritionRepository;
+import org.trackerwebapp.trackerwebapp.domain.entity.ServingEntity;
+import org.trackerwebapp.trackerwebapp.repository.*;
 import org.trackerwebapp.trackerwebapp.utils.meals.CalorieModifier;
 import org.trackerwebapp.trackerwebapp.utils.meals.FoodModifier;
 import org.trackerwebapp.trackerwebapp.utils.meals.NutritionModifier;
+import org.trackerwebapp.trackerwebapp.utils.meals.ServingValidator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,6 +29,7 @@ public class FoodService {
   private final FoodRepository repository;
   private final NutritionRepository nutritionRepository;
   private final CalorieRepository calorieRepository;
+  private final ServingRepository servingRepository;
 
   public Mono<Void> deleteFoodById(String userId, String mealId, String foodId) {
     return getFoodEntityByIdMealIdUserId(foodId, mealId, userId)
@@ -45,12 +46,13 @@ public class FoodService {
         .flatMap(foodEntity -> Mono.zip(
             Mono.just(foodEntity),
             createAndFillNutritions(dto.nutrients(), foodEntity.getId(), foodEntity.getUserId()),
-            createAndFillCalorieEntity(dto.calories(), foodEntity.getId(), foodEntity.getMealId(),
-                foodEntity.getUserId())
+            createAndFillCalorieEntity(dto.calories(), foodEntity.getId(), foodEntity.getMealId(), foodEntity.getUserId()),
+            createAndFillServings(dto.serving(), foodEntity.getId())
         ))
         .flatMap(data ->
             repository.save(data.getT1())
                 .then(calorieRepository.save(data.getT3()))
+                .then(servingRepository.save(data.getT4()))
                 .thenMany(nutritionRepository.saveAll(data.getT2()))
                 .then()
         );
@@ -61,22 +63,15 @@ public class FoodService {
         .flatMap(foodEntityToDelete -> createAndFillFoodEntity(dto, mealId, userId))
         .flatMap(newFood -> Mono.zip(
             Mono.just(newFood),
-            createAndFillNutritions(
-                dto.nutrients(),
-                newFood.getId(),
-                newFood.getUserId()
-            ),
-            createAndFillCalorieEntity(
-                dto.calories(),
-                newFood.getId(),
-                newFood.getMealId(),
-                newFood.getUserId()
-            )
+            createAndFillNutritions(dto.nutrients(), newFood.getId(), newFood.getUserId()),
+            createAndFillCalorieEntity(dto.calories(), newFood.getId(), newFood.getMealId(), newFood.getUserId()),
+            createAndFillServings(dto.serving(), newFood.getId())
         ))
         .flatMap(data ->
             repository.deleteById(foodId)
                 .then(repository.save(data.getT1()))
                 .then(calorieRepository.save(data.getT3()))
+                .then(servingRepository.save(data.getT4()))
                 .thenMany(nutritionRepository.saveAll(data.getT2()))
                 .then()
         );
@@ -93,6 +88,20 @@ public class FoodService {
                 )
             )
         );
+  }
+
+  private Mono<ServingEntity> createAndFillServings(List<ServingView> dto, String foodId) {
+    if (dto == null || dto.isEmpty()) {
+      return Mono.error(new BadRequestException("Serving cannot be null"));
+    }
+    return Mono.just(new ServingEntity())
+        .flatMap(entity -> {
+          entity.setFoodId(foodId);
+          return Mono.just(entity);
+        })
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateWeight(calorieEntity, dto.getFirst()))
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateMetric(calorieEntity, dto.getFirst()))
+        .flatMap(calorieEntity -> ServingValidator.validateAndUpdateAmount(calorieEntity, dto.getFirst()));
   }
 
   private Mono<CalorieEntity> createAndFillCalorieEntity(CalorieView dto, String foodId, String mealId, String userId) {
@@ -134,9 +143,7 @@ public class FoodService {
       return Mono.error(new BadRequestException("food cannot be null"));
     }
     return Mono.just(new FoodEntity())
-        .flatMap(foodEntity -> FoodModifier.validateAndUpdateMeasurement(foodEntity, dto))
         .flatMap(foodEntity -> FoodModifier.validateAndUpdateName(foodEntity, dto))
-        .flatMap(foodEntity -> FoodModifier.validateAndUpdateSize(foodEntity, dto))
         .flatMap(foodEntity -> {
           foodEntity.setMealId(mealId);
           foodEntity.setUserId(userId);

@@ -27,7 +27,9 @@ public class MacronutrientCreator {
           AllowedNutrients.Omega6.getNutrientName(),
           AllowedNutrients.Omega3.getNutrientName(),
           AllowedNutrients.Water.getNutrientName(),
-          AllowedNutrients.Cholesterol.getNutrientName()
+          AllowedNutrients.Cholesterol.getNutrientName(),
+          AllowedNutrients.Saturated_Fat.getNutrientName(),
+          AllowedNutrients.Trans_Fat.getNutrientName()
       );
 
   public static Map<String, NutritionIntakeView> fillMacros(Map<String, NutritionIntakeView> nutrientMap, BigDecimal caloriesPerDay, Gender gender, DistributedMacros distributedMacros, Integer age) {
@@ -97,6 +99,8 @@ public class MacronutrientCreator {
     fillWater(nutrientMap, gender, age);
     fillSugar(nutrientMap, gender, age);
     fillCholesterol(nutrientMap);
+    fillSaturatedFat(nutrientMap);
+    fillTransFat(nutrientMap);
     return nutrientMap;
   }
 
@@ -138,6 +142,34 @@ public class MacronutrientCreator {
     }
     fiber.setRecommendedIntake(dailyIntake);
     nutrientMap.put(fiber.getName(), fiber);
+  }
+
+  private static void fillSaturatedFat(Map<String, NutritionIntakeView> nutrientMap) {
+    NutritionIntakeView fat = NutritionIntakeView
+        .builder()
+        .name(AllowedNutrients.Saturated_Fat.getNutrientName())
+        .measurement(AllowedNutrients.Saturated_Fat.getNutrientUnit())
+        .dailyConsumed(BigDecimal.ZERO)
+        .build();
+
+    BigDecimal dailyIntake = BigDecimal.ZERO;
+
+    fat.setRecommendedIntake(dailyIntake);
+    nutrientMap.put(fat.getName(), fat);
+  }
+
+  private static void fillTransFat(Map<String, NutritionIntakeView> nutrientMap) {
+    NutritionIntakeView fat = NutritionIntakeView
+        .builder()
+        .name(AllowedNutrients.Trans_Fat.getNutrientName())
+        .measurement(AllowedNutrients.Trans_Fat.getNutrientUnit())
+        .dailyConsumed(BigDecimal.ZERO)
+        .build();
+
+    BigDecimal dailyIntake = BigDecimal.ZERO;
+
+    fat.setRecommendedIntake(dailyIntake);
+    nutrientMap.put(fat.getName(), fat);
   }
 
   private static void fillWater(Map<String, NutritionIntakeView> nutrientMap, Gender gender, Integer age) {

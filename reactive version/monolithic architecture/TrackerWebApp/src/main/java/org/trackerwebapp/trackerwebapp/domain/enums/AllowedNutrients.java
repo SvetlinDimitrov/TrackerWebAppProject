@@ -14,6 +14,8 @@ public enum AllowedNutrients {
   Omega3("α-Linolenic Acid", "g"),
   Cholesterol("Cholesterol", "mg"),
   Water("Water" , "L"),
+  Saturated_Fat("Saturated Fat" , "g"),
+  Trans_Fat("Trans Fat" , "g"),
 
   VitaminA("Vitamin A", "µg"),
   VitaminD_D2_D3("Vitamin D (D2 + D3)", "µg"),

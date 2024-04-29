@@ -25,6 +25,7 @@ public class MealService {
   private final NutritionRepository nutritionRepository;
   private final CalorieRepository calorieRepository;
   private final UserRepository userRepository;
+  private final ServingRepository servingRepository;
 
   public Flux<MealView> getAllByUserId(String userId) {
     return repository.findAllByUserId(userId)
@@ -104,15 +105,18 @@ public class MealService {
 
   private Mono<List<FoodView>> fetchFoodViewsByMealId(String mealId) {
     return foodRepository.findAllByMealId(mealId)
-        .flatMap(foodEntity -> Mono.zip(
-            Mono.just(foodEntity),
-            nutritionRepository.findAllByFoodId(foodEntity.getId())
-                .map(NutritionView::toView)
-                .collectList(),
-            calorieRepository.findByFoodId(foodEntity.getId())
-                .map(CalorieView::toView)
+        .flatMap(foodEntity ->
+            Mono.zip(Mono.just(foodEntity),
+                nutritionRepository.findAllByFoodId(foodEntity.getId())
+                    .map(NutritionView::toView)
+                    .collectList(),
+                calorieRepository
+                    .findByFoodId(foodEntity.getId())
+                    .map(CalorieView::toView),
+                servingRepository.findByFoodId(foodEntity.getId())
+                    .map(ServingView::toView)
         ))
-        .map(tuple -> FoodView.toView(tuple.getT1(), tuple.getT2(), tuple.getT3()))
+        .map(tuple -> FoodView.toView(tuple.getT1(), tuple.getT2(), tuple.getT3() , List.of(tuple.getT4())))
         .collectList();
   }
 }

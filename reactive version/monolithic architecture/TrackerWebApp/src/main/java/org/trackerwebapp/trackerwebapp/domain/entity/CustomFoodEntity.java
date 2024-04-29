@@ -16,10 +16,6 @@ public class CustomFoodEntity {
   private String id;
   @Column("name")
   private String name;
-  @Column("measurement")
-  private String measurement;
-  @Column("size")
-  private BigDecimal size;
   @Column("user_id")
   private String userId;
 
