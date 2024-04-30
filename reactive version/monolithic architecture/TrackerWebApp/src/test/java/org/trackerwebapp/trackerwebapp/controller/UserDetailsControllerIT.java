@@ -58,8 +58,8 @@ class UserDetailsControllerIT {
   }
 
   private Mono<Void> cleanupDatabase() {
-    return userRepository.findAll()
-        .flatMap(user -> userRepository.deleteById(user.getId()))
+    return userRepository.findAllUsers()
+        .flatMap(user -> userRepository.deleteUserById(user.getId()))
         .then();
   }
 

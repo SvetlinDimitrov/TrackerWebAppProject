@@ -29,20 +29,20 @@ public class UserDetailsService {
       return Mono.error(new BadRequestException("Body cannot be empty"));
     }
 
-    return repository.findByUserId(userId)
+    return repository.findUserDetailsByUserId(userId)
         .switchIfEmpty(Mono.error(new BadRequestException("No userDetails found")))
         .flatMap(entity -> UserDetailsModifier.ageModify(entity, updateDto))
         .flatMap(entity -> UserDetailsModifier.genderModify(entity, updateDto))
         .flatMap(entity -> UserDetailsModifier.heightModify(entity, updateDto))
         .flatMap(entity -> UserDetailsModifier.kilogramsModify(entity, updateDto))
         .flatMap(entity -> UserDetailsModifier.workoutStateModify(entity, updateDto))
-        .flatMap(entity -> repository.update(entity.getId(), entity))
+        .flatMap(entity -> repository.updateUserDetails(entity.getId(), entity))
         .map(UserDetailsView::toView)
         .flatMap(this::updateSecurityContextIfNeeded);
   }
 
   public Mono<UserDetailsView> getByUserId(String userId) {
-    return repository.findByUserId(userId)
+    return repository.findUserDetailsByUserId(userId)
         .switchIfEmpty(Mono.error(new BadRequestException("No userDetails found")))
         .map(UserDetailsView::toView);
   }

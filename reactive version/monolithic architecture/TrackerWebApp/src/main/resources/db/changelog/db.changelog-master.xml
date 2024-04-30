@@ -12,9 +12,6 @@
     <include file="nutritions-table.xml" relativeToChangelogFile="true"/>
     <include file="calories-table.xml" relativeToChangelogFile="true"/>
     <include file="servings-table.xml" relativeToChangelogFile="true"/>
-    <include file="custom-food-table.xml" relativeToChangelogFile="true"/>
-    <include file="custom-calories-table.xml" relativeToChangelogFile="true"/>
-    <include file="custom-nutritions-table.xml" relativeToChangelogFile="true"/>
-    <include file="custom_servings-table.xml" relativeToChangelogFile="true"/>
+    <include file="food_info-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -5,24 +5,24 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table(name = "custom_servings")
+@Table(name = "info_foods")
 @Data
-public class CustomServingEntity {
+public class FoodInfoEntity {
+
   @Id
   private String id;
-  @Column("amount")
-  private BigDecimal amount;
-  @Column("serving_weight")
-  private BigDecimal servingWeight;
-  @Column("metric")
-  private String metric;
+  @Column("info")
+  private String info;
+  @Column("more_info")
+  private String moreInfo;
+  @Column("picture")
+  private String picture;
   @Column("food_id")
   private String foodId;
 
-  public CustomServingEntity() {
+  public FoodInfoEntity() {
     this.id = UUID.randomUUID().toString();
   }
 }

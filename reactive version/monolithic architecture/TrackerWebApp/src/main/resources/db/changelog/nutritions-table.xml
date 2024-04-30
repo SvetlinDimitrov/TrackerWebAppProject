@@ -23,9 +23,7 @@
       <column name="food_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="user_id" type="varchar(255)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="user_id" type="varchar(255)"/>
     </createTable>
 
     <addForeignKeyConstraint

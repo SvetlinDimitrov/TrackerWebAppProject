@@ -10,12 +10,11 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.CalorieView;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.ServingView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
 import org.trackerwebapp.trackerwebapp.domain.dto.nutritionxApi.FoodItem;
+import org.trackerwebapp.trackerwebapp.domain.dto.nutritionxApi.ListFoodsResponse;
 import org.trackerwebapp.trackerwebapp.domain.enums.AllowedCalorieUnits;
+import org.trackerwebapp.trackerwebapp.utils.nutritionix_api.FoodInfoMapperUtils;
 import org.trackerwebapp.trackerwebapp.utils.nutritionix_api.GetFoodsResponse;
 import org.trackerwebapp.trackerwebapp.utils.nutritionix_api.NutrientMapperUtils;
 import org.trackerwebapp.trackerwebapp.utils.nutritionix_api.ServingMapperUtils;
@@ -53,7 +52,7 @@ public class NutritionixApiService {
     webClient = webClientBuilder.build();
   }
 
-  public Mono<InsertFoodDto> getFoodBySearchTerm(String query) {
+  public Mono<List<InsertFoodDto>> getCommonFoodBySearchTerm(String query) {
     Map<String, String> requestBody = new HashMap<>();
     requestBody.put("query", query);
 
@@ -68,17 +67,56 @@ public class NutritionixApiService {
 //        .onStatus(HttpStatusCode::is5xxServerError, this::handle500Response)
         .bodyToMono(GetFoodsResponse.class)
         .map(GetFoodsResponse::getFoods)
-        .map(this::toView);
+        .map(list -> list.stream()
+            .map(this::toView)
+            .toList());
   }
 
-  private InsertFoodDto toView(List<FoodItem> items) {
-    FoodItem item = items.getFirst();
+  public Mono<List<InsertFoodDto>> getBrandedFoodById(String id) {
+
+    return webClient
+        .get()
+        .uri(uriBuilder -> uriBuilder.path("/v2/search/item")
+            .queryParam("nix_item_id" , id).build())
+        .acceptCharset(StandardCharsets.UTF_8)
+        .retrieve()
+        .onStatus(HttpStatusCode::is4xxClientError, this::handle400Response)
+        .onStatus(HttpStatusCode::is5xxServerError, this::handle500Response)
+        .bodyToMono(GetFoodsResponse.class)
+        .map(GetFoodsResponse::getFoods)
+        .map(list -> list.stream()
+            .map(this::toView)
+            .toList());
+  }
+
+  public Mono<ListFoodsResponse> getAllFoodsByFoodName(String foodName) {
+    return webClient
+        .get()
+        .uri(uriBuilder -> uriBuilder.path("/v2/search/instant/")
+            .queryParam("query" , foodName).build())
+        .acceptCharset(StandardCharsets.UTF_8)
+        .retrieve()
+        .onStatus(HttpStatusCode::is4xxClientError, this::handle400Response)
+        .onStatus(HttpStatusCode::is5xxServerError, this::handle500Response)
+        .bodyToMono(ListFoodsResponse.class);
+  }
+
+  private InsertFoodDto toView(FoodItem item) {
     CalorieView calorieView = new CalorieView(BigDecimal.valueOf(item.getNfCalories()), AllowedCalorieUnits.CALORIE.getSymbol());
+    FoodInfoView foodInfoView = FoodInfoMapperUtils.generateFoodInfo(item);
     List<NutritionView> nutrients = NutrientMapperUtils.getNutrients(item);
     List<ServingView> servings = ServingMapperUtils.getServings(item);
-    return new InsertFoodDto(item.getFoodName(), calorieView, servings, nutrients);
+    ServingView mainServing = ServingMapperUtils.getMainServing(item);
+    return new InsertFoodDto(item.getFoodName(), calorieView, mainServing, foodInfoView, servings, nutrients);
   }
   private Mono<? extends Throwable> handle400Response(ClientResponse response) {
+    if(response.statusCode().equals(HttpStatusCode.valueOf(404))){
+      return Mono.error(new BadRequestException("Not found"));
+    }
+    return response.bodyToMono(BadRequestException.class)
+        .flatMap(Mono::error);
+  }
+  private Mono<? extends Throwable> handle500Response(ClientResponse response) {
     return response.bodyToMono(BadRequestException.class)
         .flatMap(Mono::error);
   }

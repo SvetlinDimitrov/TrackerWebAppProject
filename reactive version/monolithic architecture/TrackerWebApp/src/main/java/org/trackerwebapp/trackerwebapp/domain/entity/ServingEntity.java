@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table(name = "custom_servings")
+@Table(name = "servings")
 @Data
 public class ServingEntity {
 
@@ -20,10 +20,13 @@ public class ServingEntity {
   private BigDecimal servingWeight;
   @Column("metric")
   private String metric;
+  @Column("main")
+  private Boolean main;
   @Column("food_id")
   private String foodId;
 
   public ServingEntity() {
+    this.main = Boolean.FALSE;
     this.id = UUID.randomUUID().toString();
   }
 }

@@ -1,7 +1,7 @@
 package org.trackerwebapp.trackerwebapp.utils.record;
 
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.CustomNutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.record.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.enums.AllowedNutrients;
 import reactor.core.publisher.Mono;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class CustomNutritionsValidator {
 
-  public static Mono<List<CustomNutritionView>> validate(List<CustomNutritionView> nutritionViews) {
+  public static Mono<List<NutritionView>> validate(List<NutritionView> nutritionViews) {
 
     if (nutritionViews == null || nutritionViews.isEmpty()) {
       return Mono.empty();
@@ -23,13 +23,13 @@ public class CustomNutritionsValidator {
         Arrays.stream(AllowedNutrients.values()).map(AllowedNutrients::getNutrientName)
             .collect(Collectors.toSet());
 
-    for (CustomNutritionView customNutritionView : nutritionViews) {
-      if (!allAvailableNames.contains(customNutritionView.name())) {
-        return Mono.error(new BadRequestException("Custom nutrition name: " + customNutritionView.name() + " is not available"));
+    for (NutritionView NutritionView : nutritionViews) {
+      if (!allAvailableNames.contains(NutritionView.name())) {
+        return Mono.error(new BadRequestException("Custom nutrition name: " + NutritionView.name() + " is not available"));
       }
-      if (customNutritionView.recommendedIntake().compareTo(BigDecimal.ZERO) < 0) {
-        return Mono.error(new BadRequestException("Custom nutrition recommended intake: " + customNutritionView.recommendedIntake() +
-            " for " + customNutritionView.name() +
+      if (NutritionView.recommendedIntake().compareTo(BigDecimal.ZERO) < 0) {
+        return Mono.error(new BadRequestException("Custom nutrition recommended intake: " + NutritionView.recommendedIntake() +
+            " for " + NutritionView.name() +
             " cannot be less than 0"));
 
       }

@@ -6,26 +6,27 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
 
-  <changeSet id="custom-foods-creation" author="Svetlin Dimitrov">
-    <createTable tableName="custom_foods">
+  <changeSet id="meals-inserted_foods-info_foods-creation" author="Svetlin Dimitrov">
+    <createTable tableName="info_foods">
       <column name="id" type="varchar(255)">
         <constraints primaryKey="true" nullable="false" unique="true"/>
       </column>
-      <column name="name" type="varchar(50)">
-        <constraints nullable="false" unique="true"/>
-      </column>
-      <column name="user_id" type="varchar(255)">
+      <column name="info" type="varchar(252)"/>
+      <column name="more_info" type="varchar(255)"/>
+      <column name="picture" type="varchar(255)"/>
+      <column name="food_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
     </createTable>
 
     <addForeignKeyConstraint
-      baseTableName="custom_foods"
-      baseColumnNames="user_id"
-      constraintName="fk_custom_foods_users_id"
-      referencedTableName="users"
+      baseTableName="info_foods"
+      baseColumnNames="food_id"
+      constraintName="fk_info_foods_inserted_foods_id"
+      referencedTableName="inserted_foods"
       referencedColumnNames="id"
       onDelete="CASCADE"/>
+
   </changeSet>
 
 </databaseChangeLog>

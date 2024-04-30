@@ -14,9 +14,7 @@
       <column name="name" type="varchar(50)">
         <constraints nullable="false"/>
       </column>
-      <column name="meal_id" type="varchar(255)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="meal_id" type="varchar(255)"/>
       <column name="user_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>

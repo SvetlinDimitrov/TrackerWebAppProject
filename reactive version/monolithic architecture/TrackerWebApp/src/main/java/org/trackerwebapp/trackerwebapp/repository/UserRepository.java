@@ -27,24 +27,24 @@ public class UserRepository {
     return entityTemplate.insert(entity);
   }
 
-  public Mono<UserEntity> findById(String id) {
+  public Mono<UserEntity> findUserById(String id) {
     return entityTemplate.selectOne(
         query(where("id").is(id)), UserEntity.class
     );
   }
 
-  public Flux<UserEntity> findAll() {
+  public Flux<UserEntity> findAllUsers() {
     return entityTemplate.select(UserEntity.class).all();
   }
 
-  public Mono<UserEntity> findByEmail(String email) {
+  public Mono<UserEntity> findUserByEmail(String email) {
     return entityTemplate.selectOne(
         query(where("email").is(email)), UserEntity.class
     );
   }
 
   @Modifying
-  public Mono<Void> deleteById(String id) {
+  public Mono<Void> deleteUserById(String id) {
     return entityTemplate.delete(UserEntity.class)
         .matching(
             query(where("id").is(id))
@@ -60,7 +60,7 @@ public class UserRepository {
             Update.update("username", updatedEntity.getUsername())
                 .set("password", updatedEntity.getPassword())
         )
-        .then(findById(id));
+        .then(findUserById(id));
   }
 
   @Transactional(readOnly = true)

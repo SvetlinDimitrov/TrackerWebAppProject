@@ -16,6 +16,11 @@ public enum Credentials {
   VALID_DETAIL_GENDER(Gender.MALE.name()),
   VALID_MEAL_NAME("Split Bro"),
   VALID_FOOD_NAME("Salmon"),
+  VALID_FOOD_MEASURE_UNIT("g"),
+  VALID_FOOD_SERVING_UNIT("cup"),
+  VALID_FOOD_SERVING_AMOUNT("350"),
+  VALID_FOOD_SERVING_WEIGHT("100"),
+  VALID_FOOD_INFO("something very inserting here"),
   ;
 
   private final String value;

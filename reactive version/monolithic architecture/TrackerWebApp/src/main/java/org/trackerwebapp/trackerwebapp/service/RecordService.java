@@ -6,15 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.trackerwebapp.domain.dto.NutritionIntakeView;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.CreateRecord;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.CustomNutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.record.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.DistributedMacros;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.RecordView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.UserDetails;
 import org.trackerwebapp.trackerwebapp.domain.enums.Goals;
-import org.trackerwebapp.trackerwebapp.repository.CalorieRepository;
-import org.trackerwebapp.trackerwebapp.repository.NutritionRepository;
-import org.trackerwebapp.trackerwebapp.repository.UserDetailsRepository;
+import org.trackerwebapp.trackerwebapp.repository.RecordRepository;
 import org.trackerwebapp.trackerwebapp.utils.BMRCalc;
 import org.trackerwebapp.trackerwebapp.utils.DailyCaloriesCalculator;
 import org.trackerwebapp.trackerwebapp.utils.record.*;
@@ -32,12 +30,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecordService {
 
-  private final UserDetailsRepository detailsRepository;
-  private final CalorieRepository calorieRepository;
-  private final NutritionRepository nutritionRepository;
+  private final RecordRepository repository;
 
   public Mono<RecordView> viewRecord(CreateRecord dto, String userId) {
-    return detailsRepository.findByUserId(userId)
+    return repository.findUserDetailsByUserId(userId)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
         .flatMap(details -> Mono.zip(
             Mono.just(details),
@@ -73,7 +69,7 @@ public class RecordService {
               Mono.just(userDetails),
               Mono.just(view)
           );
-        }).flatMap(data -> calorieRepository.findByUserId(data.getT1().getUserId())
+        }).flatMap(data -> repository.findCalorieByUserId(data.getT1().getUserId())
             .collectList()
             .map(list -> list.stream()
                 .map(CalorieEntity::getAmount)
@@ -101,7 +97,7 @@ public class RecordService {
                       MacronutrientCreator.fillMacros(map, view.getDailyCaloriesToConsume(), details.getGender(), validatedDistribution, details.getAge());
                       return map;
                     }),
-                nutritionRepository.findByUserId(details.getUserId())
+                repository.findAllNutritionsByUserId(details.getUserId())
                     .collectList()
             ))
         .map(data -> {
@@ -143,14 +139,14 @@ public class RecordService {
             .toList());
   }
 
-  private Mono<RecordView> customizeRecordView(RecordView record, List<CustomNutritionView> customNutritionViews) {
+  private Mono<RecordView> customizeRecordView(RecordView record, List<NutritionView> NutritionViews) {
 
-    if(customNutritionViews == null || customNutritionViews.isEmpty()){
+    if(NutritionViews == null || NutritionViews.isEmpty()){
       return Mono.just(record);
     }
 
-    Map<String, BigDecimal> customIntakeMap = customNutritionViews.stream()
-        .collect(Collectors.toMap(CustomNutritionView::name, CustomNutritionView::recommendedIntake));
+    Map<String, BigDecimal> customIntakeMap = NutritionViews.stream()
+        .collect(Collectors.toMap(NutritionView::name, NutritionView::recommendedIntake));
 
     return Mono.fromCallable(() -> {
       record.getMineralIntakes().forEach(intake -> {

@@ -4,20 +4,31 @@ import org.trackerwebapp.trackerwebapp.domain.dto.meal.ServingView;
 import org.trackerwebapp.trackerwebapp.domain.dto.nutritionxApi.FoodItem;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class ServingMapperUtils {
 
   public static List<ServingView> getServings(FoodItem dto) {
-    //TODO: MAKE IT THAT THE FIRST VALUE THAT APPEARS TO BE THE MAIN SERVING (BRANDED FOODS ARE DIFFERENT THEN NORMAL)
 
-    List<ServingView> servings = dto.getMeasures()
-        .stream()
-        .map(measure -> new ServingView(measure.getQty(), measure.getServingWeight(), measure.getMeasure()))
-        .toList();
+    return Optional.ofNullable(dto.getMeasures())
+        .map(list -> list
+            .stream()
+            .map(measure -> new ServingView(measure.getQty(), measure.getServingWeight(), measure.getMeasure()))
+            .toList())
+        .orElse(List.of());
+  }
 
-    return servings;
+  public static ServingView getMainServing(FoodItem dto) {
+
+    if (dto.getBrandName() == null) {
+      return new ServingView(BigDecimal.valueOf(dto.getServingQty()), BigDecimal.valueOf(dto.getServingWeightGrams()), dto.getServingUnit());
+    }
+    return new ServingView(BigDecimal.valueOf(
+        dto.getServingQty()),
+        Optional.ofNullable(dto.getServingWeightGrams())
+            .map(BigDecimal::valueOf)
+            .orElse(BigDecimal.valueOf(dto.getNfMetricQty())),
+        dto.getServingUnit());
   }
 }

@@ -5,7 +5,9 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.relational.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.MealEntity;
+import org.trackerwebapp.trackerwebapp.domain.entity.UserEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,17 +21,17 @@ public class MealRepository {
   private final R2dbcEntityTemplate entityTemplate;
 
 
-  public Mono<MealEntity> save(MealEntity entity) {
+  public Mono<MealEntity> saveMeal(MealEntity entity) {
     return entityTemplate.insert(entity);
   }
 
-  public Flux<MealEntity> findAllByUserId(String userId) {
+  public Flux<MealEntity> findAllMealsByUserId(String userId) {
     return entityTemplate.select(
         query(where("userId").is(userId)), MealEntity.class
     );
   }
 
-  public Mono<MealEntity> findByIdAndUserId(String id, String userId) {
+  public Mono<MealEntity> findMealByIdAndUserId(String id, String userId) {
     return entityTemplate.selectOne(
         query(where("userId").is(userId)
             .and("id").is(id)
@@ -38,7 +40,7 @@ public class MealRepository {
   }
 
   @Modifying
-  public Mono<Void> deleteById(String id) {
+  public Mono<Void> deleteMealById(String id) {
     return entityTemplate.delete(MealEntity.class)
         .matching(
             query(where("id").is(id))
@@ -56,6 +58,18 @@ public class MealRepository {
             Update.update("name", updatedEntity.getName())
         )
         .then();
+  }
+
+  public Flux<CalorieEntity> findCalorieByMealId(String mealId) {
+    return entityTemplate.select(
+        query(where("mealId").is(mealId)), CalorieEntity.class
+    );
+  }
+
+  public Mono<UserEntity> findUserById(String id) {
+    return entityTemplate.selectOne(
+        query(where("id").is(id)), UserEntity.class
+    );
   }
 
 }

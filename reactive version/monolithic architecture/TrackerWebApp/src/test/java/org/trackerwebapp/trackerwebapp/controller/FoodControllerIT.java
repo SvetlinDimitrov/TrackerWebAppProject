@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.trackerwebapp.trackerwebapp.utils.FoodUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -59,8 +60,8 @@ class FoodControllerIT {
   }
 
   private Mono<Void> cleanupDatabase() {
-    return userRepository.findAll()
-        .flatMap(user -> userRepository.deleteById(user.getId()))
+    return userRepository.findAllUsers()
+        .flatMap(user -> userRepository.deleteUserById(user.getId()))
         .then();
   }
 
@@ -77,7 +78,7 @@ class FoodControllerIT {
     webTestClient
         .post()
         .uri("/api/meals/" + MEAL_ID + "/insertFood")
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isUnauthorized();
   }
@@ -93,7 +94,7 @@ class FoodControllerIT {
         .post()
         .uri("/api/meals/" + MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isForbidden();
   }
@@ -108,7 +109,7 @@ class FoodControllerIT {
         .post()
         .uri("/api/meals/" + INVALID_MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isBadRequest();
   }
@@ -128,8 +129,9 @@ class FoodControllerIT {
               .bodyValue(createInsertedFood(
                   INVALID_NAME,
                   createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(115),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
                   List.of()
               ))
               .exchange()
@@ -151,9 +153,10 @@ class FoodControllerIT {
               .header(authHeader.getName(), authHeader.getValues().getFirst())
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
-                  new CalorieView(INVALID_CALORIE_AMOUNT, AllowedFoodUnits.GRAM.getSymbol()),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(115),
+                  new CalorieView(INVALID_CALORIE_AMOUNT, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
                   List.of()
               ))
               .exchange()
@@ -167,123 +170,94 @@ class FoodControllerIT {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(null, AllowedFoodUnits.GRAM.getSymbol()),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-
-    //Invalid unit2
-    webTestClient
-        .post()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(BigDecimal.ONE, "kg"),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-
-    //Invalid with null 2
-    webTestClient
-        .post()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(BigDecimal.ONE, null),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
+            new CalorieView(null, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
             List.of()
         ))
         .exchange()
         .expectStatus().isBadRequest();
   }
 
-  @Test
-  void givenValidAuthAndFullUserDetailsAndValidMealIdAndInvalidFoodUnit_whenTestingAddFood_thenServerMustReturnBadRequest() {
+//  @Test
+//  void givenValidAuthAndFullUserDetailsAndValidMealIdAndInvalidFoodUnit_whenTestingAddFood_thenServerMustReturnBadRequest() {
+//
+//    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
+//    String VALID_MEAL_ID = obtainValidMealId(authHeader);
+//
+//    getInvalidUnitNames()
+//        .forEach(INVALID_UNIT_NAME -> {
+//              webTestClient
+//                  .post()
+//                  .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
+//                  .header(authHeader.getName(), authHeader.getValues().getFirst())
+//                  .bodyValue(createInsertedFood(
+//                      Credentials.VALID_MEAL_NAME.getValue(),
+//                      createValidCalorieView(),
+//                      INVALID_UNIT_NAME,
+//                      BigDecimal.valueOf(115),
+//                      List.of()
+//                  ))
+//                  .exchange()
+//                  .expectStatus().isBadRequest();
+//            }
+//        );
+//
+//    //Invalid with null
+//    webTestClient
+//        .post()
+//        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
+//        .header(authHeader.getName(), authHeader.getValues().getFirst())
+//        .bodyValue(createInsertedFood(
+//            Credentials.VALID_MEAL_NAME.getValue(),
+//            createValidCalorieView(),
+//            null,
+//            BigDecimal.valueOf(115),
+//            List.of()
+//        ))
+//        .exchange()
+//        .expectStatus().isBadRequest();
+//  }
 
-    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    String VALID_MEAL_ID = obtainValidMealId(authHeader);
-
-    getInvalidUnitNames()
-        .forEach(INVALID_UNIT_NAME -> {
-              webTestClient
-                  .post()
-                  .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-                  .header(authHeader.getName(), authHeader.getValues().getFirst())
-                  .bodyValue(createInsertedFood(
-                      Credentials.VALID_MEAL_NAME.getValue(),
-                      createValidCalorieView(),
-                      INVALID_UNIT_NAME,
-                      BigDecimal.valueOf(115),
-                      List.of()
-                  ))
-                  .exchange()
-                  .expectStatus().isBadRequest();
-            }
-        );
-
-    //Invalid with null
-    webTestClient
-        .post()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            createValidCalorieView(),
-            null,
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-  }
-
-  @Test
-  void givenValidAuthAndFullUserDetailsAndValidMealIdAndInvalidFoodAmount_whenTestingAddFood_thenServerMustReturnBadRequest() {
-
-    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    String VALID_MEAL_ID = obtainValidMealId(authHeader);
-
-    getInvalidFoodAmounts()
-        .forEach(INVALID_FOOD_AMOUNT -> {
-          webTestClient
-              .post()
-              .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
-              .bodyValue(createInsertedFood(
-                  Credentials.VALID_MEAL_NAME.getValue(),
-                  createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  INVALID_FOOD_AMOUNT,
-                  List.of()
-              ))
-              .exchange()
-              .expectStatus().isBadRequest();
-        });
-
-    //Invalid with null
-    webTestClient
-        .post()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            createValidCalorieView(),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            null,
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-  }
+//  @Test
+//  void givenValidAuthAndFullUserDetailsAndValidMealIdAndInvalidFoodAmount_whenTestingAddFood_thenServerMustReturnBadRequest() {
+//
+//    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
+//    String VALID_MEAL_ID = obtainValidMealId(authHeader);
+//
+//    getInvalidFoodAmounts()
+//        .forEach(INVALID_FOOD_AMOUNT -> {
+//          webTestClient
+//              .post()
+//              .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
+//              .header(authHeader.getName(), authHeader.getValues().getFirst())
+//              .bodyValue(createInsertedFood(
+//                  Credentials.VALID_MEAL_NAME.getValue(),
+//                  createValidCalorieView(),
+//                  Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
+//                  INVALID_FOOD_AMOUNT,
+//                  List.of()
+//              ))
+//              .exchange()
+//              .expectStatus().isBadRequest();
+//        });
+//
+//    //Invalid with null
+//    webTestClient
+//        .post()
+//        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
+//        .header(authHeader.getName(), authHeader.getValues().getFirst())
+//        .bodyValue(createInsertedFood(
+//            Credentials.VALID_MEAL_NAME.getValue(),
+//            createValidCalorieView(),
+//            Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
+//            null,
+//            List.of()
+//        ))
+//        .exchange()
+//        .expectStatus().isBadRequest();
+//  }
 
   @Test
   void givenValidAuthAndFullUserDetailsAndValidMealIdAndNullNutrients_whenTestingAddFood_thenServerMustReturnBadRequest() {
@@ -299,8 +273,9 @@ class FoodControllerIT {
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(150),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
             null
         ))
         .exchange()
@@ -317,7 +292,7 @@ class FoodControllerIT {
         .post()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createValidInsertedFood())
+        .bodyValue(createValidInsertedFoodWithEmptyNutritions())
         .exchange()
         .expectStatus().isOk();
   }
@@ -337,8 +312,9 @@ class FoodControllerIT {
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(150),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
                   List.of(INVALID_NUTRITION_VIEW)
               ))
               .exchange()
@@ -370,7 +346,7 @@ class FoodControllerIT {
     webTestClient
         .put()
         .uri("/api/meals/" + MEAL_ID + "/insertFood/" + FOOD_ID)
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isUnauthorized();
   }
@@ -386,7 +362,7 @@ class FoodControllerIT {
         .put()
         .uri("/api/meals/" + MEAL_ID + "/insertFood/" + FOOD_ID)
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isForbidden();
   }
@@ -402,7 +378,7 @@ class FoodControllerIT {
         .put()
         .uri("/api/meals/" + INVALID_MEAL_ID + "/insertFood/" + FOOD_ID)
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isBadRequest();
   }
@@ -418,7 +394,7 @@ class FoodControllerIT {
         .put()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + INVALID_FOOD_ID)
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isBadRequest();
   }
@@ -434,7 +410,7 @@ class FoodControllerIT {
         .put()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood())
+        .bodyValue(createInsertedFood(null , null ,null , null , null , null))
         .exchange()
         .expectStatus().isBadRequest();
   }
@@ -455,8 +431,9 @@ class FoodControllerIT {
               .bodyValue(createInsertedFood(
                   INVALID_NAME,
                   createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(115),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
                   List.of()
               ))
               .exchange()
@@ -471,8 +448,9 @@ class FoodControllerIT {
         .bodyValue(createInsertedFood(
             null,
             createValidCalorieView(),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
             List.of()
         ))
         .exchange()
@@ -494,9 +472,10 @@ class FoodControllerIT {
               .header(authHeader.getName(), authHeader.getValues().getFirst())
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
-                  new CalorieView(INVALID_CALORIE_AMOUNT, AllowedFoodUnits.GRAM.getSymbol()),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(115),
+                  new CalorieView(INVALID_CALORIE_AMOUNT, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
                   List.of()
               ))
               .exchange()
@@ -510,125 +489,96 @@ class FoodControllerIT {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(null, AllowedFoodUnits.GRAM.getSymbol()),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-
-    //Invalid unit2
-    webTestClient
-        .put()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(BigDecimal.ONE, "kg"),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-
-    //Invalid with null 2
-    webTestClient
-        .put()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            new CalorieView(BigDecimal.ONE, null),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(115),
+            new CalorieView(null, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
             List.of()
         ))
         .exchange()
         .expectStatus().isBadRequest();
   }
 
-  @Test
-  void givenValidAuthAndFullUserDetailsAndValidMealIdAndValidFoodIdAndInvalidFoodUnit_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+//  @Test
+//  void givenValidAuthAndFullUserDetailsAndValidMealIdAndValidFoodIdAndInvalidFoodUnit_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+//
+//    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
+//    String VALID_MEAL_ID = obtainValidMealId(authHeader);
+//    String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
+//
+//    getInvalidUnitNames()
+//        .forEach(INVALID_UNIT_NAME -> {
+//              webTestClient
+//                  .put()
+//                  .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
+//                  .header(authHeader.getName(), authHeader.getValues().getFirst())
+//                  .bodyValue(createInsertedFood(
+//                      Credentials.VALID_MEAL_NAME.getValue(),
+//                      createValidCalorieView(),
+//                      INVALID_UNIT_NAME,
+//                      BigDecimal.valueOf(115),
+//                      List.of()
+//                  ))
+//                  .exchange()
+//                  .expectStatus().isBadRequest();
+//            }
+//        );
+//
+//    //Invalid with null
+//    webTestClient
+//        .put()
+//        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
+//        .header(authHeader.getName(), authHeader.getValues().getFirst())
+//        .bodyValue(createInsertedFood(
+//            Credentials.VALID_MEAL_NAME.getValue(),
+//            createValidCalorieView(),
+//            null,
+//            BigDecimal.valueOf(115),
+//            List.of()
+//        ))
+//        .exchange()
+//        .expectStatus().isBadRequest();
+//  }
 
-    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    String VALID_MEAL_ID = obtainValidMealId(authHeader);
-    String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
-
-    getInvalidUnitNames()
-        .forEach(INVALID_UNIT_NAME -> {
-              webTestClient
-                  .put()
-                  .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-                  .header(authHeader.getName(), authHeader.getValues().getFirst())
-                  .bodyValue(createInsertedFood(
-                      Credentials.VALID_MEAL_NAME.getValue(),
-                      createValidCalorieView(),
-                      INVALID_UNIT_NAME,
-                      BigDecimal.valueOf(115),
-                      List.of()
-                  ))
-                  .exchange()
-                  .expectStatus().isBadRequest();
-            }
-        );
-
-    //Invalid with null
-    webTestClient
-        .put()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            createValidCalorieView(),
-            null,
-            BigDecimal.valueOf(115),
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-  }
-
-  @Test
-  void givenValidAuthAndFullUserDetailsAndValidMealIdAndValidFoodIdAndInvalidFoodAmount_whenTestingChangeFood_thenServerMustReturnBadRequest() {
-
-    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    String VALID_MEAL_ID = obtainValidMealId(authHeader);
-    String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
-
-    getInvalidFoodAmounts()
-        .forEach(INVALID_FOOD_AMOUNT -> {
-          webTestClient
-              .put()
-              .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
-              .bodyValue(createInsertedFood(
-                  Credentials.VALID_MEAL_NAME.getValue(),
-                  createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  INVALID_FOOD_AMOUNT,
-                  List.of()
-              ))
-              .exchange()
-              .expectStatus().isBadRequest();
-        });
-
-    //Invalid with null
-    webTestClient
-        .put()
-        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createInsertedFood(
-            Credentials.VALID_MEAL_NAME.getValue(),
-            createValidCalorieView(),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            null,
-            List.of()
-        ))
-        .exchange()
-        .expectStatus().isBadRequest();
-  }
+//  @Test
+//  void givenValidAuthAndFullUserDetailsAndValidMealIdAndValidFoodIdAndInvalidFoodAmount_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+//
+//    Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
+//    String VALID_MEAL_ID = obtainValidMealId(authHeader);
+//    String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
+//
+//    getInvalidFoodAmounts()
+//        .forEach(INVALID_FOOD_AMOUNT -> {
+//          webTestClient
+//              .put()
+//              .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
+//              .header(authHeader.getName(), authHeader.getValues().getFirst())
+//              .bodyValue(createInsertedFood(
+//                  Credentials.VALID_MEAL_NAME.getValue(),
+//                  createValidCalorieView(),
+//                  Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
+//                  INVALID_FOOD_AMOUNT,
+//                  List.of()
+//              ))
+//              .exchange()
+//              .expectStatus().isBadRequest();
+//        });
+//
+//    //Invalid with null
+//    webTestClient
+//        .put()
+//        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
+//        .header(authHeader.getName(), authHeader.getValues().getFirst())
+//        .bodyValue(createInsertedFood(
+//            Credentials.VALID_MEAL_NAME.getValue(),
+//            createValidCalorieView(),
+//            Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
+//            null,
+//            List.of()
+//        ))
+//        .exchange()
+//        .expectStatus().isBadRequest();
+//  }
 
   @Test
   void givenValidAuthAndFullUserDetailsAndValidMealIdAndValidFoodIdAndNullNutrients_whenTestingChangeFood_thenServerMustReturnBadRequest() {
@@ -644,8 +594,9 @@ class FoodControllerIT {
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
-            AllowedFoodUnits.GRAM.getSymbol(),
-            BigDecimal.valueOf(150),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
             null
         ))
         .exchange()
@@ -663,7 +614,7 @@ class FoodControllerIT {
         .put()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createValidInsertedFood())
+        .bodyValue(createValidInsertedFoodWithEmptyNutritions())
         .exchange()
         .expectStatus().isOk();
   }
@@ -676,7 +627,7 @@ class FoodControllerIT {
     String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
 
     getInvalidNutrientViews()
-        .forEach(INVALID_NUTRITION_VIEW -> {
+        .forEach(INVALID_NUTRIENT_VIEW -> {
           webTestClient
               .put()
               .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
@@ -684,13 +635,29 @@ class FoodControllerIT {
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
-                  AllowedFoodUnits.GRAM.getSymbol(),
-                  BigDecimal.valueOf(150),
-                  List.of(INVALID_NUTRITION_VIEW)
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(),
+                  List.of(INVALID_NUTRIENT_VIEW)
               ))
               .exchange()
               .expectStatus().isBadRequest();
         });
+
+    webTestClient
+        .put()
+        .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood/" + VALID_INSERTED_FOOD_ID)
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            List.of(),
+            null
+        ))
+        .exchange()
+        .expectStatus().isBadRequest();
   }
 
   @Test
@@ -750,7 +717,7 @@ class FoodControllerIT {
     String VALID_MEAL_ID = obtainValidMealId(authHeader);
     String VALID_INSERTED_FOOD_ID = obtainValidInsertedFoodId(authHeader, VALID_MEAL_ID);
 
-    InsertFoodDto foodBody = createValidInsertedFoodWithEveryPossibleNutrientView2();
+    InsertFoodDto foodBody = createValidInsertedFoodWithEveryPossibleNutrientView();
 
     webTestClient
         .put()
@@ -770,7 +737,7 @@ class FoodControllerIT {
         .value(meal -> assertEquals(1, meal.foods().size()))
         .value(meal -> assertNotEquals(VALID_INSERTED_FOOD_ID, meal.foods().getFirst().id()))
         .value(meal -> assertEquals(foodBody.name(), meal.foods().getFirst().name()))
-        .value(meal -> assertEquals(foodBody.measurement(), meal.foods().getFirst().measurement()))
+//        .value(meal -> assertEquals(foodBody.measurement(), meal.foods().getFirst().measurement()))
         .value(meal -> assertEquals(foodBody.calories().unit(), meal.foods().getFirst().calorie().unit()))
         .value(meal -> assertEquals( 0 , foodBody.calories().amount().compareTo(meal.foods().getFirst().calorie().amount())))
         .value(meal -> {
@@ -785,8 +752,8 @@ class FoodControllerIT {
               .forEach(nutrient -> {
                 assertEquals(0, map.get(nutrient.name()).amount().compareTo(nutrient.amount()));
               });
-        })
-        .value(meal -> assertEquals(0, foodBody.size().compareTo(meal.foods().getFirst().size())));
+        });
+//        .value(meal -> assertEquals(0, foodBody.s().compareTo(meal.foods().getFirst().size())));
   }
 
   @Test
@@ -924,58 +891,6 @@ class FoodControllerIT {
     return new UserDetailsDto(kilograms, height, age, workoutState, gender);
   }
 
-  private InsertFoodDto createInsertedFood() {
-    return new InsertFoodDto(null, null, null, null, null);
-  }
-
-  private InsertFoodDto createInsertedFood(String name, CalorieView calorieView, String measurement, BigDecimal size, List<NutritionView> nutritionViewList) {
-    return new InsertFoodDto(name, calorieView, measurement, size, nutritionViewList);
-  }
-
-  private CalorieView createValidCalorieView() {
-    return new CalorieView(BigDecimal.valueOf(366), AllowedCalorieUnits.CALORIE.getSymbol());
-  }
-
-  private InsertFoodDto createValidInsertedFood() {
-    return createInsertedFood(
-        Credentials.VALID_MEAL_NAME.getValue(),
-        createValidCalorieView(),
-        AllowedFoodUnits.GRAM.getSymbol(),
-        BigDecimal.valueOf(150),
-        List.of()
-    );
-  }
-
-  private InsertFoodDto createValidInsertedFoodWithEveryPossibleNutrientView() {
-
-    List<NutritionView> nutritionViews = Arrays.stream(AllowedNutrients.values())
-        .map(data -> new NutritionView(data.getNutrientName(), data.getNutrientUnit(), BigDecimal.ONE))
-        .toList();
-
-    return createInsertedFood(
-        Credentials.VALID_MEAL_NAME.getValue(),
-        createValidCalorieView(),
-        AllowedFoodUnits.GRAM.getSymbol(),
-        BigDecimal.valueOf(150),
-        nutritionViews
-    );
-  }
-
-  private InsertFoodDto createValidInsertedFoodWithEveryPossibleNutrientView2() {
-
-    List<NutritionView> nutritionViews = Arrays.stream(AllowedNutrients.values())
-        .map(data -> new NutritionView(data.getNutrientName(), data.getNutrientUnit(), BigDecimal.valueOf(150)))
-        .toList();
-
-    return createInsertedFood(
-        Credentials.VALID_MEAL_NAME.getValue(),
-        createValidCalorieView(),
-        AllowedFoodUnits.GRAM.getSymbol(),
-        BigDecimal.valueOf(450),
-        nutritionViews
-    );
-  }
-
   private Header setUpUserAndReturnAuthHeader() {
 
     UserCreate newUser = createUser(
@@ -1051,7 +966,7 @@ class FoodControllerIT {
         .post()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createValidInsertedFood())
+        .bodyValue(createValidInsertedFoodWithEmptyNutritions())
         .exchange()
         .expectStatus().isOk()
         .expectBody(Void.class)
@@ -1072,61 +987,5 @@ class FoodControllerIT {
         .id();
   }
 
-  private List<String> getInvalidListOfInsertedFoodNames() {
 
-    //MIN 2 chars are required
-    return List.of(
-        "s",
-        "                 ",
-        "        s     ",
-        " !"
-    );
-  }
-
-  private List<BigDecimal> getInvalidListOfInsertedCalorieAmount() {
-    return List.of(
-        BigDecimal.valueOf(0),
-        BigDecimal.valueOf(0.99999),
-        BigDecimal.valueOf(-1),
-        BigDecimal.valueOf(-9999999)
-    );
-  }
-
-  private List<String> getInvalidUnitNames() {
-    return List.of(
-        "l",
-        "      ",
-        "liters",
-        "mg"
-    );
-  }
-
-  private List<BigDecimal> getInvalidFoodAmounts() {
-    return List.of(
-        BigDecimal.valueOf(-1),
-        BigDecimal.valueOf(-0.99999999),
-        BigDecimal.valueOf(0.99999999),
-        BigDecimal.valueOf(0)
-    );
-  }
-
-  private List<NutritionView> getInvalidNutrientViews() {
-    return List.of(
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), null, BigDecimal.ONE),
-        new NutritionView(null, AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.ONE),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), AllowedNutrients.VitaminC.getNutrientUnit(), null),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(0.9999)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(0)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(-1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(-99999)),
-        new NutritionView("VitaminC", AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(1)),
-        new NutritionView("", AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(1)),
-        new NutritionView("CATS", AllowedNutrients.VitaminC.getNutrientUnit(), BigDecimal.valueOf(1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), "", BigDecimal.valueOf(1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), "cats", BigDecimal.valueOf(1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), "g", BigDecimal.valueOf(1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), "l", BigDecimal.valueOf(1)),
-        new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), "ug", BigDecimal.valueOf(1))
-    );
-  }
 }

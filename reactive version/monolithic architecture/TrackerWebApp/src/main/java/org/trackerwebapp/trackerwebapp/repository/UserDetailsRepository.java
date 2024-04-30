@@ -21,20 +21,20 @@ public class UserDetailsRepository {
     return entityTemplate.insert(entity);
   }
 
-  public Mono<UserDetails> findByUserId(String userId) {
+  public Mono<UserDetails> findUserDetailsByUserId(String userId) {
     return entityTemplate.selectOne(
         query(where("userId").is(userId)), UserDetails.class
     );
   }
 
-  public Mono<UserDetails> findById(String id) {
+  public Mono<UserDetails> findUserDetailsById(String id) {
     return entityTemplate.selectOne(
         query(where("id").is(id)), UserDetails.class
     );
   }
 
   @Modifying
-  public Mono<UserDetails> update(String id, UserDetails updatedEntity) {
+  public Mono<UserDetails> updateUserDetails(String id, UserDetails updatedEntity) {
     return entityTemplate.update(UserDetails.class)
         .matching(query(where("id").is(id)))
         .apply(
@@ -44,6 +44,6 @@ public class UserDetailsRepository {
                 .set("workoutState", updatedEntity.getWorkoutState())
                 .set("gender", updatedEntity.getGender())
         )
-        .then(findById(id));
+        .then(findUserDetailsById(id));
   }
 }

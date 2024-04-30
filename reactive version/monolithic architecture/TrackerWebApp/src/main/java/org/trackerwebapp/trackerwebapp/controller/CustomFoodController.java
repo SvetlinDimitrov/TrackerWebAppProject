@@ -10,7 +10,7 @@ import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.ExceptionResponse;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.FoodView;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
-import org.trackerwebapp.trackerwebapp.service.CustomFoodService;
+import org.trackerwebapp.trackerwebapp.service.CustomFoodServiceImp;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/custom/food")
 public class CustomFoodController {
 
-  private final CustomFoodService service;
+  private final CustomFoodServiceImp service;
 
   @GetMapping
   private Flux<FoodView> getAllCustomFoods(@AuthenticationPrincipal UserPrincipal user) {

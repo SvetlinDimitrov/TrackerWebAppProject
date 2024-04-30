@@ -27,7 +27,7 @@ public class FoodItem {
   private Double servingWeightGrams;
 
   @JsonProperty("nf_metric_qty")
-  private String nfMetricQty;
+  private Double nfMetricQty;
 
   @JsonProperty("nf_metric_uom")
   private String nfMetricUom;
@@ -68,8 +68,9 @@ public class FoodItem {
   @JsonProperty("nix_item_id")
   private String itemId;
 
-  @JsonProperty("photo")
   private Photo photo;
+
+  private Tags tags;
 
   @JsonProperty("nf_ingredient_statement")
   private String nfIngredientStatement;

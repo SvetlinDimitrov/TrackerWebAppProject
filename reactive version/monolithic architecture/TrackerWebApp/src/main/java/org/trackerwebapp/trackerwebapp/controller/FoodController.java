@@ -8,7 +8,7 @@ import org.trackerwebapp.trackerwebapp.config.security.UserPrincipal;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.ExceptionResponse;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
-import org.trackerwebapp.trackerwebapp.service.FoodService;
+import org.trackerwebapp.trackerwebapp.service.FoodServiceImp;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/meals/{mealId}/insertFood")
 public class FoodController {
 
-  private final FoodService service;
+  private final FoodServiceImp service;
 
   @PostMapping
   private Mono<Void> addFood(@AuthenticationPrincipal UserPrincipal user, @RequestBody InsertFoodDto dto, @PathVariable String mealId) {

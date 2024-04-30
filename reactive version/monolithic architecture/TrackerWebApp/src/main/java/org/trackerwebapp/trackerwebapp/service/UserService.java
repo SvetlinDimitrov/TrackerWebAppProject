@@ -25,13 +25,13 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   public Mono<UserView> getById(String id) {
-    return repository.findById(id)
+    return repository.findUserById(id)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
         .map(UserView::toView);
   }
 
   public Mono<UserView> modifyUsername(String id, UserDto userDto) {
-    return repository.findById(id)
+    return repository.findUserById(id)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
         .flatMap(user -> UserModifier.modifyAndSaveUsername(user, userDto))
         .flatMap(user ->
@@ -42,9 +42,9 @@ public class UserService {
   }
 
   public Mono<Void> deleteUserById(String id) {
-    return repository.findById(id)
+    return repository.findUserById(id)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
-        .flatMap(user -> repository.deleteById(user.getId()));
+        .flatMap(user -> repository.deleteUserById(user.getId()));
   }
 
   public Mono<UserView> createUser(UserCreate userDto) {
@@ -52,7 +52,7 @@ public class UserService {
       return Mono.error(new BadRequestException("Invalid email"));
     }
 
-    return repository.findByEmail(userDto.email())
+    return repository.findUserByEmail(userDto.email())
         .flatMap(user -> Mono.error(new BadRequestException("User with email " + userDto.email() + " already exists")))
         .switchIfEmpty(createUserAndSave(userDto))
         .cast(UserView.class);

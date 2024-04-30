@@ -29,6 +29,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.trackerwebapp.trackerwebapp.utils.FoodUtils.*;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -58,8 +59,8 @@ class MealControllerIT {
   }
 
   private Mono<Void> cleanupDatabase() {
-    return userRepository.findAll()
-        .flatMap(user -> userRepository.deleteById(user.getId()))
+    return userRepository.findAllUsers()
+        .flatMap(user -> userRepository.deleteUserById(user.getId()))
         .then();
   }
 
@@ -473,7 +474,7 @@ class MealControllerIT {
         .post()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView2())
+        .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
         .exchange()
         .expectStatus().isOk();
 
@@ -500,7 +501,7 @@ class MealControllerIT {
           .post()
           .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
           .header(authHeader.getName(), authHeader.getValues().getFirst())
-          .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView2())
+          .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
           .exchange()
           .expectStatus().isOk()
           .expectBody()
@@ -537,7 +538,7 @@ class MealControllerIT {
         .post()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView2())
+        .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
         .exchange()
         .expectStatus().isOk();
 
@@ -574,7 +575,7 @@ class MealControllerIT {
           .post()
           .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
           .header(authHeader.getName(), authHeader.getValues().getFirst())
-          .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView2())
+          .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
           .exchange()
           .expectStatus().isOk()
           .expectBody()
@@ -624,11 +625,7 @@ class MealControllerIT {
     return new CalorieView(BigDecimal.valueOf(366), AllowedCalorieUnits.CALORIE.getSymbol());
   }
 
-  private InsertFoodDto createInsertedFood(String name, CalorieView calorieView, String measurement, BigDecimal size, List<NutritionView> nutritionViewList) {
-    return new InsertFoodDto(name, calorieView, measurement, size, nutritionViewList);
-  }
-
-  private InsertFoodDto createValidInsertedFoodWithEveryPossibleNutrientView2() {
+  private InsertFoodDto createValidInsertedFoodWithEveryPossibleNutrientView() {
 
     List<NutritionView> nutritionViews = Arrays.stream(AllowedNutrients.values())
         .map(data -> new NutritionView(data.getNutrientName(), data.getNutrientUnit(), BigDecimal.valueOf(150)))
@@ -637,8 +634,9 @@ class MealControllerIT {
     return createInsertedFood(
         Credentials.VALID_MEAL_NAME.getValue(),
         createValidCalorieView(),
-        AllowedFoodUnits.GRAM.getSymbol(),
-        BigDecimal.valueOf(450),
+        createValidServingView(),
+        createValidFoodInfoView(),
+        List.of(),
         nutritionViews
     );
   }

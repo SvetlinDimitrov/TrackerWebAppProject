@@ -17,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.trackerwebapp.trackerwebapp.domain.dto.NutritionIntakeView;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.CreateRecord;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.CustomNutritionView;
+import org.trackerwebapp.trackerwebapp.domain.dto.record.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.DistributedMacros;
 import org.trackerwebapp.trackerwebapp.domain.dto.record.RecordView;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserCreate;
@@ -35,6 +35,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.trackerwebapp.trackerwebapp.utils.FoodUtils.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,8 +68,8 @@ class RecordControllerIT {
   }
 
   private Mono<Void> cleanupDatabase() {
-    return userRepository.findAll()
-        .flatMap(user -> userRepository.deleteById(user.getId()))
+    return userRepository.findAllUsers()
+        .flatMap(user -> userRepository.deleteUserById(user.getId()))
         .then();
   }
 
@@ -460,12 +461,12 @@ class RecordControllerIT {
   void givenValidAuthAndFullUserDetailsAndSingleValidCustomNutrientValue_whenTestingViewRecord_thenServerShouldReturnCorrectNutrientsViewsAndStatusOk() {
 
     Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    CustomNutritionView customNutritionView = new CustomNutritionView(AllowedNutrients.VitaminE.getNutrientName(), BigDecimal.valueOf(120));
+    NutritionView NutritionView = new NutritionView(AllowedNutrients.VitaminE.getNutrientName(), BigDecimal.valueOf(120));
 
     webTestClient.post()
         .uri("/api/record")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .bodyValue(createCreateRecord(null, null, List.of(customNutritionView)))
+        .bodyValue(createCreateRecord(null, null, List.of(NutritionView)))
         .exchange()
         .expectStatus().isOk()
         .expectBody(RecordView.class)
@@ -473,11 +474,11 @@ class RecordControllerIT {
             assertEquals(
                 recordView.getVitaminIntake()
                     .stream()
-                    .filter(nutrient -> nutrient.getName().equals(customNutritionView.name()))
+                    .filter(nutrient -> nutrient.getName().equals(NutritionView.name()))
                     .findAny()
                     .orElseThrow()
                     .getRecommendedIntake(),
-                customNutritionView.recommendedIntake()
+                NutritionView.recommendedIntake()
             )
         );
   }
@@ -486,11 +487,11 @@ class RecordControllerIT {
   void givenValidAuthAndFullUserDetailsAndInvalidCustomNutrientValue_whenTestingViewRecord_thenServerShouldReturnBadRequest() {
 
     Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
-    CustomNutritionView customNutritionView = new CustomNutritionView("Invalid nutrientName", BigDecimal.valueOf(120));
-    CustomNutritionView customNutritionView2 = new CustomNutritionView(AllowedNutrients.VitaminC.getNutrientName(), BigDecimal.valueOf(-120));
-    List<CustomNutritionView> INVALID_CUSTOM_NUTRIENTS = List.of(customNutritionView2, customNutritionView);
+    NutritionView NutritionView = new NutritionView("Invalid nutrientName", BigDecimal.valueOf(120));
+    NutritionView NutritionView2 = new NutritionView(AllowedNutrients.VitaminC.getNutrientName(), BigDecimal.valueOf(-120));
+    List<NutritionView> INVALID_CUSTOM_NUTRIENTS = List.of(NutritionView2, NutritionView);
 
-    for (CustomNutritionView invalidCustomNutrient : INVALID_CUSTOM_NUTRIENTS) {
+    for (NutritionView invalidCustomNutrient : INVALID_CUSTOM_NUTRIENTS) {
       webTestClient.post()
           .uri("/api/record")
           .header(authHeader.getName(), authHeader.getValues().getFirst())
@@ -505,11 +506,12 @@ class RecordControllerIT {
 
     Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
     String VALID_MEAL_ID = obtainValidMealId(authHeader);
-    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView2();
+    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView();
     setUpInsertedFood(authHeader, VALID_MEAL_ID, validInsertedFoodWithEveryPossibleNutrient);
-    Map<String, NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    
+    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -539,13 +541,13 @@ class RecordControllerIT {
     Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
     String VALID_MEAL_ID = obtainValidMealId(authHeader);
     int FOOD_COUNTER = 20;
-    InsertFoodDto food = createValidInsertedFoodWithEveryPossibleNutrientView2();
+    InsertFoodDto food = createValidInsertedFoodWithEveryPossibleNutrientView();
     for (int i = 0; i < FOOD_COUNTER; i++) {
       setUpInsertedFood(authHeader, VALID_MEAL_ID, food);
     }
-    Map<String, NutritionView> nutritionViewMap = food.nutrients()
+    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = food.nutrients()
         .stream()
-        .collect(Collectors.toMap(NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -574,16 +576,16 @@ class RecordControllerIT {
 
     Header authHeader = setUpUserWithFullUserDetailsAndReturnAuthHeader();
     int NUMBER_OF_MEALS_CRATED = 3;
-    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView2();
+    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView();
 
     for (int i = 0; i < NUMBER_OF_MEALS_CRATED; i++) {
       String VALID_MEAL_ID = obtainValidMealId(authHeader);
       setUpInsertedFood(authHeader, VALID_MEAL_ID, validInsertedFoodWithEveryPossibleNutrient);
     }
 
-    Map<String, NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -622,7 +624,7 @@ class RecordControllerIT {
     int NUMBER_OF_MEALS_CRATED = 3;
     int NUMBER_OF_FOOD_COUNTER = 10;
     int FINAL_MULTIPLAYER = NUMBER_OF_FOOD_COUNTER * NUMBER_OF_MEALS_CRATED;
-    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView2();
+    InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView();
 
     for (int i = 0; i < NUMBER_OF_MEALS_CRATED; i++) {
       String VALID_MEAL_ID = obtainValidMealId(authHeader);
@@ -631,9 +633,9 @@ class RecordControllerIT {
       }
     }
 
-    Map<String, NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -946,44 +948,15 @@ class RecordControllerIT {
 
     return nutritionIntakeViews;
   }
-
-  private List<CustomNutritionView> createCustomNutritionViews(BigDecimal toConsume) {
-    return Arrays.stream(AllowedNutrients.values())
-        .map(value -> new CustomNutritionView(value.getNutrientName(), toConsume))
-        .toList();
-  }
-
+  
   private CreateRecord createCreateRecord() {
     return new CreateRecord(null, null, null);
   }
 
-  private CreateRecord createCreateRecord(Goals goal, DistributedMacros distributedMacros, List<CustomNutritionView> nutritionViews) {
+  private CreateRecord createCreateRecord(Goals goal, DistributedMacros distributedMacros, List<NutritionView> nutritionViews) {
     return new CreateRecord(goal, distributedMacros, nutritionViews);
   }
-
-  private CalorieView createValidCalorieView() {
-    return new CalorieView(BigDecimal.valueOf(366), AllowedCalorieUnits.CALORIE.getSymbol());
-  }
-
-  private InsertFoodDto createInsertedFood(String name, CalorieView calorieView, String measurement, BigDecimal size, List<NutritionView> nutritionViewList) {
-    return new InsertFoodDto(name, calorieView, measurement, size, nutritionViewList);
-  }
-
-  private InsertFoodDto createValidInsertedFoodWithEveryPossibleNutrientView2() {
-
-    List<NutritionView> nutritionViews = Arrays.stream(AllowedNutrients.values())
-        .map(data -> new NutritionView(data.getNutrientName(), data.getNutrientUnit(), BigDecimal.valueOf(150)))
-        .toList();
-
-    return createInsertedFood(
-        Credentials.VALID_MEAL_NAME.getValue(),
-        createValidCalorieView(),
-        AllowedFoodUnits.GRAM.getSymbol(),
-        BigDecimal.valueOf(450),
-        nutritionViews
-    );
-  }
-
+  
   private Header setUpUserWithFullUserDetailsAndReturnAuthHeader() {
 
     UserCreate newUser = createUser(

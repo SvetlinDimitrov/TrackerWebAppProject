@@ -1,11 +1,12 @@
 package org.trackerwebapp.trackerwebapp.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.CreateMeal;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.FoodView;
+import org.trackerwebapp.trackerwebapp.domain.dto.meal.MealView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.MealEntity;
 import org.trackerwebapp.trackerwebapp.repository.*;
@@ -17,18 +18,17 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class MealService {
+public class MealService extends AbstractFoodService {
 
-  private final MealRepository repository;
-  private final FoodRepository foodRepository;
-  private final NutritionRepository nutritionRepository;
-  private final CalorieRepository calorieRepository;
-  private final UserRepository userRepository;
-  private final ServingRepository servingRepository;
+  private final MealRepository mealRepository;
+
+  public MealService(FoodRepository repository, MealRepository mealRepository) {
+    super(repository);
+    this.mealRepository = mealRepository;
+  }
 
   public Flux<MealView> getAllByUserId(String userId) {
-    return repository.findAllByUserId(userId)
+    return mealRepository.findAllMealsByUserId(userId)
         .flatMap(this::fetchMealView);
   }
 
@@ -39,7 +39,7 @@ public class MealService {
 
   public Mono<MealView> createMeal(String userId, CreateMeal dto) {
     return
-        userRepository.findById(userId)
+        mealRepository.findUserById(userId)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
             .map(user -> {
               MealEntity entity = new MealEntity();
@@ -48,7 +48,7 @@ public class MealService {
             })
             .flatMap(entity -> MealModifier.updateName(entity, dto))
             .flatMap(entity ->
-                repository.save(entity)
+                mealRepository.saveMeal(entity)
                     .flatMap(savedEntity -> getByIdAndUserId(
                             savedEntity.getId(),
                             savedEntity.getUserId()
@@ -61,7 +61,7 @@ public class MealService {
     return getMealEntityMono(userId, mealId)
         .flatMap(entity -> MealModifier.updateName(entity, dto))
         .flatMap(entity ->
-            repository.updateMealNameByIdAndUserId(
+            mealRepository.updateMealNameByIdAndUserId(
                     entity.getId(),
                     entity.getUserId(),
                     entity)
@@ -73,12 +73,12 @@ public class MealService {
 
   public Mono<Void> deleteByIdAndUserId(String mealId, String userId) {
     return getMealEntityMono(userId, mealId)
-        .flatMap(entity -> repository.deleteById(entity.getId()));
+        .flatMap(entity -> mealRepository.deleteMealById(entity.getId()));
   }
 
   private Mono<MealEntity> getMealEntityMono(String userId, String mealId) {
-    return repository
-        .findByIdAndUserId(mealId, userId)
+    return mealRepository
+        .findMealByIdAndUserId(mealId, userId)
         .switchIfEmpty(Mono.error(new BadRequestException(
             "No meal found with id: " + mealId)));
   }
@@ -88,8 +88,8 @@ public class MealService {
         .flatMap(mealEntity -> Mono.zip(
             Mono.just(mealEntity),
             fetchFoodViewsByMealId(mealEntity.getId()),
-            calorieRepository
-                .findByMealId(mealEntity.getId())
+            mealRepository
+                .findCalorieByMealId(mealEntity.getId())
                 .collectList()
         ))
         .map(tuple -> MealView.toView(
@@ -104,19 +104,8 @@ public class MealService {
   }
 
   private Mono<List<FoodView>> fetchFoodViewsByMealId(String mealId) {
-    return foodRepository.findAllByMealId(mealId)
-        .flatMap(foodEntity ->
-            Mono.zip(Mono.just(foodEntity),
-                nutritionRepository.findAllByFoodId(foodEntity.getId())
-                    .map(NutritionView::toView)
-                    .collectList(),
-                calorieRepository
-                    .findByFoodId(foodEntity.getId())
-                    .map(CalorieView::toView),
-                servingRepository.findByFoodId(foodEntity.getId())
-                    .map(ServingView::toView)
-        ))
-        .map(tuple -> FoodView.toView(tuple.getT1(), tuple.getT2(), tuple.getT3() , List.of(tuple.getT4())))
+    return repository.findAllFoodsByMealId(mealId)
+        .flatMap(data -> toFoodView(data , mealId))
         .collectList();
   }
 }

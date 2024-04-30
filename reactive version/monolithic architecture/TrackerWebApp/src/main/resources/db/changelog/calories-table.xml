@@ -17,15 +17,11 @@
       <column name="unit" type="varchar(50)">
         <constraints nullable="false"/>
       </column>
-      <column name="meal_id" type="varchar(255)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="meal_id" type="varchar(255)"/>
       <column name="food_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="user_id" type="varchar(255)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="user_id" type="varchar(255)"/>
     </createTable>
 
     <addForeignKeyConstraint
