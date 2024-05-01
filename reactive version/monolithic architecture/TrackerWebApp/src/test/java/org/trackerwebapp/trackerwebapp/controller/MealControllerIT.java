@@ -714,9 +714,7 @@ class MealControllerIT {
   private List<String> getInvalidNames() {
     return List.of(
         "",
-        "h",
-        "                     ",
-        "         .  "
+        "                     "
     );
   }
 

@@ -21,6 +21,9 @@ public enum Credentials {
   VALID_FOOD_SERVING_AMOUNT("350"),
   VALID_FOOD_SERVING_WEIGHT("100"),
   VALID_FOOD_INFO("something very inserting here"),
+  VALID_FOOD_INFO_IMAGE("https://nix-tag-images.s3.amazonaws.com/1184_thumb.jpg"),
+  VALID_FOOD_TO_SEARCH("chia seeds"),
+  VALID_FOOD_BRANDED_ID("51c549ff97c3e6efadd60294"),
   ;
 
   private final String value;

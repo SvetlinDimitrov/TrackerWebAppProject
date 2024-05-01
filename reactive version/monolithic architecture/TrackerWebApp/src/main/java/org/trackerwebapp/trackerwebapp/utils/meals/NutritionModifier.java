@@ -4,6 +4,7 @@ import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.entity.NutritionEntity;
 import org.trackerwebapp.trackerwebapp.domain.enums.AllowedNutrients;
+import org.trackerwebapp.trackerwebapp.domain.enums.ExceptionMessages;
 import org.trackerwebapp.trackerwebapp.utils.Validator;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +13,19 @@ import java.util.Arrays;
 
 public class NutritionModifier {
 
-  public static Mono<NutritionEntity> validateAndUpdateName(NutritionEntity entity, NutritionView dto) {
+  public static Mono<NutritionEntity> validateAndUpdateEntity(NutritionView dto, String foodId, String userId) {
+
+    NutritionEntity entity = new NutritionEntity();
+    entity.setUserId(userId);
+    entity.setFoodId(foodId);
+
+    return Mono.just(entity)
+        .flatMap(data -> validateAndUpdateName(data, dto))
+        .flatMap(data -> validateAndUpdateUnit(data, dto))
+        .flatMap(data -> validateAndUpdateAmount(data, dto));
+  }
+
+  private static Mono<NutritionEntity> validateAndUpdateName(NutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
         .filter(u -> dto.name() != null &&
             Arrays.stream(AllowedNutrients.values())
@@ -26,7 +39,7 @@ public class NutritionModifier {
         );
   }
 
-  public static Mono<NutritionEntity> validateAndUpdateUnit(NutritionEntity entity, NutritionView dto) {
+  private static Mono<NutritionEntity> validateAndUpdateUnit(NutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
         .filter(u -> dto.name() != null && dto.unit() != null &&
             Arrays.stream(AllowedNutrients.values())
@@ -42,15 +55,15 @@ public class NutritionModifier {
         );
   }
 
-  public static Mono<NutritionEntity> validateAndUpdateAmount(NutritionEntity entity, NutritionView dto) {
+  private static Mono<NutritionEntity> validateAndUpdateAmount(NutritionEntity entity, NutritionView dto) {
     return Mono.just(entity)
-        .filter(data -> Validator.validateBigDecimal(dto.amount(), BigDecimal.ONE))
+        .filter(data -> Validator.validateBigDecimal(dto.amount(), BigDecimal.ZERO))
         .flatMap(u -> {
           u.setAmount(dto.amount());
           return Mono.just(u);
         })
         .switchIfEmpty(Mono.error(
-            new BadRequestException("Invalid nutrition amount , must be at least 1"))
+            new BadRequestException(ExceptionMessages.INVALID_NUMBER_MESSAGE.getMessage() + "for nutrition amount , must be higher than 0"))
         );
   }
 }

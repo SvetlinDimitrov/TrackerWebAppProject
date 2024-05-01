@@ -20,6 +20,7 @@ import org.trackerwebapp.trackerwebapp.domain.dto.meal.InsertFoodDto;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserCreate;
 import org.trackerwebapp.trackerwebapp.domain.dto.user.UserView;
+import org.trackerwebapp.trackerwebapp.domain.enums.AllowedCalorieUnits;
 import org.trackerwebapp.trackerwebapp.enums.Credentials;
 import org.trackerwebapp.trackerwebapp.repository.UserRepository;
 import reactor.core.publisher.Mono;
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.trackerwebapp.trackerwebapp.utils.FoodUtils.*;
 
-//TODO TEST SERVING AND FOOD INFO IN INSERT_FOOD_DTO
 @SpringBootTest
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
@@ -270,7 +270,7 @@ class CustomFoodControllerIT {
               .header(authHeader.getName(), authHeader.getValues().getFirst())
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
-                  new CalorieView(INVALID_CALORIE, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
+                  new CalorieView(INVALID_CALORIE, AllowedCalorieUnits.CALORIE.getSymbol()),
                   createValidServingView(),
                   createValidFoodInfoView(),
                   List.of(),
@@ -296,42 +296,128 @@ class CustomFoodControllerIT {
         .expectStatus().isBadRequest();
   }
 
-//  @Test
-//  void givenAuthAndInvalidAmounts_whenTestingAddFood_thenServerMustReturnBadRequest() {
-//
-//    Header authHeader = setUpUserAndReturnAuthHeader();
-//
-//    getInvalidFoodAmounts()
-//        .forEach(INVALID_FOOD_AMOUNT -> {
-//          webTestClient
-//              .post()
-//              .uri("/api/custom/food")
-//              .header(authHeader.getName(), authHeader.getValues().getFirst())
-//              .bodyValue(createInsertedFood(
-//                  Credentials.VALID_FOOD_NAME.getValue(),
-//                  createValidCalorieView(),
-//                  Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
-//                  INVALID_FOOD_AMOUNT,
-//                  List.of()
-//              ))
-//              .exchange()
-//              .expectStatus().isBadRequest();
-//        });
-//
-//    webTestClient
-//        .post()
-//        .uri("/api/custom/food")
-//        .header(authHeader.getName(), authHeader.getValues().getFirst())
-//        .bodyValue(createInsertedFood(
-//            Credentials.VALID_FOOD_NAME.getValue(),
-//            createValidCalorieView(),
-//            Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
-//            null,
-//            List.of()
-//        ))
-//        .exchange()
-//        .expectStatus().isBadRequest();
-//  }
+  @Test
+  void givenAuthAndInvalidServing_whenTestingAddFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
+    getInvalidServings()
+        .forEach(INVALID_SERVING -> {
+          webTestClient
+              .post()
+              .uri("/api/custom/food")
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  INVALID_SERVING,
+                  createValidFoodInfoView(),
+                  List.of(),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+
+    webTestClient
+        .post()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            null,
+            createValidFoodInfoView(),
+            List.of(),
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void givenAuthAndInvalidListServings_whenTestingAddFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
+    getInvalidServings()
+        .forEach(INVALID_SERVING -> {
+          webTestClient
+              .post()
+              .uri("/api/custom/food")
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(INVALID_SERVING),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+
+    webTestClient
+        .post()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            null,
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void givenAuthAndInvalidFoodInfo_whenTestingAddFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
+    getInvalidFoodInfoViews()
+        .forEach(INVALID_FOOD_INFO -> {
+          webTestClient
+              .post()
+              .uri("/api/custom/food")
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  createValidServingView(),
+                  INVALID_FOOD_INFO,
+                  List.of(),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+  }
+
+  @Test
+  void givenAuthAndNullFoodInfo_whenTestingAddFood_thenServerMustReturnCreated() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+
+    webTestClient
+        .post()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            createValidServingView(),
+            null,
+            List.of(),
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isCreated();
+  }
 
   @Test
   void givenAuthAndInvalidNutrients_whenTestingAddFood_thenServerMustReturnBadRequest() {
@@ -574,45 +660,136 @@ class CustomFoodControllerIT {
         .expectStatus().isBadRequest();
   }
 
-//  @Test
-//  void givenAuthAndInvalidAmounts_whenTestingChangeFood_thenServerMustReturnBadRequest() {
-//
-//    Header authHeader = setUpUserAndReturnAuthHeader();
-//    insertCustomFood(authHeader, FoodUtils.createValidInsertedFoodWithEmptyNutritions());
-//
-//    String VALID_FOOD_ID = extractFoodId(authHeader);
-//
-//    getInvalidFoodAmounts()
-//        .forEach(INVALID_FOOD_AMOUNT -> {
-//          webTestClient
-//              .put()
-//              .uri("/api/custom/food/" + VALID_FOOD_ID)
-//              .header(authHeader.getName(), authHeader.getValues().getFirst())
-//              .bodyValue(createInsertedFood(
-//                  Credentials.VALID_FOOD_NAME.getValue(),
-//                  createValidCalorieView(),
-//                  Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
-//                  INVALID_FOOD_AMOUNT,
-//                  List.of()
-//              ))
-//              .exchange()
-//              .expectStatus().isBadRequest();
-//        });
-//
-//    webTestClient
-//        .put()
-//        .uri("/api/custom/food/" + VALID_FOOD_ID)
-//        .header(authHeader.getName(), authHeader.getValues().getFirst())
-//        .bodyValue(createInsertedFood(
-//            Credentials.VALID_FOOD_NAME.getValue(),
-//            createValidCalorieView(),
-//            Credentials.VALID_FOOD_MEASURE_UNIT.getValue(),
-//            null,
-//            List.of()
-//        ))
-//        .exchange()
-//        .expectStatus().isBadRequest();
-//  }
+  @Test
+  void givenAuthAndInvalidServing_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+    insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
+    String VALID_FOOD_ID = extractFoodId(authHeader);
+
+    getInvalidServings()
+        .forEach(INVALID_SERVING -> {
+          webTestClient
+              .put()
+              .uri("/api/custom/food/" + VALID_FOOD_ID)
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  INVALID_SERVING,
+                  createValidFoodInfoView(),
+                  List.of(),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+
+    webTestClient
+        .put()
+        .uri("/api/custom/food/" + VALID_FOOD_ID)
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            null,
+            createValidFoodInfoView(),
+            List.of(),
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void givenAuthAndInvalidListServings_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+    insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
+    String VALID_FOOD_ID = extractFoodId(authHeader);
+
+    getInvalidServings()
+        .forEach(INVALID_SERVING -> {
+          webTestClient
+              .put()
+              .uri("/api/custom/food/" + VALID_FOOD_ID)
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  createValidServingView(),
+                  createValidFoodInfoView(),
+                  List.of(INVALID_SERVING),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+
+    webTestClient
+        .post()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            createValidServingView(),
+            createValidFoodInfoView(),
+            null,
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void givenAuthAndInvalidFoodInfo_whenTestingChangeFood_thenServerMustReturnBadRequest() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+    insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
+    String VALID_FOOD_ID = extractFoodId(authHeader);
+
+    getInvalidFoodInfoViews()
+        .forEach(INVALID_FOOD_INFO -> {
+          webTestClient
+              .put()
+              .uri("/api/custom/food/" + VALID_FOOD_ID)
+              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .bodyValue(createInsertedFood(
+                  Credentials.VALID_MEAL_NAME.getValue(),
+                  createValidCalorieView(),
+                  createValidServingView(),
+                  INVALID_FOOD_INFO,
+                  List.of(),
+                  List.of()
+              ))
+              .exchange()
+              .expectStatus().isBadRequest();
+        });
+  }
+
+  @Test
+  void givenAuthAndNullFoodInfo_whenTestingChangeFood_thenServerMustReturnOk() {
+
+    Header authHeader = setUpUserAndReturnAuthHeader();
+    insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
+    String VALID_FOOD_ID = extractFoodId(authHeader);
+
+    webTestClient
+        .put()
+        .uri("/api/custom/food/" + VALID_FOOD_ID)
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(createInsertedFood(
+            Credentials.VALID_MEAL_NAME.getValue(),
+            createValidCalorieView(),
+            createValidServingView(),
+            null,
+            List.of(),
+            List.of()
+        ))
+        .exchange()
+        .expectStatus().isOk();
+  }
 
   @Test
   void givenAuthAndInvalidNutrients_whenTestingChangeFood_thenServerMustReturnBadRequest() {

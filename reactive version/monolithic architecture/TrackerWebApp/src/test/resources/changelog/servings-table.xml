@@ -6,30 +6,31 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
 
-  <changeSet id="custom-foods-nutritions-creation" author="Svetlin Dimitrov">
-    <createTable tableName="custom_foods_nutritions">
+  <changeSet id="meals-inserted_foods-servings-creation" author="Svetlin Dimitrov">
+    <createTable tableName="servings">
       <column name="id" type="varchar(255)">
         <constraints primaryKey="true" nullable="false" unique="true"/>
-      </column>
-      <column name="name" type="varchar(255)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="unit" type="varchar(255)">
-        <constraints nullable="false"/>
       </column>
       <column name="amount" type="DECIMAL(19,2)">
         <constraints nullable="false"/>
       </column>
+      <column name="serving_weight" type="DECIMAL(19,2)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="metric" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="main" type="boolean" defaultValue="false"/>
       <column name="food_id" type="varchar(255)">
         <constraints nullable="false"/>
       </column>
     </createTable>
 
     <addForeignKeyConstraint
-      baseTableName="custom_foods_nutritions"
+      baseTableName="servings"
       baseColumnNames="food_id"
-      constraintName="fk_custom_foods_nutritions_custom_foods_id"
-      referencedTableName="custom_foods"
+      constraintName="fk_servings_inserted_foods_id"
+      referencedTableName="inserted_foods"
       referencedColumnNames="id"
       onDelete="CASCADE"/>
 

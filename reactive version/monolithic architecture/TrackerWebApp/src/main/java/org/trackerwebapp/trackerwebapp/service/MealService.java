@@ -9,7 +9,8 @@ import org.trackerwebapp.trackerwebapp.domain.dto.meal.FoodView;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.MealView;
 import org.trackerwebapp.trackerwebapp.domain.entity.CalorieEntity;
 import org.trackerwebapp.trackerwebapp.domain.entity.MealEntity;
-import org.trackerwebapp.trackerwebapp.repository.*;
+import org.trackerwebapp.trackerwebapp.repository.FoodRepository;
+import org.trackerwebapp.trackerwebapp.repository.MealRepository;
 import org.trackerwebapp.trackerwebapp.utils.meals.MealModifier;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,12 +42,7 @@ public class MealService extends AbstractFoodService {
     return
         mealRepository.findUserById(userId)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(401))))
-            .map(user -> {
-              MealEntity entity = new MealEntity();
-              entity.setUserId(user.getId());
-              return entity;
-            })
-            .flatMap(entity -> MealModifier.updateName(entity, dto))
+            .flatMap(entity -> MealModifier.validateAndUpdateEntity(dto, userId))
             .flatMap(entity ->
                 mealRepository.saveMeal(entity)
                     .flatMap(savedEntity -> getByIdAndUserId(
@@ -59,7 +55,7 @@ public class MealService extends AbstractFoodService {
 
   public Mono<MealView> modifyMeal(String userId, CreateMeal dto, String mealId) {
     return getMealEntityMono(userId, mealId)
-        .flatMap(entity -> MealModifier.updateName(entity, dto))
+        .flatMap(entity -> MealModifier.validateAndUpdateEntity(entity, dto))
         .flatMap(entity ->
             mealRepository.updateMealNameByIdAndUserId(
                     entity.getId(),

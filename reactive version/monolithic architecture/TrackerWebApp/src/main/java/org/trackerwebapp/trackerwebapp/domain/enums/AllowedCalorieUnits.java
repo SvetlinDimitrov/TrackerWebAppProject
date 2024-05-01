@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum AllowedCalorieUnits {
-  CALORIE("cal");
+  CALORIE("kcal");
   private final String symbol;
 
   AllowedCalorieUnits(String symbol) {

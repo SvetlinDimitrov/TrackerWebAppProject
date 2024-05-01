@@ -94,7 +94,7 @@ class UserControllerIT {
     List<String> INVALID_USERNAMES = List.of(
         "",
         "        ",
-        "     .      "
+        "Antidisestablishmentarianism's beauty may never be fully comprehended by the uninitiated, but those who delve deep into its labyrinthine depths will find themselves ensnared by its seductive allure, forever lost in a kaleidoscope of convoluted concepts and intricate ideologies that dance upon the precipice of comprehension."
     );
 
     for (String username : INVALID_USERNAMES) {
@@ -114,7 +114,7 @@ class UserControllerIT {
   void givenInvalidPassword_whenTestingCreateUser_thenStatusBadRequest() {
 
     List<String> INVALID_PASSWORDS = List.of(
-        "",
+        "Antidisestablishmentarianism's beauty may never be fully comprehended by the uninitiated, but those who delve deep into its labyrinthine depths will find themselves ensnared by its seductive allure, forever lost in a kaleidoscope of convoluted concepts and intricate ideologies that dance upon the precipice of comprehension.",
         "        ",
         "     .      ",
         "123",
@@ -365,7 +365,7 @@ class UserControllerIT {
         Credentials.VALID_PASSWORD.getValue()
     );
 
-    UserDto invalidUsernameCredentials = new UserDto("   . ", null);
+    UserDto invalidUsernameCredentials = new UserDto(" Antidisestablishmentarianism's beauty may never be fully comprehended by the uninitiated, but those who delve deep into its labyrinthine depths will find themselves ensnared by its seductive allure, forever lost in a kaleidoscope of convoluted concepts and intricate ideologies that dance upon the precipice of comprehension.   ", null);
 
     webTestClient.post()
         .uri("/api/user")

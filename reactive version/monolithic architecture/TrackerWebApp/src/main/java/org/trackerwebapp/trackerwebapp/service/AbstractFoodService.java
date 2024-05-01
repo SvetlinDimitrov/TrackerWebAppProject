@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
 import org.trackerwebapp.trackerwebapp.domain.entity.*;
-import org.trackerwebapp.trackerwebapp.repository.*;
+import org.trackerwebapp.trackerwebapp.repository.FoodRepository;
 import org.trackerwebapp.trackerwebapp.utils.meals.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -84,7 +84,7 @@ public abstract class AbstractFoodService {
       return Mono.error(new BadRequestException("food cannot be null"));
     }
     return Mono.just(new FoodEntity())
-        .flatMap(foodEntity -> FoodModifier.validateAndUpdateName(foodEntity, dto))
+        .flatMap(foodEntity -> FoodModifier.validateAndUpdateEntity(foodEntity, dto))
         .flatMap(foodEntity -> {
           foodEntity.setUserId(userId);
           Optional.ofNullable(mealId)
@@ -95,36 +95,17 @@ public abstract class AbstractFoodService {
 
   private Mono<List<ServingEntity>> createAndFillServings(ServingView mainServing, List<ServingView> others, String foodId) {
     if (mainServing == null) {
-      return Mono.error(new BadRequestException("Serving cannot be null"));
+      return Mono.error(new BadRequestException("Main serving cannot be null"));
     }
-    return Mono.just(createServingEntity(mainServing, foodId, true))
-        .flatMap(calorieEntity -> ServingValidator.validateEntity(calorieEntity, mainServing))
-        .flatMap(entity -> Mono.zip(
-            Mono.just(entity),
-            Mono.just(
-                Optional.ofNullable(others)
-                    .map(list -> list.stream()
-                        .map(dto -> createServingEntity(dto, foodId, false))
-                        .toList())
-                    .orElse(List.of())
-            )
-        ))
+    return
+        ServingModifier.validateAndUpdateMainEntity(mainServing, foodId)
+            .zipWith(ServingModifier.validateAndUpdateListOfEntities(others, foodId))
         .map(data -> {
           ArrayList<ServingEntity> result = new ArrayList<>();
           result.add(data.getT1());
           result.addAll(data.getT2());
           return result;
         });
-  }
-
-  private ServingEntity createServingEntity(ServingView servingView, String foodId, boolean isMain) {
-    ServingEntity entity = new ServingEntity();
-    entity.setAmount(servingView.amount());
-    entity.setMetric(servingView.metric());
-    entity.setServingWeight(servingView.servingWeight());
-    entity.setMain(isMain);
-    entity.setFoodId(foodId);
-    return entity;
   }
 
   private Mono<CalorieEntity> createAndFillCalorieEntity(CalorieView dto, String foodId, String mealId, String userId) {
@@ -161,17 +142,7 @@ public abstract class AbstractFoodService {
       return Mono.error(new BadRequestException("nutrients cannot be null"));
     }
     return Flux.fromIterable(dtoList)
-        .flatMap(dto -> {
-          NutritionEntity nutrition = new NutritionEntity();
-          nutrition.setFoodId(foodId);
-          nutrition.setUserId(userId);
-          return NutritionModifier.validateAndUpdateName(nutrition, dto)
-              .flatMap(updatedNutrition ->
-                  NutritionModifier.validateAndUpdateUnit(updatedNutrition, dto))
-              .flatMap(updatedNutrition ->
-                  NutritionModifier.validateAndUpdateAmount(updatedNutrition, dto))
-              .thenReturn(nutrition);
-        })
+        .flatMap(dto -> NutritionModifier.validateAndUpdateEntity(dto, foodId, userId))
         .collectList();
   }
 

@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import org.trackerwebapp.trackerwebapp.domain.dto.BadRequestException;
 import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
 import org.trackerwebapp.trackerwebapp.domain.dto.nutritionxApi.FoodItem;
@@ -64,7 +65,7 @@ public class NutritionixApiService {
         .body(BodyInserters.fromValue(requestBody))
         .retrieve()
         .onStatus(HttpStatusCode::is4xxClientError, this::handle400Response)
-//        .onStatus(HttpStatusCode::is5xxServerError, this::handle500Response)
+        .onStatus(HttpStatusCode::is5xxServerError, this::handle500Response)
         .bodyToMono(GetFoodsResponse.class)
         .map(GetFoodsResponse::getFoods)
         .map(list -> list.stream()
@@ -112,6 +113,9 @@ public class NutritionixApiService {
   private Mono<? extends Throwable> handle400Response(ClientResponse response) {
     if(response.statusCode().equals(HttpStatusCode.valueOf(404))){
       return Mono.error(new BadRequestException("Not found"));
+    }
+    if (response.statusCode().equals(HttpStatusCode.valueOf(401))) {
+      return Mono.error(new ResponseStatusException(HttpStatusCode.valueOf(429)));
     }
     return response.bodyToMono(BadRequestException.class)
         .flatMap(Mono::error);

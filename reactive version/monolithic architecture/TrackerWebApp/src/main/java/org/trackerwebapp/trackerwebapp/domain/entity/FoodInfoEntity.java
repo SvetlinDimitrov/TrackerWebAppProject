@@ -15,8 +15,8 @@ public class FoodInfoEntity {
   private String id;
   @Column("info")
   private String info;
-  @Column("more_info")
-  private String moreInfo;
+  @Column("large_info")
+  private String largeInfo;
   @Column("picture")
   private String picture;
   @Column("food_id")

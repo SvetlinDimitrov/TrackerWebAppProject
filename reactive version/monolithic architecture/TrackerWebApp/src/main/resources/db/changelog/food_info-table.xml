@@ -11,8 +11,8 @@
       <column name="id" type="varchar(255)">
         <constraints primaryKey="true" nullable="false" unique="true"/>
       </column>
-      <column name="info" type="varchar(252)"/>
-      <column name="more_info" type="varchar(255)"/>
+      <column name="info" type="varchar(255)"/>
+      <column name="large_info" type="TEXT"/>
       <column name="picture" type="varchar(255)"/>
       <column name="food_id" type="varchar(255)">
         <constraints nullable="false"/>
