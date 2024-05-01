@@ -1,8 +1,8 @@
 package org.trackerwebapp.trackerwebapp.utils;
 
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
-import org.trackerwebapp.trackerwebapp.domain.enums.AllowedCalorieUnits;
-import org.trackerwebapp.trackerwebapp.domain.enums.AllowedNutrients;
+import org.nutriGuideBuddy.domain.dto.meal.*;
+import org.nutriGuideBuddy.domain.enums.AllowedCalorieUnits;
+import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
 import org.trackerwebapp.trackerwebapp.enums.Credentials;
 
 import java.math.BigDecimal;

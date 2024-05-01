@@ -14,22 +14,27 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.trackerwebapp.trackerwebapp.domain.dto.NutritionIntakeView;
-import org.trackerwebapp.trackerwebapp.domain.dto.meal.*;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.CreateRecord;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.NutritionView;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.DistributedMacros;
-import org.trackerwebapp.trackerwebapp.domain.dto.record.RecordView;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserCreate;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserDetailsDto;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserDetailsView;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserView;
-import org.trackerwebapp.trackerwebapp.domain.enums.*;
+import org.nutriGuideBuddy.domain.dto.NutritionIntakeView;
+import org.nutriGuideBuddy.domain.dto.meal.CreateMeal;
+import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
+import org.nutriGuideBuddy.domain.dto.meal.MealView;
+import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
+import org.nutriGuideBuddy.domain.enums.Gender;
+import org.nutriGuideBuddy.domain.enums.Goals;
+import org.nutriGuideBuddy.domain.enums.WorkoutState;
+import org.nutriGuideBuddy.domain.dto.record.CreateRecord;
+import org.nutriGuideBuddy.domain.dto.record.NutritionView;
+import org.nutriGuideBuddy.domain.dto.record.DistributedMacros;
+import org.nutriGuideBuddy.domain.dto.record.RecordView;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
+import org.nutriGuideBuddy.domain.dto.user.UserView;
 import org.trackerwebapp.trackerwebapp.enums.Credentials;
-import org.trackerwebapp.trackerwebapp.repository.UserRepository;
-import org.trackerwebapp.trackerwebapp.utils.record.MacronutrientCreator;
-import org.trackerwebapp.trackerwebapp.utils.record.MineralCreator;
-import org.trackerwebapp.trackerwebapp.utils.record.VitaminCreator;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.record.MacronutrientCreator;
+import org.nutriGuideBuddy.utils.record.MineralCreator;
+import org.nutriGuideBuddy.utils.record.VitaminCreator;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -509,9 +514,9 @@ class RecordControllerIT {
     InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView();
     setUpInsertedFood(authHeader, VALID_MEAL_ID, validInsertedFoodWithEveryPossibleNutrient);
     
-    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    Map<String, org.nutriGuideBuddy.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.nutriGuideBuddy.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -545,9 +550,9 @@ class RecordControllerIT {
     for (int i = 0; i < FOOD_COUNTER; i++) {
       setUpInsertedFood(authHeader, VALID_MEAL_ID, food);
     }
-    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = food.nutrients()
+    Map<String, org.nutriGuideBuddy.domain.dto.meal.NutritionView> nutritionViewMap = food.nutrients()
         .stream()
-        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.nutriGuideBuddy.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -583,9 +588,9 @@ class RecordControllerIT {
       setUpInsertedFood(authHeader, VALID_MEAL_ID, validInsertedFoodWithEveryPossibleNutrient);
     }
 
-    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    Map<String, org.nutriGuideBuddy.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.nutriGuideBuddy.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")
@@ -633,9 +638,9 @@ class RecordControllerIT {
       }
     }
 
-    Map<String, org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
+    Map<String, org.nutriGuideBuddy.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
-        .collect(Collectors.toMap(org.trackerwebapp.trackerwebapp.domain.dto.meal.NutritionView::name, data -> data));
+        .collect(Collectors.toMap(org.nutriGuideBuddy.domain.dto.meal.NutritionView::name, data -> data));
 
     webTestClient.post()
         .uri("/api/record")

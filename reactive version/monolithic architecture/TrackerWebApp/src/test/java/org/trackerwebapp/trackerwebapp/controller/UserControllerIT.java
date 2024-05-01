@@ -13,11 +13,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserCreate;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserDto;
-import org.trackerwebapp.trackerwebapp.domain.dto.user.UserView;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDto;
+import org.nutriGuideBuddy.domain.dto.user.UserView;
 import org.trackerwebapp.trackerwebapp.enums.Credentials;
-import org.trackerwebapp.trackerwebapp.repository.UserRepository;
+import org.nutriGuideBuddy.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
 import java.util.Base64;

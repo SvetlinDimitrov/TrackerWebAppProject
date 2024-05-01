@@ -1,8 +1,8 @@
 package org.trackerwebapp.trackerwebapp.enums;
 
 import lombok.Getter;
-import org.trackerwebapp.trackerwebapp.domain.enums.Gender;
-import org.trackerwebapp.trackerwebapp.domain.enums.WorkoutState;
+import org.nutriGuideBuddy.domain.enums.Gender;
+import org.nutriGuideBuddy.domain.enums.WorkoutState;
 
 @Getter
 public enum Credentials {
