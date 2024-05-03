@@ -91,6 +91,7 @@ export default {
     }),
     label: ({ context }) => ({
         class: [
+
             'relative',
             // Font
             'text-sm leading-none',

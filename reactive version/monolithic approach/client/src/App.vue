@@ -1,10 +1,12 @@
 <script setup>
 
+import Header from "./components/Hedaer.vue";
 </script>
 
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div class="flex flex-col min-h-screen">
+    <Header />
+    <router-view class="flex-grow" />
   </div>
 </template>
 
