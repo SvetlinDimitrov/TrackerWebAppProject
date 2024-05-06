@@ -1,20 +1,27 @@
 import { createStore } from 'vuex';
-import {login as loginUser, register} from '../api/UserService';
+import {deleteUser, login as loginUser, register} from '../api/UserService';
 
 const store = createStore({
     state() {
         return {
-            user: JSON.parse(localStorage.getItem('user')) || { username: '', password: '' , email: ''},
+            user: JSON.parse(localStorage.getItem('user')),
         };
     },
     mutations: {
         setUser(state, user) {
             state.user = user;
         },
+        removeUser(state) {
+            state.user = null;
+        },
     },
     actions: {
-        login({ commit }, { username, password }) {
-            return loginUser(username, password)
+        logout({ commit }) {
+            localStorage.removeItem('user');
+            commit('removeUser');
+        },
+        login({ commit }, { email, password }) {
+            return loginUser(email, password)
                 .then(user => {
                     localStorage.setItem('user', JSON.stringify(user));
                     commit('setUser', user);
@@ -27,9 +34,16 @@ const store = createStore({
                     commit('setUser', user);
                 });
         },
+        deleteUser({ commit }) {
+            return deleteUser()
+                .then(() => {
+                    localStorage.removeItem('user');
+                    commit('removeUser');
+                });
+        },
     },
     getters: {
-        isLoggedIn: state => !!state.user && !!state.user.email && !!state.user.password,
+        user: state => state.user
     },
     modules: {
 

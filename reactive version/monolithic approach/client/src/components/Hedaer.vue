@@ -2,24 +2,28 @@
   <div class="card ">
     <Menubar :model="items">
       <template #start>
-        <img alt="Vue logo" src="../assets/vue.svg" />
+        <img alt="Vue logo" src="../assets/vue.svg"/>
       </template>
     </Menubar>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRouter } from 'vue-router';
+import {computed} from "vue";
+import {useRouter} from 'vue-router';
 import Menubar from 'primevue/menubar';
 import 'primeicons/primeicons.css';
 import { useStore } from 'vuex';
 
-const router = useRouter();
 const store = useStore();
+const router = useRouter();
+const user = computed(() => store.getters.user);
+
+console.log(user.value);
+console.log(user);
 
 const items = computed(() => {
-  const userLoggedIn = store.getters.isLoggedIn;
+  const userLoggedIn = user.value;
   return [
     {
       label: 'Home',

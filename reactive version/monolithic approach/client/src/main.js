@@ -17,7 +17,8 @@ import InputIcon from 'primevue/inputicon';
 import Password from 'primevue/password';
 import Steps from 'primevue/steps';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-
+import InputNumber from 'primevue/inputnumber';
+import Dropdown from 'primevue/dropdown';
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -35,7 +36,9 @@ app.component('Divider', Divider);
 app.component('InputText', InputText);
 app.component('InputGroup', InputGroup);
 app.component('Toast', Toast);
+app.component('Dropdown', Dropdown);
 app.component('IconField', IconField);
 app.component('InputIcon', InputIcon);
 app.component('Password', Password);
+app.component('InputNumber', InputNumber);
 app.component('InputGroupAddon', InputGroupAddon);
