@@ -1,17 +1,10 @@
 export default {
     accordiontab: {
+        root: {
+            class: 'mb-1'
+        },
         header: ({ props }) => ({
             class: [
-                // Sizing
-                'pt-6 pb-0',
-                'mt-6',
-
-                // Shape
-                'border-x-0 border-b-0',
-
-                // Color
-                'border border-surface-200 dark:border-surface-700',
-
                 // State
                 { 'select-none pointer-events-none cursor-default opacity-60': props?.disabled }
             ]
@@ -19,43 +12,58 @@ export default {
         headerAction: ({ context }) => ({
             class: [
                 //Font
-                'font-semibold',
-                'leading-7',
+                'font-bold',
+                'leading-none',
 
                 // Alignments
-                'flex items-center justify-between flex-row-reverse',
+                'flex items-center',
                 'relative',
 
+                // Sizing
+                'p-5',
+
                 // Shape
-                'rounded-md',
+                'rounded-t-md',
+                { 'rounded-br-md rounded-bl-md': !context.active, 'rounded-br-0 rounded-bl-0': context.active },
 
                 // Color
-                'bg-transparent',
-                'text-surface-900 dark:text-surface-0',
+                'border border-surface-200 dark:border-surface-700',
+                'bg-surface-50 dark:bg-surface-800',
+                'text-surface-600 dark:text-surface-0/80',
+                { 'text-surface-900': context.active },
+
+                // Transition
+                'transition duration-200 ease-in-out',
+                'transition-shadow duration-200',
 
                 // States
-                'focus:outline-none focus:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-600 ring-inset dark:focus-visible:ring-primary-500', // Focus
+                'hover:bg-surface-100 dark:hover:bg-surface-700/40',
+                'hover:text-surface-900',
+                'focus:outline-none focus:outline-offset-0 focus-visible:ring focus-visible:ring-primary-400/50 ring-inset dark:focus-visible:ring-primary-300/50', // Focus
 
                 // Misc
                 'cursor-pointer no-underline select-none'
             ]
         }),
         headerIcon: {
-            class: 'inline-block ml-2'
+            class: 'inline-block mr-2'
         },
         headerTitle: {
-            class: 'leading-7'
+            class: 'leading-none'
         },
         content: {
             class: [
-                // Font
-                'leading-7',
-
                 // Spacing
-                'pr-12 pt-2',
+                'p-5',
+
+                //Shape
+                'rounded-tl-none rounded-tr-none rounded-br-lg rounded-bl-lg',
+                'border-t-0',
 
                 // Color
-                'text-surface-600 dark:text-surface-0/70'
+                'bg-surface-0 dark:bg-surface-800',
+                'border border-surface-200 dark:border-surface-700',
+                'text-surface-700 dark:text-surface-0/80'
             ]
         },
         transition: {

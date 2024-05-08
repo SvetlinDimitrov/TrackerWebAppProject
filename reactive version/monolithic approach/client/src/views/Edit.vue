@@ -14,14 +14,11 @@
 <script setup>
 import Edit from '../components/Edit.vue'
 import router from "../router/index.js";
-import {onMounted, ref} from "vue";
-import {getUserDetails} from "../api/UserService.js";
+import {useStore} from "vuex";
+import {ref} from "vue";
 
-const userData = ref(null);
-
-onMounted(async () => {
-  userData.value = await getUserDetails();
-});
+const store = useStore();
+const userData = ref(store.getters.userDetails);
 
 const handleSuccessfulEdit = () => {
   router.push({name: 'Home'});

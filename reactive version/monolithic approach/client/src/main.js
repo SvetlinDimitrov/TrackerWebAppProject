@@ -19,6 +19,13 @@ import Steps from 'primevue/steps';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+import ProgressSpinner from 'primevue/progressspinner';
+import Dialog from 'primevue/dialog';
+import Avatar from 'primevue/avatar';
+import InputSwitch from 'primevue/inputswitch';
+import Chart from 'primevue/chart';
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -28,7 +35,6 @@ app.use(PrimeVue, {
 app.use(router);
 app.use(store);
 app.use(ToastService);
-app.mount('#app');
 
 app.component('Steps', Steps);
 app.component('Button', Button);
@@ -42,3 +48,11 @@ app.component('InputIcon', InputIcon);
 app.component('Password', Password);
 app.component('InputNumber', InputNumber);
 app.component('InputGroupAddon', InputGroupAddon);
+app.component('Accordion', Accordion);
+app.component('AccordionTab', AccordionTab);
+app.component('ProgressSpinner', ProgressSpinner);
+app.component('Dialog', Dialog);
+app.component('Avatar', Avatar);
+app.component('InputSwitch', InputSwitch);
+app.component('Chart', Chart);
+app.mount('#app');

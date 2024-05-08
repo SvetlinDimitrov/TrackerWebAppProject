@@ -5,7 +5,43 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        component: () => import('../views/Home.vue')
+        component: () => import('../views/Home.vue'),
+        children: [
+            {
+                path: 'meal/create',
+                name: 'CreateMeal',
+                component: () => import('../views/meal/CreateMeal.vue'),
+            },
+            {
+                path: 'meal/:id/edit',
+                name: 'EditMeal',
+                component: () => import('../views/meal/EditMeal.vue'),
+            }
+            ,
+            {
+                path: 'meal/:id/delete',
+                name: 'DeleteMeal',
+                component: () => import('../views/meal/DeleteMeal.vue'),
+            }
+            ,
+            {
+                path: 'meal/:id/insert-food',
+                name: 'InsertFood',
+                component: () => import('../views/meal/InsertFood.vue'),
+                children: [
+                    {
+                        path: 'common/:name',
+                        name: 'CommonFood',
+                        component: () => import('../views/meal/CommonFood.vue'),
+                    },
+                    {
+                        path: 'branded/:foodId',
+                        name: 'BrandedFood',
+                        component: () => import('../views/meal/BrandedFood.vue'),
+                    }
+                ]
+            }
+        ]
     },
     {
         path: '/about',

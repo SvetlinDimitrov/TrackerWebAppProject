@@ -1,5 +1,6 @@
 <template>
-  <div class="w-full md:w-1/2 flex flex-col items-center justify-center gap-3 py-5">
+  <ProgressSpinner v-if="isLoading"/>
+  <div v-else class="w-full md:w-1/2 flex flex-col items-center justify-center gap-3 py-5">
     <div class="flex flex-col justify-center items-center gap-2">
       <div>
         <InputGroup>
@@ -18,9 +19,9 @@
         </InputGroup>
       </div>
     </div>
-    <Toast />
     <Button label="Login" icon="pi pi-user" class="w-40 mx-auto" @click="validateForm"></Button>
   </div>
+  <Toast />
 </template>
 
 <script setup>
@@ -36,6 +37,7 @@ const password = ref('');
 const emailError = ref(false);
 const passwordError = ref(false);
 const toast = useToast();
+const isLoading = ref(false);
 
 const validateEmail = (email) => {
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -43,6 +45,7 @@ const validateEmail = (email) => {
 };
 
 const validateForm = async () => {
+  isLoading.value = true;
   const emailIsValid = email.value && validateEmail(email.value);
   const passwordIsValid = password.value && password.value.length >= 4;
 
@@ -63,6 +66,7 @@ const validateForm = async () => {
     } catch (error) {
       toast.add({severity:'error', summary: 'Error', detail: error.message, life: 3000});
     }
+    isLoading.value = false;
   }
 };
 </script>

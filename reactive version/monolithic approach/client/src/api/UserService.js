@@ -11,7 +11,7 @@ export const login = (email, password) => {
     })
         .then(response => {
             if (response.status === 200) {
-                return {email, password};
+                return response.data;
             } else {
                 throw new Error('Login failed');
             }
@@ -41,64 +41,57 @@ export const register = (data) => {
 
 export const modifyUserDetails = (data) => {
 
-    const user = store.getters.user;
-    const token = btoa(`${user.email}:${user.password}`);
+    const authHeader = store.getters.authHeader;
 
-    return axios.patch('/user/details', data , {
+    return axios.patch('/user/details', data, {
         headers: {
-            'Authorization': `Basic ${token}`
+            'Authorization': authHeader
         }
     })
         .then(response => {
-            const statusFirstDigit = response.status.toString()[0];
-            if (statusFirstDigit === '4' || statusFirstDigit === '5') {
-                throw new Error('Edit user details failed');
-            }
+            return response.data;
         })
         .catch(error => {
-            throw new Error(error.response.data.message);
+            if (error.response && error.response.data.message) {
+                return error.response.data.message;
+            }
+            throw new Error('Something went wrong modifying user details');
         });
 }
 
 export const deleteUser = () => {
 
-    const user = store.getters.user;
-    const token = btoa(`${user.email}:${user.password}`);
+    const authHeader = store.getters.authHeader;
 
-    return axios.delete('/user' , {
+    return axios.delete('/user', {
         headers: {
-            'Authorization': `Basic ${token}`
+            'Authorization': authHeader
         }
     })
-        .then(response => {
-            const statusFirstDigit = response.status.toString()[0];
-            if (statusFirstDigit === '4' || statusFirstDigit === '5') {
-                throw new Error('Deleting user failed');
-            }
-        })
         .catch(error => {
-            throw new Error(error.response.data.message);
+            if (error.response && error.response.data.message) {
+                return error.response.data.message;
+            }
+            throw new Error('User deletion failed');
         });
 }
 
 export const getUserDetails = () => {
 
-    const user = store.getters.user;
-    const token = btoa(`${user.email}:${user.password}`);
+    const authHeader = store.getters.authHeader;
 
-    return axios.get('/user/details' , {
+    return axios.get('/user/details', {
         headers: {
-            'Authorization': `Basic ${token}`
+            'Authorization': authHeader
         }
     })
         .then(response => {
-            const statusFirstDigit = response.status.toString()[0];
-            if (statusFirstDigit === '4' || statusFirstDigit === '5') {
-                throw new Error('Edit user details failed');
-            }
             return response.data;
         })
         .catch(error => {
-            throw new Error(error.response.data.message);
+            if (error.response && error.response.data.message) {
+                return error.response.data.message;
+            }
+            throw new Error('Something went wrong fetching user details');
         });
 }

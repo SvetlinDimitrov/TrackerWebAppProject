@@ -21,6 +21,7 @@ const store = useStore();
 const deleteAccount = async () => {
   try{
     await store.dispatch('deleteUser');
+    await store.dispatch('removeRecord');
     await router.push({name: 'Home'}).catch(() => {});
     toast.add({severity: 'success', summary: 'Account Deleting', detail: 'Successful deletion of account', life: 3000});
   } catch (e) {

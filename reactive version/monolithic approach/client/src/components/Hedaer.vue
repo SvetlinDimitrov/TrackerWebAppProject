@@ -19,9 +19,6 @@ const store = useStore();
 const router = useRouter();
 const user = computed(() => store.getters.user);
 
-console.log(user.value);
-console.log(user);
-
 const items = computed(() => {
   const userLoggedIn = user.value;
   return [

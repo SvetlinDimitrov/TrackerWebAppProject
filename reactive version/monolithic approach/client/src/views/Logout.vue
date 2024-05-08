@@ -13,6 +13,7 @@ const store = useStore();
 
 onMounted(async () => {
   await store.dispatch('logout');
+  await store.dispatch('removeRecord');
   await router.push({name: 'Home'}).catch(() => {});
   toast.add({severity: 'success', summary: 'Logout Completed', detail: 'Success', life: 3000});
 
