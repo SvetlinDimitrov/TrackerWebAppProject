@@ -21,6 +21,57 @@ export const createMeal = (data) => {
         });
 }
 
+export const addFoodIntoMeal = (mealId , food) => {
+
+    const authHeader = store.getters.authHeader;
+
+    return axios.post(`/meals/${mealId}/insertFood`, food, {
+        headers: {
+            'Authorization': authHeader
+        }
+    })
+        .catch(error => {
+            if (error.response && error.response.data.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Food addition failed');
+        });
+}
+
+export const removeFoodByIdAndMealId = (mealId , foodId) => {
+
+    const authHeader = store.getters.authHeader;
+
+    return axios.delete(`/meals/${mealId}/insertFood/${foodId}`, {
+        headers: {
+            'Authorization': authHeader
+        }
+    })
+        .catch(error => {
+            if (error.response && error.response.data.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Food deletion failed');
+        });
+}
+
+export const changeFoodByIdAndMealId = (mealId , foodId , food) => {
+
+    const authHeader = store.getters.authHeader;
+
+    return axios.put(`/meals/${mealId}/insertFood/${foodId}`, food,{
+        headers: {
+            'Authorization': authHeader
+        }
+    })
+        .catch(error => {
+            if (error.response && error.response.data.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Food change failed');
+        });
+}
+
 export const modifyMeal = (data , id) => {
 
     const authHeader = store.getters.authHeader;

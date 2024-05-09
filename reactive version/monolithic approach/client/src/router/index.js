@@ -41,6 +41,12 @@ const routes = [
                     }
                 ]
             }
+            ,
+            {
+                path: 'meal/:id/edit/food/:foodId',
+                name: 'EditInsertedFood',
+                component: () => import('../views/meal/EditInsertedFood.vue'),
+            }
         ]
     },
     {

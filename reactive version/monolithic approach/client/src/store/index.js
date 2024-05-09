@@ -1,7 +1,15 @@
 import {createStore} from 'vuex';
 import {deleteUser, login as loginUser, modifyUserDetails, register} from '../api/UserService';
 import {getRecord} from "../api/RecordService.js";
-import {createMeal, deleteMealById, getAllMeals, modifyMeal} from "../api/MealService.js";
+import {
+    addFoodIntoMeal, changeFoodByIdAndMealId,
+    createMeal,
+    deleteMealById,
+    getAllMeals,
+    getMealById,
+    modifyMeal,
+    removeFoodByIdAndMealId
+} from "../api/MealService.js";
 
 const store = createStore({
     state() {
@@ -37,10 +45,10 @@ const store = createStore({
                 state.meals[meal.id] = meal;
             });
         },
-        setNewMealById(state , meal) {
+        setNewMealById(state, meal) {
             state.meals[meal.id] = meal;
         },
-        removeMealById(state , mealId) {
+        removeMealById(state, mealId) {
             delete state.meals[mealId];
         }
     },
@@ -127,7 +135,7 @@ const store = createStore({
                 });
         },
         modifyMealById({commit}, data) {
-            return modifyMeal(data.payload , data.id)
+            return modifyMeal(data.payload, data.id)
                 .then(meal => {
                     commit('setNewMealById', meal);
                 });
@@ -137,8 +145,35 @@ const store = createStore({
                 .then(() => {
                     commit('removeMealById', mealId);
                 });
+        },
+        getMealById({commit}, mealId) {
+            return getMealById(mealId)
+                .then(meal => {
+                    commit('setNewMealById', meal);
+                });
+        },
+        addFoodIntoMeal({dispatch}, data) {
+            const mealId = data.mealId;
+            const food = data.food;
+            return addFoodIntoMeal(mealId, food)
+                .then(() => dispatch('getMealById', mealId))
+                .then(() => dispatch('setRecord'));
+        },
+        removeFoodById({dispatch}, data) {
+            const mealId = data.mealId;
+            const foodId = data.foodId;
+            return removeFoodByIdAndMealId(mealId, foodId)
+                .then(() => dispatch('getMealById', mealId))
+                .then(() => dispatch('setRecord'));
+        },
+        changeFoodById({dispatch}, data) {
+            const mealId = data.mealId;
+            const foodId = data.foodId;
+            const food = data.food;
+            return changeFoodByIdAndMealId(mealId, foodId , food)
+                .then(() => dispatch('getMealById', mealId))
+                .then(() => dispatch('setRecord'));
         }
-
     },
     getters: {
         user: state => state.user,

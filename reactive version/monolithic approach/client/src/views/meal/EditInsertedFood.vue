@@ -14,42 +14,48 @@ import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Food from "../../components/Food.vue";
-import {getCommonFoodByName} from "../../api/FoodSeachService.js";
 
 const store = useStore();
 const route = useRoute();
 const toast = useToast();
 const mealId = ref(route.params.id);
-const foodName = ref(route.params.name);
+const foodId = ref(route.params.foodId);
 const visible = ref(true);
 const food = ref(null);
 
-onMounted(async () => {
-  try {
-    const data = await getCommonFoodByName(foodName.value);
-    food.value = data[0];
-  } catch (error) {
+onMounted(() => {
+  try{
+    const currentMeal = store.getters.meals[mealId.value];
+
+    currentMeal.foods.forEach((f) => {
+      if (f.id === foodId.value) {
+        food.value = f;
+      }
+    });
+
+    if(food.value === null) {
+      throw new Error("no food found");
+    }
+  }catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+    router.push({name: 'Home'});
   }
 });
 
 const handleClose = () => {
-  router.push({name: 'InsertFood', params: {mealId: mealId.value}});
+  router.push({name: 'Home'});
   visible.value = false;
 };
 
 const handleSubmit = async (food) => {
-  const payload = {
-    mealId: mealId.value,
-    food: food
-  };
-  try{
-    await store.dispatch("addFoodIntoMeal" , payload);
-    toast.add({severity: 'success', summary: 'Success', detail: 'Food added successfully', life: 3000});
+  try {
+    await store.dispatch("changeFoodById", {mealId: mealId.value, foodId: foodId.value, food});
+    toast.add({severity: 'success', summary: 'Success', detail: 'Food changed successfully', life: 3000});
     await router.push({name: 'Home'});
   } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
+  visible.value = false;
 };
 </script>
 

@@ -26,19 +26,35 @@
             </span>
           </span>
         </template>
-        <p class="m-0">Calories consumed: {{ meal.consumedCalories }}</p>
+        <div class="overflow-auto max-h-40">
+          <div class="food-item flex justify-between items-center p-2 border-b border-gray-300" v-for="(food, index) in meal.foods" :key="index">
+            <span class="food-name">{{ food.name }}</span>
+            <div class="flex gap-2 items-center">
+              <span class="calorie-amount italic">{{ food.calorie.amount }} {{ food.calorie.unit }}</span>
+              <Avatar icon="pi pi-pencil"
+                      style="background-color: #4d94ff; color: white"
+                      class="cursor-pointer"
+                      @click.stop="handleChangeFoodById(meal.id , food.id)"></Avatar>
+              <Avatar icon="pi pi-trash"
+                      style="background-color: #ff4d4d; color: white"
+                      class="cursor-pointer"
+                      @click.stop="handleRemoveFoodById(meal.id , food.id)"></Avatar>
+            </div>
+          </div>
+        </div>
       </AccordionTab>
     </Accordion>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import {useStore} from "vuex";
 import router from "../router/index.js";
 
 const store = useStore();
-const record = ref(store.getters.record);
+const record = computed(() => store.getters.record);
+
 const meals = ref(store.getters.meals);
 
 const handleMealCreate = () => {
@@ -55,5 +71,13 @@ const handleMealEdit = (id) => {
 
 const handleMealInsertFood = (id) => {
   router.push({name: 'InsertFood', params: {id}});
+};
+
+const handleRemoveFoodById = (mealId, foodId) => {
+  store.dispatch('removeFoodById', {mealId, foodId});
+};
+
+const handleChangeFoodById = (mealId, foodId) => {
+  router.push({name: 'EditInsertedFood', params: {id: mealId, foodId}});
 };
 </script>
