@@ -1,6 +1,6 @@
 <template>
-  <div v-if="visible && currentFood"
-       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur">
+  <div v-if="currentFood"
+       class="fixed inset-0 flex items-center justify-center backdrop-blur">
     <div class="bg-white border border-gray-300 px-4 py-3 rounded relative m-auto w-1/4 h-3/5 overflow-auto flex-col">
       <div class="flex justify-between items-center border-b border-gray-300 p-2">
         <div>
@@ -94,10 +94,8 @@ const showMoreDetails = ref(false);
 const showInfo = ref(false);
 const showMoreInfo = ref(false);
 const props = defineProps({
-  food: Object,
-  visible: Boolean,
+  food: Object
 })
-const visible = ref(props.visible);
 const currentFood = ref({
   name: props.food.name,
   calories: {

@@ -7,24 +7,28 @@
           :workoutState="userData.workoutState ? userData.workoutState : null"
           :gender="userData.gender ? userData.gender : null"
           :showSecondButton=false
-          @edit-skip-successful="handleSuccessfulEdit"/>
+          @submit="handleSuccessfulEdit"/>
   </div>
 </template>
 
 <script setup>
-import Edit from '../components/Edit.vue'
-import router from "../router/index.js";
+import Edit from '../../components/Edit.vue'
+import router from "../../router/index.js";
 import {useStore} from "vuex";
 import {ref} from "vue";
+import {useToast} from "primevue/usetoast";
 
+const toast = useToast();
 const store = useStore();
 const userData = ref(store.getters.userDetails);
 
-const handleSuccessfulEdit = () => {
-  router.push({name: 'Home'});
+const handleSuccessfulEdit = async (data) => {
+  try{
+    await store.dispatch('updateUserDetails', data);
+    toast.add({severity: 'success', summary: 'Success', detail: 'User details updated successfully'});
+    await router.push({name: 'Home'});
+  }catch (e) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'Failed to update user details'});
+  }
 };
 </script>
-
-<style scoped>
-
-</style>

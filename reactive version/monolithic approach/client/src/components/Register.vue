@@ -23,7 +23,6 @@
     <div class="flex pt-2 justify-center w-full">
       <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="registerHandle"/>
     </div>
-    <Toast/>
   </div>
 </template>
 

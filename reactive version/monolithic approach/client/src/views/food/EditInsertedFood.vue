@@ -1,7 +1,5 @@
 <template>
-  <Toast/>
   <Food v-if="food"
-        :visible="visible"
         :food="food"
         @close="handleClose"
         @submit="handleSubmit"/>
@@ -10,41 +8,36 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import router from "../../router/index.js";
-import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Food from "../../components/Food.vue";
+import {useToast} from "primevue/usetoast";
 
+const toast = useToast();
 const store = useStore();
 const route = useRoute();
-const toast = useToast();
 const mealId = ref(route.params.id);
 const foodId = ref(route.params.foodId);
-const visible = ref(true);
 const food = ref(null);
 
-onMounted(() => {
-  try{
-    const currentMeal = store.getters.meals[mealId.value];
+onMounted(async () => {
 
-    currentMeal.foods.forEach((f) => {
-      if (f.id === foodId.value) {
-        food.value = f;
-      }
-    });
+  const currentMeal = store.getters.meals[mealId.value];
 
-    if(food.value === null) {
-      throw new Error("no food found");
+  currentMeal.foods.forEach((f) => {
+    if (f.id === foodId.value) {
+      food.value = f;
     }
-  }catch (error) {
-    toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
-    router.push({name: 'Home'});
+  });
+
+  if (food.value === null) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'Food not found', life: 3000});
+    await router.push({name: 'Home'});
   }
 });
 
 const handleClose = () => {
   router.push({name: 'Home'});
-  visible.value = false;
 };
 
 const handleSubmit = async (food) => {
@@ -55,7 +48,6 @@ const handleSubmit = async (food) => {
   } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
-  visible.value = false;
 };
 </script>
 

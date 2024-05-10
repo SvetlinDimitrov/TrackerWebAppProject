@@ -15,7 +15,7 @@ export const getRecord = (data) => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Record creation failed');
         });

@@ -1,7 +1,5 @@
 <template>
-  <Toast/>
   <Food v-if="food"
-        :visible="visible"
         :food="food"
         @close="handleClose"
         @submit="handleSubmit"/>
@@ -21,21 +19,20 @@ const route = useRoute();
 const toast = useToast();
 const mealId = ref(route.params.id);
 const foodName = ref(route.params.name);
-const visible = ref(true);
 const food = ref(null);
 
 onMounted(async () => {
   try {
-    const data = await getCommonFoodByName(foodName.value);
+    const data = await store.dispatch("getCommonFoodByName" , foodName.value);
     food.value = data[0];
   } catch (error) {
+    await router.push({name: 'Home'});
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
 });
 
 const handleClose = () => {
-  router.push({name: 'InsertFood', params: {mealId: mealId.value}});
-  visible.value = false;
+  router.push({name: 'InsertFood', params: {id: mealId.value}});
 };
 
 const handleSubmit = async (food) => {
@@ -52,7 +49,3 @@ const handleSubmit = async (food) => {
   }
 };
 </script>
-
-<style scoped>
-
-</style>

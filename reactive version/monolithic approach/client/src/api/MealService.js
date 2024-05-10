@@ -15,7 +15,7 @@ export const createMeal = (data) => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Meal creation failed');
         });
@@ -86,7 +86,7 @@ export const modifyMeal = (data , id) => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Meal changes failed');
         });
@@ -106,7 +106,7 @@ export const getMealById = (mealId) => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Fetching meal failed');
         });
@@ -126,7 +126,7 @@ export const getAllMeals = () => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Fetching meals failed');
         });
@@ -143,7 +143,7 @@ export const deleteMealById = (mealId) => {
     })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Deleting meal failed');
         });

@@ -53,7 +53,7 @@ export const modifyUserDetails = (data) => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Something went wrong modifying user details');
         });
@@ -70,7 +70,7 @@ export const deleteUser = () => {
     })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('User deletion failed');
         });
@@ -90,7 +90,7 @@ export const getUserDetails = () => {
         })
         .catch(error => {
             if (error.response && error.response.data.message) {
-                return error.response.data.message;
+                throw new Error(error.response.data.message);
             }
             throw new Error('Something went wrong fetching user details');
         });

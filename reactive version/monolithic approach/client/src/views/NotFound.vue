@@ -4,7 +4,3 @@
     <p class="text-xl mt-4">Page not found</p>
   </div>
 </template>
-
-<script setup>
-
-</script>

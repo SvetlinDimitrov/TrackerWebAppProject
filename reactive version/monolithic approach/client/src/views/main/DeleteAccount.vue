@@ -6,30 +6,24 @@
         Delete Account
       </button>
     </div>
-    <Toast/>
   </div>
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
-import router from "../router/index.js";
-import {useToast} from "primevue/usetoast"
+import {useStore} from 'vuex';
+import router from "../../router/index.js";
+import {useToast} from "primevue/usetoast";
 
-const toast = useToast();
 const store = useStore();
+const toast = useToast();
 
 const deleteAccount = async () => {
   try{
     await store.dispatch('deleteUser');
-    await store.dispatch('removeRecord');
-    await router.push({name: 'Home'}).catch(() => {});
-    toast.add({severity: 'success', summary: 'Account Deleting', detail: 'Successful deletion of account', life: 3000});
+    toast.add({severity: 'success', summary: 'Success', detail: 'successful deletion of account', life: 3000});
   } catch (e) {
-    toast.add({severity: 'error', summary: "Account Deleting" , detail: e.message, life: 3000});
+    toast.add({severity: 'error', summary: 'Error', detail: e.message, life: 3000});
   }
+  await router.push({name: 'Home'});
 };
 </script>
-
-<style scoped>
-/* No additional styles needed as we are using Tailwind CSS */
-</style>

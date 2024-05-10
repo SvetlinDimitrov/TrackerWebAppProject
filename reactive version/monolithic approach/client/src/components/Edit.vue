@@ -1,6 +1,5 @@
 <template>
-  <ProgressSpinner v-if="isLoading"/>
-  <div v-else class="flex flex-col gap-2" style="min-height: 16rem; max-width: 20rem">
+  <div class="flex flex-col gap-2" style="min-height: 16rem; max-width: 20rem">
     <div class="text-center mt-3 mb-3 text-xl font-semibold">More Details</div>
 
     <!-- Kilograms field -->
@@ -60,13 +59,10 @@
               @click="skipHandler"/>
     </div>
   </div>
-  <Toast/>
 </template>
 
 <script setup>
 import {ref} from "vue";
-import {useToast} from "primevue/usetoast"
-import {useStore} from "vuex";
 
 const props = defineProps({
   kilograms: Number,
@@ -77,9 +73,7 @@ const props = defineProps({
   showSecondButton: Boolean
 })
 
-const store = useStore();
-const toast = useToast();
-const emit = defineEmits(['edit-skip-successful'])
+const emit = defineEmits(['submit' , 'skip'])
 const gender = ref(props.gender);
 const kilograms = ref(props.kilograms);
 const workoutState = ref(props.workoutState);
@@ -88,7 +82,6 @@ const height = ref(props.height);
 const showSecondButton = ref(props.showSecondButton ? props.showSecondButton : false);
 const genderOptions = ['MALE', 'FEMALE'];
 const workoutStateOptions = ['SEDENTARY', 'LIGHTLY_ACTIVE', 'MODERATELY_ACTIVE', 'VERY_ACTIVE', 'SUPER_ACTIVE'];
-const isLoading = ref(false);
 
 const editHandler = async () => {
   const data = {
@@ -98,20 +91,11 @@ const editHandler = async () => {
     age: age.value,
     height: height.value
   };
-  isLoading.value = true;
-  try {
-    await store.dispatch('updateUserDetails', data);
-    toast.add({severity: 'success', summary: 'Success', detail: 'Details Added', life: 3000});
-    isLoading.value = false;
-    emit('edit-skip-successful');
-  } catch (error) {
-    isLoading.value = false;
-    toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
-  }
+  emit('submit' , data);
 }
 
 const skipHandler = () => {
-  emit('edit-skip-successful');
+  emit('skip');
 }
 </script>
 

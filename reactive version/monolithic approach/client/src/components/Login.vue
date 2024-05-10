@@ -1,10 +1,9 @@
 <template>
-  <ProgressSpinner v-if="isLoading"/>
-  <div v-else class="w-full md:w-1/2 flex flex-col items-center justify-center gap-3 py-5">
+  <div class="w-full md:w-1/2 flex flex-col items-center justify-center gap-3 py-5">
     <div class="flex flex-col justify-center items-center gap-2">
       <div>
         <InputGroup>
-          <template #prepend>
+          <template >
             <i class="pi pi-user"></i>
           </template>
           <InputText id="username" type="text" placeholder="Email" v-model="email" class="w-full" v-bind:class="{ 'invalid-input': emailError }" />
@@ -12,7 +11,7 @@
       </div>
       <div>
         <InputGroup>
-          <template #prepend>
+          <template >
             <i class="pi pi-key"></i>
           </template>
           <InputText id="password" type="password" placeholder="Password" v-model="password" class="w-full" v-bind:class="{ 'invalid-input': passwordError }" />
@@ -21,53 +20,21 @@
     </div>
     <Button label="Login" icon="pi pi-user" class="w-40 mx-auto" @click="validateForm"></Button>
   </div>
-  <Toast />
 </template>
 
 <script setup>
 import {ref} from "vue";
-import {useToast} from "primevue/usetoast";
-import { useStore } from 'vuex';
-import {useRouter} from "vue-router";
 
-const router = useRouter();
-const store = useStore();
 const email = ref('');
 const password = ref('');
-const emailError = ref(false);
-const passwordError = ref(false);
-const toast = useToast();
-const isLoading = ref(false);
-
-const validateEmail = (email) => {
-  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-};
+const emit = defineEmits(['submit'])
+const props = defineProps({
+  emailError: Boolean,
+  passwordError: Boolean
+})
 
 const validateForm = async () => {
-  isLoading.value = true;
-  const emailIsValid = email.value && validateEmail(email.value);
-  const passwordIsValid = password.value && password.value.length >= 4;
-
-  emailError.value = !emailIsValid;
-  passwordError.value = !passwordIsValid;
-
-  if (!emailIsValid) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Invalid email', life: 3000});
-  }
-  if (!passwordIsValid) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Password must be at least 4 characters long', life: 3000});
-  }
-  if (emailIsValid && passwordIsValid) {
-    try {
-      await store.dispatch('login', { email: email.value, password: password.value });
-      toast.add({severity:'success', summary: 'Success', detail: 'Login successful', life: 3000});
-      await router.push({ name: 'Home' });
-    } catch (error) {
-      toast.add({severity:'error', summary: 'Error', detail: error.message, life: 3000});
-    }
-    isLoading.value = false;
-  }
+  emit('submit', {email: email.value, password: password.value})
 };
 </script>
 

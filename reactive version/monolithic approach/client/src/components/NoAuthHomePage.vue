@@ -19,15 +19,7 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
-import { computed } from 'vue';
 
-const store = useStore();
-
-const user = computed(() => store.getters.user);
-const userDetailsComplete = computed(() => store.getters.isFullyRegistered);
+defineProps(['user', 'userDetailsComplete'])
 
 </script>
-
-<style scoped>
-</style>
