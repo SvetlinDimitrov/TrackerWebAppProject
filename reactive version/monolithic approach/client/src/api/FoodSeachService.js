@@ -27,8 +27,9 @@ export const getAllFoodsBySearchWord = (word) => {
 export const getCommonFoodByName = (word) => {
 
     const authHeader = store.getters.authHeader;
+    const encodedWord = encodeURIComponent(word);
 
-    return axios.get(`/food_db_api/search/common/${word}`, {
+    return axios.get(`/food_db_api/search/common/${encodedWord}`, {
         headers: {
             'Authorization': authHeader
         }
@@ -47,8 +48,9 @@ export const getCommonFoodByName = (word) => {
 export const getBrandedFoodById = (id) => {
 
     const authHeader = store.getters.authHeader;
+    const encodedId = encodeURIComponent(id);
 
-    return axios.get(`/food_db_api/search/branded/${id}`, {
+    return axios.get(`/food_db_api/search/branded/${encodedId}`, {
         headers: {
             'Authorization': authHeader
         }

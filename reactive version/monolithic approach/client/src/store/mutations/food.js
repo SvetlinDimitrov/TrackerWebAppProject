@@ -5,4 +5,7 @@ export default {
     setSearchedFoodResult(state, result) {
         state.searchFoodResult = result;
     },
+    setCurrentFood(state, food) {
+        state.currentFood = food;
+    },
 }

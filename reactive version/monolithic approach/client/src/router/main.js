@@ -16,6 +16,12 @@ export default [
         meta: {requiresAuth: true}
     },
     {
+        path: '/performance',
+        name: 'Performance',
+        component: () => import('../views/main/Performance.vue'),
+        meta: {requiredFullyAuth: true}
+    },
+    {
         path: '/settings/edit',
         name: 'Edit',
         component: () => import('../views/main/Edit.vue'),
@@ -40,7 +46,7 @@ export default [
         meta: {requiresGuest: true}
     },
     {
-        path: '/nutri-info',
+        path: '/nutri-info/:name',
         name: 'NutriInfo',
         component: () => import('../views/main/NutriInfo.vue')
     },

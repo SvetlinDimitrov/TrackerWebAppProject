@@ -1,6 +1,7 @@
 <template>
   <Food v-if="food"
         :food="food"
+        :original-food="food"
         @close="handleClose"
         @submit="handleSubmit"/>
 </template>
@@ -22,9 +23,16 @@ const foodId = ref(route.params.foodId);
 const food = ref(null);
 
 onMounted(async () => {
+  const currentMeal = store.getters.meals[mealId.value];
+
+  if (!currentMeal) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    await router.push({name: 'Home'});
+    return;
+  }
+
   try {
-    const data = await store.dispatch("getBrandedFoodById" , foodId.value);
-    food.value = data[0];
+    food.value = await store.dispatch("getBrandedFoodById" , foodId.value);
   } catch (error) {
     await router.push({name: 'Home'});
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});

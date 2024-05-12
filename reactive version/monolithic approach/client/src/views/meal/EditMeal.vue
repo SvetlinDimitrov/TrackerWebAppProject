@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import router from "../../router/index.js";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
@@ -27,9 +27,16 @@ const route = useRoute();
 
 const mealId = ref(route.params.id);
 const meal = ref(store.getters.meals[mealId.value]);
-const mealName = ref(meal.value.name);
+const mealName = ref(meal.value?.name);
 const visible = ref(true);
 const header = ref('Edit Meal');
+
+onMounted(() => {
+  if (!meal.value) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    router.push({name: 'Home'});
+  }
+});
 
 const submitMeal = async () => {
   try{

@@ -13,7 +13,7 @@
     </p>
     <p class="mb-4">
       Even without authentication, you can still learn about nutrition.
-      Check out our <router-link :to="{name: 'NutriInfo'}" class="text-blue-500 hover:underline">Nutrition Info</router-link> page for more information.
+      Check out our Nutrition Info page for more information.
     </p>
   </div>
 </template>

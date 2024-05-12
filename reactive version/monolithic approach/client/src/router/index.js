@@ -51,4 +51,18 @@ router.beforeEach((to, from, next) => {
     }
 });
 
+router.beforeEach((to, from, next) => {
+    const fullyRegistered = store.getters.isFullyRegistered;
+
+    if (to.matched.some(record => record.meta.requiredFullyAuth)) {
+        if (!fullyRegistered) {
+            next({ name: 'Home' });
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
+});
+
 export default router;

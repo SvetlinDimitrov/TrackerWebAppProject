@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex flex-col items-center justify-center w-1/2 mx-auto">
+  <div class="card flex flex-col items-center justify-center w-1/2 mx-auto h-screen">
     <Edit v-if="userData"
           :kilograms="userData.kilograms ? userData.kilograms : null"
           :height="userData.height ? userData.height : null"

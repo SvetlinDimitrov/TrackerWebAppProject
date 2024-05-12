@@ -1,6 +1,7 @@
 <template>
   <Food v-if="food"
         :food="food"
+        :originalFood="food"
         @close="handleClose"
         @submit="handleSubmit"/>
 </template>
@@ -12,6 +13,7 @@ import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Food from "../../components/Food.vue";
 import {useToast} from "primevue/usetoast";
+import {generateGeneralFood} from "../../utils/food.js";
 
 const toast = useToast();
 const store = useStore();
@@ -21,12 +23,18 @@ const foodId = ref(route.params.foodId);
 const food = ref(null);
 
 onMounted(async () => {
-
   const currentMeal = store.getters.meals[mealId.value];
+
+  if (!currentMeal) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    await router.push({name: 'Home'});
+    return;
+  }
 
   currentMeal.foods.forEach((f) => {
     if (f.id === foodId.value) {
-      food.value = f;
+
+      food.value = generateGeneralFood(f);
     }
   });
 

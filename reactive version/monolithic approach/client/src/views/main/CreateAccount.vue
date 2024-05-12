@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex flex-col items-center justify-center w-1/2 mx-auto">
+  <div class="card flex flex-col items-center justify-center w-1/2 mx-auto h-screen">
     <Steps :model="items" class="mb-8" :activeStep="activeStep"/>
     <Register v-if="activeStep === 0" @registration-successful="nextStep"/>
     <Edit :showSecondButton="true" v-if="activeStep === 1" @submit="submit($event)" @skip='nextStep'/>

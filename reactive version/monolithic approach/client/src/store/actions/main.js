@@ -13,6 +13,7 @@ export default {
     },
     async login({commit, getters}, {email, password}) {
         try {
+            commit('setLoginCompleted', false);
             commit('setIsLoading', true);
             const userDetails = await loginUser(email, password);
             localStorage.setItem('user', JSON.stringify({email, password}));
@@ -30,6 +31,7 @@ export default {
             throw new Error(error.message);
         } finally {
             commit('setIsLoading', false);
+            commit('setLoginCompleted', true);
         }
     },
     async register({commit}, data) {

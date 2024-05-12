@@ -12,6 +12,14 @@ const route = useRoute();
 const mealId = ref(route.params.id);
 
 onMounted(async () => {
+  const currentMeal = store.getters.meals[mealId.value];
+
+  if (!currentMeal) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    await router.push({name: 'Home'});
+    return;
+  }
+
   try{
     await store.dispatch('deleteMealById', mealId.value);
     toast.add({severity: 'success', summary: 'Success', detail: 'meal deleted successfully', life: 3000});

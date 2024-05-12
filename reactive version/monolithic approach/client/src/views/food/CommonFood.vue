@@ -1,18 +1,18 @@
 <template>
   <Food v-if="food"
         :food="food"
+        :originalFood="originalFood"
         @close="handleClose"
         @submit="handleSubmit"/>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import router from "../../router/index.js";
 import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Food from "../../components/Food.vue";
-import {getCommonFoodByName} from "../../api/FoodSeachService.js";
 
 const store = useStore();
 const route = useRoute();
@@ -20,11 +20,19 @@ const toast = useToast();
 const mealId = ref(route.params.id);
 const foodName = ref(route.params.name);
 const food = ref(null);
+const originalFood = computed(() => store.getters.currentFood);
 
 onMounted(async () => {
+  const currentMeal = store.getters.meals[mealId.value];
+
+  if (!currentMeal) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    await router.push({name: 'Home'});
+    return;
+  }
+
   try {
-    const data = await store.dispatch("getCommonFoodByName" , foodName.value);
-    food.value = data[0];
+    food.value = await store.dispatch("getCommonFoodByName", foodName.value);
   } catch (error) {
     await router.push({name: 'Home'});
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});

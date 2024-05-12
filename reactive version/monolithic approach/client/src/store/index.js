@@ -20,6 +20,8 @@ const store = createStore({
             isLoading: false,
             searchFood: '',
             searchFoodResult: [],
+            currentFood: null,
+            loginCompleted: false,
         };
     },
     mutations: {

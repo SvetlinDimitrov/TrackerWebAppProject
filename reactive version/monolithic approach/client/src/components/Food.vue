@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentFood"
+  <div v-if="currentFood && originalFood"
        class="fixed inset-0 flex items-center justify-center backdrop-blur">
     <div class="bg-white border border-gray-300 px-4 py-3 rounded relative m-auto w-1/4 h-3/5 overflow-auto flex-col">
       <div class="flex justify-between items-center border-b border-gray-300 p-2">
@@ -25,8 +25,8 @@
       <div v-if="currentFood.mainServing" class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>Number of Servings</p>
         <InputNumber v-model="currentFood.mainServing.amount"
-                     :minFractionDigits="1"
-                     :min="0"
+                     :minFractionDigits="2"
+                     :min="0.01"
                      :max="10000"
                      class="w-36 overflow-hidden"/>
       </div>
@@ -87,34 +87,19 @@
 </template>
 
 <script setup>
-import {computed, ref, toRaw, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
+import {createNewNutrientArray} from "../utils/food.js";
 
 const showNutrients = ref(false);
 const showMoreDetails = ref(false);
 const showInfo = ref(false);
 const showMoreInfo = ref(false);
 const props = defineProps({
-  food: Object
+  food: Object,
+  originalFood: Object
 })
-const currentFood = ref({
-  name: props.food.name,
-  calories: {
-    amount: props.food.calories?.amount || props.food.calorie?.amount || undefined,
-    unit: props.food.calories?.unit || props.food.calorie?.unit || undefined
-  },
-  mainServing: {
-    amount: props.food.mainServing?.amount || undefined,
-    metric: props.food.mainServing?.metric || undefined,
-    servingWeight: props.food.mainServing?.servingWeight || undefined
-  },
-  otherServing: toRaw(props.food.otherServings || props.food.otherServing) || [],
-  nutrients: toRaw(props.food.nutritionList || props.food.nutrients) || [],
-  foodDetails: {
-    picture: props.food.foodDetails?.picture || props.food.additionalInfo?.picture || undefined,
-    info: props.food.foodDetails?.info || props.food.additionalInfo?.info || undefined,
-    largeInfo: props.food.foodDetails?.largeInfo || props.food.additionalInfo?.largeInfo || undefined,
-  },
-});
+const currentFood = ref(props.food);
+const originalFood = ref(props.originalFood);
 
 if (currentFood.value.otherServing.find(serving =>
     serving.amount === currentFood.value.mainServing.amount &&
@@ -126,18 +111,22 @@ if (currentFood.value.otherServing.find(serving =>
 watch(() => currentFood.value.mainServing, (newValue, oldValue) => {
   const ratio = newValue.servingWeight / oldValue.servingWeight;
 
+  currentFood.value.calories.amount = originalFood.value.calories.amount;
   currentFood.value.calories.amount = (currentFood.value.calories.amount * ratio).toFixed(2);
 
+  currentFood.value.nutrients = createNewNutrientArray(originalFood.value)
   currentFood.value.nutrients.forEach(nutrient => {
     nutrient.amount = (nutrient.amount * ratio).toFixed(2);
   });
 });
 
 watch(() => currentFood.value.mainServing.amount, (newValueSize, oldValueSize) => {
-  const ratio = newValueSize / oldValueSize;
+  const ratio = newValueSize / originalFood.value.mainServing.amount
 
+  currentFood.value.calories.amount = originalFood.value.calories.amount;
   currentFood.value.calories.amount = (currentFood.value.calories.amount * ratio).toFixed(2);
 
+  currentFood.value.nutrients = createNewNutrientArray(originalFood.value)
   currentFood.value.nutrients.forEach(nutrient => {
     nutrient.amount = (nutrient.amount * ratio).toFixed(2);
   });

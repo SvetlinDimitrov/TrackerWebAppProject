@@ -19,5 +19,8 @@ export default {
     },
     setIsLoading(state, isLoading) {
         state.isLoading = isLoading;
+    },
+    setLoginCompleted(state, loginCompleted) {
+        state.loginCompleted = loginCompleted;
     }
 };

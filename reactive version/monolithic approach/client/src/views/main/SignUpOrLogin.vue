@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex items-center justify-center">
+  <div class="card flex items-center justify-center h-screen">
     <div class="w-1/2 flex flex-col md:flex-row">
       <Login @submit="submit" :emailError="emailError" :passwordError="passwordError"/>
       <div class="w-full md:w-1/12">

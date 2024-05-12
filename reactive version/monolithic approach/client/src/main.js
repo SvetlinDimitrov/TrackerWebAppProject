@@ -26,6 +26,9 @@ import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
 import InputSwitch from 'primevue/inputswitch';
 import Chart from 'primevue/chart';
+import Knob from 'primevue/knob';
+import Tag from 'primevue/tag';
+import TreeSelect from 'primevue/treeselect';
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -36,6 +39,7 @@ app.use(router);
 app.use(store);
 app.use(ToastService);
 
+app.component('TreeSelect', TreeSelect);
 app.component('Steps', Steps);
 app.component('Button', Button);
 app.component('Divider', Divider);
@@ -55,4 +59,7 @@ app.component('Dialog', Dialog);
 app.component('Avatar', Avatar);
 app.component('InputSwitch', InputSwitch);
 app.component('Chart', Chart);
+app.component('Knob', Knob);
+app.component('Tag', Tag);
+
 app.mount('#app');

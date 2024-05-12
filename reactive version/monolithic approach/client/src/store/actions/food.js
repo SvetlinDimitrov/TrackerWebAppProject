@@ -1,6 +1,7 @@
 import {addFoodIntoMeal, changeFoodByIdAndMealId, getMealById, removeFoodByIdAndMealId} from "../../api/MealService.js";
 import {getAllFoodsBySearchWord, getBrandedFoodById, getCommonFoodByName} from "../../api/FoodSeachService.js";
 import {getRecord} from "../../api/RecordService.js";
+import {filterNutrients, generateGeneralFood} from "../../utils/food.js";
 
 export default {
     async addFoodIntoMeal({commit, getters}, data) {
@@ -8,7 +9,7 @@ export default {
         try {
             const mealId = data.mealId;
             const food = data.food;
-            await addFoodIntoMeal(mealId, food);
+            await addFoodIntoMeal(mealId, filterNutrients(food));
             const meal = await getMealById(mealId);
             commit('setNewMealById', meal);
             const record = await getRecord(getters.recordSettingData);
@@ -78,7 +79,10 @@ export default {
     async getCommonFoodByName({commit}, searchName) {
         commit('setIsLoading', true);
         try {
-            return await getCommonFoodByName(searchName);
+            const food = await getCommonFoodByName(searchName);
+            const result = generateGeneralFood(food[0]);
+            await commit('setCurrentFood', result);
+            return JSON.parse(JSON.stringify(result));
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -88,7 +92,10 @@ export default {
     async getBrandedFoodById({commit}, foodId) {
         commit('setIsLoading', true);
         try {
-            return await getBrandedFoodById(foodId);
+            const food =  await getBrandedFoodById(foodId);
+            const result = generateGeneralFood(food[0]);
+            await commit('setCurrentFood', result);
+            return JSON.parse(JSON.stringify(result));
         } catch (e) {
             throw new Error(e.message)
         } finally {

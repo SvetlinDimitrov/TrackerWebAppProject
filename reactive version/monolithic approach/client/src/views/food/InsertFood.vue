@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import router from "../../router/index.js";
 import {useToast} from "primevue/usetoast"
 import {useRoute} from "vue-router";
@@ -36,6 +36,15 @@ const toast = useToast();
 const mealId = ref(route.params.id);
 const search = ref(store.getters.searchedFoodWord);
 const foods = ref(store.getters.searchedFoodResult);
+
+onMounted(async () => {
+  const currentMeal = store.getters.meals[mealId.value];
+
+  if (!currentMeal) {
+    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
+    await router.push({name: 'Home'});
+  }
+});
 
 const handleClose = () => {
   router.push({name: 'Home'});

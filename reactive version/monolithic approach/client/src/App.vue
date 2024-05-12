@@ -2,9 +2,9 @@
   <div v-if="isLoading" class="spinner-container">
     <ProgressSpinner />
   </div>
-  <div class="flex flex-col min-h-screen max-h-screen">
+  <div v-if="isLoginCompleted" class="flex flex-col h-screen">
     <Header/>
-    <router-view class="flex-grow"></router-view>
+    <router-view></router-view>
   </div>
   <Toast/>
 </template>
@@ -17,7 +17,7 @@ import {computed, onBeforeMount} from "vue";
 
 const store = useStore();
 const toast = useToast();
-
+const isLoginCompleted = computed(() => store.getters.loginCompleted);
 const isLoading = computed(() => store.state.isLoading);
 
 onBeforeMount(async () => {
