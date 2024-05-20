@@ -1,3 +1,4 @@
+
 export function calculateAveragePercentageForArrayNutrients(array) {
     let totalPercentage = 0;
 

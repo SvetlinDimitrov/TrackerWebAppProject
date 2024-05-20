@@ -31,7 +31,8 @@
                        :foodList="mergeFoods(getNutrientAmountFromFood(allFoods , nutrient.name))"
                        :show-danger="false"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)">{{ nutrient.name }}
+                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-edit-click="handleEditClick(nutrient)">{{ nutrient.name }}
 
       </NutrientRowInfo>
     </div>
@@ -44,7 +45,8 @@
                        :foodList="getNutrientAmountFromFood(allFoods , nutrient.name)"
                        :show-danger="false"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)">{{ nutrient.name }}
+                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-edit-click="handleEditClick(nutrient)">{{ nutrient.name }}
       </NutrientRowInfo>
     </div>
     <div v-if="showMacros" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
@@ -56,7 +58,10 @@
                        :foodList="getNutrientAmountFromFood(allFoods , nutrient.name)"
                        :show-danger="false"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)">{{ nutrient.name }}
+                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-edit-click="handleEditClick(nutrient)"
+      >{{ nutrient.name }}
+
       </NutrientRowInfo>
     </div>
     <div v-if="showCalories" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
@@ -73,7 +78,7 @@
 </template>
 
 <script setup>
-import MainFulfillment from "../../components/performance/MainFufilment.vue";
+import MainFulfillment from "../../../components/performance/MainFufilment.vue";
 import {computed, ref} from "vue";
 import {useStore} from "vuex";
 import {
@@ -82,9 +87,9 @@ import {
   getAllFoods,
   getNutrientAmountFromFood,
   mergeFoods
-} from "../../utils/performance.js";
-import NutrientRowInfo from "../../components/performance/NutrientRowInfo.vue";
-import router from "../../router/index.js";
+} from "../../../utils/performance.js";
+import NutrientRowInfo from "../../../components/performance/NutrientRowInfo.vue";
+import router from "../../../router/index.js";
 
 const store = useStore();
 const showVitamins = ref(false);
@@ -128,6 +133,10 @@ const handleCalorieToggle = (show) => {
 
 const handleInfoRedirection = async (nutrient) => {
   await router.push({name: 'NutriInfo', params: {name: nutrient.name}});
+}
+
+const handleEditClick = (nutrient) => {
+  router.push({name: 'EditNutritionPerformance', params: {name: nutrient.name, intake: nutrient.recommendedIntake}});
 }
 </script>
 

@@ -18,7 +18,13 @@
       </div>
     </div>
     <CustomProgressBar :progress="Number(progress)"/>
-    <span v-if="show">consumed: {{ consumed }} / total: {{ total }} {{ unit }}</span>
+    <div v-if="show">
+      <span class="mr-2">consumed: {{ consumed }} / total: {{ total }} {{ unit }}</span>
+      <Tag severity="warning"
+           value="Edit"
+           rounded @click.stop="$emit('handle-edit-click')"
+           class="cursor-pointer"></Tag>
+    </div>
     <ul v-if="show && foodList.length !== 0" class="p-1"> Consumed foods:
       <li v-for="food in foodList">{{ food.foodName }}: {{ calculateAveragePercentage(food.nutrientAmount, total) }}%
         ({{ food.nutrientAmount }})
@@ -41,11 +47,9 @@ const props = defineProps({
   hideTag: Boolean
 })
 
-defineEmits(['handle-click-info', 'handle-click-danger'])
+defineEmits(['handle-click-info', 'handle-click-danger' ,'handle-edit-click']);
 
 const show = ref(false);
 const progress = computed(() => calculateAveragePercentage(props.consumed, props.total) ? calculateAveragePercentage(props.consumed, props.total) : 0);
-const print = () => {
-  console.log('print')
-}
+
 </script>

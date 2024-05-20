@@ -6,6 +6,7 @@ export default {
     async logout({commit}) {
         commit('setIsLoading', true);
         localStorage.removeItem('user');
+        commit('removeRecordSettingsNutrition');
         commit('removeUser');
         commit('removeRecord');
         commit('removeUserDetails');
@@ -40,7 +41,7 @@ export default {
             const user = await register(data);
             localStorage.setItem('user', JSON.stringify(user));
             commit('setUser', user);
-        }catch (error) {
+        } catch (error) {
             throw new Error(error.message);
         } finally {
             commit('setIsLoading', false);
@@ -54,6 +55,7 @@ export default {
             commit('removeUser');
             commit('removeRecord');
             commit('removeUserDetails');
+            commit('removeRecordSettingsNutrition');
         } catch (error) {
             throw new Error(error.message);
         } finally {

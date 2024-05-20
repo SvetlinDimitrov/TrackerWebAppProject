@@ -18,7 +18,13 @@ export default [
     {
         path: '/performance',
         name: 'Performance',
-        component: () => import('../views/main/Performance.vue'),
+        component: () => import('../views/main/performance/Performance.vue'),
+        meta: {requiredFullyAuth: true}
+    },
+    {
+        path: '/performance/edit/:name/:intake',
+        name: 'EditNutritionPerformance',
+        component: () => import('../views/main/performance/EditNutritionPerformance.vue'),
         meta: {requiredFullyAuth: true}
     },
     {

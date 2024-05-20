@@ -1,0 +1,22 @@
+const vitaminA = {
+    description: "Vitamin A refers to a group of fat-soluble retinoids, including retinol and retinyl esters. These compounds are essential for numerous bodily functions and overall health. The human diet provides vitamin A in two primary forms: preformed vitamin A, found in animal-based foods such as dairy products, eggs, fish, and organ meats, and provitamin A carotenoids, plant pigments like beta-carotene, alpha-carotene, and beta-cryptoxanthin. The body converts these carotenoids into vitamin A through enzymatic action in the intestine. Most vitamin A is stored in the liver as retinyl esters, and its levels are typically measured in plasma or serum, although these measurements are not always reliable indicators of vitamin A status.",
+    functions: {
+        "Vision": "Vitamin A is crucial for vision, acting as an essential component of rhodopsin, the protein in the retina that absorbs light. It supports the normal functioning and differentiation of the conjunctival membranes and cornea.",
+        "Immune Function": "It plays a significant role in maintaining a healthy immune system, helping the body fight off infections and illnesses.",
+        "Cellular Communication": "Vitamin A is involved in cellular communication, ensuring proper communication between cells, which is vital for normal bodily functions.",
+        "Growth and Development": "It supports overall growth and development, including the formation and maintenance of vital organs such as the heart, lungs, and kidneys.",
+        "Reproduction": "Both male and female reproductive health benefit from adequate levels of vitamin A, which is necessary for proper reproductive function.",
+        "Skin Health": "Vitamin A aids in maintaining healthy skin by promoting cell growth and differentiation.",
+        "Antioxidant Properties": "While not all carotenoids convert to vitamin A, some, like beta-carotene, also serve as antioxidants, protecting cells from damage caused by free radicals."
+    },
+    sources: {
+        "Preformed Vitamin A":"This form is found in animal-based foods. Liver, fish, eggs, and dairy products are particularly high in preformed vitamin A. For example, beef liver is an exceptionally rich source, with 6,582 micrograms (mcg) of retinol activity equivalents (RAE) per serving, providing 731% of the Daily Value (DV).",
+        "Provitamin A Carotenoids" : "These are plant pigments that the body can convert into vitamin A. Common sources include leafy green vegetables, orange and yellow vegetables, fruits, and some vegetable oils. Sweet potatoes and carrots are notable sources, with sweet potatoes providing 1,403 mcg RAE per serving (156% DV) and carrots offering 459 mcg RAE per serving (51% DV).",
+        "Fortified Foods" : "Some foods are fortified with vitamin A to enhance their nutritional value. Milk and margarine are routinely fortified, and some ready-to-eat cereals also contain added vitamin A, contributing significantly to daily intake, especially among children and adolescents."
+    },
+    dailyIntake: "The Recommended Dietary Allowances (RDAs) for vitamin A, expressed as retinol activity equivalents (RAE) to account for the different bioactivities of retinol and provitamin A carotenoids, vary by age, sex, and life stage, with specific values provided as 400 mcg RAE for infants 0-6 months, 500 mcg RAE for infants 7-12 months, 300 mcg RAE for children 1-3 years, 400 mcg RAE for children 4-8 years, 600 mcg RAE for children 9-13 years, 900 mcg RAE for males aged 14 years and older, 700 mcg RAE for females aged 14 years and older, 750 mcg RAE for pregnant adolescents, 770 mcg RAE for pregnant adults, 1,200 mcg RAE for lactating adolescents, and 1,300 mcg RAE for lactating adults.",
+    deficiency: "Vitamin A deficiency primarily manifests as xerophthalmia, characterized by impaired vision in low light and potential blindness if left untreated. Long-term deficiency heightens the risk of respiratory diseases like pneumonia and infections such as measles and diarrhea. Additionally, it can induce anemia due to insufficient oxygen supply by red blood cells, and severe cases increase mortality risk.",
+    res: ['https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/#h7', 'https://ods.od.nih.gov/factsheets/VitaminA-Consumer/#h14']
+};
+
+export default vitaminA;
