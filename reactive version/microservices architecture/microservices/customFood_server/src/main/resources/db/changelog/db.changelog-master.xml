@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
-    <include file="food-table.xml" relativeToChangelogFile="true"/>
-    <include file="calories-table.xml" relativeToChangelogFile="true"/>
-    <include file="nutritions-table.xml" relativeToChangelogFile="true"/>
+    <include file="custom-food-table.xml" relativeToChangelogFile="true"/>
+    <include file="custom-calories-table.xml" relativeToChangelogFile="true"/>
+    <include file="custom-nutritions-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -59,7 +59,7 @@ public class ServingModifier {
 
   private static Mono<ServingEntity> validateAndUpdateWeight(ServingEntity entity, ServingView dto) {
     return Mono.just(entity)
-        .filter(u -> Validator.validateBigDecimal(dto.servingWeight(), BigDecimal.ONE))
+        .filter(u -> Validator.validateBigDecimal(dto.servingWeight(), BigDecimal.ZERO))
         .flatMap(u -> {
           u.setServingWeight(dto.servingWeight());
           return Mono.just(u);
@@ -71,7 +71,7 @@ public class ServingModifier {
 
   private static Mono<ServingEntity> validateAndUpdateAmount(ServingEntity entity, ServingView dto) {
     return Mono.just(entity)
-        .filter(u -> Validator.validateBigDecimal(dto.amount(), BigDecimal.ONE))
+        .filter(u -> Validator.validateBigDecimal(dto.amount(), BigDecimal.ZERO))
         .flatMap(u -> {
           u.setAmount(dto.amount());
           return Mono.just(u);

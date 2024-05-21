@@ -8,6 +8,6 @@ public class Validator {
     return word != null && !word.isBlank() && word.trim().length() >= lengthInclude && word.trim().length() <= lengthExclude;
   }
   public static Boolean validateBigDecimal(BigDecimal value , BigDecimal minInclude){
-    return value != null && value.compareTo(minInclude) >= 0;
+    return value != null && value.compareTo(minInclude) > 0;
   }
 }
