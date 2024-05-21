@@ -1,0 +1,25 @@
+const vitaminB9 = {
+    description: "Folate, a B-vitamin found naturally in various foods, is essential for DNA synthesis and the formation of other genetic material in the body. It plays a crucial role in cell division, supporting the growth and maintenance of tissues. Folic acid, a synthetic form of folate, is commonly added to fortified foods and dietary supplements to ensure adequate intake.",
+    functions: {
+        "Coenzyme in Single-Carbon Transfers": "Folate acts as a coenzyme or cosubstrate in single-carbon transfers during the synthesis of nucleic acids (DNA and RNA) and the metabolism of amino acids.",
+        "Conversion of Homocysteine to Methionine": "Folate plays a crucial role in converting homocysteine to methionine in the synthesis of S-adenosyl-methionine, an essential methyl donor.",
+        "Methylation of Deoxyuridylate to Thymidylate": "Another important function of folate is the methylation of deoxyuridylate to thymidylate in DNA formation, necessary for proper cell division. Impairment of this process can lead to megaloblastic anemia, a sign of folate deficiency.",
+        "Hydrolysis and Absorption": "Food folates are hydrolyzed to the monoglutamate form in the gut before being absorbed through active transport across the intestinal mucosa. Passive diffusion occurs with pharmacological doses of folic acid.",
+        "Conversion to Methyl or Formyl Forms": "Before entering the bloodstream, the enzyme dihydrofolate reductase reduces the monoglutamate form to tetrahydrofolate (THF) and converts it to methyl or formyl forms, with 5-MTHF being the main form of folate in plasma.",
+        "Variability in Dihydrofolate Reductase Activity": "The activity of dihydrofolate reductase varies among individuals, potentially leading to the presence of unmetabolized folic acid in the blood when the enzyme's capacity is exceeded.",
+        "Role in Folate Status Assessment": "Serum folate concentrations above 3 ng/mL indicate adequacy, although this measure is sensitive to recent dietary intake. Erythrocyte folate concentrations provide a longer-term measure, with a concentration above 140 ng/mL indicating adequate folate status.",
+        "Functional Indicator: Plasma Homocysteine Concentration": "Plasma homocysteine concentration serves as a functional indicator of folate status, with elevated levels suggesting a deficiency in 5-MTHF. However, homocysteine levels can be influenced by other factors like kidney dysfunction and deficiencies in other micronutrients.",
+    },
+    sources: {
+        "Food": "Folate, naturally found in various foods like dark green leafy vegetables, fruits, nuts, beans, seafood, eggs, dairy, meat, poultry, and grains, is crucial for health. Certain foods like spinach, liver, asparagus, and brussels sprouts have high folate levels. Since 1998, the FDA mandated the addition of folic acid to grain products, significantly boosting folic acid intake. Other countries, including Canada, Costa Rica, Chile, and South Africa, also enforce fortification programs. The table lists folate content in various foods, aiding consumers in making informed dietary choices.",
+        "Dietary supplements": "Folic acid supplements, commonly found in multivitamins, prenatal vitamins, and B-complex vitamin supplements, are available in doses ranging from 400 to 800 mcg for adults and 200 to 400 mcg for children. When taken with food, about 85% of supplemental folic acid is absorbed, while nearly 100% absorption occurs when taken without food. Some supplements contain 5-MTHF, potentially more beneficial for certain individuals, with comparable or better bioavailability than folic acid. However, conversion factors between mcg and mcg DFE for 5-MTHF are not formally established, though FDA permits a conversion factor of 1.7 for comparison with folic acid."
+    },
+    dailyIntake: "Infants from birth to 6 months should aim for 65 mcg DFE. For infants aged 7–12 months, it's 80 mcg DFE. Children aged 1–3 years should aim for 150 mcg DFE, while those aged 4–8 years need 200 mcg DFE. For children aged 9–13 years, the recommendation is 300 mcg DFE, and for teens aged 14–18 years, it's 400 mcg DFE. Adults aged 19 years and older should also aim for 400 mcg DFE.\n" +
+        "\n" +
+        "During pregnancy, the recommended amount increases to 600 mcg DFE for both teens and women, while breastfeeding teens and women should aim for 500 mcg DFE.",
+    deficiency: "\n" +
+        "Folate deficiency can lead to several health issues. It may result in megaloblastic anemia, characterized by symptoms like weakness, fatigue, trouble concentrating, irritability, headaches, heart palpitations, and shortness of breath. Additionally, it can cause open sores in the mouth, changes in skin, hair, or nail color. In pregnant women, insufficient folate raises the risk of neural tube defects like spina bifida in babies. It can also increase the chances of premature birth or having a baby with low birth weight.",
+    res: ['https://ods.od.nih.gov/factsheets/Folate-Consumer/', 'https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/']
+};
+
+export default vitaminB9;

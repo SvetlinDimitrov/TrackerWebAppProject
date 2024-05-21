@@ -1,0 +1,16 @@
+const vitaminK = {
+    description: "Vitamin K is a fat-soluble vitamin encompassing a family of compounds with a common chemical structure. It includes phylloquinone (vitamin K1) found in green leafy vegetables and menaquinones (vitamin K2) present in animal-based and fermented foods, and produced by gut bacteria. Menaquinones are designated MK-4 through MK-13 based on their side chain lengths, with MK-4, MK-7, and MK-9 being the most studied. Vitamin K is absorbed in the small intestine and transported to the liver, where it is involved in various bodily functions.",
+    functions: {
+        "Hemostasis (blood clotting)": "Prothrombin (clotting factor II) is directly involved in blood clotting.",
+        "Bone metabolism": "Osteocalcin, a vitamin K-dependent protein, is involved in bone mineralization.",
+        "Preventing abnormal calcification": "Matrix Gla-protein (MGP) helps reduce abnormal calcification in vascular smooth muscle, bone, and cartilage."
+    },
+    sources: {
+        "Food Sources": "Phylloquinone, found in vegetables like green leafy ones, vegetable oils, and select fruits, is abundant in spinach, broccoli, kale, and oils such as soybean and canola. Menaquinones, present in small amounts in meat, dairy, and eggs, are richer in fermented foods like natto and certain cheeses. Bioavailability varies, with plant-based phylloquinone having lower absorption rates compared to menaquinones.",
+        "Dietary Supplements": "Supplements typically contain vitamin K1 (phylloquinone or phytonadione) and vitamin K2 (MK-4 or MK-7). Multivitamin/mineral supplements offer less than 75% of the Daily Value (DV), while standalone supplements may provide very high doses, up to 5,063% of the DV. Limited data exist on the bioavailability of different forms, though MK-7 appears to have a longer half-life than phytonadione. Synthetic forms like menadione (vitamin K3) are no longer used due to potential harm to liver cells."
+    },
+    dailyIntake: "The Food and Nutrition Board (FNB) at the Institute of Medicine sets intake recommendations for vitamin K in the form of Adequate Intakes (AIs) due to limited data. These AIs are based on typical intake levels in healthy populations. For infants, the recommended intake is 2.0 mcg from birth to 6 months and 2.5 mcg from 7 to 12 months. For children aged 1 to 3 years, it's 30 mcg, and for those aged 4 to 8 years, it's 55 mcg. Adolescents aged 9 to 13 years should aim for 60 mcg, while those aged 14 to 18 years, including pregnant and lactating individuals, need 75 mcg. Adults aged 19 and above should aim for 120 mcg if male, and 90 mcg if female, including during pregnancy and lactation.",
+    deficiency: "Insufficient vitamin K intake can lead to bruising and bleeding issues due to prolonged clotting time in the blood. Additionally, it may weaken bone strength and elevate the risk of developing osteoporosis, as vitamin K is essential for maintaining bone health.",
+    res: ["https://ods.od.nih.gov/factsheets/vitaminK-HealthProfessional/", "https://ods.od.nih.gov/factsheets/VitaminK-Consumer/#h6"]
+};
+export default vitaminK;

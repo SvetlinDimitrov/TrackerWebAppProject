@@ -6,3 +6,5 @@ const emptyNutrient = {
     deficiency: "",
     res: []
 };
+
+export default emptyNutrient;
