@@ -1,20 +1,24 @@
 const phosphorus = {
-    description:"Phosphorus is a mineral essential to the functioning of every cell in the human body. While a significant portion is found in bones and teeth, some is also present in genetic material. Phosphorus plays crucial roles in energy production and facilitates numerous vital chemical processes within the body.",
+    description: "Phosphorus is an essential mineral that plays a critical role in various physiological processes in the body. It is a major component of bones and teeth, and it is involved in energy metabolism, cell signaling, and nutrient utilization.",
     functions: {
-        "Component of biological structures" :"Phosphorus is a vital component of bones, teeth, DNA, RNA, phospholipids in cell membranes, and adenosine triphosphate (ATP), the body's primary energy source.",
-        "Cell Membrane Structure and Energy Source" : "As phospholipids, phosphorus contributes to the structure of cell membranes and acts as a vital component of adenosine triphosphate (ATP), the primary energy source for cellular activities.",
-        "Interplay with calcium" : "Phosphorus and calcium metabolism are closely linked, regulated by hormones like vitamin D and parathyroid hormone (PTH). They both contribute to the formation of hydroxyapatite, the main structural component in bones and tooth enamel.",
-        "Role in Protein and Sugar Functionality": "Phosphorus plays a crucial role in the functionality of many proteins and sugars in the body, particularly through phosphorylation processes.",
-        "Regulation of Gene Transcription and Enzyme Activation" : "Phosphorus is involved in the regulation of gene transcription, activation of enzymes, and maintenance of normal pH levels in extracellular fluid.",
-        "Intracellular Energy Storage" : "It contributes to intracellular energy storage mechanisms, aiding in the storage and release of energy as needed by cells."
+        "Bone and Teeth Health": "Phosphorus is a major structural component of bones and teeth, accounting for approximately 85% of the body's phosphorus content. It works synergistically with calcium to maintain bone density, strength, and integrity.",
+        "Energy Metabolism": "Phosphorus is involved in energy production and metabolism by serving as a key component of adenosine triphosphate (ATP), the primary energy currency of cells. ATP hydrolysis releases energy that drives cellular activities such as muscle contraction, nerve signaling, and biosynthesis.",
+        "Cell Signaling": "Phosphorus plays a role in cell signaling and communication processes by participating in the phosphorylation of proteins, enzymes, and other molecules. Phosphorylation regulates enzyme activity, gene expression, and cellular responses to external stimuli.",
+        "Nutrient Utilization": "Phosphorus is involved in the metabolism and utilization of other nutrients such as carbohydrates, fats, and proteins. It is required for the synthesis of nucleic acids, phospholipids, and other cellular components essential for growth, repair, and maintenance."
     },
     sources: {
-        "Food": "Phosphorus is naturally present in a wide range of foods, including dairy products, meats, poultry, fish, eggs, nuts, legumes, vegetables, and grains. Dairy products and bakery items contribute significantly to phosphorus intake in the United States. The absorption rate of phosphorus from food ranges from 40% to 70%, with animal sources being more readily absorbed than plant sources. Phosphorus absorption can be affected by calcium intake, which can bind to phosphorus and reduce its absorption. Additionally, phosphate additives in processed foods can significantly contribute to overall phosphorus intake.",
-        "Supplements" : "Dietary supplements containing phosphorus are available in various forms, including phosphate salts and phospholipids. These supplements may be standalone phosphorus products or combined with other ingredients. While most supplements provide 10% or less of the Daily Value (DV) for phosphorus, some may deliver higher concentrations. The bioavailability of phosphate salts in supplements is approximately 70%, although the bioavailability of other phosphorus forms has not been extensively studied in humans."
+        "Dairy Products": "Dairy products such as milk, yogurt, and cheese are rich dietary sources of phosphorus, providing readily absorbable forms of phosphorus along with calcium and other nutrients.",
+        "Meat and Poultry": "Meat and poultry, including beef, pork, chicken, and turkey, are good sources of phosphorus, particularly in the form of phosphoproteins and phospholipids found in muscle tissue.",
+        "Seafood": "Seafood, such as fish, shellfish, and crustaceans, contains phosphorus in varying amounts. Fish like salmon, tuna, and sardines are nutrient-dense sources of phosphorus, along with omega-3 fatty acids and protein.",
+        "Whole Grains": "Whole grains such as brown rice, oats, barley, and whole wheat products contain phosphorus in varying amounts. Consuming a variety of whole grains can contribute to overall phosphorus intake along with dietary fiber and other nutrients."
     },
-    dailyIntake: "The recommended daily intake of phosphorus varies depending on age and life stage. Infants require 100 mg from birth to 6 months, increasing to 275 mg between 7 to 12 months. For children aged 1 to 8 years, the recommended amount ranges from 460 mg to 500 mg. Adolescents aged 9 to 18 years, including pregnant and breastfeeding teens, should aim for 1,250 mg daily. Adults aged 19 years and older, along with pregnant and breastfeeding women, require 700 mg of phosphorus per day.",
-    deficiency: "Can lead to various symptoms including loss of appetite, anemia, muscle weakness, coordination issues, bone pain, deformities in bone structure, increased susceptibility to infections, sensations of burning or prickling in the skin, and confusion.",
-    res: ['https://ods.od.nih.gov/factsheets/Phosphorus-Consumer/' , 'https://ods.od.nih.gov/factsheets/Phosphorus-HealthProfessional/']
+    dailyIntake: "The recommended daily intake of phosphorus varies by age, sex, and individual health status. For most adults, the recommended amount is approximately 700-1,250 milligrams per day. Pregnant and lactating women may have slightly higher phosphorus requirements.",
+    deficiency: "Phosphorus deficiency is rare in healthy individuals with balanced diets, as phosphorus is widely available in many foods. However, severe phosphorus deficiency can lead to symptoms such as weakness, fatigue, bone pain, and loss of appetite.",
+    overdose: "Excessive phosphorus intake, known as phosphorus toxicity, is uncommon in healthy individuals with normal kidney function, as excess phosphorus is excreted in urine. However, high intake of phosphorus supplements or phosphorus-containing additives may disrupt calcium-phosphorus balance and lead to health problems such as bone loss and kidney damage.",
+    res: [
+        "https://ods.od.nih.gov/factsheets/Phosphorus-HealthProfessional/",
+        "https://chatgpt.com/",
+    ]
 };
 
 export default phosphorus;

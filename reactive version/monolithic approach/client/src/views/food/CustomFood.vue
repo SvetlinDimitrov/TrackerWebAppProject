@@ -7,21 +7,20 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import router from "../../router/index.js";
+import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Food from "../../components/food/Food.vue";
-import {useToast} from "primevue/usetoast";
-import {generateGeneralFood} from "../../utils/food.js";
 
-const toast = useToast();
 const store = useStore();
 const route = useRoute();
+const toast = useToast();
 const mealId = ref(route.params.id);
 const foodId = ref(route.params.foodId);
 const food = ref(null);
-const originalFood = ref(null);
+const originalFood = computed(() => store.getters.currentFood);
 
 onMounted(async () => {
   const currentMeal = store.getters.meals[mealId.value];
@@ -32,35 +31,29 @@ onMounted(async () => {
     return;
   }
 
-  currentMeal.foods.forEach((f) => {
-    if (f.id === foodId.value) {
-
-      food.value = generateGeneralFood(f);
-      originalFood.value = JSON.parse(JSON.stringify(food.value)); // Deep copy
-    }
-  });
-
-  if (food.value === null) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Food not found', life: 3000});
+  try {
+    food.value = await store.dispatch("getCustomFoodById", foodId.value);
+  } catch (error) {
     await router.push({name: 'Home'});
+    toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
 });
 
 const handleClose = () => {
-  router.push({name: 'Home'});
+  router.go(-1);
 };
 
 const handleSubmit = async (food) => {
-  try {
-    await store.dispatch("changeFoodById", {mealId: mealId.value, foodId: foodId.value, food});
-    toast.add({severity: 'success', summary: 'Success', detail: 'Food changed successfully', life: 3000});
+  const payload = {
+    mealId: mealId.value,
+    food: food
+  };
+  try{
+    await store.dispatch("addFoodIntoMeal" , payload);
+    toast.add({severity: 'success', summary: 'Success', detail: 'Food added successfully', life: 3000});
     await router.push({name: 'Home'});
   } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
 };
 </script>
-
-<style scoped>
-
-</style>

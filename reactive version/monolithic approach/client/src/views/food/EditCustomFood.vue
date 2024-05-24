@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import router from "../../router/index.js";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
@@ -18,45 +18,37 @@ import {generateGeneralFood} from "../../utils/food.js";
 const toast = useToast();
 const store = useStore();
 const route = useRoute();
-const mealId = ref(route.params.id);
 const foodId = ref(route.params.foodId);
 const food = ref(null);
-const originalFood = ref(null);
+const originalFood = computed(() => store.getters.currentFood);
 
 onMounted(async () => {
-  const currentMeal = store.getters.meals[mealId.value];
-
-  if (!currentMeal) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'no meal found', life: 3000});
-    await router.push({name: 'Home'});
-    return;
+  try {
+    const data = await store.dispatch('getCustomFoodById', foodId.value);
+    food.value = generateGeneralFood(data);
+  } catch (error) {
+    toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+    router.go(-1);
   }
-
-  currentMeal.foods.forEach((f) => {
-    if (f.id === foodId.value) {
-
-      food.value = generateGeneralFood(f);
-      originalFood.value = JSON.parse(JSON.stringify(food.value)); // Deep copy
-    }
-  });
 
   if (food.value === null) {
     toast.add({severity: 'error', summary: 'Error', detail: 'Food not found', life: 3000});
-    await router.push({name: 'Home'});
+    router.go(-1);
   }
 });
 
 const handleClose = () => {
-  router.push({name: 'Home'});
+  router.go(-1);
 };
 
 const handleSubmit = async (food) => {
   try {
-    await store.dispatch("changeFoodById", {mealId: mealId.value, foodId: foodId.value, food});
-    toast.add({severity: 'success', summary: 'Success', detail: 'Food changed successfully', life: 3000});
-    await router.push({name: 'Home'});
+    await store.dispatch('changeCustomFoodById', {food, id: foodId.value});
+    toast.add({severity: 'success', summary: 'Success', detail: 'Food updated successfully', life: 3000});
+    router.go(-1);
   } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+    router.go(-1);
   }
 };
 </script>

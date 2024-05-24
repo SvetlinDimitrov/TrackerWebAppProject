@@ -11,6 +11,7 @@
           @handleMealInsertFood="handleMealInsertFood"
           @handleRemoveFoodById="handleRemoveFoodById"
           @handleChangeFoodById="handleChangeFoodById"
+          @handleCustomFood="handleCustomFood"
       />
     </div>
 
@@ -99,5 +100,9 @@ const handleRemoveFoodById = (mealId, foodId) => {
 
 const handleChangeFoodById = (mealId, foodId) => {
   router.push({name: 'EditInsertedFood', params: {id: mealId, foodId}});
+};
+
+const handleCustomFood = (mealId) => {
+  router.push({name: 'CustomInsertFood' , params: {id: mealId}});
 };
 </script>

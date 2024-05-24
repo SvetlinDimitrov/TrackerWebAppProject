@@ -1,20 +1,27 @@
 const magnesium = {
-    description: "Magnesium is a vital nutrient required for maintaining overall health. It plays crucial roles in regulating muscle and nerve function, controlling blood sugar levels and blood pressure, and is essential for the production of protein, bone, and DNA.",
+    description: "Magnesium is an essential mineral that plays a critical role in numerous physiological functions in the body. It is involved in energy metabolism, muscle and nerve function, bone health, and protein synthesis.",
     functions: {
-        "Cofactor": "Magnesium acts as a cofactor in over 300 enzyme systems, regulating biochemical reactions such as protein synthesis, muscle and nerve function, blood glucose control, and blood pressure regulation.",
-        "Energy Production": "It is required for energy production, oxidative phosphorylation, and glycolysis.",
-        "Bone Development": "Magnesium contributes to the structural development of bone.",
-        "DNA and RNA Synthesis": "It is essential for the synthesis of DNA, RNA, and the antioxidant glutathione.",
-        "Ion Transport": "Magnesium plays a role in the active transport of calcium and potassium ions across cell membranes, crucial for nerve impulse conduction, muscle contraction, and maintaining a normal heart rhythm."
+        "Energy Metabolism": "Magnesium serves as a cofactor for enzymes involved in energy production and metabolism, including ATP synthesis and glycolysis. It helps convert nutrients such as carbohydrates, fats, and proteins into usable energy (ATP) for cellular activities.",
+        "Muscle and Nerve Function": "Magnesium plays a key role in muscle contraction and relaxation, as well as nerve impulse transmission. It helps regulate calcium levels within cells, which is essential for proper muscle and nerve function.",
+        "Bone Health": "Magnesium is important for bone health and density, working synergistically with calcium, vitamin D, and other minerals to maintain skeletal integrity. It helps regulate bone formation and resorption processes, influencing bone mineralization and turnover.",
+        "Protein Synthesis": "Magnesium is involved in protein synthesis, the process by which cells build and repair proteins. It is required for the synthesis of DNA, RNA, and ribosomes, as well as the activation of amino acids for protein assembly.",
+        "Heart Health": "Magnesium plays a role in cardiovascular health by supporting normal heart rhythm, blood pressure regulation, and vascular tone. It helps maintain the electrical stability of cardiac cells and blood vessel function.",
+        "Glucose and Insulin Regulation": "Magnesium is involved in glucose metabolism and insulin signaling pathways, influencing blood sugar levels and insulin sensitivity. Adequate magnesium levels may help reduce the risk of insulin resistance and type 2 diabetes."
     },
     sources: {
-        "Food": "Magnesium is abundant in many plant and animal foods. Good sources include green leafy vegetables like spinach, legumes, nuts, seeds, and whole grains. Foods containing dietary fiber also provide magnesium. Some breakfast cereals and other fortified foods have added magnesium. Food processing, such as refining grains, can significantly reduce magnesium content. Water, including tap, mineral, and bottled water, can also be a source of magnesium, though the amount varies widely by source.",
-        "Dietary Supplements": "Magnesium supplements come in various forms, including magnesium oxide, citrate, and chloride. The Supplement Facts panel on supplements lists the amount of elemental magnesium. Forms that dissolve well in liquid, such as magnesium aspartate, citrate, lactate, and chloride, are more completely absorbed in the gut than less soluble forms like magnesium oxide and sulfate. High doses of zinc from supplements can interfere with magnesium absorption.",
-        "Medicines": "Magnesium is an active ingredient in some laxatives and remedies for heartburn and acid indigestion. For example, Phillips’ Milk of Magnesia provides 500 mg of elemental magnesium per tablespoon, and extra-strength Rolaids contain 55 mg of elemental magnesium per tablet. Some of the magnesium in these products may not be absorbed due to their intended effects (e.g., laxative action)."
+        "Leafy Green Vegetables": "Leafy green vegetables such as spinach, kale, Swiss chard, and collard greens are excellent dietary sources of magnesium. They provide magnesium along with other vitamins, minerals, and phytonutrients.",
+        "Nuts and Seeds": "Nuts and seeds, including almonds, cashews, peanuts, and pumpkin seeds, are rich sources of magnesium. They are convenient snack options that also provide healthy fats, protein, and fiber.",
+        "Whole Grains": "Whole grains such as brown rice, quinoa, oats, and whole wheat products contain magnesium in varying amounts. Consuming a variety of whole grains can contribute to overall magnesium intake along with other essential nutrients.",
+        "Legumes and Beans": "Legumes and beans, such as lentils, chickpeas, black beans, and kidney beans, are good sources of magnesium. They provide not only magnesium but also dietary fiber, protein, and other vitamins and minerals."
     },
-    dailyIntake: "The amount of magnesium you need each day varies by age and sex. For infants, the recommended daily intake is 30 mg for those aged birth to 6 months and 75 mg for those aged 7–12 months. Children require 80 mg per day from ages 1–3 years, 130 mg from ages 4–8 years, and 240 mg from ages 9–13 years. Teen boys need 410 mg per day, while teen girls need 360 mg. Adult men should consume 400–420 mg daily, and adult women need 310–320 mg. Pregnant teens are recommended to take 400 mg, pregnant women 350–360 mg, breastfeeding teens 360 mg, and breastfeeding women 310–320 mg.",
-    deficiency: "In the short term, not getting enough magnesium does not usually produce noticeable symptoms because the kidneys help retain magnesium by reducing its loss in urine. However, long-term low magnesium intake can lead to deficiency. Certain medical conditions and medications can also affect magnesium absorption and increase its excretion, leading to deficiency. Symptoms of magnesium deficiency include loss of appetite, nausea, vomiting, fatigue, and weakness. Severe deficiency can cause numbness, tingling, muscle cramps, seizures, personality changes, and abnormal heart rhythms. People with gastrointestinal diseases, type 2 diabetes, long-term alcoholism, and older adults are more likely to have low magnesium levels.",
-    res: ['https://ods.od.nih.gov/factsheets/Magnesium-Consumer/', 'https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/']
+    dailyIntake: "The recommended daily intake of magnesium varies by age, sex, and individual health status. For most adults, the recommended amount is approximately 310-420 milligrams per day for males and 270-320 milligrams per day for females. Pregnant and lactating women may have higher magnesium requirements.",
+    deficiency: "Magnesium deficiency is relatively common and can lead to symptoms such as muscle cramps, fatigue, weakness, irritability, and abnormal heart rhythms. Chronic magnesium deficiency may increase the risk of osteoporosis, hypertension, and cardiovascular disease.",
+    overdose: "Excessive magnesium intake, known as magnesium toxicity, is rare and typically occurs from overuse of magnesium supplements or medications. Symptoms of magnesium toxicity may include diarrhea, abdominal discomfort, nausea, vomiting, and low blood pressure.",
+    res: [
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+        "https://chatgpt.com/",
+        "https://www.health.harvard.edu/staying-healthy/should-you-get-your-nutrients-from-food-or-from-supplements"
+    ]
 };
 
 export default magnesium;

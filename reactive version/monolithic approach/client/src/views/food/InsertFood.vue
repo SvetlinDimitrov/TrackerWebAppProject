@@ -1,26 +1,12 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center backdrop-blur">
-    <div class="bg-white border border-gray-300 px-4 py-3 rounded w-1/2 h-1/2">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold">Search for food</h2>
-        <Avatar icon="pi pi-times" class="cursor-pointer" @click="handleClose"/>
-      </div>
-      <div class="flex items-center gap-2 mb-4">
-        <InputText v-model="search" class="flex-grow" placeholder="Example: Apple"/>
-        <Button label="Search" @click="handleSearch"/>
-      </div>
-
-      <div class="relative h-3/4 overflow-auto border border-gray-300 rounded p-2">
-        <ul>
-          <li v-for="(food, index) in foods" :key="food.name + index"
-              class="p-1 mb-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200 border-b border-gray-200 text-lg font-semibold"
-              @click="handleFoodClick(food)">{{ food.name }}
-            <span v-if="food.brand">({{ food.brand }})</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <SearchBar
+      :search="search"
+      :foods="foods"
+      @close="handleClose"
+      @search="handleSearch"
+      @foodClick="handleFoodClick"
+      @update:search="search = $event"
+  />
 </template>
 
 <script setup>
@@ -29,6 +15,7 @@ import router from "../../router/index.js";
 import {useToast} from "primevue/usetoast"
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
+import SearchBar from "../../components/food/SearchBar.vue";
 
 const store = useStore();
 const route = useRoute();

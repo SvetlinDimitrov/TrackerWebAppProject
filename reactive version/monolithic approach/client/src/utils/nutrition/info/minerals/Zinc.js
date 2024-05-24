@@ -1,23 +1,27 @@
 const zinc = {
-    description: "Zinc is an essential nutrient required for overall health. It is present in cells throughout the body and plays a crucial role in the immune system, helping to fight off bacteria and viruses. Zinc is also necessary for making DNA and proteins. During key growth periods such as pregnancy, infancy, childhood, and adolescence, zinc supports proper growth and development. Additionally, zinc aids in wound healing and is important for maintaining a proper sense of taste.",
+    description: "Zinc is an essential trace mineral that plays a critical role in various physiological processes in the body. It is involved in immune function, protein synthesis, wound healing, DNA synthesis, and cell division.",
     functions: {
-        "Catalytic activity": "Zinc is required for the catalytic activity of hundreds of enzymes, aiding numerous biochemical reactions in the body.",
-        "Immune function": "Zinc plays a crucial role in enhancing immune function, helping the body fight off infections and diseases.",
-        "Protein and DNA synthesis": "Zinc is essential for the synthesis of proteins and DNA, the genetic material in cells, which is vital for cell growth and replication.",
-        "Wound healing": "Zinc supports wound healing by aiding cell division and tissue repair.",
-        "Cell signaling and division": "Zinc is involved in cell signaling and division, crucial processes for maintaining cellular function and growth.",
-        "Growth and development": "Zinc supports healthy growth and development during pregnancy, infancy, childhood, and adolescence.",
-        "Sense of taste": "Zinc is involved in the sense of taste, impacting how flavors are perceived."
+        "Immune Function": "Zinc is vital for immune system function and defense mechanisms. It helps regulate innate and adaptive immune responses, including the production and activity of immune cells such as T lymphocytes, B lymphocytes, natural killer (NK) cells, and macrophages.",
+        "Protein Synthesis": "Zinc is necessary for protein synthesis and metabolism, which are essential processes for growth, repair, and maintenance of tissues and organs. It is involved in the synthesis of enzymes, hormones, and structural proteins that play critical roles in cellular function.",
+        "Wound Healing": "Zinc is important for wound healing and tissue repair processes. It supports skin integrity and regeneration by promoting cell proliferation, migration, and differentiation at the wound site. Zinc also helps maintain the structural integrity of connective tissues such as collagen and elastin.",
+        "DNA Synthesis": "Zinc is essential for DNA synthesis and cell division, which are fundamental processes for growth, development, and reproduction. It is required for the activity of DNA polymerases, enzymes that catalyze the replication and repair of DNA molecules during cell replication and proliferation.",
+        "Antioxidant Defense": "Zinc acts as an antioxidant and scavenger of free radicals and reactive oxygen species (ROS) in cells and tissues. It helps protect cells from oxidative damage and inflammation by supporting the activity of antioxidant enzymes such as superoxide dismutase (SOD) and metallothionein."
     },
     sources: {
-        "Food": "Zinc-rich foods include meat, fish, and seafood, with oysters being particularly high in zinc content. Beef, eggs, dairy products, beans, nuts, and whole grains also contain zinc, although the bioavailability from plant-based sources is lower due to the presence of phytates.",
-        "Zinc Content in Foods": "Various foods contain different amounts of zinc per serving, with oysters, beef, pumpkin seeds, pork, and turkey breast being notable sources. Additionally, enriched cereals, dairy products, lentils, shrimp, and yogurt contribute to zinc intake.",
-        "Dietary Supplements": "Zinc supplements are available in various forms, including zinc sulfate, zinc acetate, and zinc gluconate. The absorption of zinc from supplements varies depending on the form, with zinc citrate and zinc gluconate showing higher absorption rates.",
-        "Other Sources": "Zinc is also found in some homeopathic medications and nasal sprays marketed for cold relief and immune support. Some denture adhesive creams contain zinc, but excessive use can lead to zinc toxicity and associated health problems."
+        "Meat and Poultry": "Meat and poultry, including beef, pork, chicken, and turkey, are rich dietary sources of zinc. They provide highly absorbable forms of zinc along with high-quality protein, vitamins, and minerals.",
+        "Shellfish": "Shellfish such as oysters, crab, lobster, and mussels are among the best food sources of zinc. They contain high concentrations of bioavailable zinc along with other essential nutrients.",
+        "Legumes and Beans": "Legumes and beans, such as lentils, chickpeas, black beans, and kidney beans, are good plant-based sources of zinc. They offer zinc along with dietary fiber, protein, and other nutrients.",
+        "Nuts and Seeds": "Nuts and seeds, including pumpkin seeds, sesame seeds, hemp seeds, and almonds, contain zinc in varying amounts. They are nutrient-dense sources of zinc along with healthy fats, protein, and vitamins."
     },
-    dailyIntake: "The daily zinc requirement varies by age. For infants, 2 mg is needed from birth to 6 months, and 3 mg from 7 to 12 months. Children aged 1 to 3 years need 3 mg, those 4 to 8 years require 5 mg, and 9 to 13 years need 8 mg. Teen males aged 14 to 18 need 11 mg, while teen females require 9 mg. Adult males need 11 mg, and adult females need 8 mg. Pregnant teens require 12 mg, and pregnant adults need 11 mg. Breastfeeding teens require 13 mg, while breastfeeding adults need 12 mg of zinc daily.",
-    deficiency: "Zinc deficiency can cause various health issues across different age groups. In infants and children, it can lead to diarrhea, slow growth, loss of appetite, hair loss, and frequent infections, as well as potential reproductive problems in adulthood. At any age, zinc deficiency can cause loss of taste and smell. In older adults, it can delay wound healing and cause cognitive problems. During pregnancy, especially in lower-income countries, zinc deficiency can lead to premature births, low birth weight, and higher infant mortality. Many of these symptoms can also indicate other health issues, so it is important to consult a healthcare provider for a proper diagnosis.",
-    res: ['https://ods.od.nih.gov/factsheets/Zinc-Consumer/', 'https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/']
+    dailyIntake: "The recommended daily intake of zinc varies by age, sex, and individual health status. For most adults, the recommended amount is approximately 8-11 milligrams per day for men and 6-8 milligrams per day for women. Pregnant and lactating women may have slightly higher zinc requirements.",
+    deficiency: "Zinc deficiency is a common micronutrient deficiency worldwide, particularly in populations with inadequate dietary intake, poor absorption, or increased zinc losses. Symptoms of zinc deficiency may include impaired immune function, delayed wound healing, hair loss, loss of appetite, and growth retardation in children.",
+    overdose: "Excessive zinc intake from dietary sources is rare and usually only occurs from chronic supplementation or accidental ingestion of zinc-containing products. However, high doses of zinc supplements can interfere with copper absorption and lead to adverse effects such as gastrointestinal disturbances, copper deficiency, and immune dysfunction.",
+    res: [
+        "https://chatgpt.com/",
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5793244/",
+        "https://www.healthline.com/nutrition/best-foods-high-in-zinc"
+    ]
 };
 
 export default zinc;

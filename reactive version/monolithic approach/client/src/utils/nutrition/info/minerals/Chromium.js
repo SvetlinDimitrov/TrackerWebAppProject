@@ -1,16 +1,26 @@
 const chromium = {
-    description:"Chromium is a mineral present in various foods whose exact role in the body remains partially understood by researchers. However, it is believed to potentially aid in the metabolism of carbohydrates, fats, and proteins. There are primarily two forms of chromium: chromium (III), which is naturally occurring in foods and certain supplements, and chromium (VI), also known as hexavalent chromium, which is a toxic byproduct of industrial processes. This summary focuses on chromium (III), emphasizing its presence in the diet and its speculated functions in human metabolism.",
+    description: "Chromium is an essential trace mineral that plays a role in various physiological processes in the body. It is involved in carbohydrate, fat, and protein metabolism, as well as insulin sensitivity and glucose regulation.",
     functions: {
-        "Carbohydrate, lipid, and protein metabolism regulation": "Chromium, particularly in its trivalent form, may enhance insulin action, potentially influencing carbohydrate, lipid, and protein metabolism. The exact mechanism remains unclear, but it's suggested that chromium binds to an oligopeptide to form chromodulin, which activates insulin receptors, thus promoting insulin action.",
-        "Antioxidant effects": "Chromium may exhibit antioxidant properties, although the extent and mechanism of this effect are not fully understood.",
+        "Glucose Metabolism": "Chromium helps enhance the action of insulin, a hormone that regulates blood sugar levels. It facilitates the uptake of glucose into cells, where it is used for energy production and storage.",
+        "Insulin Sensitivity": "Chromium is involved in improving insulin sensitivity and reducing insulin resistance. It helps cells respond more effectively to insulin, leading to better glucose uptake and utilization.",
+        "Carbohydrate, Fat, and Protein Metabolism": "Chromium plays a role in the metabolism of carbohydrates, fats, and proteins, helping convert these macronutrients into energy and building blocks for cellular processes.",
+        "Cholesterol and Lipid Levels": "Some research suggests that chromium supplementation may help lower total cholesterol and triglyceride levels, although the evidence is not conclusive. Chromium may also have a role in improving lipid profiles and reducing cardiovascular risk factors.",
+        "Muscle Mass and Body Composition": "Chromium supplementation has been studied for its potential effects on muscle mass, fat loss, and body composition. Some research suggests that chromium may help preserve lean body mass and promote weight loss, particularly in combination with exercise and a balanced diet."
     },
     sources: {
-        "Food" : "Chromium is naturally present in a variety of foods, including meats, grains, fruits, vegetables, nuts, spices, brewer’s yeast, beer, and wine. However, the chromium content in these foods varies widely due to factors such as local soil and water conditions, agricultural practices, and manufacturing processes. Some chromium can also be introduced into foods from stainless steel equipment during processing and cooking. Dairy products and foods high in sugar tend to be low in chromium. Dietary absorption of chromium is relatively low, influenced by factors like ascorbic acid and prostaglandin inhibitors enhancing absorption, while oxalate and antacids inhibit it.",
-        "Dietary Supplements" : "Most multivitamin/mineral supplements contain chromium, typically ranging from 35 to 120 mcg. There are also standalone chromium supplements available, offering doses of 200 mcg to 1,000 mcg. These supplements come in various forms such as chromium picolinate, chromium nicotinate, chromium polynicotinate, chromium chloride, and chromium histidinate. The absorption rates of these forms are similar, with chromium picolinate typically absorbed at about 1.2% and chromium chloride at about 0.4%. Chromium compounds vary in their elemental chromium content, with labels on dietary supplements indicating the amount of elemental chromium present."
+        "Whole Grains": "Whole grains, such as oats, barley, brown rice, and whole wheat products, are good dietary sources of chromium. They provide not only chromium but also other essential nutrients and fiber.",
+        "Vegetables": "Some vegetables, including broccoli, green beans, potatoes, and tomatoes, contain moderate amounts of chromium. Consuming a variety of vegetables can contribute to overall chromium intake.",
+        "Meats and Poultry": "Meats and poultry, such as beef, chicken, and turkey, contain small amounts of chromium. However, the chromium content of animal-based foods varies depending on factors like animal diet and processing methods.",
+        "Nuts and Seeds": "Nuts and seeds, such as almonds, Brazil nuts, and sunflower seeds, are rich sources of chromium. They provide not only chromium but also healthy fats, protein, and other micronutrients."
     },
-    dailyIntake: "Scientists previously considered chromium to be an essential nutrient, setting recommended daily amounts based on evidence available in 2001. However, current understanding suggests that chromium may not be necessary for good health, as deficiency hasn't been reported in healthy individuals. Chromium intake recommendations vary across different life stages, with infants needing as little as 0.2 micrograms per day and breastfeeding women requiring up to 45 micrograms daily. These recommendations reflect the average daily amounts established in 2001, indicating the diverse needs for chromium intake throughout various stages of life.",
-    deficiency: "Not found from the sources.",
-    res: ['https://ods.od.nih.gov/factsheets/chromium-Consumer/' , 'https://ods.od.nih.gov/factsheets/Chromium-HealthProfessional/']
+    dailyIntake: "The recommended daily intake of chromium varies by age, sex, and individual health status. However, most adults require approximately 20-35 micrograms of chromium per day. Pregnant and lactating women may have higher chromium needs.",
+    deficiency: "Chromium deficiency is rare in healthy individuals and is primarily associated with impaired glucose tolerance, insulin resistance, and elevated blood sugar levels. Symptoms of chromium deficiency may include fatigue, weight changes, and poor glucose control.",
+    overdose: "Excessive intake of chromium supplements may lead to adverse effects such as gastrointestinal upset, kidney damage, and changes in liver function. It is important to avoid megadoses of chromium and to obtain chromium from dietary sources whenever possible.",
+    res: [
+        "https://ods.od.nih.gov/factsheets/Chromium-HealthProfessional/",
+        "https://chatgpt.com/",
+        "https://www.healthline.com/nutrition/chromium-picolinate"
+    ]
 };
 
 export default chromium;

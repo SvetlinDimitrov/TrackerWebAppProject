@@ -1,3 +1,7 @@
+<template>
+
+</template>
+
 <script setup>
 import {onMounted, ref} from "vue";
 import router from "../../router/index.js";
@@ -20,10 +24,10 @@ onMounted(async () => {
     return;
   }
 
-  try{
+  try {
     await store.dispatch('deleteMealById', mealId.value);
     toast.add({severity: 'success', summary: 'Success', detail: 'meal deleted successfully', life: 3000});
-  }catch (error) {
+  } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
   }
   await router.push({name: 'Home'});

@@ -1,18 +1,18 @@
 <template>
   <Food v-if="food"
         :food="food"
-        :original-food="food"
+        :originalFood="originalFood"
         @close="handleClose"
         @submit="handleSubmit"/>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import router from "../../router/index.js";
 import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import Food from "../../components/Food.vue";
+import Food from "../../components/food/Food.vue";
 import {getCommonFoodByName} from "../../api/FoodSeachService.js";
 
 const store = useStore();
@@ -21,6 +21,7 @@ const toast = useToast();
 const mealId = ref(route.params.id);
 const foodId = ref(route.params.foodId);
 const food = ref(null);
+const originalFood = computed(() => store.getters.currentFood);
 
 onMounted(async () => {
   const currentMeal = store.getters.meals[mealId.value];

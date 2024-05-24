@@ -8,4 +8,7 @@ export default {
     setCurrentFood(state, food) {
         state.currentFood = food;
     },
+    setCustomFoods(state, foods) {
+        state.customFoods = foods;
+    },
 }

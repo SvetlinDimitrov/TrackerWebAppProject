@@ -12,7 +12,7 @@ import router from "../../router/index.js";
 import {useToast} from "primevue/usetoast"
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import Food from "../../components/Food.vue";
+import Food from "../../components/food/Food.vue";
 
 const store = useStore();
 const route = useRoute();

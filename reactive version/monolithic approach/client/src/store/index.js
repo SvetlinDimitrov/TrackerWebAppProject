@@ -24,6 +24,7 @@ const store = createStore({
             searchFoodResult: [],
             currentFood: null,
             loginCompleted: false,
+            customFoods:undefined,
         };
     },
     mutations: {

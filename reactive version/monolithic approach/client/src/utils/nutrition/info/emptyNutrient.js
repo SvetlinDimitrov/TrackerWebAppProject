@@ -4,6 +4,7 @@ const emptyNutrient = {
     sources: {},
     dailyIntake: "",
     deficiency: "",
+    overdose: "",
     res: []
 };
 

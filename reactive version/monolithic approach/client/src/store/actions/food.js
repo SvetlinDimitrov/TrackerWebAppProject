@@ -2,6 +2,13 @@ import {addFoodIntoMeal, changeFoodByIdAndMealId, getMealById, removeFoodByIdAnd
 import {getAllFoodsBySearchWord, getBrandedFoodById, getCommonFoodByName} from "../../api/FoodSeachService.js";
 import {getRecord} from "../../api/RecordService.js";
 import {filterNutrients, generateGeneralFood} from "../../utils/food.js";
+import {
+    createCustomFood,
+    deleteCustomFood,
+    getAllCustomFoodS,
+    getCustomFoodById,
+    updateCustomFood
+} from "../../api/CustomFoodService.js";
 
 export default {
     async addFoodIntoMeal({commit, getters}, data) {
@@ -102,5 +109,84 @@ export default {
             commit('setIsLoading', false);
         }
     },
+    async getCustomFoods({commit}) {
+        commit('setIsLoading', true);
+        try {
+            const customFoods = await getAllCustomFoodS();
+            const newFoodArray = customFoods.map(food => ({
+                name: food.name,
+                id: food.id,
+            }));
+            commit('setCustomFoods', newFoodArray);
+            return newFoodArray;
+        } catch (e) {
+            throw new Error(e.message)
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async createCustomFood({commit}, data) {
+        commit('setIsLoading', true);
+        try {
+            await createCustomFood(data);
+            const customFoods = await getAllCustomFoodS();
+            const newFoodArray = customFoods.map(food => ({
+                name: food.name,
+                id: food.id,
+            }));
+            commit('setCustomFoods', newFoodArray);
+        } catch (e) {
+            throw new Error(e.message)
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async getCustomFoodById({commit}, id) {
+        commit('setIsLoading', true);
+        try {
+            const food = await getCustomFoodById(id);
+            const result = generateGeneralFood(food);
+            await commit('setCurrentFood', result);
+            return JSON.parse(JSON.stringify(result));
+        } catch (e) {
+            throw new Error(e.message)
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async changeCustomFoodById({commit, getters}, data) {
+        commit('setIsLoading', true);
+        try {
+            const id = data.id;
+            const food = data.food;
+            await updateCustomFood(id, food);
+            const customFoods = await getAllCustomFoodS();
+            const newFoodArray = customFoods.map(food => ({
+                name: food.name,
+                id: food.id,
+            }));
+            commit('setCustomFoods', newFoodArray);
+        } catch (e) {
+            throw new Error(e.message)
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async deleteCustomFoodById({commit}, id) {
+        commit('setIsLoading', true);
+        try {
+            await deleteCustomFood(id);
+            const customFoods = await getAllCustomFoodS();
+            const newFoodArray = customFoods.map(food => ({
+                name: food.name,
+                id: food.id,
+            }));
+            commit('setCustomFoods', newFoodArray);
+        } catch (e) {
+            throw new Error(e.message)
+        } finally {
+            commit('setIsLoading', false);
+        }
+    }
 
 };

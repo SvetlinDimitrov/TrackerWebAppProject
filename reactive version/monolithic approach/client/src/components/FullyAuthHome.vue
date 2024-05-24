@@ -20,6 +20,8 @@
             <span class="font-bold white-space-nowrap">{{ meal.name }}</span>
             <span class="flex items-center gap-2">
               <span class="text-sm">Calories: {{ meal.consumedCalories }}</span>
+              <Avatar icon="pi pi-apple" style="background-color: #FFA500; color: white"
+                      @click.stop="$emit('handleCustomFood' , id)"></Avatar>
               <Avatar icon="pi pi-apple" style="background-color: #60C921FF; color: white"
                       @click.stop="$emit('handleMealInsertFood' , id)"></Avatar>
               <Avatar icon="pi pi-trash" style="background-color: #ff4d4d; color: white"
@@ -53,6 +55,6 @@
 <script setup>
 
 defineProps(['record', 'meals'])
-defineEmits(['handleMealCreate', 'handleMealDeletion', 'handleMealEdit', 'handleMealInsertFood', 'handleRemoveFoodById', 'handleChangeFoodById'])
+defineEmits(['handleMealCreate','handleCustomFood', 'handleMealDeletion', 'handleMealEdit', 'handleMealInsertFood', 'handleRemoveFoodById', 'handleChangeFoodById'])
 
 </script>

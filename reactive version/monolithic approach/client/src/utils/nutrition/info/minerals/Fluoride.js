@@ -1,19 +1,24 @@
 const fluoride = {
-    description: "Fluoride is a mineral with two primary functions: preventing tooth decay and promoting bone strength. It plays a crucial role in dental health by protecting against cavities and maintaining strong teeth. Additionally, fluoride contributes to bone health by ensuring their strength and integrity.",
+    description: "Fluoride is a naturally occurring mineral found in soil, water, and various foods. It is also added to drinking water, toothpaste, and dental products for its dental health benefits.",
     functions: {
-        "Dental Caries Prevention": "Fluoride inhibits or reverses the initiation and progression of dental caries, commonly known as tooth decay, contributing to overall dental health.",
-        "Bone Health Promotion": "Fluoride stimulates new bone formation, playing a role in maintaining bone strength and integrity."
+        "Dental Health": "Fluoride helps prevent tooth decay and cavities by strengthening tooth enamel, the outer protective layer of teeth. It promotes remineralization of enamel and inhibits the growth of bacteria that cause dental plaque and acid erosion.",
+        "Bone Health": "Fluoride plays a role in maintaining bone density and strength, although its effects on bone health are primarily observed during periods of bone formation and growth, such as childhood and adolescence.",
+        "Topical Application": "Fluoride is applied topically to the surface of teeth through toothpaste, mouthwash, and professional dental treatments (e.g., fluoride varnish, fluoride rinse). Topical fluoride helps protect teeth against acid attacks and promotes enamel remineralization.",
+        "Systemic Absorption": "In addition to topical application, fluoride can be absorbed systemically through ingestion of fluoridated water and foods. Systemic fluoride incorporation into developing teeth during childhood can enhance enamel resistance to acid erosion and reduce the risk of cavities.",
+        "Community Water Fluoridation": "Community water fluoridation is the process of adjusting the fluoride content of public water supplies to optimal levels for dental health (approximately 0.7-1.2 parts per million). It is a cost-effective and equitable public health measure for preventing tooth decay and improving oral health outcomes."
     },
     sources: {
-        "Food": "Brewed tea, depending on its type, can contain higher levels of fluoride, ranging from 0.07 to 1.5 mg per cup. Breast milk and cow's milk have very low fluoride concentrations, as do most foods not prepared with fluoridated water. Infant formulas have varying fluoride levels, with milk-based formulas containing less than 0.2 mg/L and soy-based ones ranging from 0.2 to 0.3 mg/L. Generally, foods provide trace amounts of fluoride, with most offering less than 0.05 mg per 100 g serving.",
-        "Fluoridated Drinking Water": "Municipal drinking water contains fluoride to prevent dental caries, with recommended concentrations ranging from 0.7 to 1.2 mg/L. About 60% of fluoride intake in the U.S. comes from fluoridated community water systems. Fluoride levels in tap water vary by county and can be checked through the CDC's website. Private water sources may have different fluoride concentrations.",
-        "Dietary Supplements": "Some dietary supplements contain fluoride, primarily as sodium fluoride, with typical amounts ranging from 0.25 to 1 mg.",
-        "Dental Products": "Most toothpaste contains fluoride, typically at levels of 1,000 to 1,100 mg/L. Fluoride is also present in mouth rinses, topical treatments, and dental devices like orthodontic bracket adhesives and sealants.",
-        "Medications": "Certain medications, such as voriconazole, contain fluoride, with typical doses providing 65 mg/day. Long-term use can lead to high fluoride concentrations in serum, potentially causing skeletal fluorosis and periostitis."
+        "Drinking Water": "Fluoride occurs naturally in groundwater and surface water sources, although its concentration can vary widely depending on geographic location and geological factors. Fluoride is also added to drinking water supplies in many communities to achieve optimal fluoridation levels for dental health.",
+        "Dental Products": "Fluoride is a common ingredient in toothpaste, mouthwash, and dental treatments designed to prevent cavities and promote oral hygiene. Fluoride toothpaste is the primary vehicle for delivering fluoride to teeth through daily oral hygiene practices.",
+        "Food and Beverages": "Some foods and beverages contain fluoride naturally or as a result of processing and preparation methods. These include tea, seafood, fluoridated salt, and processed foods made with fluoridated water.",
+        "Professional Dental Treatments": "Dentists and dental hygienists may administer fluoride treatments in the form of varnishes, gels, foams, or rinses during routine dental check-ups or as part of preventive dental care for individuals at high risk of tooth decay."
     },
-    dailyIntake: "The recommended daily intake of fluoride varies based on age and gender. For infants, it starts at 0.01 mg from birth to 6 months and increases to 0.5 mg between 7 to 12 months. Children aged 1 to 8 years require 0.7 mg to 1 mg daily, while those aged 9 to 13 years need 2 mg. Adolescents aged 14 to 18 years, along with adult men and pregnant or breastfeeding women, require 3 mg daily. For non-pregnant adult women, the recommended intake is 3 mg, while it's 4 mg for adult men.",
-    deficiency: "Not found",
-    res: ['https://ods.od.nih.gov/factsheets/Fluoride-Consumer/', 'https://ods.od.nih.gov/factsheets/Fluoride-HealthProfessional/']
+    dailyIntake: "The recommended daily intake of fluoride varies depending on factors such as age, geographic location, and individual dental health needs. For optimal dental health benefits, the American Dental Association (ADA) recommends a total daily fluoride intake of approximately 1.5 to 4 milligrams for adults and children, with most fluoride coming from fluoridated water and dental products.",
+    deficiency: "Fluoride deficiency is not a recognized health concern in areas with access to fluoridated water and dental products. However, inadequate fluoride exposure may increase the risk of tooth decay and cavities, especially in populations with limited access to preventive dental care.",
+    overdose: "Excessive fluoride intake, known as fluorosis, can occur from ingesting large amounts of fluoride-containing substances such as toothpaste, fluoride supplements, or fluoridated water. Mild fluorosis may manifest as white spots or streaks on teeth, while severe fluorosis can cause enamel discoloration, pitting, and structural abnormalities.",
+    res: [
+        "https://chatgpt.com/",
+    ]
 };
 
 export default fluoride;

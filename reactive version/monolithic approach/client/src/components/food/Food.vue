@@ -43,7 +43,8 @@
           <p>{{ nutrient.amount }} {{ nutrient.unit }}</p>
         </div>
       </div>
-      <div v-if="currentFood.foodDetails" class="flex justify-between items-center border-b border-gray-300 p-2">
+      <div v-if="currentFood.foodDetails
+      && (currentFood.foodDetails.info || currentFood.foodDetails.largeInfo || currentFood.foodDetails.picture)" class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>More Details</p>
         <InputSwitch v-model="showMoreDetails"/>
       </div>
@@ -88,7 +89,7 @@
 
 <script setup>
 import {computed, ref, watch} from 'vue';
-import {createNewNutrientArray} from "../utils/food.js";
+import {createNewNutrientArray} from "../../utils/food.js";
 
 const showNutrients = ref(false);
 const showMoreDetails = ref(false);
