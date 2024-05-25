@@ -49,7 +49,7 @@ export default {
             const mealId = data.mealId;
             const foodId = data.foodId;
             const food = data.food;
-            await changeFoodByIdAndMealId(mealId, foodId, food)
+            await changeFoodByIdAndMealId(mealId, foodId, filterNutrients(food))
             const meal = await getMealById(mealId);
             commit('setNewMealById', meal);
             const record = await getRecord(getters.recordSettingData);
@@ -63,7 +63,7 @@ export default {
     async getFoodsBySearchName({commit}, searchName) {
         commit('setIsLoading', true);
         try {
-            const data =  await getAllFoodsBySearchWord(searchName);
+            const data = await getAllFoodsBySearchWord(searchName);
             const newFoods = await data.common.concat(data.branded).reduce((acc, food) => {
                 if (food.food_name) {
                     acc.push({
@@ -87,9 +87,7 @@ export default {
         commit('setIsLoading', true);
         try {
             const food = await getCommonFoodByName(searchName);
-            const result = generateGeneralFood(food[0]);
-            await commit('setCurrentFood', result);
-            return JSON.parse(JSON.stringify(result));
+            return generateGeneralFood(food[0]);
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -99,10 +97,8 @@ export default {
     async getBrandedFoodById({commit}, foodId) {
         commit('setIsLoading', true);
         try {
-            const food =  await getBrandedFoodById(foodId);
-            const result = generateGeneralFood(food[0]);
-            await commit('setCurrentFood', result);
-            return JSON.parse(JSON.stringify(result));
+            const food = await getBrandedFoodById(foodId);
+            return generateGeneralFood(food[0]);
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -128,7 +124,7 @@ export default {
     async createCustomFood({commit}, data) {
         commit('setIsLoading', true);
         try {
-            await createCustomFood(data);
+            await createCustomFood(filterNutrients(data));
             const customFoods = await getAllCustomFoodS();
             const newFoodArray = customFoods.map(food => ({
                 name: food.name,
@@ -145,9 +141,7 @@ export default {
         commit('setIsLoading', true);
         try {
             const food = await getCustomFoodById(id);
-            const result = generateGeneralFood(food);
-            await commit('setCurrentFood', result);
-            return JSON.parse(JSON.stringify(result));
+            return generateGeneralFood(food);
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -159,7 +153,7 @@ export default {
         try {
             const id = data.id;
             const food = data.food;
-            await updateCustomFood(id, food);
+            await updateCustomFood(id, filterNutrients(food));
             const customFoods = await getAllCustomFoodS();
             const newFoodArray = customFoods.map(food => ({
                 name: food.name,
@@ -188,5 +182,4 @@ export default {
             commit('setIsLoading', false);
         }
     }
-
 };

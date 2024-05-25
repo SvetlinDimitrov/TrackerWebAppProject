@@ -1,31 +1,29 @@
 <template>
-  <Food v-if="food"
-        :food="food"
-        :originalFood="originalFood"
-        @close="handleClose"
-        @submit="handleSubmit"/>
+  <CustomFoodCreation
+      v-if="food"
+      header="Edit Custom Food"
+      :food="food"
+      @submit="handleSubmit"
+      @close="handleClose"/>
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import router from "../../router/index.js";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import Food from "../../components/food/Food.vue";
 import {useToast} from "primevue/usetoast";
-import {generateGeneralFood} from "../../utils/food.js";
+import CustomFoodCreation from "../../components/food/CustomFoodCreation.vue";
 
 const toast = useToast();
 const store = useStore();
 const route = useRoute();
 const foodId = ref(route.params.foodId);
 const food = ref(null);
-const originalFood = computed(() => store.getters.currentFood);
 
 onMounted(async () => {
   try {
-    const data = await store.dispatch('getCustomFoodById', foodId.value);
-    food.value = generateGeneralFood(data);
+    food.value = await store.dispatch('getCustomFoodById', foodId.value);
   } catch (error) {
     toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
     router.go(-1);

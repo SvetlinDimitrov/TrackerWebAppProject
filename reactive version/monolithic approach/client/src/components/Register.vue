@@ -73,7 +73,7 @@ const registerHandle = async () => {
       toast.add({severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000});
       emit('registration-successful');
     } catch (error) {
-      toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+      toast.add({severity: 'error', summary: 'Error', detail: "Something went wrong, try again later", life: 3000});
     }
   }
 };

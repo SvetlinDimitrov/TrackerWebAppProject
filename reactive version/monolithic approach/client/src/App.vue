@@ -1,6 +1,6 @@
- <template>
+<template>
   <div v-if="isLoading" class="spinner-container">
-    <ProgressSpinner />
+    <ProgressSpinner/>
   </div>
   <div v-if="isLoginCompleted" class="flex flex-col h-screen">
     <Header/>
@@ -13,22 +13,26 @@
 import Header from "./components/Hedaer.vue";
 import {useStore} from "vuex";
 import {useToast} from "primevue/usetoast"
-import {computed, onBeforeMount} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 
 const store = useStore();
 const toast = useToast();
-const isLoginCompleted = computed(() => store.getters.loginCompleted);
+const isLoginCompleted = ref(false);
 const isLoading = computed(() => store.state.isLoading);
-
 onBeforeMount(async () => {
-  try {
-    const user = store.getters.user;
-    const email = user.email;
-    const password = user.password;
-    await store.dispatch('login' , {email, password});
-  } catch (error) {
-    toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+  const user = store.getters.user;
+  if (user) {
+    try {
+      const email = user.email;
+      const password = user.password;
+      await store.dispatch('login', {email, password});
+    } catch (error) {
+      toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+    }
+  } else {
+    store.commit('setLoginCompleted', true);
   }
+  isLoginCompleted.value = true;
 });
 
 </script>

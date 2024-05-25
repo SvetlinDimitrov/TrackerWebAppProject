@@ -3,13 +3,12 @@
     <div v-if="record" class="w-1/2">
       <h2 class="text-2xl font-bold mb-6 text-center">Your Calorie Consumption Overview.</h2>
       <p class="text-xl mb-4 leading-relaxed">
-        The daily calorie consumption, tailored to the user's provided details, is set at
-        {{ record.dailyCaloriesToConsume }}
-        <img src="../assets/calorie.png" class="h-8 w-8 inline-block" alt="calorie_image">. Currently,
-        you have consumed {{ record.dailyCaloriesConsumed }}
-        <img src="../assets/calorie.png" class="h-8 w-8 inline-block" alt="calorie_image"> of your allotted calories. To
-        meet your daily target, consider crafting a meal
-        featuring.
+        The daily calorie consumption is set at
+        {{ record.dailyCaloriesToConsume }}.
+        <img src="../assets/calorie.png" class="h-8 w-8 inline-block" alt="calorie_image">.
+        Currently, you have consumed {{ record.dailyCaloriesConsumed }}.
+        <img src="../assets/calorie.png" class="h-8 w-8 inline-block" alt="calorie_image">
+        To meet your daily target, consider crafting a meal featuring.
         <Button label="Create Meal" class="w-1/9" @click="$emit('handleMealCreate')"></Button>
       </p>
     </div>
@@ -32,7 +31,8 @@
           </span>
         </template>
         <div class="overflow-auto max-h-40">
-          <div class="food-item flex justify-between items-center p-2 border-b border-gray-300" v-for="(food, index) in meal.foods" :key="index">
+          <div class="food-item flex justify-between items-center p-2 border-b border-gray-300"
+               v-for="(food, index) in meal.foods" :key="index">
             <span class="food-name">{{ food.name }}</span>
             <div class="flex gap-2 items-center">
               <span class="calorie-amount italic">{{ food.calorie.amount }} {{ food.calorie.unit }}</span>
@@ -55,6 +55,6 @@
 <script setup>
 
 defineProps(['record', 'meals'])
-defineEmits(['handleMealCreate','handleCustomFood', 'handleMealDeletion', 'handleMealEdit', 'handleMealInsertFood', 'handleRemoveFoodById', 'handleChangeFoodById'])
+defineEmits(['handleMealCreate', 'handleCustomFood', 'handleMealDeletion', 'handleMealEdit', 'handleMealInsertFood', 'handleRemoveFoodById', 'handleChangeFoodById'])
 
 </script>

@@ -17,5 +17,4 @@ export default {
     },
     isLoading: state => state.isLoading,
     recordSettingData: state => state.recordSettingData,
-    loginCompleted: state => state.loginCompleted,
 };

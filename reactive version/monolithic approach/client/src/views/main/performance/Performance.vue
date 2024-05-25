@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col items-center justify-center gap-3 h-[calc(100vh-60px)] overflow-hidden">
-    <h1 class="text-2xl font-bold">Nutrition Fulfillment</h1>
+  <div class="flex flex-col items-center justify-center gap-3">
+    <h1 class="text-2xl font-bold p-2">Nutrition Fulfillment</h1>
     <div class="flex gap-20">
       <MainFulfillment :knobValue="Number(vitaminProgress)"
                        :show="showVitamins"
@@ -22,49 +22,49 @@
     <h1 v-if="showCalories || showMacros || showMinerals || showVitamins" class="text-2xl font-bold">More
       Information</h1>
 
-    <div v-if="showVitamins" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
+    <div v-if="showVitamins" class="flex flex-col overflow-auto w-1/3 max-h-[510px] p-2">
       <NutrientRowInfo v-for="(nutrient) in record.vitaminIntake"
                        :key="nutrient.name"
                        :consumed="nutrient.dailyConsumed"
                        :total="nutrient.recommendedIntake"
                        :unit="nutrient.measurement"
                        :foodList="mergeFoods(getNutrientAmountFromFood(allFoods , nutrient.name))"
-                       :show-danger="false"
+                       :show-danger="handleInfoDanger(nutrient)"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-click-danger="handleDangerRedirection(nutrient)"
                        @handle-edit-click="handleEditClick(nutrient)">{{ nutrient.name }}
 
       </NutrientRowInfo>
     </div>
-    <div v-if="showMinerals" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
+    <div v-if="showMinerals" class="flex flex-col overflow-auto w-1/3 max-h-[510px] p-2">
       <NutrientRowInfo v-for="(nutrient) in record.mineralIntakes"
                        :key="nutrient.name"
                        :consumed="nutrient.dailyConsumed"
                        :total="nutrient.recommendedIntake"
                        :unit="nutrient.measurement"
                        :foodList="getNutrientAmountFromFood(allFoods , nutrient.name)"
-                       :show-danger="false"
+                       :show-danger="handleInfoDanger(nutrient)"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-click-danger="handleDangerRedirection(nutrient)"
                        @handle-edit-click="handleEditClick(nutrient)">{{ nutrient.name }}
       </NutrientRowInfo>
     </div>
-    <div v-if="showMacros" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
+    <div v-if="showMacros" class="flex flex-col overflow-auto w-1/3 max-h-[510px] p-2">
       <NutrientRowInfo v-for="(nutrient) in record.macroIntakes"
                        :key="nutrient.name"
                        :consumed="nutrient.dailyConsumed"
                        :total="nutrient.recommendedIntake"
                        :unit="nutrient.measurement"
                        :foodList="getNutrientAmountFromFood(allFoods , nutrient.name)"
-                       :show-danger="false"
+                       :show-danger="handleInfoDanger(nutrient)"
                        @handle-click-info="handleInfoRedirection(nutrient)"
-                       @handle-click-danger="handleInfoRedirection(nutrient)"
+                       @handle-click-danger="handleDangerRedirection(nutrient)"
                        @handle-edit-click="handleEditClick(nutrient)"
       >{{ nutrient.name }}
 
       </NutrientRowInfo>
     </div>
-    <div v-if="showCalories" class="flex flex-col overflow-auto w-1/3 h-1/2 p-2">
+    <div v-if="showCalories" class="flex flex-col overflow-auto w-1/3 max-h-[510px] p-2">
       <NutrientRowInfo v-for="(meal , index) in meals"
                        :key="index"
                        :consumed="meal.consumedCalories"
@@ -135,8 +135,16 @@ const handleInfoRedirection = async (nutrient) => {
   await router.push({name: 'NutriInfo', params: {name: nutrient.name}});
 }
 
+const handleDangerRedirection = async (nutrient) => {
+  await router.push({name: 'NutriInfo', params: {name: nutrient.name} , query: { activeIndex: '3' }});
+}
+
 const handleEditClick = (nutrient) => {
   router.push({name: 'EditNutritionPerformance', params: {name: nutrient.name, intake: nutrient.recommendedIntake}});
+}
+
+const handleInfoDanger = (nutrient) => {
+  return nutrient.dailyConsumed > nutrient.recommendedIntake;
 }
 </script>
 

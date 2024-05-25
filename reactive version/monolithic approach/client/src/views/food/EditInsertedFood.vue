@@ -1,7 +1,7 @@
 <template>
-  <Food v-if="food"
+  <Food v-if="food && hardCopyOfCurrentFood"
         :food="food"
-        :originalFood="originalFood"
+        :originalFood="hardCopyOfCurrentFood"
         @close="handleClose"
         @submit="handleSubmit"/>
 </template>
@@ -21,7 +21,7 @@ const route = useRoute();
 const mealId = ref(route.params.id);
 const foodId = ref(route.params.foodId);
 const food = ref(null);
-const originalFood = ref(null);
+const hardCopyOfCurrentFood = ref(null);
 
 onMounted(async () => {
   const currentMeal = store.getters.meals[mealId.value];
@@ -36,7 +36,7 @@ onMounted(async () => {
     if (f.id === foodId.value) {
 
       food.value = generateGeneralFood(f);
-      originalFood.value = JSON.parse(JSON.stringify(food.value)); // Deep copy
+      hardCopyOfCurrentFood.value = JSON.parse(JSON.stringify(food.value)); // Deep copy
     }
   });
 

@@ -13,6 +13,10 @@ export function calculateAveragePercentageForArrayNutrients(array) {
             percentage = (dailyConsumed / recommendedIntake) * 100;
         }
 
+        if (percentage > 100) {
+            percentage = 100;
+        }
+
         totalPercentage += percentage;
     }
 

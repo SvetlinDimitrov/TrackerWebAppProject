@@ -6,11 +6,12 @@
         <slot></slot>
       </h2>
       <div class="flex gap-2">
-        <Tag severity="info"
+        <Tag v-if="!hideTag"
+             severity="info"
              value="Info"
              rounded @click.stop="$emit('handle-click-info')"
              class="cursor-pointer"></Tag>
-        <Tag v-if="showDanger"
+        <Tag v-if="showDanger && !hideTag"
              severity="danger"
              value="Danger"
              rounded @click.stop="$emit('handle-click-danger')"
@@ -20,7 +21,8 @@
     <CustomProgressBar :progress="Number(progress)"/>
     <div v-if="show">
       <span class="mr-2">consumed: {{ consumed }} / total: {{ total }} {{ unit }}</span>
-      <Tag severity="warning"
+      <Tag v-if="!hideTag"
+           severity="warning"
            value="Edit"
            rounded @click.stop="$emit('handle-edit-click')"
            class="cursor-pointer"></Tag>
@@ -47,7 +49,7 @@ const props = defineProps({
   hideTag: Boolean
 })
 
-defineEmits(['handle-click-info', 'handle-click-danger' ,'handle-edit-click']);
+defineEmits(['handle-click-info', 'handle-click-danger', 'handle-edit-click']);
 
 const show = ref(false);
 const progress = computed(() => calculateAveragePercentage(props.consumed, props.total) ? calculateAveragePercentage(props.consumed, props.total) : 0);

@@ -22,9 +22,7 @@ const store = createStore({
             isLoading: false,
             searchFood: '',
             searchFoodResult: [],
-            currentFood: null,
-            loginCompleted: false,
-            customFoods:undefined,
+            customFoods: null,
         };
     },
     mutations: {

@@ -1,7 +1,7 @@
 <template>
   <div v-if="currentFood && originalFood"
        class="fixed inset-0 flex items-center justify-center backdrop-blur">
-    <div class="bg-white border border-gray-300 px-4 py-3 rounded relative m-auto w-1/4 h-3/5 overflow-auto flex-col">
+    <div class="bg-white border border-gray-300 px-4 py-3 rounded m-auto w-1/4 max-h-3/5 overflow-auto flex-col">
       <div class="flex justify-between items-center border-b border-gray-300 p-2">
         <div>
           <h2 class="text-2xl font-bold inline-block">{{ currentFood.name }}</h2>
@@ -9,7 +9,7 @@
         <Avatar icon="pi pi-times" class="cursor-pointer" @click="$emit('close')"/>
       </div>
       <div class="flex justify-center items-center w-full border-b border-gray-300 p-2">
-        <Chart class="w-1/2 h-auto" type="pie" :data="chartData"></Chart>
+        <PieChart class="w-1/3 h-auto" :chartData="chartData"></PieChart>
       </div>
       <div v-if="currentFood.calories" class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>Calories</p>
@@ -17,16 +17,17 @@
           {{ currentFood.calories.unit ? currentFood.calories.unit : 'NaN' }}</p></div>
       <div v-if="currentFood.mainServing" class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>Serving Size</p>
-        <Dropdown v-model="currentFood.mainServing"
-                  :options="currentFood.otherServing"
+        <Dropdown v-model="currentServing"
+                  :options="allServingsAvailable"
                   :optionLabel="customLabel"
                   class="w-36 overflow-hidden"/>
       </div>
       <div v-if="currentFood.mainServing" class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>Number of Servings</p>
-        <InputNumber v-model="currentFood.mainServing.amount"
+        <InputNumber v-model="servingSize"
                      :minFractionDigits="2"
                      :min="0.01"
+                     :step="0.01"
                      :max="10000"
                      class="w-36 overflow-hidden"/>
       </div>
@@ -44,7 +45,8 @@
         </div>
       </div>
       <div v-if="currentFood.foodDetails
-      && (currentFood.foodDetails.info || currentFood.foodDetails.largeInfo || currentFood.foodDetails.picture)" class="flex justify-between items-center border-b border-gray-300 p-2">
+      && (currentFood.foodDetails.info || currentFood.foodDetails.largeInfo || currentFood.foodDetails.picture)"
+           class="flex justify-between items-center border-b border-gray-300 p-2">
         <p>More Details</p>
         <InputSwitch v-model="showMoreDetails"/>
       </div>
@@ -90,6 +92,7 @@
 <script setup>
 import {computed, ref, watch} from 'vue';
 import {createNewNutrientArray} from "../../utils/food.js";
+import PieChart from "./PieChart.vue";
 
 const showNutrients = ref(false);
 const showMoreDetails = ref(false);
@@ -101,28 +104,52 @@ const props = defineProps({
 })
 const currentFood = ref(props.food);
 const originalFood = ref(props.originalFood);
+const servingSize = ref(currentFood.value.mainServing.amount);
+const allServingsAvailable = ref(currentFood.value.otherServing.map(serving => {
+  return {
+    metric: serving.metric,
+    servingWeight: serving.servingWeight
+  };
+}) || []);
+const currentServing = ref({
+  metric: currentFood.value.mainServing.metric,
+  servingWeight: currentFood.value.mainServing.servingWeight
+});
+let ensuresCurrentServingRefreshes = ref(0);
 
-if (currentFood.value.otherServing.find(serving =>
-    serving.amount === currentFood.value.mainServing.amount &&
+const currentServingExists = allServingsAvailable.value.find(serving =>
     serving.metric === currentFood.value.mainServing.metric &&
-    serving.servingWeight === currentFood.value.mainServing.servingWeight) === undefined) {
-  currentFood.value.otherServing.push(currentFood.value.mainServing);
+    serving.servingWeight === currentFood.value.mainServing.servingWeight
+);
+
+if (!currentServingExists) {
+  allServingsAvailable.value.unshift({
+    metric: currentFood.value.mainServing.metric,
+    servingWeight: currentFood.value.mainServing.servingWeight
+  });
 }
 
-watch(() => currentFood.value.mainServing, (newValue, oldValue) => {
-  const ratio = newValue.servingWeight / oldValue.servingWeight;
 
-  currentFood.value.calories.amount = originalFood.value.calories.amount;
-  currentFood.value.calories.amount = (currentFood.value.calories.amount * ratio).toFixed(2);
+watch(() => currentServing.value, (newValue, oldValue) => {
+  const newAmount = currentFood.value.otherServing.find(serving =>
+      serving.metric === newValue.metric &&
+      serving.servingWeight === newValue.servingWeight).amount;
 
-  currentFood.value.nutrients = createNewNutrientArray(originalFood.value)
-  currentFood.value.nutrients.forEach(nutrient => {
-    nutrient.amount = (nutrient.amount * ratio).toFixed(2);
-  });
-});
+  ensuresCurrentServingRefreshes.value += 1;
+  servingSize.value = newAmount;
 
-watch(() => currentFood.value.mainServing.amount, (newValueSize, oldValueSize) => {
-  const ratio = newValueSize / originalFood.value.mainServing.amount
+  currentFood.value.mainServing.metric = newValue.metric;
+  currentFood.value.mainServing.servingWeight = newValue.servingWeight;
+  currentFood.value.mainServing.amount = newAmount;
+
+}, {flush: 'sync'});
+
+watch(() => [servingSize.value, ensuresCurrentServingRefreshes.value], () => {
+
+  const ratio = (servingSize.value * currentServing.value.servingWeight)
+      / (originalFood.value.mainServing.amount * originalFood.value.mainServing.servingWeight);
+
+  currentFood.value.mainServing.amount = servingSize.value;
 
   currentFood.value.calories.amount = originalFood.value.calories.amount;
   currentFood.value.calories.amount = (currentFood.value.calories.amount * ratio).toFixed(2);
@@ -138,11 +165,22 @@ const chartData = computed(() => {
   const carbs = currentFood.value.nutrients.find(n => n.name === 'Carbohydrate');
   const fat = currentFood.value.nutrients.find(n => n.name === 'Fat');
 
+  let proteinAmount = protein ? protein.amount : 0;
+  let carbsAmount = carbs ? carbs.amount : 0;
+  let fatAmount = fat ? fat.amount : 0;
+
+  // If all values are zero, add a small non-zero value to each one
+  if (proteinAmount === 0 && carbsAmount === 0 && fatAmount === 0) {
+    proteinAmount = 0.1;
+    carbsAmount = 0.1;
+    fatAmount = 0.1;
+  }
+
   return {
     labels: ['Protein', 'Carbohydrate', 'Fat'],
     datasets: [
       {
-        data: [protein ? protein.amount : 0, carbs ? carbs.amount : 0, fat ? fat.amount : 0],
+        data: [proteinAmount, carbsAmount, fatAmount],
         backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726'],
       }
     ]

@@ -12,9 +12,8 @@ export default {
         commit('removeUserDetails');
         commit('setIsLoading', false);
     },
-    async login({commit, getters}, {email, password}) {
+    async login({commit, getters, dispatch}, {email, password}) {
         try {
-            commit('setLoginCompleted', false);
             commit('setIsLoading', true);
             const userDetails = await loginUser(email, password);
             localStorage.setItem('user', JSON.stringify({email, password}));
@@ -29,10 +28,10 @@ export default {
                 commit('setMeals', meals);
             }
         } catch (error) {
-            throw new Error(error.message);
+            await dispatch('logout');
+            throw new Error('Session expired, please login again');
         } finally {
             commit('setIsLoading', false);
-            commit('setLoginCompleted', true);
         }
     },
     async register({commit}, data) {

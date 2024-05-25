@@ -27,7 +27,7 @@ const emailError = ref(false);
 const passwordError = ref(false);
 
 const goToSignUp = () => {
-  router.push({ name: 'Register' });
+  router.push({name: 'Register'});
 };
 
 const submit = async (data) => {
@@ -49,7 +49,7 @@ const submit = async (data) => {
       toast.add({severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000});
       await router.push({name: 'Home'});
     } catch (error) {
-      toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
+      toast.add({severity: 'error', summary: 'Error', detail: 'Invalid credentials', life: 3000});
     }
   }
 };

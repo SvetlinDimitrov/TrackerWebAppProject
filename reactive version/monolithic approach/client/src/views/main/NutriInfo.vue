@@ -1,55 +1,62 @@
 <template>
-  <div>
+  <div v-if="nutritionInfo">
     <h1 class="text-center mx-auto py-4 px-4 text-2xl font-bold">{{ name }}</h1>
-      <div class="w-1/2 mx-auto">
-        <Accordion :activeIndex="0">
-          <AccordionTab header="Description">
-            <p class="m-0">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-          </AccordionTab>
-          <AccordionTab header="Functions">
-            <p class="m-0">
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-              ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-            </p>
-          </AccordionTab>
-          <AccordionTab header="Sources">
-            <p class="m-0">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-              officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
-            </p>
-          </AccordionTab>
-          <AccordionTab header="Daily Intake">
-            <p class="m-0">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-              officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
-            </p>
-          </AccordionTab>
-          <AccordionTab header="Consideration">
-            <p class="m-0">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-              officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.
-            </p>
-          </AccordionTab>
-        </Accordion>
-      </div>
+    <div class="w-1/2 mx-auto">
+      <Accordion :activeIndex="index">
+        <AccordionTab header="Description">
+          <p class="m-0">{{ nutritionInfo.description }}</p>
+        </AccordionTab>
+        <AccordionTab header="Functions">
+          <ul class="list-disc pl-5 overflow-auto max-h-80">
+            <li v-for="(value, key) in nutritionInfo.functions" :key="key"
+                class="mb-2">
+              <strong>{{ key }}:</strong> {{ value }}
+            </li>
+          </ul>
+        </AccordionTab>
+        <AccordionTab header="Sources">
+          <ul class="list-disc pl-5 overflow-auto max-h-80">
+            <li v-for="(value, key) in nutritionInfo.sources" :key="key"
+                class="mb-2">
+              <strong>{{ key }}:</strong> {{ value }}
+            </li>
+          </ul>
+        </AccordionTab>
+        <AccordionTab header="Over consuming">
+          <p class="m-0">{{ nutritionInfo.overdose }}</p>
+        </AccordionTab>
+        <AccordionTab header="Deficiency">
+          <p class="m-0">{{ nutritionInfo.deficiency }}</p>
+        </AccordionTab>
+        <AccordionTab header="Daily Intake">
+          <p class="m-0">{{ nutritionInfo.dailyIntake }}</p>
+        </AccordionTab>
+        <AccordionTab header="Resources">
+          <ul class="list-disc pl-5">
+            <li v-for="(link, index) in nutritionInfo.res" :key="index">
+              <a :href="link" target="_blank" rel="noopener noreferrer"
+                 class="text-blue-500 hover:text-blue-800 transition-colors duration-200">{{ link }}</a>
+            </li>
+          </ul>
+        </AccordionTab>
+      </Accordion>
+    </div>
   </div>
 </template>
 
 <script setup>
 import {useRoute} from 'vue-router';
-import {ref, watch} from "vue";
+import {ref, watchEffect} from "vue";
+import {nutritionUnits} from "../../utils/nutrition/nutritionInfo.js";
 
 const route = useRoute();
 const name = ref(route.params.name);
+const nutritionInfo = ref(null);
+const index = route.query.activeIndex ? Number(route.query.activeIndex) : 0;
 
-watch(route, () => {
+watchEffect(() => {
   name.value = route.params.name;
+  nutritionInfo.value = nutritionUnits[name.value];
 });
+
 </script>
-
-<style scoped>
-
-</style>
