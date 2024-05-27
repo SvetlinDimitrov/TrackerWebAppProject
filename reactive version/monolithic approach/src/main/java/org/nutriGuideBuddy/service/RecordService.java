@@ -13,6 +13,7 @@ import org.nutriGuideBuddy.repository.RecordRepository;
 import org.nutriGuideBuddy.utils.BMRCalc;
 import org.nutriGuideBuddy.utils.DailyCaloriesCalculator;
 import org.nutriGuideBuddy.utils.record.*;
+import org.nutriGuideBuddy.utils.user.UserHelperFinder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,9 +32,11 @@ import java.util.stream.Collectors;
 public class RecordService {
 
   private final RecordRepository repository;
+  private final UserHelperFinder userHelper;
 
-  public Mono<RecordView> viewRecord(CreateRecord dto, String userId) {
-    return repository.findUserDetailsByUserId(userId)
+  public Mono<RecordView> viewRecord(CreateRecord dto) {
+    return userHelper.getUserId()
+        .flatMap(repository::findUserDetailsByUserId)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
         .flatMap(details -> Mono.zip(
             Mono.just(details),
@@ -141,7 +144,7 @@ public class RecordService {
 
   private Mono<RecordView> customizeRecordView(RecordView record, List<NutritionView> NutritionViews) {
 
-    if(NutritionViews == null || NutritionViews.isEmpty()){
+    if (NutritionViews == null || NutritionViews.isEmpty()) {
       return Mono.just(record);
     }
 

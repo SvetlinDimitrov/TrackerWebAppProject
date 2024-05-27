@@ -1,12 +1,10 @@
 package org.nutriGuideBuddy.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.nutriGuideBuddy.config.security.UserPrincipal;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
 import org.nutriGuideBuddy.service.FoodServiceImp;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
 import reactor.core.publisher.Mono;
@@ -19,19 +17,19 @@ public class FoodController {
   private final FoodServiceImp service;
 
   @PostMapping
-  private Mono<Void> addFood(@AuthenticationPrincipal UserPrincipal user, @RequestBody InsertFoodDto dto, @PathVariable String mealId) {
-    return service.addFoodToMeal(user.getId(), dto, mealId);
+  private Mono<Void> addFood(@RequestBody InsertFoodDto dto, @PathVariable String mealId) {
+    return service.addFoodToMeal(dto, mealId);
   }
 
   @DeleteMapping("/{foodId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  private Mono<Void> deleteFoodFromMeal(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId, @PathVariable String foodId) {
-    return service.deleteFoodById(user.getId(), mealId, foodId);
+  private Mono<Void> deleteFoodFromMeal(@PathVariable String mealId, @PathVariable String foodId) {
+    return service.deleteFoodById(mealId, foodId);
   }
 
   @PutMapping("/{foodId}")
-  private Mono<Void> changeFood(@AuthenticationPrincipal UserPrincipal user, @PathVariable String mealId, @PathVariable String foodId, @RequestBody InsertFoodDto dto) {
-    return service.changeFood(user.getId(), mealId, foodId, dto);
+  private Mono<Void> changeFood(@PathVariable String mealId, @PathVariable String foodId, @RequestBody InsertFoodDto dto) {
+    return service.changeFood(mealId, foodId, dto);
   }
 
   @ExceptionHandler(BadRequestException.class)

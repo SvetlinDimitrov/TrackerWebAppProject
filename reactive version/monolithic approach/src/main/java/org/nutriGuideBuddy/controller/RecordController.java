@@ -5,9 +5,7 @@ import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
 import org.nutriGuideBuddy.domain.dto.record.CreateRecord;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.nutriGuideBuddy.config.security.UserPrincipal;
 import org.nutriGuideBuddy.domain.dto.record.RecordView;
 import org.nutriGuideBuddy.service.RecordService;
 import reactor.core.publisher.Mono;
@@ -20,8 +18,8 @@ public class RecordController {
   private final RecordService service;
 
   @PostMapping
-  public Mono<RecordView> viewRecord(@AuthenticationPrincipal UserPrincipal user, @RequestBody CreateRecord dto) {
-    return service.viewRecord(dto, user.getId());
+  public Mono<RecordView> viewRecord(@RequestBody CreateRecord dto) {
+    return service.viewRecord(dto);
   }
 
   @ExceptionHandler(BadRequestException.class)

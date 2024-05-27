@@ -3,6 +3,15 @@ package org.nutriGuideBuddy.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
+import org.nutriGuideBuddy.domain.enums.Gender;
+import org.nutriGuideBuddy.domain.enums.WorkoutState;
+import org.nutriGuideBuddy.enums.Credentials;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,21 +23,13 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
-import org.nutriGuideBuddy.domain.enums.Gender;
-import org.nutriGuideBuddy.domain.enums.WorkoutState;
-import org.nutriGuideBuddy.enums.Credentials;
-import org.nutriGuideBuddy.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Base64;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -40,6 +41,8 @@ class UserDetailsControllerIntegrationTest {
   private WebTestClient webTestClient;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private JWTUtilEmailValidation jwtUtilEmailValidation;
 
   @Container
   public static GenericContainer<?> mysqlContainer = new GenericContainer<>("mysql:latest")
@@ -134,12 +137,12 @@ class UserDetailsControllerIntegrationTest {
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertEquals(validDetails.gender(), detailsView.gender()))
-        .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.height())))
-        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()))
-        .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.workoutState()));
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertEquals(validDetails.gender(), detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertEquals(0, validDetails.height().compareTo(detailsView.userView().userDetails().height())))
+        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(validDetails.age(), detailsView.userView().userDetails().age()))
+        .value(detailsView -> assertEquals(validDetails.workoutState(), detailsView.userView().userDetails().workoutState()));
   }
 
   @Test
@@ -161,12 +164,12 @@ class UserDetailsControllerIntegrationTest {
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.gender()))
-        .value(detailsView -> assertNull(detailsView.workoutState()))
-        .value(detailsView -> assertNull(detailsView.height()))
-        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(validDetails.age(), detailsView.age()));
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().workoutState()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().height()))
+        .value(detailsView -> assertEquals(0, validDetails.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(validDetails.age(), detailsView.userView().userDetails().age()));
   }
 
   @Test
@@ -280,7 +283,7 @@ class UserDetailsControllerIntegrationTest {
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isOk()
-          .expectBody(UserDetailsView.class)
+          .expectBody(JwtResponse.class)
           .returnResult();
     }
   }
@@ -305,7 +308,7 @@ class UserDetailsControllerIntegrationTest {
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isOk()
-          .expectBody(UserDetailsView.class)
+          .expectBody(JwtResponse.class)
           .returnResult();
     }
   }
@@ -329,7 +332,6 @@ class UserDetailsControllerIntegrationTest {
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.gender()))
         .value(detailsView -> assertNull(detailsView.age()))
         .value(detailsView -> assertNull(detailsView.workoutState()))
         .value(detailsView -> assertNull(detailsView.kilograms()))
@@ -359,30 +361,35 @@ class UserDetailsControllerIntegrationTest {
         .returnResult();
   }
 
-  private UserCreate createUser(String username, String email, String password) {
-    return new UserCreate(username, email, password);
-  }
 
   private UserDetailsDto createDetails(BigDecimal kilograms, BigDecimal height, Integer age, WorkoutState workoutState, Gender gender) {
     return new UserDetailsDto(kilograms, height, age, workoutState, gender);
   }
 
   private Header setUpUserAndReturnAuthHeader() {
+    String token = jwtUtilEmailValidation.generateToken(Credentials.VALID_EMAIL.getValue());
 
     UserCreate newUser = createUser(
         Credentials.VALID_USERNAME.getValue(),
         Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
+        Credentials.VALID_PASSWORD.getValue(),
+        token
     );
 
-    webTestClient.post()
+    JwtResponse responseBody = webTestClient.post()
         .uri("/api/user")
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
 
-    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
+  private UserCreate createUser(String username, String email, String password, String token) {
+    return new UserCreate(username, email, password, token);
   }
 }

@@ -4,6 +4,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nutriGuideBuddy.domain.dto.meal.*;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
+import org.nutriGuideBuddy.domain.enums.AllowedCalorieUnits;
+import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
+import org.nutriGuideBuddy.domain.enums.Gender;
+import org.nutriGuideBuddy.domain.enums.WorkoutState;
+import org.nutriGuideBuddy.enums.Credentials;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,16 +25,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.nutriGuideBuddy.domain.enums.AllowedCalorieUnits;
-import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
-import org.nutriGuideBuddy.domain.enums.Gender;
-import org.nutriGuideBuddy.domain.enums.WorkoutState;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
-import org.nutriGuideBuddy.enums.Credentials;
-import org.nutriGuideBuddy.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -44,6 +44,8 @@ class MealControllerIntegrationTest {
   private WebTestClient webTestClient;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private JWTUtilEmailValidation jwtUtilEmailValidation;
 
   @Container
   public static GenericContainer<?> mysqlContainer = new GenericContainer<>("mysql:latest")
@@ -615,11 +617,6 @@ class MealControllerIntegrationTest {
         );
   }
 
-
-  private UserCreate createUser(String username, String email, String password) {
-    return new UserCreate(username, email, password);
-  }
-
   private UserDetailsDto createDetails(BigDecimal kilograms, BigDecimal height, Integer age, WorkoutState workoutState, Gender gender) {
     return new UserDetailsDto(kilograms, height, age, workoutState, gender);
   }
@@ -645,31 +642,31 @@ class MealControllerIntegrationTest {
   }
 
   private Header setUpUserAndReturnAuthHeader() {
+    String token = jwtUtilEmailValidation.generateToken(Credentials.VALID_EMAIL.getValue());
 
     UserCreate newUser = createUser(
         Credentials.VALID_USERNAME.getValue(),
         Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
+        Credentials.VALID_PASSWORD.getValue(),
+        token
     );
 
-    webTestClient.post()
+    JwtResponse responseBody = webTestClient.post()
         .uri("/api/user")
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
 
-    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
   }
 
   private Header setUpUserWithFullUserDetailsAndReturnAuthHeader() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header header = setUpUserAndReturnAuthHeader();
 
     UserDetailsDto validDetails = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
@@ -679,24 +676,22 @@ class MealControllerIntegrationTest {
         Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
-
-    webTestClient.patch()
+    JwtResponse responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header(header.getName(), header.getValues().getFirst())
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
 
-    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
+  private UserCreate createUser(String username, String email, String password, String token) {
+    return new UserCreate(username, email, password, token);
   }
 
   private String obtainValidMealId(Header authHeader) {

@@ -48,7 +48,25 @@ export default [
     {
         path: '/register',
         name: 'Register',
-        component: () => import('../views/main/CreateAccount.vue'),
+        component: () => import('../views/main/Register.vue'),
+        meta: {requiresGuest: true}
+    },
+    {
+        path: '/email-verification',
+        name: 'EmailVerifier',
+        component: () => import('../views/main/EmailVerifier.vue'),
+        meta: {requiresGuest: true},
+    },
+    {
+        path: '/recreate-password',
+        name: 'RecreatePassword',
+        component: () => import('../views/main/RecreatePassword.vue'),
+        meta: {requiresGuest: true}
+    },
+    {
+        path: '/forgot-account',
+        name: 'ForgotAccount',
+        component: () => import('../views/main/ForgotAccount.vue'),
         meta: {requiresGuest: true}
     },
     {

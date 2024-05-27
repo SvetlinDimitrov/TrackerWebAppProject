@@ -6,9 +6,12 @@
         <Divider layout="vertical" class="hidden md:flex"><b>OR</b></Divider>
         <Divider layout="horizontal" class="flex md:hidden" align="center"><b>OR</b></Divider>
       </div>
-      <div class="w-full md:w-1/2 flex items-center justify-center py-5">
+
+      <div class="w-full md:w-1/2 flex items-center justify-center py-5 flex-col gap-2">
         <Button label="Sign Up" icon="pi pi-user-plus" severity="success" class="w-40" @click="goToSignUp"></Button>
+        <router-link :to="{name: 'ForgotAccount'}" class="text-sm text-blue-500">Forgot account?</router-link>
       </div>
+
     </div>
   </div>
 </template>

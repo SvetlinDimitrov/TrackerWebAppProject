@@ -1,11 +1,10 @@
 package org.nutriGuideBuddy.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.nutriGuideBuddy.config.security.UserPrincipal;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
 import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
@@ -21,14 +20,14 @@ public class UserDetailsController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserDetailsView> getUserDetails(@AuthenticationPrincipal UserPrincipal user) {
-    return service.getByUserId(user.getId());
+  public Mono<UserDetailsView> getUserDetails() throws BadRequestException {
+    return service.getByUserId();
   }
 
   @PatchMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserDetailsView> modifyUserDetails(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDetailsDto userDto) {
-    return service.modifyUserDetails(user.getId(), userDto);
+  public Mono<JwtResponse> modifyUserDetails(@RequestBody UserDetailsDto userDto) {
+    return service.modifyUserDetails(userDto);
   }
 
   @ExceptionHandler(BadRequestException.class)

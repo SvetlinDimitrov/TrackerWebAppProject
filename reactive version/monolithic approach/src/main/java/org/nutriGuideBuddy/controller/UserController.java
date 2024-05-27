@@ -1,16 +1,12 @@
 package org.nutriGuideBuddy.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.nutriGuideBuddy.config.security.UserPrincipal;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDto;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
+import org.nutriGuideBuddy.domain.dto.user.*;
 import org.nutriGuideBuddy.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -22,26 +18,31 @@ public class UserController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<UserView> createUser(@RequestBody UserCreate userDto) {
+  public Mono<JwtResponse> createUser(@RequestBody UserCreate userDto) {
     return userServiceImp.createUser(userDto);
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserView> getUserView(@AuthenticationPrincipal UserPrincipal user) {
-    return userServiceImp.getById(user.getId());
+  public Mono<UserView> getUserView() {
+    return userServiceImp.getById();
   }
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public Mono<Void> deleteUser(@AuthenticationPrincipal UserPrincipal user) {
-    return userServiceImp.deleteUserById(user.getId());
+  public Mono<Void> deleteUser() {
+    return userServiceImp.deleteUserById();
   }
 
   @PatchMapping
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserView> modifyUsername(@AuthenticationPrincipal UserPrincipal user, @RequestBody UserDto userDto) {
-    return userServiceImp.modifyUsername(user.getId(), userDto);
+  public Mono<JwtResponse> modifyUsername(@RequestBody UserDto userDto) {
+    return userServiceImp.modifyUsername(userDto);
+  }
+
+  @PatchMapping("/reset-password")
+  public Mono<Void> modifyPassword(@RequestBody ResetPasswordDto dto) {
+    return userServiceImp.modifyPassword(dto);
   }
 
   @ExceptionHandler(BadRequestException.class)

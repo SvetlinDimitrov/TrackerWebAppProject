@@ -29,8 +29,6 @@ onBeforeMount(async () => {
     } catch (error) {
       toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
     }
-  } else {
-    store.commit('setLoginCompleted', true);
   }
   isLoginCompleted.value = true;
 });

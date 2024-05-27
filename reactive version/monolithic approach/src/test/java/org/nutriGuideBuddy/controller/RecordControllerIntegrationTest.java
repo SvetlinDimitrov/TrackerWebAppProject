@@ -3,6 +3,28 @@ package org.nutriGuideBuddy.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nutriGuideBuddy.domain.dto.NutritionIntakeView;
+import org.nutriGuideBuddy.domain.dto.meal.CreateMeal;
+import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
+import org.nutriGuideBuddy.domain.dto.meal.MealView;
+import org.nutriGuideBuddy.domain.dto.record.CreateRecord;
+import org.nutriGuideBuddy.domain.dto.record.DistributedMacros;
+import org.nutriGuideBuddy.domain.dto.record.NutritionView;
+import org.nutriGuideBuddy.domain.dto.record.RecordView;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
+import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
+import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
+import org.nutriGuideBuddy.domain.enums.Gender;
+import org.nutriGuideBuddy.domain.enums.Goals;
+import org.nutriGuideBuddy.domain.enums.WorkoutState;
+import org.nutriGuideBuddy.enums.Credentials;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
+import org.nutriGuideBuddy.utils.record.MacronutrientCreator;
+import org.nutriGuideBuddy.utils.record.MineralCreator;
+import org.nutriGuideBuddy.utils.record.VitaminCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,35 +36,14 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.nutriGuideBuddy.domain.dto.NutritionIntakeView;
-import org.nutriGuideBuddy.domain.dto.meal.CreateMeal;
-import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
-import org.nutriGuideBuddy.domain.dto.meal.MealView;
-import org.nutriGuideBuddy.domain.enums.AllowedNutrients;
-import org.nutriGuideBuddy.domain.enums.Gender;
-import org.nutriGuideBuddy.domain.enums.Goals;
-import org.nutriGuideBuddy.domain.enums.WorkoutState;
-import org.nutriGuideBuddy.domain.dto.record.CreateRecord;
-import org.nutriGuideBuddy.domain.dto.record.NutritionView;
-import org.nutriGuideBuddy.domain.dto.record.DistributedMacros;
-import org.nutriGuideBuddy.domain.dto.record.RecordView;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsDto;
-import org.nutriGuideBuddy.domain.dto.user.UserDetailsView;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
-import org.nutriGuideBuddy.enums.Credentials;
-import org.nutriGuideBuddy.repository.UserRepository;
-import org.nutriGuideBuddy.utils.record.MacronutrientCreator;
-import org.nutriGuideBuddy.utils.record.MineralCreator;
-import org.nutriGuideBuddy.utils.record.VitaminCreator;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-import static org.nutriGuideBuddy.utils.FoodUtils.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.nutriGuideBuddy.utils.FoodUtils.createValidInsertedFoodWithEveryPossibleNutrientView;
 
 
 @SpringBootTest
@@ -55,6 +56,8 @@ class RecordControllerIntegrationTest {
   private WebTestClient webTestClient;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private JWTUtilEmailValidation jwtUtilEmailValidation;
 
   @Container
   public static GenericContainer<?> mysqlContainer = new GenericContainer<>("mysql:latest")
@@ -96,23 +99,12 @@ class RecordControllerIntegrationTest {
 
   @Test
   void givenValidAuthButNotCompletedUserDetails_whenTestingViewRecord_thenServerShouldReturnForbidden() {
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
+    Header header = setUpUserAndReturnAuthHeader();
 
     UserDetailsView userDetailsView = webTestClient.get()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header(header.getName(), header.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
@@ -120,18 +112,15 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header(header.getName(), header.getValues().getFirst())
         .exchange()
         .expectStatus().isForbidden();
   }
 
   @Test
   void givenValidAuthButNotCompletedUserDetailsUntilTheyAreCompleted_whenTestingViewRecord_thenServerShouldReturnOk() {
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+
+    Header header = setUpUserAndReturnAuthHeader();
 
     UserDetailsDto validDetailsForKilograms = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
@@ -141,31 +130,25 @@ class RecordControllerIntegrationTest {
         null
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
-
-    webTestClient.patch()
+    JwtResponse responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header(header.getName(), header.getValues().getFirst())
         .bodyValue(validDetailsForKilograms)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.height()))
-        .value(detailsView -> assertNull(detailsView.gender()))
-        .value(detailsView -> assertNull(detailsView.age()))
-        .value(detailsView -> assertNull(detailsView.workoutState()))
-        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.kilograms())))
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().height()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().age()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().workoutState()))
+        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .returnResult()
+        .getResponseBody();
 
+    assert responseBody != null;
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .exchange()
         .expectStatus().isForbidden()
         .expectBody()
@@ -179,23 +162,25 @@ class RecordControllerIntegrationTest {
         null
     );
 
-    webTestClient.patch()
+    responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .bodyValue(validDetailsForAge)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.height()))
-        .value(detailsView -> assertNull(detailsView.gender()))
-        .value(detailsView -> assertNull(detailsView.workoutState()))
-        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.age()))
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().height()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().workoutState()))
+        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.userView().userDetails().age()))
+        .returnResult()
+        .getResponseBody();
 
+    assert responseBody != null;
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .exchange()
         .expectStatus().isForbidden()
         .expectBody()
@@ -209,23 +194,25 @@ class RecordControllerIntegrationTest {
         Gender.MALE
     );
 
-    webTestClient.patch()
+    responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .bodyValue(validDetailsForGender)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.height()))
-        .value(detailsView -> assertNull(detailsView.workoutState()))
-        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.age()))
-        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.gender()))
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().height()))
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().workoutState()))
+        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.userView().userDetails().age()))
+        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.userView().userDetails().gender()))
+        .returnResult()
+        .getResponseBody();
 
+    assert responseBody != null;
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .exchange()
         .expectStatus().isForbidden()
         .expectBody()
@@ -239,23 +226,25 @@ class RecordControllerIntegrationTest {
         null
     );
 
-    webTestClient.patch()
+    responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .bodyValue(validDetailsForWorkOutState)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertNull(detailsView.height()))
-        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.age()))
-        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.gender()))
-        .value(detailsView -> assertEquals(validDetailsForWorkOutState.workoutState(), detailsView.workoutState()))
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertNull(detailsView.userView().userDetails().height()))
+        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.userView().userDetails().age()))
+        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertEquals(validDetailsForWorkOutState.workoutState(), detailsView.userView().userDetails().workoutState()))
+        .returnResult()
+        .getResponseBody();
 
+    assert responseBody != null;
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .exchange()
         .expectStatus().isForbidden()
         .expectBody()
@@ -269,23 +258,25 @@ class RecordControllerIntegrationTest {
         null
     );
 
-    webTestClient.patch()
+    responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .bodyValue(validDetailsForHeight)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.kilograms())))
-        .value(detailsView -> assertEquals(0, validDetailsForHeight.height().compareTo(detailsView.height())))
-        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.age()))
-        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.gender()))
-        .value(detailsView -> assertEquals(validDetailsForWorkOutState.workoutState(), detailsView.workoutState()))
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .value(detailsView -> assertEquals(0, validDetailsForKilograms.kilograms().compareTo(detailsView.userView().userDetails().kilograms())))
+        .value(detailsView -> assertEquals(0, validDetailsForHeight.height().compareTo(detailsView.userView().userDetails().height())))
+        .value(detailsView -> assertEquals(validDetailsForAge.age(), detailsView.userView().userDetails().age()))
+        .value(detailsView -> assertEquals(validDetailsForGender.gender(), detailsView.userView().userDetails().gender()))
+        .value(detailsView -> assertEquals(validDetailsForWorkOutState.workoutState(), detailsView.userView().userDetails().workoutState()))
+        .returnResult()
+        .getResponseBody();
 
+    assert responseBody != null;
     webTestClient.post()
         .uri("/api/record")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -513,7 +504,7 @@ class RecordControllerIntegrationTest {
     String VALID_MEAL_ID = obtainValidMealId(authHeader);
     InsertFoodDto validInsertedFoodWithEveryPossibleNutrient = createValidInsertedFoodWithEveryPossibleNutrientView();
     setUpInsertedFood(authHeader, VALID_MEAL_ID, validInsertedFoodWithEveryPossibleNutrient);
-    
+
     Map<String, org.nutriGuideBuddy.domain.dto.meal.NutritionView> nutritionViewMap = validInsertedFoodWithEveryPossibleNutrient.nutrients()
         .stream()
         .collect(Collectors.toMap(org.nutriGuideBuddy.domain.dto.meal.NutritionView::name, data -> data));
@@ -672,13 +663,6 @@ class RecordControllerIntegrationTest {
         });
   }
 
-  private UserCreate createUser(String username, String email, String password) {
-    return new UserCreate(username, email, password);
-  }
-
-  private UserDetailsDto createDetails(BigDecimal kilograms, BigDecimal height, Integer age, WorkoutState workoutState, Gender gender) {
-    return new UserDetailsDto(kilograms, height, age, workoutState, gender);
-  }
 
   private Map<String, NutritionIntakeView> calculateVitaminNutritions() {
     Map<String, NutritionIntakeView> nutritionIntakeViews = new HashMap<>();
@@ -953,7 +937,7 @@ class RecordControllerIntegrationTest {
 
     return nutritionIntakeViews;
   }
-  
+
   private CreateRecord createCreateRecord() {
     return new CreateRecord(null, null, null);
   }
@@ -961,14 +945,33 @@ class RecordControllerIntegrationTest {
   private CreateRecord createCreateRecord(Goals goal, DistributedMacros distributedMacros, List<NutritionView> nutritionViews) {
     return new CreateRecord(goal, distributedMacros, nutritionViews);
   }
-  
-  private Header setUpUserWithFullUserDetailsAndReturnAuthHeader() {
+
+  private Header setUpUserAndReturnAuthHeader() {
+    String token = jwtUtilEmailValidation.generateToken(Credentials.VALID_EMAIL.getValue());
 
     UserCreate newUser = createUser(
         Credentials.VALID_USERNAME.getValue(),
         Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
+        Credentials.VALID_PASSWORD.getValue(),
+        token
     );
+
+    JwtResponse responseBody = webTestClient.post()
+        .uri("/api/user")
+        .bodyValue(newUser)
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
+
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
+  private Header setUpUserWithFullUserDetailsAndReturnAuthHeader() {
+
+    Header header = setUpUserAndReturnAuthHeader();
 
     UserDetailsDto validDetails = createDetails(
         new BigDecimal(Credentials.VALID_DETAIL_KILOGRAMS.getValue()),
@@ -978,24 +981,26 @@ class RecordControllerIntegrationTest {
         Gender.valueOf(Credentials.VALID_DETAIL_GENDER.getValue())
     );
 
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
-
-    webTestClient.patch()
+    JwtResponse responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+        .header(header.getName(), header.getValues().getFirst())
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
-        .expectBody(UserDetailsView.class)
-        .returnResult();
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
 
-    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
+  private UserCreate createUser(String username, String email, String password, String token) {
+    return new UserCreate(username, email, password, token);
+  }
+
+  private UserDetailsDto createDetails(BigDecimal kilograms, BigDecimal height, Integer age, WorkoutState workoutState, Gender gender) {
+    return new UserDetailsDto(kilograms, height, age, workoutState, gender);
   }
 
   private void setUpInsertedFood(Header authHeader, String VALID_MEAL_ID, InsertFoodDto foodToInsert) {

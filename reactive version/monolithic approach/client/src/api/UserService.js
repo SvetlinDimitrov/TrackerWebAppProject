@@ -26,6 +26,7 @@ export const login = (email, password) => {
 }
 
 export const register = (data) => {
+
     return axios.post('/user', data)
         .then(response => {
             if (response.status === 201) {
@@ -76,22 +77,13 @@ export const deleteUser = () => {
         });
 }
 
-export const getUserDetails = () => {
+export const resetUserPassword = (data) => {
 
-    const authHeader = store.getters.authHeader;
-
-    return axios.get('/user/details', {
-        headers: {
-            'Authorization': authHeader
-        }
-    })
-        .then(response => {
-            return response.data;
-        })
+    return axios.patch('/user/reset-password', data)
         .catch(error => {
             if (error.response && error.response.data.message) {
                 throw new Error(error.response.data.message);
             }
-            throw new Error('Something went wrong fetching user details');
+            throw new Error('Something went wrong resetting user password');
         });
 }

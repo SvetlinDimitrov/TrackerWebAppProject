@@ -2,6 +2,7 @@ package org.nutriGuideBuddy.utils.user;
 
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.user.UserDto;
+import org.nutriGuideBuddy.domain.dto.user.UserEmailValidationCreate;
 import org.nutriGuideBuddy.domain.entity.UserEntity;
 import org.nutriGuideBuddy.domain.dto.user.UserCreate;
 import org.nutriGuideBuddy.domain.enums.ExceptionMessages;
@@ -27,6 +28,29 @@ public class UserModifier {
   }
 
   public static Mono<UserEntity> validateAndModifyUserCreation(UserEntity user, UserCreate dto) {
+
+    if(Validator.validateString(dto.username(), 1, 255)){
+      user.setUsername(dto.username());
+    }else{
+      return Mono.error(new BadRequestException(ExceptionMessages.INVALID_STRING_LENGTH_MESSAGE.getMessage() + "for username."));
+    }
+
+    if(Validator.validateString(dto.password(), 4, 255)){
+      user.setPassword(dto.password());
+    }else{
+      return Mono.error(new BadRequestException("Invalid password. Must be between 4 and 255 characters."));
+    }
+
+    if(dto.email() != null && !dto.email().isBlank() && dto.email().matches(regexEmail)){
+      user.setEmail(dto.email());
+    }else{
+      return Mono.error(new BadRequestException("Invalid email"));
+    }
+
+    return Mono.just(user);
+  }
+
+  public static Mono<UserEntity> validateAndModifyUserCreation(UserEntity user, UserEmailValidationCreate dto) {
 
     if(Validator.validateString(dto.username(), 1, 255)){
       user.setUsername(dto.username());

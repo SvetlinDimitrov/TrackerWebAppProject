@@ -3,6 +3,16 @@ package org.nutriGuideBuddy.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nutriGuideBuddy.domain.dto.meal.CalorieView;
+import org.nutriGuideBuddy.domain.dto.meal.FoodView;
+import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
+import org.nutriGuideBuddy.domain.dto.meal.NutritionView;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.enums.AllowedCalorieUnits;
+import org.nutriGuideBuddy.enums.Credentials;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,18 +24,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.nutriGuideBuddy.domain.dto.meal.CalorieView;
-import org.nutriGuideBuddy.domain.dto.meal.FoodView;
-import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
-import org.nutriGuideBuddy.domain.dto.meal.NutritionView;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
-import org.nutriGuideBuddy.domain.enums.AllowedCalorieUnits;
-import org.nutriGuideBuddy.enums.Credentials;
-import org.nutriGuideBuddy.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,6 +45,8 @@ class CustomFoodControllerIntegrationTest {
   private WebTestClient webTestClient;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private JWTUtilEmailValidation jwtUtil;
 
   @Container
   public static GenericContainer<?> mysqlContainer = new GenericContainer<>("mysql:latest")
@@ -993,25 +999,6 @@ class CustomFoodControllerIntegrationTest {
         .id();
   }
 
-  private Header setUpUserAndReturnAuthHeader() {
-
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
-
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .returnResult();
-
-    return new Header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()));
-  }
-
   private void insertCustomFood(Header authHeader, InsertFoodDto foodDto) {
     webTestClient
         .post()
@@ -1024,7 +1011,30 @@ class CustomFoodControllerIntegrationTest {
         .returnResult();
   }
 
-  private UserCreate createUser(String username, String email, String password) {
-    return new UserCreate(username, email, password);
+  private Header setUpUserAndReturnAuthHeader() {
+    String token = jwtUtil.generateToken(Credentials.VALID_EMAIL.getValue());
+
+    UserCreate newUser = createUser(
+        Credentials.VALID_USERNAME.getValue(),
+        Credentials.VALID_EMAIL.getValue(),
+        Credentials.VALID_PASSWORD.getValue(),
+        token
+    );
+
+    JwtResponse responseBody = webTestClient.post()
+        .uri("/api/user")
+        .bodyValue(newUser)
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
+
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
+  private UserCreate createUser(String username, String email, String password, String token) {
+    return new UserCreate(username, email, password, token);
   }
 }

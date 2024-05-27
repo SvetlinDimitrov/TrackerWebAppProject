@@ -1,6 +1,7 @@
-import {deleteUser, login as loginUser, modifyUserDetails, register} from "../../api/UserService.js";
+import {deleteUser, login as loginUser, modifyUserDetails, register, resetUserPassword} from "../../api/UserService.js";
 import {getRecord} from "../../api/RecordService.js";
 import {getAllMeals} from "../../api/MealService.js";
+import {sendEmail, sendEmailForNewPasswordTokenLink, verifyEmail} from "../../api/EmailVerificationService.js";
 
 export default {
     async logout({commit}) {
@@ -78,4 +79,34 @@ export default {
             commit('setIsLoading', false);
         }
     },
+    async verifyUserDataAndSendEmail({commit}, data) {
+        commit('setIsLoading', true);
+        try {
+            await sendEmail(data);
+        } catch (error) {
+            throw new Error(error.message);
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async sendEmailForNewPasswordTokenLink({commit}, email) {
+        commit('setIsLoading', true);
+        try {
+            await sendEmailForNewPasswordTokenLink(email);
+        } catch (error) {
+            throw new Error(error.message);
+        } finally {
+            commit('setIsLoading', false);
+        }
+    },
+    async resetPassword({commit}, data) {
+        commit('setIsLoading', true);
+        try {
+            await resetUserPassword(data);
+        } catch (error) {
+            throw new Error(error.message);
+        } finally {
+            commit('setIsLoading', false);
+        }
+    }
 };

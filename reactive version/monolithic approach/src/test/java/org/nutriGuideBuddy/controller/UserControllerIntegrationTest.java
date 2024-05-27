@@ -3,9 +3,17 @@ package org.nutriGuideBuddy.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
+import org.nutriGuideBuddy.domain.dto.user.UserCreate;
+import org.nutriGuideBuddy.domain.dto.user.UserDto;
+import org.nutriGuideBuddy.domain.dto.user.UserView;
+import org.nutriGuideBuddy.enums.Credentials;
+import org.nutriGuideBuddy.repository.UserRepository;
+import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.web.header.Header;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -13,18 +21,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDto;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
-import org.nutriGuideBuddy.enums.Credentials;
-import org.nutriGuideBuddy.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
-import java.util.Base64;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Naming convention follows the Given-When-Then structure, which is commonly used in behavior-driven development (BDD) to make tests more descriptive and easier to understand.
@@ -39,6 +40,8 @@ class UserControllerIntegrationTest {
   private WebTestClient webTestClient;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private JWTUtilEmailValidation jwtUtilEmailValidation;
 
   @Container
   public static GenericContainer<?> mysqlContainer = new GenericContainer<>("mysql:latest")
@@ -82,10 +85,13 @@ class UserControllerIntegrationTest {
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .value(user -> assertNotNull(user.id()))
-        .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()));
+        .expectBody(JwtResponse.class)
+        .value(user -> assertNotNull(user.userView().user().id()))
+        .value(user -> assertEquals(newUser.username(), user.userView().user().username()))
+        .value(user -> assertEquals(newUser.email(), user.userView().user().email()))
+        .value(user -> assertNotNull(user.accessToken()))
+        .value(user -> assertNotNull(user.accessToken().value()))
+        .value(user -> assertNotNull(user.accessToken().expiresIn()));
   }
 
   @Test
@@ -227,26 +233,32 @@ class UserControllerIntegrationTest {
         Credentials.VALID_PASSWORD.getValue()
     );
 
-    webTestClient.post()
+    JwtResponse responseBody = webTestClient.post()
         .uri("/api/user")
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
+        .expectBody(JwtResponse.class)
+        .value(user -> assertNotNull(user.userView().user().id()))
+        .value(user -> assertEquals(newUser.username(), user.userView().user().username()))
+        .value(user -> assertEquals(newUser.email(), user.userView().user().email()))
+        .value(user -> assertNotNull(user.accessToken()))
+        .value(user -> assertNotNull(user.accessToken().value()))
+        .value(user -> assertNotNull(user.accessToken().expiresIn()))
+        .returnResult()
+        .getResponseBody();
+
+    assert responseBody != null;
+    webTestClient.get()
+        .uri("/api/user")
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
+        .exchange()
+        .expectStatus().isOk()
         .expectBody(UserView.class)
         .value(user -> assertNotNull(user.id()))
         .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
-        .consumeWith(response -> {
-          webTestClient.get()
-              .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserView.class)
-              .value(user -> assertNotNull(user.id()))
-              .value(user -> assertEquals(newUser.username(), user.username()))
-              .value(user -> assertEquals(newUser.email(), user.email()));
-        });
+        .value(user -> assertEquals(newUser.email(), user.email()));
+
   }
 
   @Test
@@ -258,21 +270,50 @@ class UserControllerIntegrationTest {
         Credentials.VALID_PASSWORD.getValue()
     );
 
-    webTestClient.post()
+    JwtResponse responseBody = webTestClient.post()
         .uri("/api/user")
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
+        .expectBody(JwtResponse.class)
+        .value(user -> assertNotNull(user.userView().user().id()))
+        .value(user -> assertEquals(newUser.username(), user.userView().user().username()))
+        .value(user -> assertEquals(newUser.email(), user.userView().user().email()))
+        .value(user -> assertNotNull(user.accessToken()))
+        .value(user -> assertNotNull(user.accessToken().value()))
+        .value(user -> assertNotNull(user.accessToken().expiresIn()))
+        .returnResult()
+        .getResponseBody();
+
+    assert responseBody != null;
+    webTestClient.get()
+        .uri("/api/user")
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
+        .exchange()
+        .expectStatus().isOk()
         .expectBody(UserView.class)
         .value(user -> assertNotNull(user.id()))
         .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
+        .value(user -> assertEquals(newUser.email(), user.email()));
+
+    webTestClient.delete()
+        .uri("/api/user")
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
+        .exchange()
+        .expectStatus().isNoContent()
+        .returnResult(Void.class)
         .consumeWith(response -> {
+          webTestClient.get()
+              .uri("/api/user")
+              .header("Authorization", "Bearer " + responseBody.accessToken().value())
+              .exchange()
+              .expectStatus().isUnauthorized();
+
           webTestClient.delete()
               .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+              .header("Authorization", "Bearer " + responseBody.accessToken().value())
               .exchange()
-              .expectStatus().isNoContent();
+              .expectStatus().isUnauthorized();
         });
 
   }
@@ -286,37 +327,41 @@ class UserControllerIntegrationTest {
         Credentials.VALID_PASSWORD.getValue()
     );
 
-    webTestClient.post()
+    JwtResponse responseBody = webTestClient.post()
         .uri("/api/user")
         .bodyValue(newUser)
         .exchange()
         .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .value(user -> assertNotNull(user.id()))
-        .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
+        .expectBody(JwtResponse.class)
+        .value(user -> assertNotNull(user.userView().user().id()))
+        .value(user -> assertEquals(newUser.username(), user.userView().user().username()))
+        .value(user -> assertEquals(newUser.email(), user.userView().user().email()))
+        .value(user -> assertNotNull(user.accessToken()))
+        .value(user -> assertNotNull(user.accessToken().value()))
+        .value(user -> assertNotNull(user.accessToken().expiresIn()))
+        .returnResult()
+        .getResponseBody();
+
+
+    assert responseBody != null;
+    webTestClient.delete()
+        .uri("/api/user")
+        .header("Authorization", "Bearer " + responseBody.accessToken().value())
+        .exchange()
+        .expectStatus().isNoContent()
+        .returnResult(Void.class)
         .consumeWith(response -> {
           webTestClient.delete()
               .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
+              .header("Authorization", "Bearer " + responseBody.accessToken().value())
               .exchange()
-              .expectStatus().isNoContent()
-              .returnResult(Void.class)
-              .consumeWith(deletionResponse -> {
-                webTestClient.delete()
-                    .uri("/api/user")
-                    .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-                    .exchange()
-                    .expectStatus().isUnauthorized()
-                    .returnResult(Void.class)
-                    .consumeWith(deletionResponse2 -> {
-                      webTestClient.delete()
-                          .uri("/api/user")
-                          .exchange()
-                          .expectStatus().isUnauthorized()
-                          .returnResult(Void.class);
-                    });
-              });
+              .expectStatus().isUnauthorized();
+
+          webTestClient.delete()
+              .uri("/api/user")
+              .header("Authorization", "Bearer " + responseBody.accessToken().value())
+              .exchange()
+              .expectStatus().isUnauthorized();
         });
 
   }
@@ -324,98 +369,37 @@ class UserControllerIntegrationTest {
   @Test
   void givenValidUserCredentialsAndAuth_whenModifyingUser_thenServerShouldReturnOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     UserDto validUserUpdateCredentials = new UserDto("Pesho", "12345");
 
-    webTestClient.post()
+    webTestClient.patch()
         .uri("/api/user")
-        .bodyValue(newUser)
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(validUserUpdateCredentials)
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .value(user -> assertNotNull(user.id()))
-        .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
-        .consumeWith(response -> {
-          webTestClient.patch()
-              .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .bodyValue(validUserUpdateCredentials)
-              .exchange()
-              .expectStatus().isOk()
-              .expectBody(UserView.class)
-              .value(user -> assertNotNull(user.id()))
-              .value(user -> assertEquals(validUserUpdateCredentials.username(), user.username()))
-              .value(user -> assertEquals(newUser.email(), user.email()));
-        });
+        .expectStatus().isOk()
+        .expectBody(JwtResponse.class)
+        .value(user -> assertNotNull(user.userView().user().id()))
+        .value(user -> assertEquals(validUserUpdateCredentials.username(), user.userView().user().username()))
+        .value(user -> assertNotEquals(authHeader.getValues().getFirst(), user.accessToken().value()));
 
-  }
-
-  @Test
-  void givenInvalidUsernameCredentialAndValidAuth_whenModifyingUserWith_thenServerShouldReturnBadRequest() {
-
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
-
-    UserDto invalidUsernameCredentials = new UserDto(" Antidisestablishmentarianism's beauty may never be fully comprehended by the uninitiated, but those who delve deep into its labyrinthine depths will find themselves ensnared by its seductive allure, forever lost in a kaleidoscope of convoluted concepts and intricate ideologies that dance upon the precipice of comprehension.   ", null);
-
-    webTestClient.post()
-        .uri("/api/user")
-        .bodyValue(newUser)
-        .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .value(user -> assertNotNull(user.id()))
-        .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
-        .consumeWith(response -> {
-          webTestClient.patch()
-              .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .bodyValue(invalidUsernameCredentials)
-              .exchange()
-              .expectStatus().isBadRequest();
-        });
 
   }
 
   @Test
   void givenEmptyUserCredentialsAndValidAuth_whenModifyingUser_thenServerShouldReturnOk() {
 
-    UserCreate newUser = createUser(
-        Credentials.VALID_USERNAME.getValue(),
-        Credentials.VALID_EMAIL.getValue(),
-        Credentials.VALID_PASSWORD.getValue()
-    );
+    Header authHeader = setUpUserAndReturnAuthHeader();
 
     UserDto emptyCredentials = new UserDto(null, null);
 
-    webTestClient.post()
+    webTestClient.patch()
         .uri("/api/user")
-        .bodyValue(newUser)
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .bodyValue(emptyCredentials)
         .exchange()
-        .expectStatus().isCreated()
-        .expectBody(UserView.class)
-        .value(user -> assertNotNull(user.id()))
-        .value(user -> assertEquals(newUser.username(), user.username()))
-        .value(user -> assertEquals(newUser.email(), user.email()))
-        .consumeWith(response -> {
-          webTestClient.patch()
-              .uri("/api/user")
-              .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((newUser.email() + ":" + newUser.password()).getBytes()))
-              .bodyValue(emptyCredentials)
-              .exchange()
-              .expectStatus().isOk();
-        });
-
+        .expectStatus().isOk();
   }
 
   @Test
@@ -431,7 +415,35 @@ class UserControllerIntegrationTest {
 
   }
 
+  private Header setUpUserAndReturnAuthHeader() {
+    String token = jwtUtilEmailValidation.generateToken(Credentials.VALID_EMAIL.getValue());
+
+    UserCreate newUser = createUser(
+        Credentials.VALID_USERNAME.getValue(),
+        Credentials.VALID_EMAIL.getValue(),
+        Credentials.VALID_PASSWORD.getValue(),
+        token
+    );
+
+    JwtResponse responseBody = webTestClient.post()
+        .uri("/api/user")
+        .bodyValue(newUser)
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody(JwtResponse.class)
+        .returnResult()
+        .getResponseBody();
+
+    assert responseBody != null;
+    return new Header("Authorization", "Bearer " + responseBody.accessToken().value());
+  }
+
   private UserCreate createUser(String username, String email, String password) {
-    return new UserCreate(username, email, password);
+    String token = jwtUtilEmailValidation.generateToken(email);
+    return new UserCreate(username, email, password, token);
+  }
+
+  private UserCreate createUser(String username, String email, String password, String token) {
+    return new UserCreate(username, email, password, token);
   }
 }
