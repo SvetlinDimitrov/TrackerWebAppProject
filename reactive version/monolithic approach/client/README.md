@@ -1,7 +1,37 @@
-# Vue 3 + Vite
+# Steps to Start the Front End
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+1. **Create `application-prod.properties`**
+    - Go into the server app.
+    - Create a file named `application-prod.properties` and fill it with the properties from `application.properties`.
+    - For more information, check the server's README file.
 
-## Recommended IDE Setup
+2. **Build the Server Application**
+    - Run the following commands to clean and build the application:
+      ```sh
+      mvn clean
+      mvn build
+      ```
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+3. **Ensure Database Connection**
+    - Make sure the database is connected with the correct name in the Java server.
+   
+4. **Run Docker Compose**
+    - Navigate to the directory containing your `docker-compose.yaml` file.
+    - Run the following command to start the Docker containers:
+      ```sh
+      docker-compose up
+      ```
+      
+5. **Install Front End Dependencies**
+    - Run the following command to install the necessary npm packages:
+      ```sh
+      npm install
+      ```
+
+6. **Start the Development Server**
+    - Run the following command to start the development server:
+      ```sh
+      npm run dev
+      ```
+
+Now your front end should be up and running!
