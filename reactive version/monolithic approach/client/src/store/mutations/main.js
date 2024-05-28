@@ -1,15 +1,15 @@
 export default {
+    setJwt(state, token) {
+        state.jwt = token;
+    },
+    removeJwt(state) {
+        state.jwt = null;
+    },
     setUser(state, user) {
         state.user = user;
     },
     removeUser(state) {
         state.user = null;
-    },
-    setUserDetails(state, userDetails) {
-        state.userDetails = userDetails;
-    },
-    removeUserDetails(state) {
-        state.userDetails = null;
     },
     setRecord(state, record) {
         state.record = record

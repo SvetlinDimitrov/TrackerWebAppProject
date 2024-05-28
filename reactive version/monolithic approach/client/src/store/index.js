@@ -14,7 +14,8 @@ import foodGetters from './getters/food.js';
 const store = createStore({
     state() {
         return {
-            user: JSON.parse(localStorage.getItem('user')),
+            jwt: localStorage.getItem('jwt'),
+            user: null,
             userDetails: null,
             record: null,
             recordSettingData: {nutritions: JSON.parse(localStorage.getItem('nutritions')) || []},

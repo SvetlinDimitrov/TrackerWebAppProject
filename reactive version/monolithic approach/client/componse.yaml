@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mysql-db:
+  db:
     image: mysql:latest
     ports:
       - "3306:3306"
@@ -16,16 +16,10 @@ services:
   server:
     restart: always
     depends_on:
-      - mysql-db
+      - db
     build:
       context: ../
       dockerfile: Dockerfile
-    environment:
-      DB_HOST: mysql-db
-      FOOD_DATA_API_KEY: 84c728b508b91dc277785a4f9bf8156c
-      FOOD_DATA_API_ID: 723b7aca
-      ORIGINS: http://localhost:3000
-      FOOD_DATA_API_URL: https://trackapi.nutritionix.com
     ports:
       - "8080:8080"
     networks:

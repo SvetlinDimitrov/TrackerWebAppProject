@@ -1,25 +1,27 @@
 import {deleteUser, login as loginUser, modifyUserDetails, register, resetUserPassword} from "../../api/UserService.js";
 import {getRecord} from "../../api/RecordService.js";
 import {getAllMeals} from "../../api/MealService.js";
-import {sendEmail, sendEmailForNewPasswordTokenLink, verifyEmail} from "../../api/EmailVerificationService.js";
+import {sendEmail, sendEmailForNewPasswordTokenLink} from "../../api/EmailVerificationService.js";
 
 export default {
     async logout({commit}) {
         commit('setIsLoading', true);
-        localStorage.removeItem('user');
+        localStorage.removeItem('jwt');
         commit('removeRecordSettingsNutrition');
         commit('removeUser');
+        commit('removeJwt');
         commit('removeRecord');
-        commit('removeUserDetails');
         commit('setIsLoading', false);
     },
     async login({commit, getters, dispatch}, {email, password}) {
         try {
             commit('setIsLoading', true);
-            const userDetails = await loginUser(email, password);
-            localStorage.setItem('user', JSON.stringify({email, password}));
-            commit('setUser', {email, password});
-            commit('setUserDetails', userDetails);
+            const jwtResponse = await loginUser(email, password);
+            const jwt = jwtResponse.accessToken;
+            const user = jwtResponse.userView;
+            localStorage.setItem('jwt', JSON.stringify(jwt));
+            commit('setJwt', jwt);
+            commit('setUser', user);
 
             if (getters.isFullyRegistered) {
                 const record = await getRecord(getters.recordSettingData);
@@ -38,8 +40,11 @@ export default {
     async register({commit}, data) {
         commit('setIsLoading', true);
         try {
-            const user = await register(data);
-            localStorage.setItem('user', JSON.stringify(user));
+            const jwtResponse = await register(data);
+            const jwt = jwtResponse.accessToken;
+            const user = jwtResponse.userView;
+            localStorage.setItem('jwt', JSON.stringify(jwt));
+            commit('setJwt', jwt);
             commit('setUser', user);
         } catch (error) {
             throw new Error(error.message);
@@ -51,10 +56,10 @@ export default {
         commit('setIsLoading', true);
         try {
             await deleteUser();
-            localStorage.removeItem('user');
+            localStorage.removeItem('jwt');
             commit('removeUser');
+            commit('removeJwt');
             commit('removeRecord');
-            commit('removeUserDetails');
             commit('removeRecordSettingsNutrition');
         } catch (error) {
             throw new Error(error.message);
@@ -65,8 +70,12 @@ export default {
     async updateUserDetails({commit, getters}, data) {
         commit('setIsLoading', true);
         try {
-            const userData = await modifyUserDetails(data);
-            commit('setUserDetails', userData);
+            const jwtResponse = await modifyUserDetails(data);
+            const jwt = jwtResponse.accessToken;
+            const user = jwtResponse.userView;
+            localStorage.setItem('jwt', JSON.stringify(jwt));
+            commit('setJwt', jwt);
+            commit('setUser', user);
 
             if (getters.isFullyRegistered) {
                 const record = await getRecord(getters.recordSettingData);

@@ -1,17 +1,18 @@
 export default {
+    jwt: state => state.jwt,
     user: state => state.user,
+    userDetails: state => state.user?.userDetails,
     record: state => state.record,
-    userDetails: state => state.userDetails,
-    isFullyRegistered: state =>
-        state.userDetails &&
-        state.userDetails.age &&
-        state.userDetails.gender &&
-        state.userDetails.height &&
-        state.userDetails.kilograms &&
-        state.userDetails.workoutState,
-    authHeader: getters => {
-        if (getters.user) {
-            return `Basic ${btoa(`${getters.user.email}:${getters.user.password}`)}`;
+    isFullyRegistered: (state, getters) =>
+        getters.userDetails &&
+        getters.userDetails.age &&
+        getters.userDetails.gender &&
+        getters.userDetails.height &&
+        getters.userDetails.kilograms &&
+        getters.userDetails.workoutState,
+    authHeader: state => {
+        if (state.jwt?.value) {
+            return `Bearer ${state.jwt.value}`;
         }
         return null;
     },
