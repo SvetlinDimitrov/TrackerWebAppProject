@@ -19,5 +19,8 @@ export default {
     },
     setIsLoading(state, isLoading) {
         state.isLoading = isLoading;
-    }
+    },
+    setIsRebooting(state, isRebooting) {
+        state.isRebooting = isRebooting;
+    },
 };

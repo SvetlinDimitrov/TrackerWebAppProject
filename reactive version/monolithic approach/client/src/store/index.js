@@ -14,16 +14,17 @@ import foodGetters from './getters/food.js';
 const store = createStore({
     state() {
         return {
-            jwt: localStorage.getItem('jwt'),
+            jwt: JSON.parse(localStorage.getItem('jwt')) || null,
             user: null,
             userDetails: null,
             record: null,
             recordSettingData: {nutritions: JSON.parse(localStorage.getItem('nutritions')) || []},
             meals: {},
             isLoading: false,
+            isRebooting: false,
             searchFood: '',
             searchFoodResult: [],
-            customFoods: null,
+            totalPagesCustomFood: null,
         };
     },
     mutations: {

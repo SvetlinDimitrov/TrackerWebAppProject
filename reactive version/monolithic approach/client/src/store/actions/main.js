@@ -1,4 +1,11 @@
-import {deleteUser, login as loginUser, modifyUserDetails, register, resetUserPassword} from "../../api/UserService.js";
+import {
+    deleteUser,
+    getUser, getUserDetails,
+    login as loginUser,
+    modifyUserDetails,
+    register,
+    resetUserPassword
+} from "../../api/UserService.js";
 import {getRecord} from "../../api/RecordService.js";
 import {getAllMeals} from "../../api/MealService.js";
 import {sendEmail, sendEmailForNewPasswordTokenLink} from "../../api/EmailVerificationService.js";
@@ -35,6 +42,32 @@ export default {
             throw new Error('Session expired, please login again');
         } finally {
             commit('setIsLoading', false);
+        }
+    },
+    async reboot({commit, getters, dispatch}) {
+        try {
+            commit('setIsRebooting', true);
+            commit('setIsLoading', true);
+            const user = await getUser();
+            const userDetails = await getUserDetails();
+            const userToSave = {
+                user: user,
+                userDetails: userDetails
+            }
+            commit('setUser', userToSave);
+            if (getters.isFullyRegistered) {
+                const record = await getRecord(getters.recordSettingData);
+                commit('setRecord', record);
+
+                const meals = await getAllMeals();
+                commit('setMeals', meals);
+            }
+        } catch (error) {
+            await dispatch('logout');
+            throw new Error('Session expired, please login again');
+        } finally {
+            commit('setIsLoading', false);
+            commit('setIsRebooting', false);
         }
     },
     async register({commit}, data) {

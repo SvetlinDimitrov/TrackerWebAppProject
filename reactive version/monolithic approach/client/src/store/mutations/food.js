@@ -5,7 +5,7 @@ export default {
     setSearchedFoodResult(state, result) {
         state.searchFoodResult = result;
     },
-    setCustomFoods(state, foods) {
-        state.customFoods = foods;
+    setTotalPagesCustomFood(state, pages) {
+        state.totalPagesCustomFood = pages;
     },
 }

@@ -358,7 +358,7 @@ const submit = async () => {
   const foodToCreate = {
     name: form.value.name,
     calories: {
-      amount: form.value.mainServing.amount,
+      amount: form.value.calories,
       unit: "kcal"
     },
     mainServing: {

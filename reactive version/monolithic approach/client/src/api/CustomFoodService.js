@@ -1,14 +1,18 @@
 import store from "../store/index.js";
 import axios from "../axios.js";
 
-export const getAllCustomFoodS = () => {
+export const getAllCustomFoodS = (page, size) => {
 
     const authHeader = store.getters.authHeader;
 
-    return axios.get('/custom/food', {
+    return axios.get('/custom/food/short', {
         headers: {
             'Authorization': authHeader
         },
+        params: {
+            page: page,
+            size: size
+        }
     })
         .then(response => {
             return response.data;

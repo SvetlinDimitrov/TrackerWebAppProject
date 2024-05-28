@@ -39,6 +39,8 @@ app.use(router);
 app.use(store);
 app.use(ToastService);
 
+export const toast = app.config.globalProperties.$toast;
+
 app.component('TreeSelect', TreeSelect);
 app.component('Steps', Steps);
 app.component('Button', Button);

@@ -2,7 +2,7 @@
   <div v-if="isLoading" class="spinner-container">
     <ProgressSpinner/>
   </div>
-  <div v-if="isLoginCompleted" class="flex flex-col h-screen">
+  <div v-if="!isRebooting" class="flex flex-col h-screen">
     <Header/>
     <router-view></router-view>
   </div>
@@ -12,24 +12,15 @@
 <script setup>
 import Header from "./components/Hedaer.vue";
 import {useStore} from "vuex";
-import {useToast} from "primevue/usetoast"
 import {computed, onBeforeMount, ref} from "vue";
 
 const store = useStore();
-const toast = useToast();
 const isLoginCompleted = ref(false);
 const isLoading = computed(() => store.state.isLoading);
+const isRebooting = computed(() => store.getters.isRebooting);
+
 onBeforeMount(async () => {
-  const user = store.getters.user;
-  if (user) {
-    try {
-      const email = user.email;
-      const password = user.password;
-      await store.dispatch('login', {email, password});
-    } catch (error) {
-      toast.add({severity: 'error', summary: 'Error', detail: error.message, life: 3000});
-    }
-  }
+  await store.dispatch("reboot");
   isLoginCompleted.value = true;
 });
 

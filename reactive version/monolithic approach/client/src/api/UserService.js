@@ -45,6 +45,38 @@ export const modifyUserDetails = (data) => {
         });
 }
 
+export const getUser = () => {
+
+    const authHeader = store.getters.authHeader;
+
+    return axios.get('/user', {headers: {'Authorization': authHeader}})
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            if (error.response.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Something went wrong fetching user');
+        });
+}
+
+export const getUserDetails = () => {
+
+    const authHeader = store.getters.authHeader;
+
+    return axios.get('/user/details', {headers: {'Authorization': authHeader}})
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            if (error.response.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Something went wrong fetching user details');
+        });
+}
+
 export const deleteUser = () => {
 
     const authHeader = store.getters.authHeader;

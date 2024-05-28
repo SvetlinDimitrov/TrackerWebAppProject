@@ -105,16 +105,12 @@ export default {
             commit('setIsLoading', false);
         }
     },
-    async getCustomFoods({commit}) {
+    async getCustomFoods({commit} , payload) {
         commit('setIsLoading', true);
         try {
-            const customFoods = await getAllCustomFoodS();
-            const newFoodArray = customFoods.map(food => ({
-                name: food.name,
-                id: food.id,
-            }));
-            commit('setCustomFoods', newFoodArray);
-            return newFoodArray;
+            const pageable = await getAllCustomFoodS(payload.page , payload.size);
+            commit('setTotalPagesCustomFood', pageable.totalPages);
+            return pageable.content;
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -125,12 +121,6 @@ export default {
         commit('setIsLoading', true);
         try {
             await createCustomFood(filterNutrients(data));
-            const customFoods = await getAllCustomFoodS();
-            const newFoodArray = customFoods.map(food => ({
-                name: food.name,
-                id: food.id,
-            }));
-            commit('setCustomFoods', newFoodArray);
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -154,12 +144,6 @@ export default {
             const id = data.id;
             const food = data.food;
             await updateCustomFood(id, filterNutrients(food));
-            const customFoods = await getAllCustomFoodS();
-            const newFoodArray = customFoods.map(food => ({
-                name: food.name,
-                id: food.id,
-            }));
-            commit('setCustomFoods', newFoodArray);
         } catch (e) {
             throw new Error(e.message)
         } finally {
@@ -170,12 +154,6 @@ export default {
         commit('setIsLoading', true);
         try {
             await deleteCustomFood(id);
-            const customFoods = await getAllCustomFoodS();
-            const newFoodArray = customFoods.map(food => ({
-                name: food.name,
-                id: food.id,
-            }));
-            commit('setCustomFoods', newFoodArray);
         } catch (e) {
             throw new Error(e.message)
         } finally {

@@ -18,4 +18,13 @@ export default {
     },
     isLoading: state => state.isLoading,
     recordSettingData: state => state.recordSettingData,
+    isJwtValid: state => {
+        if (state.jwt?.expiresIn) {
+            const jwtExpirationDate = new Date(state.jwt.expiresIn);
+            const currentDate = new Date();
+            return jwtExpirationDate > currentDate;
+        }
+        return false;
+    },
+    isRebooting: state => state.isRebooting,
 };
