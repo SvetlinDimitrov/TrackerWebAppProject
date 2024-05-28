@@ -1,6 +1,7 @@
 import {
     deleteUser,
-    getUser, getUserDetails,
+    getUser,
+    getUserDetails,
     login as loginUser,
     modifyUserDetails,
     register,
@@ -13,11 +14,7 @@ import {sendEmail, sendEmailForNewPasswordTokenLink} from "../../api/EmailVerifi
 export default {
     async logout({commit}) {
         commit('setIsLoading', true);
-        localStorage.removeItem('jwt');
-        commit('removeRecordSettingsNutrition');
-        commit('removeUser');
-        commit('removeJwt');
-        commit('removeRecord');
+        commit('clearState');
         commit('setIsLoading', false);
     },
     async login({commit, getters, dispatch}, {email, password}) {
@@ -34,17 +31,25 @@ export default {
                 const record = await getRecord(getters.recordSettingData);
                 commit('setRecord', record);
 
-                const meals = await getAllMeals();
-                commit('setMeals', meals);
+                let pageNumber = 0;
+                let totalPages = 0;
+                do {
+                    const response = await getAllMeals({page: pageNumber, size: 10});
+                    const meals = response.content;
+                    totalPages = response.totalPages;
+
+                    commit('setMeals', meals);
+
+                    pageNumber++;
+                } while (pageNumber < totalPages);
             }
         } catch (error) {
-            await dispatch('logout');
-            throw new Error('Session expired, please login again');
+            throw new Error('Login failed. Please check your credentials.');
         } finally {
             commit('setIsLoading', false);
         }
     },
-    async reboot({commit, getters, dispatch}) {
+    async reboot({commit, getters}) {
         try {
             commit('setIsRebooting', true);
             commit('setIsLoading', true);
@@ -55,16 +60,26 @@ export default {
                 userDetails: userDetails
             }
             commit('setUser', userToSave);
+
             if (getters.isFullyRegistered) {
                 const record = await getRecord(getters.recordSettingData);
                 commit('setRecord', record);
 
-                const meals = await getAllMeals();
-                commit('setMeals', meals);
+                let pageNumber = 0;
+                let totalPages = 0;
+
+                do {
+                    const response = await getAllMeals({page: pageNumber, size: 10});
+                    const meals = response.content;
+                    totalPages = response.totalPages;
+
+                    commit('setMeals', meals);
+
+                    pageNumber++;
+                } while (pageNumber < totalPages);
             }
         } catch (error) {
-            await dispatch('logout');
-            throw new Error('Session expired, please login again');
+
         } finally {
             commit('setIsLoading', false);
             commit('setIsRebooting', false);
@@ -89,11 +104,7 @@ export default {
         commit('setIsLoading', true);
         try {
             await deleteUser();
-            localStorage.removeItem('jwt');
-            commit('removeUser');
-            commit('removeJwt');
-            commit('removeRecord');
-            commit('removeRecordSettingsNutrition');
+            commit('clearState');
         } catch (error) {
             throw new Error(error.message);
         } finally {

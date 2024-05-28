@@ -74,7 +74,6 @@ public class NutritionixApiService {
   }
 
   public Mono<List<InsertFoodDto>> getBrandedFoodById(String id) {
-
     return webClient
         .get()
         .uri(uriBuilder -> uriBuilder.path("/v2/search/item")

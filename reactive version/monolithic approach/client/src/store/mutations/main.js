@@ -23,4 +23,20 @@ export default {
     setIsRebooting(state, isRebooting) {
         state.isRebooting = isRebooting;
     },
+    clearState(state) {
+        localStorage.removeItem('jwt');
+        state.jwt = null;
+        state.user = null;
+        state.userDetails = null;
+        state.record = null;
+        localStorage.removeItem('userDetails');
+        localStorage.removeItem('nutritions');
+        state.recordSettingData = {nutritions: JSON.parse(localStorage.getItem('nutritions')) || []};
+        state.meals = {};
+        state.isLoading = false;
+        state.isRebooting = false;
+        state.searchFood = '';
+        state.searchFoodResult = [];
+        state.totalPagesCustomFood = null;
+    },
 };

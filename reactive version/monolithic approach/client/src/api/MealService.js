@@ -21,7 +21,7 @@ export const createMeal = (data) => {
         });
 }
 
-export const addFoodIntoMeal = (mealId , food) => {
+export const addFoodIntoMeal = (mealId, food) => {
 
     const authHeader = store.getters.authHeader;
 
@@ -38,7 +38,7 @@ export const addFoodIntoMeal = (mealId , food) => {
         });
 }
 
-export const removeFoodByIdAndMealId = (mealId , foodId) => {
+export const removeFoodByIdAndMealId = (mealId, foodId) => {
 
     const authHeader = store.getters.authHeader;
 
@@ -55,11 +55,11 @@ export const removeFoodByIdAndMealId = (mealId , foodId) => {
         });
 }
 
-export const changeFoodByIdAndMealId = (mealId , foodId , food) => {
+export const changeFoodByIdAndMealId = (mealId, foodId, food) => {
 
     const authHeader = store.getters.authHeader;
 
-    return axios.put(`/meals/${mealId}/insertFood/${foodId}`, food,{
+    return axios.put(`/meals/${mealId}/insertFood/${foodId}`, food, {
         headers: {
             'Authorization': authHeader
         }
@@ -72,7 +72,7 @@ export const changeFoodByIdAndMealId = (mealId , foodId , food) => {
         });
 }
 
-export const modifyMeal = (data , id) => {
+export const modifyMeal = (data, id) => {
 
     const authHeader = store.getters.authHeader;
 
@@ -112,14 +112,15 @@ export const getMealById = (mealId) => {
         });
 }
 
-export const getAllMeals = () => {
+export const getAllMeals = (payload) => {
 
     const authHeader = store.getters.authHeader;
 
     return axios.get(`/meals`, {
         headers: {
             'Authorization': authHeader
-        }
+        },
+        params: payload
     })
         .then(response => {
             return response.data;

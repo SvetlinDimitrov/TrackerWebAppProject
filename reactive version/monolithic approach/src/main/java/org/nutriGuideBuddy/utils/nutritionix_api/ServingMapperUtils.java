@@ -14,7 +14,14 @@ public class ServingMapperUtils {
     return Optional.ofNullable(dto.getMeasures())
         .map(list -> list
             .stream()
-            .map(measure -> new ServingView(measure.getQty(), measure.getServingWeight(), measure.getMeasure()))
+            .map(measure -> new ServingView(
+                Optional.ofNullable(measure.getQty())
+                    .orElse(BigDecimal.ONE),
+                Optional.ofNullable(measure.getServingWeight())
+                    .orElse(BigDecimal.valueOf(100.0)),
+                Optional.ofNullable(measure.getMeasure())
+                    .orElse("g"))
+            )
             .toList())
         .orElse(List.of());
   }
@@ -22,13 +29,32 @@ public class ServingMapperUtils {
   public static ServingView getMainServing(FoodItem dto) {
 
     if (dto.getBrandName() == null) {
-      return new ServingView(BigDecimal.valueOf(dto.getServingQty()), BigDecimal.valueOf(dto.getServingWeightGrams()), dto.getServingUnit());
+      return new ServingView(
+          BigDecimal.valueOf(
+              Optional.ofNullable(dto.getServingQty())
+                  .orElse(1.0)
+          ),
+          BigDecimal.valueOf(
+              Optional.ofNullable(dto.getServingWeightGrams())
+                  .orElse(100.0)
+          ),
+          Optional.ofNullable(dto.getServingUnit())
+              .orElse("g"));
     }
-    return new ServingView(BigDecimal.valueOf(
-        dto.getServingQty()),
+    return new ServingView(
+        BigDecimal.valueOf(
+            Optional.ofNullable(dto.getServingQty())
+                .orElse(1.0)
+        ),
         Optional.ofNullable(dto.getServingWeightGrams())
             .map(BigDecimal::valueOf)
-            .orElse(BigDecimal.valueOf(dto.getNfMetricQty())),
-        dto.getServingUnit());
+            .orElse(
+                BigDecimal.valueOf(
+                    Optional.ofNullable(dto.getNfMetricQty())
+                        .orElse(100.0)
+                )
+            ),
+        Optional.ofNullable(dto.getServingUnit())
+            .orElse("g"));
   }
 }

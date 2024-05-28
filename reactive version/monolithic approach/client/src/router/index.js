@@ -26,9 +26,10 @@ router.beforeEach((to, from, next) => {
     const isValidJwt = store.getters.isJwtValid;
     const jwtToken = store.getters.jwt;
 
-    if (!isValidJwt || !jwtToken) {
-        toast.add({severity:'info', summary: 'Info', detail:"Your session has expired", life: 3000}); // Show a toast when the session has expired
-        next({ name: 'Login' });
+    if (!isValidJwt && jwtToken) {
+        store.commit('clearState');
+        toast.add({severity:'info', summary: 'Info', detail:"Your session has expired", life: 3000});
+        next({ name: 'SignUpOrLogin' });
     } else {
         next();
     }

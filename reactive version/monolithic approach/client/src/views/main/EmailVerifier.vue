@@ -30,24 +30,18 @@ const toast = useToast();
 const countdown = ref(5);
 const activeStep = ref(1);
 
-onMounted(() => {
-  const userDetails = localStorage.getItem('userDetails');
-
-  if (userDetails) {
-
-  } else {
-    router.push({name: 'Register'});
-    toast.add({severity: 'error', summary: 'Error', detail: 'Register first', life: 3000});
-  }
-});
-
 watchEffect(async () => {
   const token = route.query.token;
+  const userDetails = localStorage.getItem('userDetails');
+
+  if (!userDetails) {
+    await router.push({name: 'Register'});
+    return;
+  }
 
   if (token) {
     activeStep.value = 2;
     try {
-      const userDetails = localStorage.getItem('userDetails');
 
       const {email, password, username} = JSON.parse(userDetails);
 

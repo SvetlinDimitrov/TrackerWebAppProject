@@ -12,16 +12,14 @@
 <script setup>
 import Header from "./components/Hedaer.vue";
 import {useStore} from "vuex";
-import {computed, onBeforeMount, ref} from "vue";
+import {computed, onBeforeMount} from "vue";
 
 const store = useStore();
-const isLoginCompleted = ref(false);
 const isLoading = computed(() => store.state.isLoading);
 const isRebooting = computed(() => store.getters.isRebooting);
 
 onBeforeMount(async () => {
   await store.dispatch("reboot");
-  isLoginCompleted.value = true;
 });
 
 </script>
