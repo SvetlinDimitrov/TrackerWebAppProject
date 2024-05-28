@@ -3,13 +3,15 @@ package org.nutriGuideBuddy.controller;
 import lombok.RequiredArgsConstructor;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
-import org.nutriGuideBuddy.domain.dto.meal.ShortenFood;
-import org.nutriGuideBuddy.service.CustomFoodServiceImp;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.nutriGuideBuddy.domain.dto.meal.FoodView;
 import org.nutriGuideBuddy.domain.dto.meal.InsertFoodDto;
-import reactor.core.publisher.Flux;
+import org.nutriGuideBuddy.domain.dto.meal.ShortenFood;
+import org.nutriGuideBuddy.service.CustomFoodServiceImp;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -20,13 +22,21 @@ public class CustomFoodController {
   private final CustomFoodServiceImp service;
 
   @GetMapping
-  private Flux<FoodView> getAllCustomFoods() {
-    return service.getAllFoods();
+  private Mono<Page<FoodView>> getAllCustomFoods(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    return service.getAllFoods(pageable);
   }
 
   @GetMapping("/short")
-  private Flux<ShortenFood> searchCustomFoods() {
-    return service.getAllFoodsShort();
+  private Mono<Page<ShortenFood>> searchCustomFoods(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    return service.getAllFoodsShort(pageable);
   }
 
   @GetMapping("/{foodId}")

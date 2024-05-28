@@ -1,5 +1,8 @@
 package org.nutriGuideBuddy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -214,8 +217,19 @@ class MealControllerIntegrationTest {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBody(ArrayList.class)
-        .value(list -> assertEquals(list.size(), 0));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          System.out.println(responseBody);
+          try {
+            JsonNode root = new ObjectMapper().readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+
+            assertEquals(0, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   @Test
@@ -240,8 +254,19 @@ class MealControllerIntegrationTest {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBody(ArrayList.class)
-        .value(list -> assertEquals(list.size(), VALID_NUMBER_OF_MEALS));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          System.out.println(responseBody);
+          try {
+            JsonNode root = new ObjectMapper().readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+
+            assertEquals(VALID_NUMBER_OF_MEALS, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   @Test
@@ -274,8 +299,19 @@ class MealControllerIntegrationTest {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBody(ArrayList.class)
-        .value(list -> assertEquals(list.size(), VALID_IDS.size() / 2));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          System.out.println(responseBody);
+          try {
+            JsonNode root = new ObjectMapper().readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+
+            assertEquals(VALID_NUMBER_OF_MEALS / 2, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   @Test

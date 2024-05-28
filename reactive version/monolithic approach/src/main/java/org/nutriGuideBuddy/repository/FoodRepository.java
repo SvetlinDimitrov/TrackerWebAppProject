@@ -2,6 +2,9 @@ package org.nutriGuideBuddy.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.nutriGuideBuddy.domain.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.stereotype.Repository;
@@ -29,7 +32,7 @@ public class FoodRepository {
                 .and("userId").is(userId)
             ), FoodEntity.class
         ))
-        .orElse( entityTemplate.selectOne(
+        .orElse(entityTemplate.selectOne(
             query(where("id").is(foodId)
                 .and("mealId").isNull()
                 .and("userId").is(userId)
@@ -53,6 +56,23 @@ public class FoodRepository {
             query(where("userId").is(userId)
                 .and("mealId").isNull()), FoodEntity.class
         ));
+  }
+
+  public Mono<Page<FoodEntity>> findAllByFoodsByUserIdAndMealIdPageable(String userId, String mealId, Pageable pageable) {
+    return Optional.ofNullable(mealId)
+        .map(id -> entityTemplate.select(
+            query(where("userId").is(userId)
+                .and("mealId").is(mealId)), FoodEntity.class
+        ))
+        .orElse(entityTemplate.select(
+            query(where("userId").is(userId)
+                .and("mealId").isNull()), FoodEntity.class
+        ))
+        .skip(pageable.getOffset())
+        .take(pageable.getPageSize())
+        .collectList()
+        .flatMap(foodEntities -> entityTemplate.count(query(where("userId").is(userId)), FoodEntity.class)
+            .map(count -> new PageImpl<>(foodEntities, pageable, count)));
   }
 
   @Modifying

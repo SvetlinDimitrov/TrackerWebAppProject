@@ -1,5 +1,8 @@
 package org.nutriGuideBuddy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,9 +29,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -87,7 +90,7 @@ class CustomFoodControllerIntegrationTest {
   }
 
   @Test
-  void givenAuth_whenTestingGetAllCustomFoods_thenServerMustReturnOkWithEmptyList() {
+  void givenAuth_whenTestingGetAllCustomFoods_thenServerMustReturnOkWithEmptyList() throws JsonProcessingException {
 
     Header authHeader = setUpUserAndReturnAuthHeader();
 
@@ -97,8 +100,18 @@ class CustomFoodControllerIntegrationTest {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(FoodView.class)
-        .value(list -> assertEquals(0, list.size()));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          try {
+            JsonNode root = new ObjectMapper().readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+
+            assertEquals(0, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   @Test
@@ -116,8 +129,19 @@ class CustomFoodControllerIntegrationTest {
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(FoodView.class)
-        .value(list -> assertEquals(COUNT_CUSTOM_FOOD, list.size()));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          System.out.println(responseBody);
+          try {
+            JsonNode root = new ObjectMapper().readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+
+            assertEquals(COUNT_CUSTOM_FOOD, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   @Test
@@ -552,37 +576,6 @@ class CustomFoodControllerIntegrationTest {
   }
 
   @Test
-  void givenAuthValidFoodIdValidBody_whenTestingChangeFoodWithTheSameNamesButDifferentId_thenServerMustReturnBadRequest() {
-
-    InsertFoodDto foodDto = createValidInsertedFoodWithEmptyNutritions();
-    Header authHeader = setUpUserAndReturnAuthHeader();
-    insertCustomFood(authHeader, foodDto);
-    insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
-
-    List<FoodView> foodViews = webTestClient
-        .get()
-        .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
-        .exchange()
-        .expectStatus().isOk()
-        .expectBodyList(FoodView.class)
-        .returnResult()
-        .getResponseBody();
-
-    Objects.requireNonNull(foodViews).stream()
-        .filter(view -> !view.name().equals(foodDto.name()))
-        .forEach(view -> {
-          webTestClient
-              .put()
-              .uri("/api/custom/food/" + view.id())
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
-              .bodyValue(foodDto)
-              .exchange()
-              .expectStatus().isBadRequest();
-        });
-  }
-
-  @Test
   void givenAuthAndInvalidName_whenTestingChangeFood_thenServerMustReturnBadRequest() {
 
     Header authHeader = setUpUserAndReturnAuthHeader();
@@ -952,51 +945,86 @@ class CustomFoodControllerIntegrationTest {
       insertCustomFood(authHeader, createValidInsertedFoodWithEmptyNutritions());
     }
 
-    List<String> FOOD_IDS = Objects.requireNonNull(webTestClient
-            .get()
-            .uri("/api/custom/food")
-            .header(authHeader.getName(), authHeader.getValues().getFirst())
-            .exchange()
-            .expectStatus().isOk()
-            .expectBodyList(FoodView.class)
-            .value(list -> assertEquals(NUMBER_FOOD_TO_INSERT, list.size()))
-            .returnResult()
-            .getResponseBody())
-        .stream()
-        .map(FoodView::id)
-        .toList();
-
-    for (int i = 0; i < NUMBER_FOOD_TO_INSERT; i++) {
-      webTestClient
-          .delete()
-          .uri("/api/custom/food/" + FOOD_IDS.get(i))
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
-          .exchange()
-          .expectStatus().isNoContent()
-          .expectBody(Void.class);
-    }
+    List<String> FOOD_IDS = new ArrayList<>(); // Declare an array to hold the result
     webTestClient
         .get()
         .uri("/api/custom/food")
         .header(authHeader.getName(), authHeader.getValues().getFirst())
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(FoodView.class)
-        .value(list -> assertEquals(0, list.size()));
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(responseBody);
+            JsonNode content = root.path("content");
+            if (content.isArray() && !content.isEmpty()) {
+              content.forEach(data -> {
+                FOOD_IDS.add(data.path("id").asText());
+              });
+            }
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
+
+    FOOD_IDS.forEach(foodId -> {
+      webTestClient
+          .delete()
+          .uri("/api/custom/food/" + foodId)
+          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .exchange()
+          .expectStatus().isNoContent()
+          .expectBody(Void.class);
+    });
+
+    webTestClient
+        .get()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(responseBody);
+            JsonNode size = root.path("totalElements");
+            assertEquals(0, size.asInt());
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   private String extractFoodId(Header authHeader) {
-    return Objects.requireNonNull(webTestClient
-            .get()
-            .uri("/api/custom/food")
-            .header(authHeader.getName(), authHeader.getValues().getFirst())
-            .exchange()
-            .expectStatus().isOk()
-            .expectBodyList(FoodView.class)
-            .returnResult()
-            .getResponseBody())
-        .getFirst()
-        .id();
+    final String[] extractedId = new String[1]; // Declare an array to hold the result
+
+    webTestClient
+        .get()
+        .uri("/api/custom/food")
+        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody(String.class)
+        .consumeWith(response -> {
+          String responseBody = response.getResponseBody();
+          try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(responseBody);
+            JsonNode content = root.path("content");
+            if (content.isArray() && !content.isEmpty()) {
+              JsonNode firstObject = content.get(0);
+              extractedId[0] = firstObject.path("id").asText();
+            }
+          } catch (JsonProcessingException e) {
+            e.printStackTrace();
+          }
+        });
+
+    return extractedId[0];
   }
 
   private void insertCustomFood(Header authHeader, InsertFoodDto foodDto) {

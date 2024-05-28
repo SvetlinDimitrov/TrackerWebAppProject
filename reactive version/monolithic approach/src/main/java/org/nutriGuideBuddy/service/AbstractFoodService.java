@@ -46,8 +46,12 @@ public abstract class AbstractFoodService {
             Mono.just(FoodInfoView.toView(tuple.getT4()))
         ))
         .map(tuple -> new FoodView(entity.getId(), entity.getName(), tuple.getT5(), tuple.getT4(), tuple.getT3(), tuple.getT1(), tuple.getT2()));
+  }
 
-
+  protected Mono<ShortenFood> toShortenFoodView(FoodEntity entity , String mealId) {
+    return
+        repository.findCalorieByFoodId(entity.getId() , mealId)
+        .map(calories -> new ShortenFood(entity.getId(), entity.getName(), calories.getAmount()));
   }
 
   protected Mono<FoodEntity> getFoodEntityByIdMealIdUserId(String foodId, String mealId, String userId) {

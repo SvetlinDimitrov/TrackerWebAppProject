@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
 import org.nutriGuideBuddy.domain.dto.ExceptionResponse;
 import org.nutriGuideBuddy.domain.dto.meal.CreateMeal;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.nutriGuideBuddy.domain.dto.meal.MealShortView;
 import org.nutriGuideBuddy.domain.dto.meal.MealView;
 import org.nutriGuideBuddy.service.MealService;
-import reactor.core.publisher.Flux;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,8 +22,21 @@ public class MealController {
   private final MealService service;
 
   @GetMapping
-  private Flux<MealView> getAllMealsByUserId() {
-    return service.getAllByUserId();
+  private Mono<Page<MealView>> getAllMealsByUserId(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    return service.getAllByUserId(pageable);
+  }
+
+  @GetMapping("/short")
+  private Mono<Page<MealShortView>> getAllMealsByUserIdShortFoodResponse(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    return service.getAllByUserIdShorten(pageable);
   }
 
   @GetMapping("/{mealId}")

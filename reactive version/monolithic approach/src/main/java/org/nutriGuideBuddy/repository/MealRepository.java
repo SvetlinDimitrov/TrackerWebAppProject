@@ -2,12 +2,15 @@ package org.nutriGuideBuddy.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.nutriGuideBuddy.domain.entity.CalorieEntity;
+import org.nutriGuideBuddy.domain.entity.MealEntity;
 import org.nutriGuideBuddy.domain.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.relational.core.query.Update;
 import org.springframework.stereotype.Repository;
-import org.nutriGuideBuddy.domain.entity.MealEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,10 +28,12 @@ public class MealRepository {
     return entityTemplate.insert(entity);
   }
 
-  public Flux<MealEntity> findAllMealsByUserId(String userId) {
-    return entityTemplate.select(
-        query(where("userId").is(userId)), MealEntity.class
-    );
+  public Mono<Page<MealEntity>> findAllMealsByUserId(String userId, Pageable pageable) {
+    return entityTemplate.select(MealEntity.class)
+        .matching(query(where("userId").is(userId)))
+        .all()
+        .collectList()
+        .map(list -> new PageImpl<>(list, pageable, list.size()));
   }
 
   public Mono<MealEntity> findMealByIdAndUserId(String id, String userId) {
