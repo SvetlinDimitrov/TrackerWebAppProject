@@ -22,6 +22,12 @@ public class UserController {
     return userServiceImp.createUser(userDto);
   }
 
+  @PostMapping("/login")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mono<JwtResponse> loginUser(@RequestBody UserLogin dto) {
+    return userServiceImp.loginUser(dto);
+  }
+
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public Mono<UserView> getUserView() {

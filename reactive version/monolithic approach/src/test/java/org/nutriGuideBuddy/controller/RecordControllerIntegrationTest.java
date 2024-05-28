@@ -48,7 +48,7 @@ import static org.nutriGuideBuddy.utils.FoodUtils.createValidInsertedFoodWithEve
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class RecordControllerIntegrationTest {
 

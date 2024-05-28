@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class UserDetailsControllerIntegrationTest {
 

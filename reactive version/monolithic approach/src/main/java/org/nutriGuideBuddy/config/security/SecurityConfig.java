@@ -27,7 +27,6 @@ public class SecurityConfig {
 
   @Value("${allowed.origins}")
   private String[] allowedOrigins;
-//  private final ReactiveUserDetailsServiceImp reactiveUserDetailsServiceImp;
   private final JwtTokenAuthenticationFilter jwtAuthenticationFilter;
 
   @Bean
@@ -39,7 +38,7 @@ public class SecurityConfig {
         .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         .authorizeExchange(request ->
             request
-                .pathMatchers(HttpMethod.POST, "/api/user").permitAll()
+                .pathMatchers(HttpMethod.POST, "/api/user" , "/api/user/login").permitAll()
                 .pathMatchers("/api/user/reset-password").permitAll()
                 .pathMatchers("/api/verify/**").permitAll()
                 .pathMatchers("/api/meals/**").hasRole("FULLY_REGISTERED")

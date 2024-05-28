@@ -12,7 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class TrackerWebAppApplicationTests {
 

@@ -59,6 +59,24 @@ public class UserService {
         .cast(JwtResponse.class);
   }
 
+  public Mono<JwtResponse> loginUser(UserLogin dto) {
+    if (dto.email() == null || dto.email().isBlank()) {
+      return Mono.error(new BadRequestException("Invalid email"));
+    }
+
+    return repository.findUserByEmail(dto.email())
+        .switchIfEmpty(Mono.error(new BadRequestException("User with email " + dto.email() + " not found")))
+        .flatMap(user -> {
+          if (passwordEncoder.matches(dto.password(), user.getPassword())) {
+            return userDetailsRepository.findUserDetailsByUserId(user.getId())
+                .switchIfEmpty(Mono.error(new BadRequestException("User details not found")))
+                .map(userDetails -> toJwtResponse(user, userDetails));
+          } else {
+            return Mono.error(new BadRequestException("Invalid password"));
+          }
+        });
+  }
+
   private Mono<JwtResponse> createUserAndSave(UserCreate userDto) {
 
     try {
@@ -106,4 +124,6 @@ public class UserService {
         , jwtUtil2.generateToken(userDetails)
     );
   }
+
+
 }

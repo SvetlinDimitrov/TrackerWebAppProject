@@ -33,6 +33,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 
     Map<String, HttpMethod> excludedPaths = new HashMap<>();
     excludedPaths.put("/api/user", HttpMethod.POST);
+    excludedPaths.put("/api/user/login", HttpMethod.POST);
     excludedPaths.put("/api/user/reset-password", HttpMethod.PATCH);
     excludedPaths.put("/api/verify", null);
 

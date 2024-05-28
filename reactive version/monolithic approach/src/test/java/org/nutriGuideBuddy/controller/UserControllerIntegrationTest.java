@@ -3,10 +3,7 @@ package org.nutriGuideBuddy.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.nutriGuideBuddy.domain.dto.user.JwtResponse;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
-import org.nutriGuideBuddy.domain.dto.user.UserDto;
-import org.nutriGuideBuddy.domain.dto.user.UserView;
+import org.nutriGuideBuddy.domain.dto.user.*;
 import org.nutriGuideBuddy.enums.Credentials;
 import org.nutriGuideBuddy.repository.UserRepository;
 import org.nutriGuideBuddy.utils.JWTUtilEmailValidation;
@@ -32,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  **/
 @SpringBootTest
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class UserControllerIntegrationTest {
 
@@ -114,6 +111,32 @@ class UserControllerIntegrationTest {
           .exchange()
           .expectStatus().isBadRequest();
     }
+  }
+
+  @Test
+  void givenInvalidEmailAndPass_whenTestingLoginUser_thenStatusBadRequest() {
+
+    UserLogin asd = new UserLogin("asd@abv.bg", "asd");
+
+    webTestClient.post()
+        .uri("/api/user/login")
+        .bodyValue(asd)
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void givenValidEmailAndPass_whenTestingLoginUser_thenStatusOk() {
+
+    setUpUserAndReturnAuthHeader();
+
+    UserLogin asd = new UserLogin(Credentials.VALID_EMAIL.getValue(), Credentials.VALID_PASSWORD.getValue());
+
+    webTestClient.post()
+        .uri("/api/user/login")
+        .bodyValue(asd)
+        .exchange()
+        .expectStatus().isCreated();
   }
 
   @Test

@@ -35,7 +35,7 @@ import static org.nutriGuideBuddy.utils.FoodUtils.*;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class FoodControllerIntegrationTest {
 

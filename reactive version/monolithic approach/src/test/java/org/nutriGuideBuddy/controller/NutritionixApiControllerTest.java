@@ -27,7 +27,7 @@ import java.util.Objects;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-@ActiveProfiles("test")
+@ActiveProfiles("secret")
 @Testcontainers
 class NutritionixApiControllerTest {
 
