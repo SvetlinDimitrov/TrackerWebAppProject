@@ -34,7 +34,7 @@ watchEffect(async () => {
     const payload = {page: page.value ? page.value : 0, size: 6};
     foods.value = await store.dispatch('getCustomFoods', payload);
   } catch (error) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Failed to load custom foods'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Failed to load custom foods' , life: 3000});
     await router.push({name: 'Home'});
   }
 
@@ -75,7 +75,7 @@ const handleEditFood = (food) => {
 const handleDeleteFood = async (food) => {
   try {
     await store.dispatch('deleteCustomFoodById', food.id);
-    toast.add({severity: 'success', summary: 'Success', detail: 'Food deleted successfully'});
+    toast.add({severity: 'success', summary: 'Success', detail: 'Food deleted successfully' , life: 3000});
     deletionRefresher.value = !deletionRefresher.value;
     await router.push({name: 'CustomInsertFood', params: {id: mealId.value}});
   } catch (error) {

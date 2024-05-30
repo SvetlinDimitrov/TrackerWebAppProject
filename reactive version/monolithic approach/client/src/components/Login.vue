@@ -3,18 +3,31 @@
     <div class="flex flex-col justify-center items-center gap-2">
       <div>
         <InputGroup>
-          <template >
+          <template>
             <i class="pi pi-user"></i>
           </template>
-          <InputText id="username" type="text" placeholder="Email" v-model="email" class="w-full" v-bind:class="{ 'invalid-input': emailError }" />
+          <InputText id="username"
+                     type="text"
+                     placeholder="Email"
+                     v-model="email"
+                     class="w-full"
+                     maxlength="100"
+                     v-bind:class="{ 'invalid-input': emailError }"/>
         </InputGroup>
       </div>
       <div>
         <InputGroup>
-          <template >
+          <template>
             <i class="pi pi-key"></i>
           </template>
-          <InputText id="password" type="password" placeholder="Password" v-model="password" class="w-full" v-bind:class="{ 'invalid-input': passwordError }" />
+          <InputText id="password"
+                     type="password"
+                     placeholder="Password"
+                     v-model="password"
+                     class="w-full"
+                     minlength="4"
+                     maxlength="100"
+                     v-bind:class="{ 'invalid-input': passwordError }"/>
         </InputGroup>
       </div>
     </div>

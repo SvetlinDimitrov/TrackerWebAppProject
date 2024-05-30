@@ -6,6 +6,8 @@
       <div class="space-y-4 flex flex-col border-t border-b p-3">
         <InputText
             id="name"
+            minlength="2"
+            maxlength="50"
             v-model="form.name"
             class="border p-2 rounded"
             placeholder="Name of the food : Chicken, Rice, ..."
@@ -45,14 +47,9 @@
           </div>
           <div class="flex flex-col">
             <label for="metric" class="mb-2">Metric</label>
-            <InputText
-                id="metric"
-                v-model="form.mainServing.metric"
-                class="border p-2 rounded"
-                minlength="1"
-                maxlength="10"
-                placeholder="metric : grams, ml, ..."
-            />
+            <Dropdown v-model="form.mainServing.metric"
+                      :options="availableMetrics"
+                      placeholder="metric : grams, ml, ..."/>
           </div>
           <div class="flex justify-end gap-2 mt-2">
             <Button type="button" label="Cancel" severity="secondary" @click="closeMainServing"></Button>
@@ -94,13 +91,14 @@
             <label for="picture" class="mb-2">Picture</label>
             <InputText
                 id="picture"
+                maxlength="2000"
                 v-model="form.foodDetails.picture"
                 placeholder="url to picture"
             />
           </div>
           <div class="flex justify-end gap-2 mt-2">
-            <Button type="button" label="Cancel" severity="secondary" @click="visibleInfo = false"></Button>
-            <Button type="button" label="Save" @click="visibleInfo = false"></Button>
+            <Button type="button" label="Cancel" severity="secondary" @click="closeInfo"></Button>
+            <Button type="button" label="Save" @click="saveInfo"></Button>
           </div>
         </Dialog>
         <Button type="button"
@@ -179,14 +177,9 @@
           </div>
           <div class="flex flex-col">
             <label for="metric" class="mb-2">Metric</label>
-            <InputText
-                id="metric"
-                v-model="form.additionalServingCreation.metric"
-                class="border p-2 rounded"
-                minlength="1"
-                maxlength="10"
-                placeholder="metric : grams, ml, ..."
-            />
+            <Dropdown v-model="form.additionalServingCreation.metric"
+                      :options="availableMetrics"
+                      placeholder="metric : grams, ml, ..."/>
           </div>
           <div class="flex justify-end gap-2 mt-2">
             <Button type="button" label="Cancel" severity="secondary" @click="closeOtherServing"></Button>
@@ -227,6 +220,7 @@ import {ref, toRaw} from "vue";
 import {useToast} from "primevue/usetoast"
 import {macro, minerals, vitamins} from "../../utils/nutrition/avaibleNutritions.js";
 import {nutritionUnits} from "../../utils/nutrition/nutritionMesureUnit.js";
+import units from "../../utils/avaibleUnits.js";
 
 const toast = useToast();
 
@@ -268,7 +262,7 @@ const visibleOtherServing = ref(false);
 const header = ref(props.header);
 const nutrientsAvailable = ref([...macro, ...vitamins, ...minerals]);
 const nutrientsUnits = ref(nutritionUnits);
-
+const availableMetrics = ref(units);
 const emits = defineEmits(['close', 'submit']);
 
 const addNutrient = () => {
@@ -290,7 +284,7 @@ const addNutrient = () => {
     form.value.nutrientCreation.amount = null;
     visibleNutrients.value = false;
   } else {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the nutrient name and amount'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the nutrient name and amount' , life:3000});
   }
 };
 const removeNutrient = (index) => {
@@ -306,7 +300,7 @@ const saveMainServing = () => {
   if (form.value.mainServing.amount && form.value.mainServing.servingWeight && form.value.mainServing.metric) {
     visibleServing.value = false;
   } else {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the amount, weight and metric'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the amount, weight and metric' , life:3000});
   }
 };
 const closeMainServing = () => {
@@ -328,7 +322,7 @@ const saveOtherServing = () => {
     form.value.additionalServingCreation.metric = null;
     visibleOtherServing.value = false;
   } else {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the amount, weight and metric'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the amount, weight and metric' , life:3000});
   }
 };
 const removeOtherServing = (index) => {
@@ -341,17 +335,38 @@ const closeOtherServing = () => {
   visibleOtherServing.value = false;
 };
 
+const saveInfo = () => {
+  const isImageUrl = (url) => {
+    const pattern = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg|bmp|webp)/g;
+    return pattern.test(url);
+  };
+
+  if (form.value.foodDetails.picture && !isImageUrl(form.value.foodDetails.picture)) {
+    form.value.foodDetails.picture = null;
+    toast.add({severity: 'error', summary: 'Error', detail: 'Invalid image URL' , life:3000});
+    return;
+  }
+  visibleInfo.value = false;
+};
+const closeInfo = () => {
+  form.value.foodDetails.info = null;
+  form.value.foodDetails.largeInfo = null;
+  form.value.foodDetails.picture = null;
+  visibleInfo.value = false;
+};
+
+
 const submit = async () => {
   if (!form.value.name || form.value.name.length < 2) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the name of the food'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the name of the food' , life:3000});
     return;
   }
   if (!form.value.mainServing.amount || !form.value.mainServing.servingWeight || !form.value.mainServing.metric) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the main serving'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the main serving' , life:3000});
     return;
   }
   if (!form.value.calories || form.value.calories < 0) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the calories'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Please fill in the calories' , life:3000});
     return;
   }
 

@@ -22,8 +22,8 @@ const router = createRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    const isValidJwt = store.getters.isJwtValid;
+router.beforeEach(async (to, from, next) => {
+    const isValidJwt = await store.dispatch('isJwtValid');
     const jwtToken = store.getters.jwt;
 
     if (!isValidJwt && jwtToken) {

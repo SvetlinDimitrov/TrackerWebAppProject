@@ -1,46 +1,47 @@
 import {createApp} from 'vue'
-import './style.css'
 import App from './App.vue'
 import router from './router';
 import store from './store';
+
 import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import Wind from "./presets/wind";
-import Lara from "./presets/lara";
-import Button from 'primevue/button';
-import Divider from 'primevue/divider';
-import InputText from 'primevue/inputtext';
-import InputGroup from 'primevue/inputgroup';
-import Toast from 'primevue/toast';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import Password from 'primevue/password';
-import Steps from 'primevue/steps';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputNumber from 'primevue/inputnumber';
-import Dropdown from 'primevue/dropdown';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
-import ProgressSpinner from 'primevue/progressspinner';
-import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
-import InputSwitch from 'primevue/inputswitch';
+import Button from 'primevue/button';
 import Chart from 'primevue/chart';
+import Dialog from 'primevue/dialog';
+import Divider from 'primevue/divider';
+import Dropdown from 'primevue/dropdown';
+import IconField from 'primevue/iconfield';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import InputIcon from 'primevue/inputicon';
+import InputNumber from 'primevue/inputnumber';
+import InputSwitch from 'primevue/inputswitch';
+import InputText from 'primevue/inputtext';
 import Knob from 'primevue/knob';
+import Password from 'primevue/password';
+import ProgressSpinner from 'primevue/progressspinner';
+import Steps from 'primevue/steps';
 import Tag from 'primevue/tag';
+import Toast from 'primevue/toast';
 import TreeSelect from 'primevue/treeselect';
+import Tooltip from 'primevue/tooltip';
+import ToastService from 'primevue/toastservice';
+
+import Wind from "./presets/wind";
+import './style.css'
 
 const app = createApp(App);
+
 app.use(PrimeVue, {
     unstyled: true,
     pt: Wind
 });
+app.directive('tooltip', Tooltip);
 app.use(router);
 app.use(store);
 app.use(ToastService);
-
-export const toast = app.config.globalProperties.$toast;
-
 app.component('TreeSelect', TreeSelect);
 app.component('Steps', Steps);
 app.component('Button', Button);
@@ -63,5 +64,7 @@ app.component('InputSwitch', InputSwitch);
 app.component('Chart', Chart);
 app.component('Knob', Knob);
 app.component('Tag', Tag);
+
+export const toast = app.config.globalProperties.$toast;
 
 app.mount('#app');

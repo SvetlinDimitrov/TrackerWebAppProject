@@ -14,12 +14,13 @@
           @handleCustomFood="handleCustomFood"
       />
     </div>
+      <NoAuthHomePage
+          v-else
+          :user="user"
+          :userDetailsComplete="userDetailsComplete"
+      />
 
-    <NoAuthHomePage
-        v-else
-        :user="user"
-        :userDetailsComplete="userDetailsComplete"
-    />
+
     <router-view></router-view>
   </div>
 </template>
@@ -37,26 +38,27 @@ const record = computed(() => store.getters.record);
 const meals = computed(() => store.getters.meals);
 const user = computed(() => store.getters.user);
 const userDetailsComplete = computed(() => store.getters.isFullyRegistered);
+
 const items = ref([
   {
     label: 'Add',
     icon: 'pi pi-pencil',
     command: () => {
-      toast.add({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+      toast.add({severity: 'info', summary: 'Add', detail: 'Data Added', life: 3000});
     }
   },
   {
     label: 'Update',
     icon: 'pi pi-refresh',
     command: () => {
-      toast.add({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+      toast.add({severity: 'success', summary: 'Update', detail: 'Data Updated', life: 3000});
     }
   },
   {
     label: 'Delete',
     icon: 'pi pi-trash',
     command: () => {
-      toast.add({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
+      toast.add({severity: 'error', summary: 'Delete', detail: 'Data Deleted', life: 3000});
     }
   },
   {
@@ -103,6 +105,6 @@ const handleChangeFoodById = (mealId, foodId) => {
 };
 
 const handleCustomFood = (mealId) => {
-  router.push({name: 'CustomInsertFood' , params: {id: mealId}});
+  router.push({name: 'CustomInsertFood', params: {id: mealId}});
 };
 </script>

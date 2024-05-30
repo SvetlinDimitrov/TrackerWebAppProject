@@ -39,4 +39,7 @@ export default {
         state.searchFoodResult = [];
         state.totalPagesCustomFood = null;
     },
+    addRequestsEmailReset(state, email) {
+        state.requestsEmailReset[email] = Date.now();
+    }
 };

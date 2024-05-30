@@ -25,6 +25,7 @@ const store = createStore({
             searchFood: '',
             searchFoodResult: [],
             totalPagesCustomFood: null,
+            requestsEmailReset: {},
         };
     },
     mutations: {

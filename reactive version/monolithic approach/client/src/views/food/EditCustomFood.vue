@@ -41,6 +41,11 @@ const handleClose = () => {
 
 const handleSubmit = async (food) => {
   try {
+    if (food.foodDetails) {
+      food.foodDetails.info = food.foodDetails.info === "" ? null : food.foodDetails.info;
+      food.foodDetails.largeInfo = food.foodDetails.largeInfo === "" ? null : food.foodDetails.largeInfo;
+      food.foodDetails.picture = food.foodDetails.picture === "" ? null : food.foodDetails.picture;
+    }
     await store.dispatch('changeCustomFoodById', {food, id: foodId.value});
     toast.add({severity: 'success', summary: 'Success', detail: 'Food updated successfully', life: 3000});
     router.go(-1);

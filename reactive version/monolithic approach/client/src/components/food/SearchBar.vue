@@ -8,6 +8,8 @@
       <div class="flex items-center gap-2 mb-4">
         <InputText v-model="search"
                    class="flex-grow" placeholder="Example: Apple"
+                   minlength="2"
+                   maxlength="100"
                    @update:modelValue="emits('update:search', $event)"/>
         <Button label="Search" @click="emits('search')"/>
       </div>

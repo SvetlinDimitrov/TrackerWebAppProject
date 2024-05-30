@@ -1,3 +1,6 @@
+<template>
+
+</template>
 <script setup>
 import { useStore } from 'vuex';
 import {onMounted} from "vue";

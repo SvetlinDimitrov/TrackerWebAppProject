@@ -25,10 +25,10 @@ const userData = ref(store.getters.userDetails);
 const handleSuccessfulEdit = async (data) => {
   try{
     await store.dispatch('updateUserDetails', data);
-    toast.add({severity: 'success', summary: 'Success', detail: 'User details updated successfully'});
+    toast.add({severity: 'success', summary: 'Success', detail: 'User details updated successfully' , life:3000});
     await router.push({name: 'Home'});
   }catch (e) {
-    toast.add({severity: 'error', summary: 'Error', detail: 'Failed to update user details'});
+    toast.add({severity: 'error', summary: 'Error', detail: 'Failed to update user details' , life:3000});
   }
 };
 </script>

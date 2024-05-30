@@ -125,7 +125,7 @@ export default {
         class: 'shrink-0'
     },
     fileName: {
-        class: 'mb-2 break-all'
+        class: 'mb-2'
     },
     fileSize: {
         class: 'mr-2'

@@ -8,7 +8,12 @@
           <InputIcon>
             <i class="pi pi-user"/>
           </InputIcon>
-          <InputText id="input" v-model="name" type="text" placeholder="Name"/>
+          <InputText id="input"
+                     v-model="name"
+                     type="text"
+                     placeholder="Name"
+                     minlength="2"
+                     maxlength="100"/>
         </IconField>
       </div>
       <div class="mb-4">
@@ -16,11 +21,21 @@
           <InputIcon>
             <i class="pi pi-envelope"/>
           </InputIcon>
-          <InputText id="email" v-model="email" type="email" placeholder="Email"/>
+          <InputText id="email"
+                     v-model="email"
+                     type="email"
+                     placeholder="Email"
+                     minlength="2"
+                     maxlength="100"/>
         </IconField>
       </div>
       <div class="mb-4" v-bind:class="{ 'border-2 rounded-lg border-red-500': passwordError !== '' }">
-        <Password v-model="password" toggleMask placeholder="Password" class="w-full"/>
+        <Password v-model="password"
+                  toggleMask
+                  placeholder="Password"
+                  class="w-full"
+                  minlength="4"
+                  maxlength="100"/>
       </div>
       <div class="flex pt-2 justify-center w-full">
         <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="registerHandle"/>
@@ -34,6 +49,7 @@ import {ref} from "vue";
 import {useToast} from "primevue/usetoast";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
+import {AES} from 'crypto-js';
 
 const toast = useToast();
 const router = useRouter();
@@ -66,6 +82,7 @@ const registerHandle = async () => {
   const emailValid = email.value && validateEmail(email.value);
   const passwordValid = password.value && password.value.length >= 4;
   const nameValid = name.value && name.value.length >= 2;
+  const secretKey = import.meta.env.VITE_CRYPTO_SECRET;
 
   emailError.value = "";
   passwordError.value = "";
@@ -86,7 +103,8 @@ const registerHandle = async () => {
   if (emailValid && passwordValid && nameValid) {
     try {
       let payload = {email: email.value, password: password.value, username: name.value};
-      localStorage.setItem('userDetails', JSON.stringify(payload));
+      const cipherText = AES.encrypt(JSON.stringify(payload), secretKey).toString();
+      localStorage.setItem('ud', cipherText);
       await store.dispatch('verifyUserDataAndSendEmail', payload);
       await router.push({name: 'EmailVerifier'});
     } catch (error) {

@@ -35,10 +35,25 @@ const registerHandle = async () => {
   if (!emailValid) {
     emailError.value = 'Invalid email';
     toast.add({severity: 'error', summary: 'Error', detail: emailError, life: 3000});
+    return
+  }
+  const lastRequestTime = store.getters.getRequestsEmailReset[email.value];
+  const oneHourInMilliseconds = 60 * 60 * 1000;
+
+  if (lastRequestTime && Date.now() - lastRequestTime < oneHourInMilliseconds) {
+    const timeRemaining = Math.ceil((oneHourInMilliseconds - (Date.now() - lastRequestTime)) / 60000);
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: `You cannot make a request until ${timeRemaining} minutes have passed.`,
+      life: 3000
+    });
+    return;
   }
 
   try {
     await store.dispatch('sendEmailForNewPasswordTokenLink', {email: email.value});
+    store.commit('addRequestsEmailReset', email.value);
     toast.add({severity: 'success', summary: 'Success', detail: 'Rest link was sent to the given mail', life: 3000});
   } catch (e) {
     toast.add({severity: 'error', summary: 'Error', detail: e.message, life: 3000});

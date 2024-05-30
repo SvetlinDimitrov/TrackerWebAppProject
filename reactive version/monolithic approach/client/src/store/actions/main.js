@@ -161,5 +161,13 @@ export default {
         } finally {
             commit('setIsLoading', false);
         }
+    },
+    async isJwtValid({getters}) {
+        if (getters.jwt?.expiresIn) {
+            const jwtExpirationDate = new Date(getters.jwt.expiresIn);
+            const currentDate = new Date();
+            return currentDate < jwtExpirationDate;
+        }
+        return false;
     }
 };

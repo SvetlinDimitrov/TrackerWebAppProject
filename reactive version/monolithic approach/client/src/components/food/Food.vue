@@ -102,24 +102,36 @@ const props = defineProps({
   food: Object,
   originalFood: Object
 })
+const formatNumber = (servingSize) => {
+  // Check if the serving size has more than two decimal places
+  if (servingSize % 1 !== 0) {
+    // If it does, round the number to two decimal places
+    return servingSize.toFixed(2);
+  } else {
+    // If it doesn't, leave the number as it is
+    return servingSize;
+  }
+};
+
 const currentFood = ref(props.food);
 const originalFood = ref(props.originalFood);
 const servingSize = ref(currentFood.value.mainServing.amount);
 const allServingsAvailable = ref(currentFood.value.otherServing.map(serving => {
   return {
     metric: serving.metric,
-    servingWeight: serving.servingWeight
+    servingWeight: formatNumber(serving.servingWeight)
   };
 }) || []);
 const currentServing = ref({
   metric: currentFood.value.mainServing.metric,
   servingWeight: currentFood.value.mainServing.servingWeight
 });
+servingSize.value = formatNumber(servingSize.value);
 let ensuresCurrentServingRefreshes = ref(0);
 
 const currentServingExists = allServingsAvailable.value.find(serving =>
     serving.metric === currentFood.value.mainServing.metric &&
-    serving.servingWeight === currentFood.value.mainServing.servingWeight
+    serving.servingWeight === formatNumber(currentFood.value.mainServing.servingWeight)
 );
 
 if (!currentServingExists) {
@@ -128,6 +140,8 @@ if (!currentServingExists) {
     servingWeight: currentFood.value.mainServing.servingWeight
   });
 }
+
+currentFood.value.calories.amount = formatNumber(currentFood.value.calories?.amount);
 
 
 watch(() => currentServing.value, (newValue, oldValue) => {
@@ -194,6 +208,7 @@ const customLabel = (option) => {
 const openImage = () => {
   window.open(currentFood.value.foodDetails?.picture ? currentFood.value.foodDetails.picture : "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg", '_blank');
 };
+
 
 </script>
 

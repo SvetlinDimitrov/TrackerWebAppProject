@@ -4,7 +4,12 @@
       <h2 class="text-xl font-bold mb-4">{{ header }}</h2>
       <div class="flex items-center gap-3 mb-3">
         <label for="mealName" class="font-semibold w-[6rem]">Meal Name</label>
-        <InputText id="mealName" v-model="mealName" class="flex-auto" autocomplete="off" />
+        <InputText id="mealName"
+                   v-model="mealName"
+                   minlength="2"
+                   maxlength="100"
+                   class="flex-auto"
+                   autocomplete="off" />
       </div>
       <div class="flex justify-end gap-2">
         <Button type="button" label="Cancel" severity="secondary" @click="handleClose"></Button>

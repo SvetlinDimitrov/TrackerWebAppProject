@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div v-if="countdown > 0 && activeStep === 2"
+    <div v-if="countdown > 0 && activeStep === 3"
          class="bg-gray-100 p-4 rounded shadow-md text-center text-lg font-semibold mt-4">
       You will be redirected to the home page in {{ countdown }} seconds.
     </div>
@@ -18,10 +18,11 @@
 </template>
 
 <script setup>
-import {onMounted, ref, watchEffect} from "vue";
+import {ref, watchEffect} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "primevue/usetoast";
 import {useStore} from "vuex";
+import {AES, enc} from 'crypto-js';
 
 const store = useStore();
 const router = useRouter();
@@ -32,7 +33,8 @@ const activeStep = ref(1);
 
 watchEffect(async () => {
   const token = route.query.token;
-  const userDetails = localStorage.getItem('userDetails');
+  const userDetails = localStorage.getItem('ud');
+  const secretKey = import.meta.env.VITE_CRYPTO_SECRET;
 
   if (!userDetails) {
     await router.push({name: 'Register'});
@@ -42,15 +44,23 @@ watchEffect(async () => {
   if (token) {
     activeStep.value = 2;
     try {
-
-      const {email, password, username} = JSON.parse(userDetails);
+      const bytes = AES.decrypt(userDetails, secretKey);
+      const {email, password, username} = JSON.parse(bytes.toString(enc.Utf8));
 
       await store.dispatch('register', {username, email, password, token});
       toast.add({severity: 'success', summary: 'Success', detail: 'Account created', life: 3000});
-      localStorage.removeItem('userDetails');
-      await router.push({name: 'Home'});
     } catch (e) {
-      toast.add({severity: 'error', summary: 'Error', detail: e.message, life: 3000});
+      toast.add({severity: 'error', summary: 'Error', detail: "Something went wrong", life: 3000});
+    } finally {
+      localStorage.removeItem('ud');
+      activeStep.value = 3;
+      let intervalId = setInterval(() => {
+        countdown.value--;
+        if (countdown.value === 0) {
+          clearInterval(intervalId);
+          router.push({name: 'Home'});
+        }
+      }, 1000);
     }
   }
 });

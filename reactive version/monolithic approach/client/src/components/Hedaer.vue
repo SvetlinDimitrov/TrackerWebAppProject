@@ -1,9 +1,6 @@
 <template>
   <div class="card ">
     <Menubar :model="items">
-      <template #start>
-        <img alt="Vue logo" src="../assets/vue.svg"/>
-      </template>
     </Menubar>
   </div>
 </template>

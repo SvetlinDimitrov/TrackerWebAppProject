@@ -22,9 +22,10 @@ export default {
         if (state.jwt?.expiresIn) {
             const jwtExpirationDate = new Date(state.jwt.expiresIn);
             const currentDate = new Date();
-            return jwtExpirationDate > currentDate;
+            return currentDate < jwtExpirationDate;
         }
         return false;
     },
     isRebooting: state => state.isRebooting,
+    getRequestsEmailReset: state => state.requestsEmailReset,
 };
