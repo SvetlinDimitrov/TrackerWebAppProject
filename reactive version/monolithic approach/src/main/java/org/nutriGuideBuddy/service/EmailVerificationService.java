@@ -1,9 +1,7 @@
 package org.nutriGuideBuddy.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.nutriGuideBuddy.domain.dto.BadRequestException;
-import org.nutriGuideBuddy.domain.dto.user.UserCreate;
 import org.nutriGuideBuddy.domain.dto.user.UserEmailValidationCreate;
 import org.nutriGuideBuddy.domain.entity.UserEntity;
 import org.nutriGuideBuddy.repository.UserRepository;
@@ -33,6 +31,8 @@ public class EmailVerificationService {
   private String sendinblueApiKey;
   @Value("${frontend.url}")
   private String frontendUrl;
+  @Value("${api.email.sender}")
+  private String emailSender;
   private final UserRepository userRepository;
   private final JWTUtilEmailValidation JWTUtil;
 
@@ -83,9 +83,9 @@ public class EmailVerificationService {
         });
   }
 
-  private static @NotNull SendSmtpEmail getSendSmtpEmail(String recipientEmail, String verificationUrl, String subject, String text) {
+  private SendSmtpEmail getSendSmtpEmail(String recipientEmail, String verificationUrl, String subject, String text) {
     SendSmtpEmailSender sender = new SendSmtpEmailSender();
-    sender.setEmail("prolama6a@gmail.com");
+    sender.setEmail(emailSender);
     sender.setName("Dont replay");
 
     SendSmtpEmailTo to = new SendSmtpEmailTo();

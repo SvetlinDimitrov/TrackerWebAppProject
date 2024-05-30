@@ -43,7 +43,6 @@ public class JWTUtil {
         : UserRoles.NOT_FULLY_REGISTERED.name();
 
     Date expireAt = new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000);
-
     return new JwtToken(Jwts.builder()
         .setSubject(userDetails.getUserId())
         .claim("role", role)
