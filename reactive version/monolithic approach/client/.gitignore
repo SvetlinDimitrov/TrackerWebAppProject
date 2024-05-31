@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-componse.yaml
+docker_local/componse.yaml
 .env.local
 .env.production
+docker
+docker_local/.env.local

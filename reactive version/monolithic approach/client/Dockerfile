@@ -4,6 +4,14 @@ FROM node:16
 # Set the working directory in the Docker container to /app
 WORKDIR /app
 
+# Accept the VITE_CRYPTO_SECRET and VITE_API_URL as build arguments
+ARG VITE_CRYPTO_SECRET
+ARG VITE_API_URL
+
+# Set the VITE_CRYPTO_SECRET and VITE_API_URL as environment variables
+ENV VITE_CRYPTO_SECRET=$VITE_CRYPTO_SECRET
+ENV VITE_API_URL=$VITE_API_URL
+
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 

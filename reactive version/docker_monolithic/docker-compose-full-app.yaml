@@ -17,10 +17,9 @@ services:
     restart: always
     depends_on:
       - db
-    image: 'svetlindimitrov/nutri-guide-buddy:latest'
-    environment:
-      - PORT=8080
-      - DB_HOST=db
+    image: 'svetlindimitrov/nutri-guide-buddy-server:latest'
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     networks:
@@ -28,7 +27,7 @@ services:
 
   client:
     build:
-      context: ./
+      context: ../
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
