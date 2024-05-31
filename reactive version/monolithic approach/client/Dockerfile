@@ -13,6 +13,10 @@ RUN npm install
 # Copy the rest of the project files to the working directory
 COPY . .
 
+# Set the environment variables
+ENV VITE_CRYPTO_SECRET=http://localhost:8080/api
+ENV VITE_API_URL=http://localhost:8080/api
+
 # Build the Vite project
 RUN npm run build
 
