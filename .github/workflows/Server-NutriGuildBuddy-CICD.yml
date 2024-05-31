@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v3
       
     - name: Set up Docker Buildx
@@ -34,8 +34,13 @@ jobs:
         cache: 'maven'
         distribution: corretto
 
-    - name : Test && Build && Deploy
+    - name: Build and Test with Maven
       working-directory: ./reactive version/monolithic approach
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy
+      run: mvn clean install
+
+    - name: Build Docker Image
+      working-directory: ./reactive version/monolithic approach
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy .
+
+    - name: Push Docker Image
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy
