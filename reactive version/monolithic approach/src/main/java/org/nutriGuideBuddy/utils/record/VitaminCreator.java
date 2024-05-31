@@ -63,14 +63,14 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(400);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(600);
           } else {
             dailyIntake = BigDecimal.valueOf(900);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(600);
@@ -99,7 +99,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(25);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(45);
           } else if (ageBetween(14, 18, age)) {
@@ -108,7 +108,7 @@ public class VitaminCreator {
             dailyIntake = BigDecimal.valueOf(90);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(45);
           } else if (ageBetween(14, 18, age)) {
@@ -136,7 +136,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(15);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 70, age)) {
             dailyIntake = BigDecimal.valueOf(15);
           } else {
@@ -164,7 +164,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(7);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(11);
           } else {
@@ -192,7 +192,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(55);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(60);
           } else if (ageBetween(14, 18, age)) {
@@ -201,7 +201,7 @@ public class VitaminCreator {
             dailyIntake = BigDecimal.valueOf(120);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(60);
           } else if (ageBetween(14, 18, age)) {
@@ -231,14 +231,14 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(0.6);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(0.9);
           } else {
             dailyIntake = BigDecimal.valueOf(1.2);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(0.9);
           } else if (ageBetween(14, 18, age)) {
@@ -268,14 +268,14 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(0.6);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(0.9);
           } else {
             dailyIntake = BigDecimal.valueOf(1.3);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(0.9);
           } else if (ageBetween(14, 18, age)) {
@@ -305,14 +305,14 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(8);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(12);
           } else {
             dailyIntake = BigDecimal.valueOf(16);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(12);
           } else {
@@ -340,7 +340,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(0.6);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(1);
           } else if (ageBetween(14, 50, age)) {
@@ -349,7 +349,7 @@ public class VitaminCreator {
             dailyIntake = BigDecimal.valueOf(1.7);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(1);
           } else if (ageBetween(14, 18, age)) {
@@ -381,7 +381,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(200);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(300);
           } else {
@@ -409,7 +409,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(1.2);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(1.8);
           } else {
@@ -437,7 +437,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(3);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(4);
           } else {
@@ -465,7 +465,7 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(12);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(20);
           } else if (ageBetween(14, 18, age)) {
@@ -495,14 +495,14 @@ public class VitaminCreator {
       dailyIntake = BigDecimal.valueOf(250);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(375);
           } else {
             dailyIntake = BigDecimal.valueOf(550);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(375);
           } else if (ageBetween(14, 18, age)) {

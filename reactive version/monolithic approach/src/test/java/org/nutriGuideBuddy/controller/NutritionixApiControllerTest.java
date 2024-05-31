@@ -83,7 +83,7 @@ class NutritionixApiControllerTest {
     webTestClient
         .get()
         .uri("/api/food_db_api/search/common/" + Credentials.VALID_FOOD_TO_SEARCH.getValue())
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk();
   }
@@ -96,18 +96,18 @@ class NutritionixApiControllerTest {
     InsertFoodDto food = Objects.requireNonNull(webTestClient
             .get()
             .uri("/api/food_db_api/search/common/" + Credentials.VALID_FOOD_TO_SEARCH.getValue())
-            .header(authHeader.getName(), authHeader.getValues().getFirst())
+            .header(authHeader.getName(), authHeader.getValues().get(0))
             .exchange()
             .expectStatus().isOk()
             .expectBodyList(InsertFoodDto.class)
             .returnResult()
             .getResponseBody())
-        .getFirst();
+        .get(0);
 
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(food)
         .exchange()
         .expectStatus().isCreated()
@@ -132,7 +132,7 @@ class NutritionixApiControllerTest {
     webTestClient
         .get()
         .uri("/api/food_db_api/search/branded/" + Credentials.VALID_FOOD_BRANDED_ID.getValue())
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk();
   }
@@ -145,18 +145,18 @@ class NutritionixApiControllerTest {
     InsertFoodDto food = Objects.requireNonNull(webTestClient
             .get()
             .uri("/api/food_db_api/search/branded/" + Credentials.VALID_FOOD_BRANDED_ID.getValue())
-            .header(authHeader.getName(), authHeader.getValues().getFirst())
+            .header(authHeader.getName(), authHeader.getValues().get(0))
             .exchange()
             .expectStatus().isOk()
             .expectBodyList(InsertFoodDto.class)
             .returnResult()
             .getResponseBody())
-        .getFirst();
+        .get(0);
 
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(food)
         .exchange()
         .expectStatus().isCreated()
@@ -183,7 +183,7 @@ class NutritionixApiControllerTest {
         .uri(UriComponentsBuilder.fromPath("/api/food_db_api/search")
             .queryParam("foodName", Credentials.VALID_FOOD_NAME.getValue())
             .build().toString())
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk();
   }
@@ -202,7 +202,7 @@ class NutritionixApiControllerTest {
 //              .uri(UriComponentsBuilder.fromPath("/api/food_db_api/search")
 //                  .queryParam("foodName", Credentials.VALID_FOOD_NAME.getValue())
 //                  .build().toString())
-//              .header(authHeader.getName(), authHeader.getValues().getFirst())
+//              .header(authHeader.getName(), authHeader.getValues().get(0))
 //              .exchange()
 //              .expectStatus().isOk()
 //              .expectBody(ListFoodsResponse.class)
@@ -220,13 +220,13 @@ class NutritionixApiControllerTest {
 //          InsertFoodDto food = Objects.requireNonNull(webTestClient
 //                  .get()
 //                  .uri("/api/food_db_api/search/common/" + commonFood)
-//                  .header(authHeader.getName(), authHeader.getValues().getFirst())
+//                  .header(authHeader.getName(), authHeader.getValues().get(0))
 //                  .exchange()
 //                  .expectStatus().isOk()
 //                  .expectBodyList(InsertFoodDto.class)
 //                  .returnResult()
 //                  .getResponseBody())
-//              .getFirst();
+//              .get(0);
 //
 //          insertFoodDtos.add(food);
 //        }
@@ -237,13 +237,13 @@ class NutritionixApiControllerTest {
 //          InsertFoodDto food = Objects.requireNonNull(webTestClient
 //                  .get()
 //                  .uri("/api/food_db_api/search/branded/" +brandedFoodId)
-//                  .header(authHeader.getName(), authHeader.getValues().getFirst())
+//                  .header(authHeader.getName(), authHeader.getValues().get(0))
 //                  .exchange()
 //                  .expectStatus().isOk()
 //                  .expectBodyList(InsertFoodDto.class)
 //                  .returnResult()
 //                  .getResponseBody())
-//              .getFirst();
+//              .get(0);
 //
 //          insertFoodDtos.add(food);
 //        }
@@ -254,7 +254,7 @@ class NutritionixApiControllerTest {
 //          webTestClient
 //              .post()
 //              .uri("/api/custom/food")
-//              .header(authHeader.getName(), authHeader.getValues().getFirst())
+//              .header(authHeader.getName(), authHeader.getValues().get(0))
 //              .bodyValue(insertFoodDto)
 //              .exchange()
 //              .expectStatus().isCreated()

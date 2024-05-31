@@ -398,14 +398,14 @@ class UserControllerIntegrationTest {
 
     webTestClient.patch()
         .uri("/api/user")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(validUserUpdateCredentials)
         .exchange()
         .expectStatus().isOk()
         .expectBody(JwtResponse.class)
         .value(user -> assertNotNull(user.userView().user().id()))
         .value(user -> assertEquals(validUserUpdateCredentials.username(), user.userView().user().username()))
-        .value(user -> assertNotEquals(authHeader.getValues().getFirst(), user.accessToken().value()));
+        .value(user -> assertNotEquals(authHeader.getValues().get(0), user.accessToken().value()));
 
 
   }
@@ -419,7 +419,7 @@ class UserControllerIntegrationTest {
 
     webTestClient.patch()
         .uri("/api/user")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(emptyCredentials)
         .exchange()
         .expectStatus().isOk();

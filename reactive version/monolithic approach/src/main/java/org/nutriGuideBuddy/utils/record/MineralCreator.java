@@ -66,7 +66,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(1000);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(1300);
           } else if (ageBetween(19, 70, age)) {
@@ -75,7 +75,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(1200);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(1300);
@@ -106,7 +106,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(15);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(25);
           } else if (ageBetween(14, 50, age)) {
@@ -115,7 +115,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(30);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(21);
@@ -148,7 +148,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(440);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(700);
           } else if (ageBetween(14, 18, age)) {
@@ -178,7 +178,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(1);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(2);
           } else if (ageBetween(14, 18, age)) {
@@ -187,7 +187,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(4);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(2);
@@ -214,7 +214,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(90);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(120);
           } else {
@@ -242,7 +242,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(10);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(8);
           } else if (ageBetween(14, 18, age)) {
@@ -251,7 +251,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(8);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(8);
@@ -284,7 +284,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(130);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(240);
           } else if (ageBetween(14, 18, age)) {
@@ -295,7 +295,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(420);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
 
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(240);
@@ -328,7 +328,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(1.5);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(1.9);
           } else if (ageBetween(14, 18, age)) {
@@ -337,7 +337,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(2.3);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(1.6);
           } else {
@@ -365,7 +365,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(22);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(34);
           } else if (ageBetween(14, 18, age)) {
@@ -395,7 +395,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(500);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(1250);
           } else {
@@ -423,7 +423,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(30);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(40);
           } else {
@@ -451,14 +451,14 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(5);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(8);
           } else {
             dailyIntake = BigDecimal.valueOf(11);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(8);
           } else if (ageBetween(14, 18, age)) {
@@ -488,7 +488,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(2300);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(2500);
           } else if (ageBetween(14, 18, age)) {
@@ -497,7 +497,7 @@ public class MineralCreator {
             dailyIntake = BigDecimal.valueOf(3400);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(2300);
           } else {
@@ -525,7 +525,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(1000);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(1200);
           } else {
@@ -553,7 +553,7 @@ public class MineralCreator {
       dailyIntake = BigDecimal.valueOf(1.9);
     } else {
       switch (gender) {
-        case Gender.MALE, Gender.FEMALE -> {
+        case MALE, FEMALE -> {
           if (ageBetween(9, 50, age)) {
             dailyIntake = BigDecimal.valueOf(2.3);
           } else if (ageBetween(51, 70, age)) {

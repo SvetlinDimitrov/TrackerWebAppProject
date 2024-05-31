@@ -120,7 +120,7 @@ public class MacronutrientCreator {
       dailyIntake = BigDecimal.valueOf(25);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(31);
           } else if (ageBetween(14, 50, age)) {
@@ -129,7 +129,7 @@ public class MacronutrientCreator {
             dailyIntake = BigDecimal.valueOf(30);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 18, age)) {
             dailyIntake = BigDecimal.valueOf(26);
           } else if (ageBetween(19, 50, age)) {
@@ -188,7 +188,7 @@ public class MacronutrientCreator {
       dailyIntake = BigDecimal.valueOf(1.7);
     } else {
       switch (gender) {
-        case Gender.MALE -> {
+        case MALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(2.4);
           } else if (ageBetween(14, 18, age)) {
@@ -197,7 +197,7 @@ public class MacronutrientCreator {
             dailyIntake = BigDecimal.valueOf(3.7);
           }
         }
-        case Gender.FEMALE -> {
+        case FEMALE -> {
           if (ageBetween(9, 13, age)) {
             dailyIntake = BigDecimal.valueOf(2.1);
           } else if (ageBetween(14, 18, age)) {

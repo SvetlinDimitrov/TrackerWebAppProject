@@ -28,16 +28,16 @@ public class DailyCaloriesCalculator {
    */
   public static BigDecimal getCaloriesPerDay(BigDecimal BMR, WorkoutState workoutState, Goals goal) {
     BigDecimal calories = switch (workoutState) {
-      case WorkoutState.SEDENTARY -> BMR.multiply(new BigDecimal("1.2"));
-      case WorkoutState.LIGHTLY_ACTIVE -> BMR.multiply(new BigDecimal("1.375"));
-      case WorkoutState.MODERATELY_ACTIVE -> BMR.multiply(new BigDecimal("1.55"));
-      case WorkoutState.VERY_ACTIVE -> BMR.multiply(new BigDecimal("1.725"));
-      case WorkoutState.SUPER_ACTIVE -> BMR.multiply(new BigDecimal("1.9"));
+      case SEDENTARY -> BMR.multiply(new BigDecimal("1.2"));
+      case LIGHTLY_ACTIVE -> BMR.multiply(new BigDecimal("1.375"));
+      case MODERATELY_ACTIVE -> BMR.multiply(new BigDecimal("1.55"));
+      case VERY_ACTIVE -> BMR.multiply(new BigDecimal("1.725"));
+      case SUPER_ACTIVE -> BMR.multiply(new BigDecimal("1.9"));
     };
     return switch (goal) {
-      case Goals.MaintainWeight -> calories;
-      case Goals.LoseWeight -> calories.subtract(BigDecimal.valueOf(500));
-      case Goals.GainWeight -> calories.add(BigDecimal.valueOf(500));
+      case MaintainWeight -> calories;
+      case LoseWeight -> calories.subtract(BigDecimal.valueOf(500));
+      case GainWeight -> calories.add(BigDecimal.valueOf(500));
     };
   }
 }

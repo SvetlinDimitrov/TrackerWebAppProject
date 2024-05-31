@@ -104,7 +104,7 @@ class RecordControllerIntegrationTest {
 
     UserDetailsView userDetailsView = webTestClient.get()
         .uri("/api/user/details")
-        .header(header.getName(), header.getValues().getFirst())
+        .header(header.getName(), header.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
@@ -112,7 +112,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(header.getName(), header.getValues().getFirst())
+        .header(header.getName(), header.getValues().get(0))
         .exchange()
         .expectStatus().isForbidden();
   }
@@ -132,7 +132,7 @@ class RecordControllerIntegrationTest {
 
     JwtResponse responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header(header.getName(), header.getValues().getFirst())
+        .header(header.getName(), header.getValues().get(0))
         .bodyValue(validDetailsForKilograms)
         .exchange()
         .expectStatus().isOk()
@@ -297,7 +297,7 @@ class RecordControllerIntegrationTest {
 
     RecordView recordWithoutTheGoal = webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -308,7 +308,7 @@ class RecordControllerIntegrationTest {
     //The consumed calorie should be equal if the goal is to maintain weight
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(new CreateRecord(Goals.MaintainWeight, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -320,7 +320,7 @@ class RecordControllerIntegrationTest {
     //The consumed calorie should be minus 500 if the goal is to lose weight
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(new CreateRecord(Goals.LoseWeight, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -332,7 +332,7 @@ class RecordControllerIntegrationTest {
     //The consumed calorie should be plus 500 if the goal is to gain weight
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(new CreateRecord(Goals.GainWeight, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -352,14 +352,14 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(new CreateRecord(null, INVALID_DISTRIBUTED_MACROS_1, null))
         .exchange()
         .expectStatus().isBadRequest();
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(new CreateRecord(null, INVALID_DISTRIBUTED_MACROS_2, null))
         .exchange()
         .expectStatus().isBadRequest();
@@ -374,7 +374,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -401,7 +401,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -426,7 +426,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -441,7 +441,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord())
         .exchange()
         .expectStatus().isOk()
@@ -461,7 +461,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord(null, null, List.of(NutritionView)))
         .exchange()
         .expectStatus().isOk()
@@ -490,7 +490,7 @@ class RecordControllerIntegrationTest {
     for (NutritionView invalidCustomNutrient : INVALID_CUSTOM_NUTRIENTS) {
       webTestClient.post()
           .uri("/api/record")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(createCreateRecord(null, null, List.of(invalidCustomNutrient)))
           .exchange()
           .expectStatus().isBadRequest();
@@ -511,7 +511,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord(null, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -547,7 +547,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord(null, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -585,7 +585,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord(null, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -635,7 +635,7 @@ class RecordControllerIntegrationTest {
 
     webTestClient.post()
         .uri("/api/record")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createCreateRecord(null, null, null))
         .exchange()
         .expectStatus().isOk()
@@ -983,7 +983,7 @@ class RecordControllerIntegrationTest {
 
     JwtResponse responseBody = webTestClient.patch()
         .uri("/api/user/details")
-        .header(header.getName(), header.getValues().getFirst())
+        .header(header.getName(), header.getValues().get(0))
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
@@ -1008,7 +1008,7 @@ class RecordControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/meals/" + VALID_MEAL_ID + "/insertFood")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(foodToInsert)
         .exchange()
         .expectStatus().isOk();
@@ -1019,7 +1019,7 @@ class RecordControllerIntegrationTest {
         webTestClient
             .post()
             .uri("/api/meals")
-            .header(authHeader.getName(), authHeader.getValues().getFirst())
+            .header(authHeader.getName(), authHeader.getValues().get(0))
             .bodyValue(new CreateMeal(null))
             .exchange()
             .expectStatus().isCreated()

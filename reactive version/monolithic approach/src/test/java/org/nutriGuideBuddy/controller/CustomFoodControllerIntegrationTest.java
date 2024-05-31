@@ -97,7 +97,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -126,7 +126,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -165,7 +165,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food/" + INVALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isBadRequest();
   }
@@ -182,7 +182,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(FoodView.class)
@@ -211,7 +211,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(FoodView.class)
@@ -241,7 +241,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createValidInsertedFoodWithEmptyNutritions())
         .exchange()
         .expectStatus().isCreated()
@@ -258,7 +258,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   INVALID_NAME,
                   createValidCalorieView(),
@@ -274,7 +274,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             null,
             createValidCalorieView(),
@@ -297,7 +297,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   new CalorieView(INVALID_CALORIE, AllowedCalorieUnits.CALORIE.getSymbol()),
@@ -313,7 +313,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             new CalorieView(null, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
@@ -336,7 +336,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -352,7 +352,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -375,7 +375,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -391,7 +391,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -414,7 +414,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -436,7 +436,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -459,7 +459,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .post()
               .uri("/api/custom/food")
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -475,7 +475,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -496,7 +496,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
         .exchange()
         .expectStatus().isCreated()
@@ -511,7 +511,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
         .exchange()
         .expectStatus().isCreated()
@@ -520,7 +520,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createValidInsertedFoodWithEveryPossibleNutrientView())
         .exchange()
         .expectStatus().isCreated()
@@ -549,7 +549,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + INVALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createValidInsertedFoodWithEmptyNutritions())
         .exchange()
         .expectStatus().isBadRequest()
@@ -568,7 +568,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(foodDto)
         .exchange()
         .expectStatus().isOk()
@@ -588,7 +588,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   INVALID_NAME,
                   createValidCalorieView(),
@@ -604,7 +604,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             null,
             createValidCalorieView(),
@@ -630,7 +630,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   new CalorieView(INVALID_CALORIE, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
@@ -646,7 +646,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             new CalorieView(null, Credentials.VALID_FOOD_MEASURE_UNIT.getValue()),
@@ -671,7 +671,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -687,7 +687,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -712,7 +712,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -728,7 +728,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -753,7 +753,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -777,7 +777,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -803,7 +803,7 @@ class CustomFoodControllerIntegrationTest {
           webTestClient
               .put()
               .uri("/api/custom/food/" + VALID_FOOD_ID)
-              .header(authHeader.getName(), authHeader.getValues().getFirst())
+              .header(authHeader.getName(), authHeader.getValues().get(0))
               .bodyValue(createInsertedFood(
                   Credentials.VALID_MEAL_NAME.getValue(),
                   createValidCalorieView(),
@@ -819,7 +819,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(createInsertedFood(
             Credentials.VALID_MEAL_NAME.getValue(),
             createValidCalorieView(),
@@ -845,7 +845,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .put()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(insertFoodDto)
         .exchange()
         .expectStatus().isOk()
@@ -888,7 +888,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .delete()
         .uri("/api/custom/food/" + INVALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isBadRequest()
         .expectBody(Void.class);
@@ -905,7 +905,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .delete()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isNoContent()
         .expectBody(Void.class);
@@ -922,7 +922,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .delete()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isNoContent()
         .expectBody(Void.class);
@@ -930,7 +930,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .delete()
         .uri("/api/custom/food/" + VALID_FOOD_ID)
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isBadRequest()
         .expectBody(Void.class);
@@ -949,7 +949,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -973,7 +973,7 @@ class CustomFoodControllerIntegrationTest {
       webTestClient
           .delete()
           .uri("/api/custom/food/" + foodId)
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .exchange()
           .expectStatus().isNoContent()
           .expectBody(Void.class);
@@ -982,7 +982,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -1005,7 +1005,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .get()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -1031,7 +1031,7 @@ class CustomFoodControllerIntegrationTest {
     webTestClient
         .post()
         .uri("/api/custom/food")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(foodDto)
         .exchange()
         .expectStatus().isCreated()

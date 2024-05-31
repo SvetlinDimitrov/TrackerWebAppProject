@@ -79,7 +79,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.get()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
@@ -133,7 +133,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.patch()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
@@ -160,7 +160,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.patch()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
@@ -194,7 +194,7 @@ class UserDetailsControllerIntegrationTest {
 
       webTestClient.patch()
           .uri("/api/user/details")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isBadRequest();
@@ -226,7 +226,7 @@ class UserDetailsControllerIntegrationTest {
 
       webTestClient.patch()
           .uri("/api/user/details")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isBadRequest();
@@ -238,7 +238,7 @@ class UserDetailsControllerIntegrationTest {
 
     Header authHeader = setUpUserAndReturnAuthHeader();
     System.out.println(authHeader.getName());
-    System.out.println(authHeader.getValues().getFirst());
+    System.out.println(authHeader.getValues().get(0));
     List<String> INVALID_AGES = List.of(
         "-1",
         "0",
@@ -256,7 +256,7 @@ class UserDetailsControllerIntegrationTest {
 
       webTestClient.patch()
           .uri("/api/user/details")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isBadRequest();
@@ -279,7 +279,7 @@ class UserDetailsControllerIntegrationTest {
 
       webTestClient.patch()
           .uri("/api/user/details")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isOk()
@@ -304,7 +304,7 @@ class UserDetailsControllerIntegrationTest {
 
       webTestClient.patch()
           .uri("/api/user/details")
-          .header(authHeader.getName(), authHeader.getValues().getFirst())
+          .header(authHeader.getName(), authHeader.getValues().get(0))
           .bodyValue(validDetails)
           .exchange()
           .expectStatus().isOk()
@@ -328,7 +328,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.get()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
@@ -340,7 +340,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.patch()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .bodyValue(validDetails)
         .exchange()
         .expectStatus().isOk()
@@ -349,7 +349,7 @@ class UserDetailsControllerIntegrationTest {
 
     webTestClient.get()
         .uri("/api/user/details")
-        .header(authHeader.getName(), authHeader.getValues().getFirst())
+        .header(authHeader.getName(), authHeader.getValues().get(0))
         .exchange()
         .expectStatus().isOk()
         .expectBody(UserDetailsView.class)
