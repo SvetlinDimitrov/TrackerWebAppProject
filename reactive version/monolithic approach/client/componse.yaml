@@ -25,6 +25,17 @@ services:
     networks:
       - backend
 
+  client:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - backend
+
 networks:
   backend:
     driver: bridge
