@@ -29,7 +29,7 @@ public class EmailVerificationService {
 
   @Value("${sendinblue.api.key}")
   private String sendinblueApiKey;
-  @Value("${frontend.url}")
+  @Value("${front-end.url}")
   private String frontendUrl;
   @Value("${api.email.sender}")
   private String emailSender;
