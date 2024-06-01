@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class UserController {
 
   private final UserService userServiceImp;

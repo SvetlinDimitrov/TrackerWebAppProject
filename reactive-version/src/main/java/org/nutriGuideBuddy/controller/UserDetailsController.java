@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/user/details")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class UserDetailsController {
 
   private final UserDetailsService service;

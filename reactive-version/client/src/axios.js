@@ -3,7 +3,7 @@ import store from './store/index.js';
 import { useToast } from 'primevue/usetoast';
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
 // instance.interceptors.response.use(

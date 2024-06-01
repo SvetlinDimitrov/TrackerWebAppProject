@@ -13,9 +13,19 @@ services:
     networks:
       - backend
 
+  nginx:
+    build:
+        context: ./proxy_server
+        dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - backend
+
 networks:
   backend:
     driver: bridge
+
 volumes:
   mysql_data:
     driver: local

@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/record")
-@CrossOrigin(origins = "*")
 public class RecordController {
 
   private final RecordService service;
