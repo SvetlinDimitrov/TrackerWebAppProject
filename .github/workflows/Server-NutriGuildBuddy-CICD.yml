@@ -7,8 +7,6 @@ on:
         description: 'Run the workflow'
         required: true
   push:
-    paths-ignore:
-      - 'reactive-version/client/**'
     paths:
       - 'reactive-version/**'
 
