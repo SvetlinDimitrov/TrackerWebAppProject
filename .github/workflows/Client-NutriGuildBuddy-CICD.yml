@@ -8,7 +8,7 @@ on:
         required: true
   push:
     paths:
-      - 'reactive version/monolithic approach/client**'
+      - 'reactive-version/client**'
 
 jobs:
   client-reactiveVersion-cicd:
@@ -28,7 +28,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build Docker Image
-      working-directory: ./reactive version/monolithic approach/client
+      working-directory: ./reactive-version/client
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy-client .
 

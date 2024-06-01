@@ -7,8 +7,10 @@ on:
         description: 'Run the workflow'
         required: true
   push:
+    paths-ignore:
+      - 'reactive-version/client/**'
     paths:
-      - 'reactive version/monolithic approach/**'
+      - 'reactive-version/**'
 
 jobs:
   server-reactiveVersion-cicd:
@@ -28,7 +30,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build Docker Image
-      working-directory: ./reactive version/monolithic approach
+      working-directory: ./reactive-version
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nutri-guide-buddy-server .
 
