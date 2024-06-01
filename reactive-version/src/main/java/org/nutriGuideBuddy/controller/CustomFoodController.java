@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/custom/food")
+@CrossOrigin(origins = "*")
 public class CustomFoodController {
 
   private final CustomFoodServiceImp service;

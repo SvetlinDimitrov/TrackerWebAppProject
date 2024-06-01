@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/food_db_api/search")
+@CrossOrigin(origins = "*")
 public class NutritionixApiController {
 
   private final NutritionixApiService service;
