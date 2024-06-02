@@ -2,6 +2,7 @@ package org.nutriGuideBuddy.config.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,6 +27,8 @@ import java.util.Collections;
 public class SecurityConfig {
 
   private final JwtTokenAuthenticationFilter jwtAuthenticationFilter;
+  @Value("${allowed.cors.origins}")
+  private String allowedOrigins;
 
   @Bean
   public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
@@ -34,7 +37,7 @@ public class SecurityConfig {
         .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
         .cors(cors -> cors.configurationSource(request -> {
           CorsConfiguration corsConfiguration = new CorsConfiguration();
-          corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
+          corsConfiguration.setAllowedOriginPatterns(Collections.singletonList(allowedOrigins));
           corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
           corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since", "Cache-Control", "Content-Range", "Range"));
           corsConfiguration.setAllowCredentials(true);
