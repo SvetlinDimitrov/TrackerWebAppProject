@@ -7,7 +7,7 @@
     "dev": "vite --port 3000",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "serve dist"
+    "serve": "serve -s dist"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
