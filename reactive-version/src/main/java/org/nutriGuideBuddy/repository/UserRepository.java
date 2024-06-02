@@ -38,6 +38,7 @@ public class UserRepository {
   }
 
   public Mono<UserEntity> findUserByEmail(String email) {
+
     return entityTemplate.selectOne(
         query(where("email").is(email)), UserEntity.class
     );

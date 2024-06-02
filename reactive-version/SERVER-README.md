@@ -1,6 +1,6 @@
 ## API Documentation
 
-To interact with the API, please refer to the [Postman Collection](link-to-postman-collection) provided.
+To interact with the API, please refer to the [Postman Collection](https://documenter.getpostman.com/view/26519722/2s9Ykhh4Qv) provided.
 
 The collection includes detailed information about each endpoint, including request parameters, headers, and expected
 responses.

@@ -26,7 +26,11 @@ public class VerificationController {
 
   @PostMapping("/forgot-password")
   public Mono<Void> sendForgotPasswordEmail(@RequestBody Map<String, String> request) {
-    return emailVerificationService.sendForgotPasswordEmail(request.get("email"));
+    String email = request.get("email");
+    if(email == null || email.isBlank()) {
+      return Mono.error(new BadRequestException("Invalid email"));
+    }
+    return emailVerificationService.sendForgotPasswordEmail(email);
   }
 
   @ExceptionHandler(BadRequestException.class)
