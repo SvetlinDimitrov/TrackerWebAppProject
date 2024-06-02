@@ -112,6 +112,9 @@ public class UserService {
     return repository.findUserByEmail(email)
         .switchIfEmpty(Mono.error(new BadRequestException("User not found")))
         .flatMap(user -> {
+          if (dto.newPassword().length() < 4 || dto.newPassword().length() > 255) {
+            return Mono.error(new BadRequestException("Password must be between 4 and 255 characters"));
+          }
           user.setPassword(passwordEncoder.encode(dto.newPassword()));
           return repository.updateUsernameAndPassword(user.getId(), user);
         })

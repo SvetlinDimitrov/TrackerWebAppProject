@@ -54,6 +54,11 @@ public class NutritionixApiService {
   }
 
   public Mono<List<InsertFoodDto>> getCommonFoodBySearchTerm(String query) {
+
+    if (query.isBlank() || query.isEmpty()) {
+      return Mono.error(new BadRequestException("term is empty"));
+    }
+
     Map<String, String> requestBody = new HashMap<>();
     requestBody.put("query", query);
 
@@ -74,6 +79,11 @@ public class NutritionixApiService {
   }
 
   public Mono<List<InsertFoodDto>> getBrandedFoodById(String id) {
+
+    if (id.isBlank() || id.isEmpty()) {
+      return Mono.error(new BadRequestException("id is empty"));
+    }
+
     return webClient
         .get()
         .uri(uriBuilder -> uriBuilder.path("/v2/search/item")
@@ -90,6 +100,11 @@ public class NutritionixApiService {
   }
 
   public Mono<ListFoodsResponse> getAllFoodsByFoodName(String foodName) {
+
+    if (foodName.isBlank() || foodName.isEmpty()) {
+      return Mono.error(new BadRequestException("foodName is empty"));
+    }
+
     return webClient
         .get()
         .uri(uriBuilder -> uriBuilder.path("/v2/search/instant/")

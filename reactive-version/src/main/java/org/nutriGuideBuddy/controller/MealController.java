@@ -26,6 +26,10 @@ public class MealController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
 
+    if (page < 0 || size < 0) {
+      return Mono.error(new BadRequestException("Page and size must be greater than 0"));
+    }
+
     Pageable pageable = PageRequest.of(page, size);
     return service.getAllByUserId(pageable);
   }
@@ -34,6 +38,10 @@ public class MealController {
   private Mono<Page<MealShortView>> getAllMealsByUserIdShortFoodResponse(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
+
+    if (page < 0 || size < 0) {
+      return Mono.error(new BadRequestException("Page and size must be greater than 0"));
+    }
 
     Pageable pageable = PageRequest.of(page, size);
     return service.getAllByUserIdShorten(pageable);
