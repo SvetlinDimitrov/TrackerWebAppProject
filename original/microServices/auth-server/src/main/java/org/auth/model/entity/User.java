@@ -1,14 +1,12 @@
 package org.auth.model.entity;
 
 import java.math.BigDecimal;
-
-import org.auth.model.enums.Gender;
-import org.auth.model.enums.UserDetails;
-import org.auth.model.enums.WorkoutState;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.auth.model.enums.Gender;
+import org.auth.model.enums.UserDetails;
+import org.auth.model.enums.WorkoutState;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -32,4 +30,11 @@ public class User {
     private Gender gender;
     private UserDetails userDetails = UserDetails.NOT_COMPLETED;
 
+    public boolean isHeFullyRegistered() {
+        return kilograms != null &&
+            height != null &&
+            age != null &&
+            gender != null &&
+            workoutState != null;
+    }
 }

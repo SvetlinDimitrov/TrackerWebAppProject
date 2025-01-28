@@ -1,4 +1,4 @@
-package org.auth.validations;
+package org.auth.annotations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

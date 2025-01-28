@@ -3,7 +3,6 @@ package org.auth.config.security;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.auth.exceptions.UserNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,17 +32,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
-        String requestURI = request.getRequestURI();
-        if (pathMatcher.match("/api/user/register", requestURI) || pathMatcher.match("/api/user/login", requestURI)
-            || pathMatcher.match("/swagger-ui.html", requestURI) || pathMatcher.match("/swagger-ui/**", requestURI)
-            || pathMatcher.match("/v3/api-docs/**", requestURI) || pathMatcher.match("/v3/api-docs.yaml", requestURI)
-            || pathMatcher.match("/swagger-resources/**", requestURI) || pathMatcher.match("/swagger-config/**", requestURI)
-            || pathMatcher.match("/webjars/**", requestURI) || pathMatcher.match("/actuator/prometheus", requestURI)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
+
         try {
             String token = extractTokenFromRequest(request)
                     .orElseThrow(() -> new BadCredentialsException("Invalid token"));

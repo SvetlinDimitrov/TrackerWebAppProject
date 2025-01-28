@@ -1,22 +1,18 @@
 package org.auth.controllers;
 
-import org.auth.config.security.JwtUtil;
-import org.auth.exceptions.UserNotFoundException;
-import org.auth.exceptions.WrongUserCredentialsException;
-import org.auth.model.dto.EditUserDto;
-import org.auth.model.dto.JwtTokenView;
-import org.auth.model.dto.LoginUserDto;
-import org.auth.model.dto.RegisterUserDto;
-import org.auth.model.dto.UserView;
-import org.auth.services.UserServiceImp;
-import org.auth.services.UserServiceKafkaImp;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.auth.config.security.JwtUtil;
+import org.auth.model.dto.AuthRequestDto;
+import org.auth.model.dto.JwtTokenView;
+import org.auth.model.dto.UserCreateRequest;
+import org.auth.model.dto.UserEditRequest;
+import org.auth.model.dto.UserView;
+import org.auth.services.UserServiceImp;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,46 +20,35 @@ public class UserControllerImp implements UserController {
 
     private final JwtUtil jwtUtil;
     private final UserServiceImp userServiceImp;
-    private final UserServiceKafkaImp userServiceKafkaImp;
 
     @Override
-    public ResponseEntity<HttpStatus> createUserAccount(
-            @Valid RegisterUserDto registerUserDto,
-            BindingResult result)
-            throws WrongUserCredentialsException {
-        if (result.hasErrors()) {
-            throw new WrongUserCredentialsException(result.getFieldErrors());
-        }
-        userServiceKafkaImp.register(registerUserDto);
+    public ResponseEntity<HttpStatus> create(
+        @RequestBody @Valid UserCreateRequest registerUserDto) {
+        userServiceImp.register(registerUserDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<JwtTokenView> login(LoginUserDto userDto) throws WrongUserCredentialsException {
+    public ResponseEntity<JwtTokenView> login(@RequestBody @Valid AuthRequestDto userDto) {
         UserView userView = userServiceImp.login(userDto);
 
         return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<UserView> getUserDetails(String authorization) {
-        UserView userView = userServiceImp.getUserViewById(jwtUtil.extractUserId(authorization));
-
-        return new ResponseEntity<>(userView, HttpStatus.OK);
+    public ResponseEntity<UserView> me() {
+        return new ResponseEntity<>(userServiceImp.me(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<JwtTokenView> editUserProfile(EditUserDto dto, String authorization)
-            throws UserNotFoundException {
-        UserView userView = userServiceKafkaImp.editUserEntity(dto, jwtUtil.extractUserId(authorization));
+    public ResponseEntity<JwtTokenView> edit(UserEditRequest dto) {
+        UserView userView = userServiceImp.edit(dto);
 
         return new ResponseEntity<>(jwtUtil.createJwtToken(userView), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<HttpStatus> deleteUser(String authorization) throws UserNotFoundException {
-        userServiceKafkaImp.deleteUserById(jwtUtil.extractUserId(authorization));
+    public ResponseEntity<HttpStatus> delete() {
+        userServiceImp.delete();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

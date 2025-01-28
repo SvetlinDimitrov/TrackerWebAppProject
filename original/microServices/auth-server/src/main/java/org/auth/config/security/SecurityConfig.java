@@ -20,9 +20,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @OpenAPIDefinition(info = @Info(title = "Auth API", version = "1.0", description = "API for Authentication"))
 public class SecurityConfig {
-    
+
+    private static final String[] WHITE_LIST = {
+        "/api/user/register",
+        "/api/user/login",
+        "/swagger-ui.html",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/v3/api-docs.yaml",
+        "/swagger-resources/**",
+        "/swagger-config/**",
+        "/webjars/**",
+        "/actuator/prometheus"
+    };
     private final JwtUtil jwtUtil;
-    
     public SecurityConfig(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -38,9 +49,7 @@ public class SecurityConfig {
             .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/user/register", "/api/user/login").permitAll()
-                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-resources/**", "/swagger-config/**", "/webjars/**").permitAll()
-                .requestMatchers("/actuator/prometheus").permitAll()
+                .requestMatchers(WHITE_LIST).permitAll()
                 .anyRequest().hasAnyRole(UserDetails.COMPLETED.name(),
                     UserDetails.NOT_COMPLETED.name()))
             .build();
