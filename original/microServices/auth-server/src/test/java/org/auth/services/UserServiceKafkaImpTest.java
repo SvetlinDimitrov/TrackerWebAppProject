@@ -15,8 +15,8 @@
 //import org.auth.exceptions.UserNotFoundException;
 //import org.auth.model.dto.EditUserDto;
 //import org.auth.model.dto.RegisterUserDto;
-//import org.auth.model.dto.UserView;
-//import org.auth.model.entity.User;
+//import org.auth.user.dto.UserView;
+//import org.auth.user.entity.User;
 //import org.auth.model.enums.Gender;
 //import org.auth.model.enums.UserDetails;
 //import org.auth.model.enums.WorkoutState;

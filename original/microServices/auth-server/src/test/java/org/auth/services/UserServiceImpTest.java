@@ -9,8 +9,8 @@
 //import org.auth.UserRepository;
 //import org.auth.exceptions.WrongUserCredentialsException;
 //import org.auth.model.dto.LoginUserDto;
-//import org.auth.model.dto.UserView;
-//import org.auth.model.entity.User;
+//import org.auth.user.dto.UserView;
+//import org.auth.user.entity.User;
 //import org.auth.util.UserValidator;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
