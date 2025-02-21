@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Nutrient {
 
-    private String name;
-    private String unit;
-    private BigDecimal amount;
+  private String name;
+  private String unit;
+  private BigDecimal amount;
 }

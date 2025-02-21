@@ -11,7 +11,10 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidVitaminNutrients {
-    String message() default "Invalid vitamin nutrient name.";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+
+  String message() default "Invalid vitamin nutrient name.";
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }

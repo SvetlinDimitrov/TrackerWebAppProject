@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Document(collection = "foods")
 public class CustomFoodEntity extends FoodBaseEntity {
-    private UUID userId;
 
-    public CustomFoodEntity() {
-        super();
-        setFoodClass("Custom");
-        setMeasurement("g");
-    }
+  private UUID userId;
+
+  public CustomFoodEntity() {
+    super();
+    setFoodClass("Custom");
+    setMeasurement("g");
+  }
 }

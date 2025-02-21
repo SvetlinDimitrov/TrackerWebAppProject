@@ -7,6 +7,7 @@ import org.example.domain.food.shared.entity.FoodBaseEntity;
 @Getter
 @Setter
 public class BrandedFoodEntity extends FoodBaseEntity {
-    private BrandedInfo brandedInfo;
-    private String foodGroups;
+
+  private BrandedInfo brandedInfo;
+  private String foodGroups;
 }

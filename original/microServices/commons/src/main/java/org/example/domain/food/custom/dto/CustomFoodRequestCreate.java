@@ -10,7 +10,6 @@ import org.example.domain.food.custom.annotations.ValidMacroNutrients;
 import org.example.domain.food.custom.annotations.ValidMineralNutrients;
 import org.example.domain.food.custom.annotations.ValidVitaminNutrients;
 
-
 public record CustomFoodRequestCreate(
     @NotBlank(message = "Food name is required.")
     String description,

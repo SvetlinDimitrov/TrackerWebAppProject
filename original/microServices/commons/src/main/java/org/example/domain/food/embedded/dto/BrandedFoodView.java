@@ -9,6 +9,7 @@ import org.example.domain.food.shared.dto.FoodView;
 @Setter
 @NoArgsConstructor
 public class BrandedFoodView extends FoodView {
-    private BrandedInfoView brandedInfo;
-    private String foodGroups;
+
+  private BrandedInfoView brandedInfo;
+  private String foodGroups;
 }

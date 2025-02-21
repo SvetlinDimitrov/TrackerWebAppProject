@@ -1,7 +1,6 @@
 package org.example.domain.record.dtos;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,11 +14,12 @@ import org.example.domain.storage.dto.StorageView;
 @AllArgsConstructor
 @Builder
 public class RecordView {
-    private String id;
-    private List<StorageView> storageViews;
-    private List<NutritionIntakeView> nutritionIntakesViews;
-    private BigDecimal dailyCaloriesToConsume;
-    private BigDecimal dailyConsumedCalories;
-    private String name;
-    private LocalDateTime date;
+
+  private String id;
+  private List<StorageView> storageViews;
+  private List<NutritionIntakeView> nutritionIntakesViews;
+  private BigDecimal dailyCaloriesToConsume;
+  private BigDecimal dailyConsumedCalories;
+  private String name;
+  private LocalDateTime date;
 }

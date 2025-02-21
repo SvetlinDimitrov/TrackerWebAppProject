@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class NutritionIntakeView {
-    private String nutrientName;
-    private String nutrientType;
-    private BigDecimal dailyConsumed;
-    private BigDecimal lowerBoundIntake;
-    private BigDecimal upperBoundIntake;
-    private String measurement;
+
+  private String nutrientName;
+  private String nutrientType;
+  private BigDecimal dailyConsumed;
+  private BigDecimal lowerBoundIntake;
+  private BigDecimal upperBoundIntake;
+  private String measurement;
 }

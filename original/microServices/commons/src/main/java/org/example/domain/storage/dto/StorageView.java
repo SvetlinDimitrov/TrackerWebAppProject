@@ -11,9 +11,10 @@ import org.example.domain.food.shared.dto.FoodView;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StorageView {
-    private String id;
-    private String recordId;
-    private String name;
-    private BigDecimal consumedCalories;
-    private List<FoodView> foods;
+
+  private String id;
+  private String recordId;
+  private String name;
+  private BigDecimal consumedCalories;
+  private List<FoodView> foods;
 }

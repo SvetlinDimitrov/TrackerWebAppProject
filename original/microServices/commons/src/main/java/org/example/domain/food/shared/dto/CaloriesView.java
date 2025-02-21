@@ -7,7 +7,8 @@ public record CaloriesView(
     BigDecimal amount,
     String unit
 ) {
-    public CaloriesView(BigDecimal amount) {
-        this("Energy", amount, "kcal");
-    }
+
+  public CaloriesView(BigDecimal amount) {
+    this("Energy", amount, "kcal");
+  }
 }
