@@ -1,18 +1,17 @@
 package org.record.features.record.services;
 
-import static org.record.infrastructure.exception.ExceptionMessages.INVALID_USER_TOKEN;
 import static org.record.infrastructure.exception.ExceptionMessages.RECORD_NOT_FOUND;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.record.dtos.RecordView;
 import org.example.domain.user.dto.UserView;
-import org.example.exceptions.throwable.BadRequestException;
 import org.example.exceptions.throwable.NotFoundException;
-import org.example.util.GsonWrapper;
+import org.example.util.UserExtractor;
 import org.record.features.record.entity.Record;
 import org.record.features.record.repository.RecordRepository;
 import org.record.features.record.utils.RecordUtils;
@@ -23,13 +22,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecordServiceImp implements RecordService {
 
-  private static final GsonWrapper GSON_WRAPPER = new GsonWrapper();
   private final RecordMapper recordMapper;
   private final RecordRepository repository;
 
   public List<RecordView> getAll(String userToken) {
 
-    UserView user = getUser(userToken);
+    UserView user = UserExtractor.get(userToken);
 
     return repository
         .findAllByUserId(user.id())
@@ -40,14 +38,14 @@ public class RecordServiceImp implements RecordService {
 
   public RecordView getById(String recordId, String userToken) {
 
-    UserView user = getUser(userToken);
+    UserView user = UserExtractor.get(userToken);
     Record record = getRecordByIdAndUserId(recordId, userToken);
 
     return recordMapper.toView(record, user);
   }
 
   public void create(String userToken, String name) {
-    UserView user = getUser(userToken);
+    UserView user = UserExtractor.get(userToken);
 
     Record record = new Record();
 
@@ -74,16 +72,8 @@ public class RecordServiceImp implements RecordService {
     repository.deleteById(record.getId());
   }
 
-  private UserView getUser(String userToken) {
-    try {
-      return GSON_WRAPPER.fromJson(userToken, UserView.class);
-    } catch (Exception e) {
-      throw new BadRequestException(INVALID_USER_TOKEN);
-    }
-  }
-
-  protected Record getRecordByIdAndUserId(String recordId, String userToken) {
-    String userId = getUser(userToken).id();
+  public Record getRecordByIdAndUserId(String recordId, String userToken) {
+    UUID userId = UserExtractor.get(userToken).id();
 
     return repository.findByIdAndUserId(recordId, userId)
         .orElseThrow(() -> new NotFoundException(RECORD_NOT_FOUND));

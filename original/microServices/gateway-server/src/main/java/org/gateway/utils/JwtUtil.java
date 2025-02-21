@@ -9,6 +9,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.user.dto.UserView;
@@ -49,21 +50,17 @@ public class JwtUtil {
         workoutStateStr != null ? WorkoutState.valueOf(workoutStateStr) : null;
     String genderStr = getClaimValue(claims, "gender", String.class);
     Gender gender = genderStr != null ? Gender.valueOf(genderStr) : null;
-    String userDetailsStr = getClaimValue(claims, "userDetails", String.class);
-    UserDetails userDetails =
-        userDetailsStr != null ? UserDetails.valueOf(userDetailsStr) : null;
     String role = getClaimValue(claims, "role", String.class);
     UserRole userRole = role != null ? UserRole.valueOf(role) : null;
 
     return Optional.of(new UserView(
-        getClaimValue(claims, "id", String.class),
+        getClaimValue(claims, "id", UUID.class),
         getClaimValue(claims, "username", String.class),
         getClaimValue(claims, "email", String.class),
         getClaimValue(claims, "kilograms", Double.class),
         getClaimValue(claims, "height", Double.class),
         workoutState,
         gender,
-        userDetails,
         userRole,
         getClaimValue(claims, "age", Integer.class)
     ));

@@ -1,5 +1,6 @@
 package org.record.features.storage.repository;
 
+import java.util.UUID;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import org.record.features.storage.entity.Storage;
@@ -10,11 +11,9 @@ import java.util.Optional;
 @Repository
 public interface StorageRepository extends MongoRepository<Storage, String> {
 
-    List<Storage> findAllByRecordIdAndUserId(String recordId, String userId);
+    List<Storage> findAllByRecordIdAndRecord_UserId(String recordId, UUID userId);
 
-    Optional<Storage> findByIdAndRecordIdAndUserId(String id, String recordId, String userId);
+    Optional<Storage> findByIdAndRecordIdAndRecord_UserId(String id, String recordId, UUID userId);
 
-    Optional<Storage> findByIdAndUserId(String id, String userId);
-
-    void deleteAllByRecordId(String recordId);
+    Optional<Storage> findByIdAndRecord_UserId(String id, UUID userId);
 }

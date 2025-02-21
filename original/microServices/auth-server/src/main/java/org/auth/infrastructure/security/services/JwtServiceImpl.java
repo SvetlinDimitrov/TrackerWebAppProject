@@ -71,7 +71,6 @@ public class JwtServiceImpl implements JwtService {
         .claim("height", user.getHeight() )
         .claim("workoutState", user.getWorkoutState())
         .claim("gender", user.getGender())
-        .claim("userDetails", user.getUserDetails().name())
         .claim("age", user.getAge())
         .claim("role", user.getRole())
         .setIssuedAt(currentDate)

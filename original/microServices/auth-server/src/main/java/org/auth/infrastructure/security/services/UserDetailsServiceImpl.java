@@ -1,7 +1,7 @@
 package org.auth.infrastructure.security.services;
 
 import lombok.RequiredArgsConstructor;
-import org.auth.UserRepository;
+import org.auth.features.user.repository.UserRepository;
 import org.auth.infrastructure.security.dto.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

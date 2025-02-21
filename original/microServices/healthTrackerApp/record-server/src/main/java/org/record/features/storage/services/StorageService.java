@@ -1,7 +1,6 @@
 package org.record.features.storage.services;
 
 import static org.record.infrastructure.exception.ExceptionMessages.FOOD_NOT_FOUND;
-import static org.record.infrastructure.exception.ExceptionMessages.INVALID_USER_TOKEN;
 import static org.record.infrastructure.exception.ExceptionMessages.RECORD_NOT_FOUND;
 import static org.record.infrastructure.exception.ExceptionMessages.STORAGE_NOT_FOUND;
 import static org.record.infrastructure.exception.ExceptionMessages.STORAGE_NOT_FOUND_WITH_RECORD_AND_USER;
@@ -12,23 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
 import org.example.domain.food.custom.entity.CustomFoodEntity;
 import org.example.domain.food.shared.dto.FoodView;
 import org.example.domain.storage.dto.StorageView;
+import org.example.exceptions.throwable.BadRequestException;
+import org.example.exceptions.throwable.NotFoundException;
+import org.example.util.UserExtractor;
 import org.record.features.record.entity.Record;
 import org.record.features.record.repository.RecordRepository;
 import org.record.features.storage.entity.Storage;
-import org.example.domain.user.dto.UserView;
-import org.example.exceptions.throwable.BadRequestException;
-import org.example.exceptions.throwable.NotFoundException;
-import org.example.util.GsonWrapper;
+import org.record.features.storage.repository.StorageRepository;
 import org.record.infrastructure.mappers.CustomFoodMapper;
 import org.record.infrastructure.mappers.StorageMapper;
 import org.springframework.stereotype.Service;
-import org.record.features.storage.repository.StorageRepository;
 
 @RequiredArgsConstructor
 @Service
@@ -36,24 +35,20 @@ public class StorageService {
 
   private final StorageRepository storageRepository;
   private final RecordRepository recordRepository;
-  private final GsonWrapper gsonWrapper = new GsonWrapper();
   private final CustomFoodMapper customFoodMapper;
   private final StorageMapper storageMapper;
 
   public StorageView getById(String storageId, String userToken) {
-    String userId = getUserId(userToken);
-
     return storageMapper.toView(
         storageRepository
-            .findByIdAndUserId(storageId, userId)
+            .findByIdAndRecord_UserId(storageId, UserExtractor.get(userToken).id())
             .orElseThrow(() -> new NotFoundException(STORAGE_NOT_FOUND, storageId)));
   }
 
   public List<StorageView> getAllByRecordId(String recordId, String userToken) {
 
-    String userId = getUserId(userToken);
-
-    List<Storage> storages = storageRepository.findAllByRecordIdAndUserId(recordId, userId);
+    List<Storage> storages = storageRepository.findAllByRecordIdAndRecord_UserId(recordId,
+        UserExtractor.get(userToken).id());
 
     if (storages.isEmpty()) {
       return new ArrayList<>();
@@ -67,7 +62,7 @@ public class StorageService {
   }
 
   public void create(String recordId, String storageName, String userToken) {
-    Record record = recordRepository.findByIdAndUserId(recordId, getUserId(userToken))
+    Record record = recordRepository.findByIdAndUserId(recordId, UserExtractor.get(userToken).id())
         .orElseThrow(() -> new NotFoundException(RECORD_NOT_FOUND, recordId));
 
     Storage storage = new Storage();
@@ -83,9 +78,8 @@ public class StorageService {
 
   public void delete(String storageId, String userToken) {
 
-    String userId = getUserId(userToken);
-
-    Storage storage = storageRepository.findByIdAndUserId(storageId, userId)
+    Storage storage = storageRepository.findByIdAndRecord_UserId(storageId,
+            UserExtractor.get(userToken).id())
         .orElseThrow(() -> new NotFoundException(STORAGE_NOT_FOUND, storageId));
 
     storageRepository.delete(storage);
@@ -95,9 +89,10 @@ public class StorageService {
       String userToken) {
     CustomFoodEntity entity = customFoodMapper.toEntity(foodDto);
 
-    String userId = getUserId(userToken);
+    UUID userId = UserExtractor.get(userToken).id();
 
-    Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+    Storage storage = storageRepository.findByIdAndRecordIdAndRecord_UserId(storageId, recordId,
+            userId)
         .orElseThrow(() -> new BadRequestException(STORAGE_NOT_FOUND_WITH_RECORD_AND_USER,
             storageId, recordId, userId));
 
@@ -114,9 +109,10 @@ public class StorageService {
       String userToken) {
     CustomFoodEntity entity = customFoodMapper.toEntity(foodDto);
 
-    String userId = getUserId(userToken);
+    UUID userId = UserExtractor.get(userToken).id();
 
-    Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+    Storage storage = storageRepository.findByIdAndRecordIdAndRecord_UserId(storageId, recordId,
+            userId)
         .orElseThrow(() -> new BadRequestException(STORAGE_NOT_FOUND_WITH_RECORD_AND_USER,
             storageId, recordId, userId));
 
@@ -129,10 +125,10 @@ public class StorageService {
   }
 
   public void removeFood(String storageId, String recordId, String foodId, String userToken) {
+    UUID userId = UserExtractor.get(userToken).id();
 
-    String userId = getUserId(userToken);
-
-    Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+    Storage storage = storageRepository.findByIdAndRecordIdAndRecord_UserId(storageId, recordId,
+            userId)
         .orElseThrow(() -> new BadRequestException(STORAGE_NOT_FOUND_WITH_RECORD_AND_USER,
             storageId, recordId, userId));
 
@@ -145,14 +141,6 @@ public class StorageService {
     setStorageConsumedCalories(storage);
 
     storageRepository.save(storage);
-  }
-
-  private String getUserId(String getUserId) {
-    try {
-      return gsonWrapper.fromJson(getUserId, UserView.class).id();
-    } catch (Exception e) {
-      throw new BadRequestException(INVALID_USER_TOKEN);
-    }
   }
 
   private String generateRandomNumbers() {
@@ -177,9 +165,10 @@ public class StorageService {
   public FoodView getFoodByStorage(String storageId, String recordId, String foodId,
       String userToken) {
 
-    String userId = getUserId(userToken);
+    UUID userId = UserExtractor.get(userToken).id();
 
-    Storage storage = storageRepository.findByIdAndRecordIdAndUserId(storageId, recordId, userId)
+    Storage storage = storageRepository.findByIdAndRecordIdAndRecord_UserId(storageId, recordId,
+            userId)
         .orElseThrow(() -> new NotFoundException(STORAGE_NOT_FOUND_WITH_RECORD_AND_USER,
             storageId, recordId, userId));
 

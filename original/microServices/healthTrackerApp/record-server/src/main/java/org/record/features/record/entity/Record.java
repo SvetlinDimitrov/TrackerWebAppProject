@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class Record implements Serializable {
   @Id
   private String id;
   private String name;
-  private String userId;
+  private UUID userId;
   private LocalDateTime date;
   private List<Storage> storage;
   private BigDecimal dailyCalories = BigDecimal.ZERO;

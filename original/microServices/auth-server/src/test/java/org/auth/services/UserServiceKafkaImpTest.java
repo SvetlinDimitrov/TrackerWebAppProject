@@ -11,7 +11,7 @@
 //import java.math.BigDecimal;
 //import java.util.Optional;
 //
-//import org.auth.UserRepository;
+//import org.auth.features.user.repository.UserRepository;
 //import org.auth.exceptions.UserNotFoundException;
 //import org.auth.model.dto.EditUserDto;
 //import org.auth.model.dto.RegisterUserDto;

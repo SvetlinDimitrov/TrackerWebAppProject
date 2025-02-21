@@ -1,10 +1,11 @@
 package org.auth.web;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.auth.features.user.dto.UserCreateRequest;
-import org.example.domain.user.dto.UserEditRequest;
 import org.auth.features.user.services.UserService;
+import org.example.domain.user.dto.UserEditRequest;
 import org.example.domain.user.dto.UserView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,18 +38,18 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserView> get(@PathVariable String id) {
+  public ResponseEntity<UserView> get(@PathVariable UUID id) {
     return ResponseEntity.status(HttpStatus.OK).body(service.getById(id));
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<UserView> edit(@RequestBody @Valid UserEditRequest dto,
-      @PathVariable String id) {
+      @PathVariable UUID id) {
     return ResponseEntity.status(HttpStatus.OK).body(service.edit(dto, id));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable String id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.delete(id);
     return ResponseEntity.noContent().build();
   }

@@ -6,7 +6,7 @@
 //
 //import java.util.Optional;
 //
-//import org.auth.UserRepository;
+//import org.auth.features.user.repository.UserRepository;
 //import org.auth.exceptions.WrongUserCredentialsException;
 //import org.auth.model.dto.LoginUserDto;
 //import org.auth.user.dto.UserView;

@@ -75,17 +75,4 @@ public abstract class MainFilter {
   protected String getPath(ServerWebExchange exchange) {
     return exchange.getRequest().getURI().getPath();
   }
-
-  protected boolean hasAllFields(UserView user) {
-    return user.id() != null &&
-        user.username() != null &&
-        user.email() != null &&
-        user.kilograms() != null &&
-        user.height() != null &&
-        user.workoutState() != null &&
-        user.gender() != null &&
-        user.userDetails() != null &&
-        user.role() != null &&
-        user.age() != null;
-  }
 }

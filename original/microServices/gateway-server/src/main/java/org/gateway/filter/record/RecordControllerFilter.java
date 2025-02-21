@@ -53,7 +53,7 @@ public class RecordControllerFilter extends MainFilter implements GlobalFilter {
     if (path.equals(RecordPaths.CREATE)) {
       Optional<UserView> user = jwtUtil.verifyAndExtractUser(exchange.getRequest().getHeaders());
 
-      if (user.isPresent() && hasAllFields(user.get())) {
+      if (user.isPresent()) {
         return filterWithUserHeader(exchange, chain);
       }
       return forbiddenResponse(exchange);

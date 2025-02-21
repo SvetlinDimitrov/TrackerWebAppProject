@@ -58,6 +58,7 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
+
   mongodb:
     image: mongo
     container_name: mongodb-container
@@ -69,8 +70,21 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: user
       MONGO_INITDB_ROOT_PASSWORD: password
+
+  mysql:
+    image: mysql
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
 volumes:
   mongodb-config-foods:
+  db_data:
   kafka-data:
   kafka-data2:
   kafka-secrets:

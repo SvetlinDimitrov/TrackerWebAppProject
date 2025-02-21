@@ -1,9 +1,9 @@
 package org.auth.infrastructure.mappers;
 
 import org.auth.features.user.dto.UserCreateRequest;
+import org.auth.features.user.entity.User;
 import org.example.domain.user.dto.UserEditRequest;
 import org.example.domain.user.dto.UserView;
-import org.auth.features.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,6 @@ public abstract class UserMapperDecoder implements UserMapper {
   public User toEntity(UserCreateRequest dto) {
     var user = delegate.toEntity(dto);
     user.setPassword(passwordEncoder.encode(dto.password()));
-    user.setFirstRecord(false);
     return user;
   }
 

@@ -2,6 +2,7 @@ package org.auth.infrastructure.security.dto;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import org.auth.features.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +45,7 @@ public record CustomUserDetails(User user) implements UserDetails {
     return false;
   }
 
-  public String getId() {
+  public UUID getId() {
     return user.getId();
   }
 }

@@ -1,27 +1,18 @@
 package org.food.infrastructure.utils;
 
-import static org.food.infrastructure.exception.ExceptionMessages.INVALID_USER_TOKEN;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.user.dto.UserView;
-import org.example.exceptions.throwable.BadRequestException;
-import org.example.util.GsonWrapper;
 import org.example.domain.food.shared.dto.CaloriesView;
 import org.example.domain.food.shared.dto.FoodView;
 import org.example.domain.food.shared.dto.NutrientView;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class FoodUtils {
-
-  private final ModelMapper modelMapper;
-  private final GsonWrapper gsonWrapper;
 
   public void calculateFoodByAmount(FoodView food, Double size) {
 
@@ -77,14 +68,5 @@ public class FoodUtils {
       });
     }
     food.setMacroNutrients(macronutrients);
-  }
-
-
-  public String getUserId(String userToken) {
-    try {
-      return gsonWrapper.fromJson(userToken, UserView.class).id();
-    } catch (Exception e) {
-      throw new BadRequestException(INVALID_USER_TOKEN);
-    }
   }
 }
