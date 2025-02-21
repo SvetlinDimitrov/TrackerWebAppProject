@@ -2,7 +2,7 @@ package org.gateway.filter.user;
 
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.UserRole;
 import org.example.util.GsonWrapper;
 import org.gateway.filter.MainFilter;
@@ -36,6 +36,6 @@ public abstract class MainUserFilter extends MainFilter {
       return forbiddenResponse(exchange);
     }
 
-    return filterWithUserHeader(exchange, chain, currentUser);
+    return filterWithUserHeader(exchange, chain);
   }
 }

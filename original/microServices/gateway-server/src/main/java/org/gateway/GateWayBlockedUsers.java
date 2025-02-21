@@ -2,7 +2,7 @@ package org.gateway;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.springframework.stereotype.Repository;
 
 @Repository

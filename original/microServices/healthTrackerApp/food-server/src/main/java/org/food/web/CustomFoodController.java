@@ -2,9 +2,9 @@ package org.food.web;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.food.features.custom.dto.CustomFilterCriteria;
-import org.food.features.custom.dto.CustomFoodRequestCreate;
-import org.food.features.custom.dto.CustomFoodView;
+import org.example.domain.food.custom.dto.CustomFilterCriteria;
+import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
+import org.example.domain.food.custom.dto.CustomFoodView;
 import org.food.features.custom.service.CustomFoodService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

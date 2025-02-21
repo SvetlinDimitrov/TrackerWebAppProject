@@ -78,4 +78,3 @@ volumes:
   zookeeper-data:
   zookeeper-log:
   zookeeper-secrets:
-  db_data:

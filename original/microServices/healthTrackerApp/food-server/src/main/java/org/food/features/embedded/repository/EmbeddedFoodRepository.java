@@ -1,23 +1,23 @@
 package org.food.features.embedded.repository;
 
-import static org.food.features.shared.enums.NutrientType.isMacro;
-import static org.food.features.shared.enums.NutrientType.isMineral;
-import static org.food.features.shared.enums.NutrientType.isVitamin;
+import static org.example.domain.food.enums.NutrientType.isMacro;
+import static org.example.domain.food.enums.NutrientType.isMineral;
+import static org.example.domain.food.enums.NutrientType.isVitamin;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.food.features.embedded.dto.BrandedFoodView;
-import org.food.features.embedded.dto.FinalFoodView;
-import org.food.features.embedded.dto.SurveyFoodView;
-import org.food.features.embedded.entity.BrandedFoodEntity;
-import org.food.features.embedded.entity.FinalFoodEntity;
-import org.food.features.embedded.entity.SurveyFoodEntity;
-import org.food.features.embedded.dto.EmbeddedFilterCriteria;
-import org.food.features.shared.dto.FoodView;
-import org.food.features.shared.entity.FoodBaseEntity;
+import org.example.domain.food.embedded.dto.BrandedFoodView;
+import org.example.domain.food.embedded.dto.FinalFoodView;
+import org.example.domain.food.embedded.dto.SurveyFoodView;
+import org.example.domain.food.embedded.entity.BrandedFoodEntity;
+import org.example.domain.food.embedded.entity.FinalFoodEntity;
+import org.example.domain.food.embedded.entity.SurveyFoodEntity;
+import org.example.domain.food.embedded.dto.EmbeddedFilterCriteria;
+import org.example.domain.food.shared.dto.FoodView;
+import org.example.domain.food.shared.entity.FoodBaseEntity;
 import org.food.infrastructure.mappers.EmbeddedFoodMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

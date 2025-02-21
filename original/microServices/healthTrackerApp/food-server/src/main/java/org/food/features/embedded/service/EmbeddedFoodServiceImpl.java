@@ -6,12 +6,12 @@ import static org.food.infrastructure.exception.ExceptionMessages.INVALID_FOOD_T
 import lombok.RequiredArgsConstructor;
 import org.example.exceptions.throwable.BadRequestException;
 import org.example.exceptions.throwable.NotFoundException;
-import org.food.features.embedded.dto.BrandedFoodView;
-import org.food.features.embedded.dto.FinalFoodView;
-import org.food.features.embedded.dto.SurveyFoodView;
+import org.example.domain.food.embedded.dto.BrandedFoodView;
+import org.example.domain.food.embedded.dto.FinalFoodView;
+import org.example.domain.food.embedded.dto.SurveyFoodView;
 import org.food.features.embedded.repository.EmbeddedFoodRepository;
-import org.food.features.embedded.dto.EmbeddedFilterCriteria;
-import org.food.features.shared.dto.FoodView;
+import org.example.domain.food.embedded.dto.EmbeddedFilterCriteria;
+import org.example.domain.food.shared.dto.FoodView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

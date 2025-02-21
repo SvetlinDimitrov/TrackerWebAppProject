@@ -1,8 +1,8 @@
 package org.food.features.custom.service;
 
-import org.food.features.custom.dto.CustomFilterCriteria;
-import org.food.features.custom.dto.CustomFoodRequestCreate;
-import org.food.features.custom.dto.CustomFoodView;
+import org.example.domain.food.custom.dto.CustomFilterCriteria;
+import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
+import org.example.domain.food.custom.dto.CustomFoodView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

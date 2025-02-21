@@ -1,8 +1,8 @@
 package org.auth.infrastructure.mappers;
 
 import org.auth.features.user.dto.UserCreateRequest;
-import org.auth.features.user.dto.UserEditRequest;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserEditRequest;
+import org.example.domain.user.dto.UserView;
 import org.auth.features.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

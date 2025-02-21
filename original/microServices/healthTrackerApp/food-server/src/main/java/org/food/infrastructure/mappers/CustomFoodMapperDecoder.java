@@ -1,8 +1,8 @@
 package org.food.infrastructure.mappers;
 
-import org.food.features.custom.dto.CustomFoodRequestCreate;
-import org.food.features.custom.entity.CustomFoodEntity;
-import org.food.features.shared.entity.Calories;
+import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
+import org.example.domain.food.custom.entity.CustomFoodEntity;
+import org.example.domain.food.shared.entity.Calories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

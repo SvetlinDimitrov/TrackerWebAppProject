@@ -18,11 +18,11 @@
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.junit.jupiter.MockitoExtension;
-//import org.record.RecordRepository;
+//import org.record.features.repository.RecordRepository;
 //import org.record.client.StorageClient;
-//import org.record.client.dto.Food;
-//import org.record.client.dto.StorageView;
-//import org.record.client.dto.User;
+//import org.example.domain.food.Food;
+//import org.example.domain.food.StorageView;
+//import org.example.domain.food.User;
 //import org.record.exceptions.InvalidJsonTokenException;
 //import org.record.exceptions.RecordNotFoundException;
 //import org.record.model.dtos.RecordView;

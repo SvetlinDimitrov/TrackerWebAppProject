@@ -4,10 +4,10 @@ import static org.food.infrastructure.exception.ExceptionMessages.FOOD_NOT_FOUND
 
 import lombok.RequiredArgsConstructor;
 import org.example.exceptions.throwable.NotFoundException;
-import org.food.features.custom.dto.CustomFilterCriteria;
-import org.food.features.custom.dto.CustomFoodRequestCreate;
-import org.food.features.custom.dto.CustomFoodView;
-import org.food.features.custom.entity.CustomFoodEntity;
+import org.example.domain.food.custom.dto.CustomFilterCriteria;
+import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
+import org.example.domain.food.custom.dto.CustomFoodView;
+import org.example.domain.food.custom.entity.CustomFoodEntity;
 import org.food.features.custom.repository.CustomFoodRepository;
 import org.food.infrastructure.mappers.CustomFoodMapper;
 import org.food.infrastructure.utils.FoodUtils;

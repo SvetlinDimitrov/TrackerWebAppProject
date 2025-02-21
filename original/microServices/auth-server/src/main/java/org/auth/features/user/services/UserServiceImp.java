@@ -6,11 +6,11 @@ import static org.auth.infrastructure.exceptions.ExceptionMessages.USER_NOT_FOUN
 import lombok.RequiredArgsConstructor;
 import org.auth.UserRepository;
 import org.auth.features.user.dto.UserCreateRequest;
-import org.auth.features.user.dto.UserEditRequest;
+import org.example.domain.user.dto.UserEditRequest;
 import org.auth.features.user.entity.User;
 import org.auth.infrastructure.mappers.UserMapper;
 import org.auth.infrastructure.security.dto.CustomUserDetails;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.UserDetails;
 import org.example.exceptions.throwable.NotFoundException;
 import org.example.util.GsonWrapper;

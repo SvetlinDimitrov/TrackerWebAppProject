@@ -3,7 +3,7 @@ package org.food.web;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
-import org.food.features.shared.dto.FoodView;
+import org.example.domain.food.shared.dto.FoodView;
 import org.food.infrastructure.utils.FoodUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;

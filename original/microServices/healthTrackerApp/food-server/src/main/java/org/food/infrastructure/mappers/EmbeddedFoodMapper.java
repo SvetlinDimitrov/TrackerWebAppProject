@@ -1,15 +1,15 @@
 package org.food.infrastructure.mappers;
 
-import org.food.features.embedded.dto.BrandedFoodView;
-import org.food.features.embedded.entity.BrandedFoodEntity;
-import org.food.features.custom.dto.CustomFoodView;
-import org.food.features.custom.entity.CustomFoodEntity;
-import org.food.features.embedded.dto.FinalFoodView;
-import org.food.features.embedded.entity.FinalFoodEntity;
-import org.food.features.shared.dto.FoodView;
-import org.food.features.shared.entity.FoodBaseEntity;
-import org.food.features.embedded.dto.SurveyFoodView;
-import org.food.features.embedded.entity.SurveyFoodEntity;
+import org.example.domain.food.embedded.dto.BrandedFoodView;
+import org.example.domain.food.embedded.entity.BrandedFoodEntity;
+import org.example.domain.food.custom.dto.CustomFoodView;
+import org.example.domain.food.custom.entity.CustomFoodEntity;
+import org.example.domain.food.embedded.dto.FinalFoodView;
+import org.example.domain.food.embedded.entity.FinalFoodEntity;
+import org.example.domain.food.shared.dto.FoodView;
+import org.example.domain.food.shared.entity.FoodBaseEntity;
+import org.example.domain.food.embedded.dto.SurveyFoodView;
+import org.example.domain.food.embedded.entity.SurveyFoodEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;

@@ -7,12 +7,12 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.exceptions.throwable.BadRequestException;
 import org.example.util.GsonWrapper;
-import org.food.features.shared.dto.CaloriesView;
-import org.food.features.shared.dto.FoodView;
-import org.food.features.shared.dto.NutrientView;
+import org.example.domain.food.shared.dto.CaloriesView;
+import org.example.domain.food.shared.dto.FoodView;
+import org.example.domain.food.shared.dto.NutrientView;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

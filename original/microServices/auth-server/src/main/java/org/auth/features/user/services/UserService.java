@@ -1,8 +1,8 @@
 package org.auth.features.user.services;
 
 import org.auth.features.user.dto.UserCreateRequest;
-import org.auth.features.user.dto.UserEditRequest;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserEditRequest;
+import org.example.domain.user.dto.UserView;
 import org.auth.features.user.entity.User;
 
 public interface UserService {

@@ -3,7 +3,7 @@ package org.gateway.filter;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.util.GsonWrapper;
 import org.gateway.GateWayBlockedUsers;
 import org.gateway.utils.JwtUtil;

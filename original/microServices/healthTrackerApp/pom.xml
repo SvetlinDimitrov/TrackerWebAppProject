@@ -17,7 +17,6 @@
     <modules>
         <module>record-server</module>
         <module>food-server</module>
-        <module>storage-server</module>
     </modules>
 
     <properties>

@@ -1,7 +1,7 @@
 package org.gateway;
 
 import lombok.RequiredArgsConstructor;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.util.GsonWrapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

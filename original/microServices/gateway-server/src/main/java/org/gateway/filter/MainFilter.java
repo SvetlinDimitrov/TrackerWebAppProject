@@ -1,8 +1,9 @@
 package org.gateway.filter;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.domain.user.UserView;
+import org.example.domain.user.dto.UserView;
 import org.example.util.GsonWrapper;
 import org.gateway.utils.JwtUtil;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -52,8 +53,13 @@ public abstract class MainFilter {
         .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
   }
 
-  protected Mono<Void> filterWithUserHeader(ServerWebExchange exchange, GatewayFilterChain chain,
-      UserView user) {
+  protected Mono<Void> filterWithUserHeader(ServerWebExchange exchange, GatewayFilterChain chain) {
+    Optional<UserView> user = jwtUtil.verifyAndExtractUser(exchange.getRequest().getHeaders());
+
+    if (user.isEmpty()) {
+      return unauthorizedResponse(exchange);
+    }
+
     log.info("Filtering request with user header: {}", exchange.getRequest().getURI());
 
     ServerHttpRequest request = exchange
@@ -63,5 +69,23 @@ public abstract class MainFilter {
         .build();
 
     return chain.filter(exchange.mutate().request(request).build());
+  }
+
+
+  protected String getPath(ServerWebExchange exchange) {
+    return exchange.getRequest().getURI().getPath();
+  }
+
+  protected boolean hasAllFields(UserView user) {
+    return user.id() != null &&
+        user.username() != null &&
+        user.email() != null &&
+        user.kilograms() != null &&
+        user.height() != null &&
+        user.workoutState() != null &&
+        user.gender() != null &&
+        user.userDetails() != null &&
+        user.role() != null &&
+        user.age() != null;
   }
 }

@@ -11,8 +11,8 @@
 //import org.junit.jupiter.api.Test;
 //import org.mockito.Mockito;
 //import org.record.client.StorageClient;
-//import org.record.client.dto.StorageView;
-//import org.record.client.dto.User;
+//import org.example.domain.food.StorageView;
+//import org.example.domain.food.User;
 //import org.record.model.entity.Record;
 //import org.record.model.enums.Gender;
 //import org.record.model.enums.WorkoutState;

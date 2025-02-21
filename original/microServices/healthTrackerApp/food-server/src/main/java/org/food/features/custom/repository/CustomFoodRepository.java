@@ -1,9 +1,9 @@
 package org.food.features.custom.repository;
 
 import java.util.Optional;
-import org.food.features.custom.dto.CustomFilterCriteria;
-import org.food.features.custom.dto.CustomFoodView;
-import org.food.features.custom.entity.CustomFoodEntity;
+import org.example.domain.food.custom.dto.CustomFilterCriteria;
+import org.example.domain.food.custom.dto.CustomFoodView;
+import org.example.domain.food.custom.entity.CustomFoodEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

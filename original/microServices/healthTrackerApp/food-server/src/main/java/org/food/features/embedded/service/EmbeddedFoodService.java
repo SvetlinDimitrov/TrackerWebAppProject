@@ -1,7 +1,7 @@
 package org.food.features.embedded.service;
 
-import org.food.features.embedded.dto.EmbeddedFilterCriteria;
-import org.food.features.shared.dto.FoodView;
+import org.example.domain.food.embedded.dto.EmbeddedFilterCriteria;
+import org.example.domain.food.shared.dto.FoodView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
