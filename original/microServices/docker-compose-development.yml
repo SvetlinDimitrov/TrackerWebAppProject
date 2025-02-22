@@ -59,17 +59,6 @@ services:
     ports:
       - "9411:9411"
 
-  mongodb:
-    image: mongo
-    container_name: mongodb-container
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: password
-
   mysql:
     image: mysql
     container_name: mysql-container
@@ -82,7 +71,6 @@ services:
       - mysql-data:/var/lib/mysql
 
 volumes:
-  mongodb-data:
   mysql-data:
   kafka-data:
   kafka-data2:
