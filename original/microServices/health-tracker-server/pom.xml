@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.health</groupId>
-    <artifactId>healthTrackerApp</artifactId>
+    <artifactId>health-tracker-server</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

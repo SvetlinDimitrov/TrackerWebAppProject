@@ -19,8 +19,8 @@
         <module>discovery-server</module>
         <module>gateway-server</module>
         <module>auth-server</module>
-        <module>healthTrackerApp</module>
-        <module>AchievementTrackerApp</module>
+        <module>health-tracker-server</module>
+        <module>achievement-tracker-server</module>
         <module>commons</module>
     </modules>
 

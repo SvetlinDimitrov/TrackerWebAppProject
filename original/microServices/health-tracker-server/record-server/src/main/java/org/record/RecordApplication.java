@@ -9,7 +9,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableDiscoveryClient
 public class RecordApplication {
-    //TODO:: More things to do
     public static void main(String[] args) {
         SpringApplication.run(RecordApplication.class,args);
     }
