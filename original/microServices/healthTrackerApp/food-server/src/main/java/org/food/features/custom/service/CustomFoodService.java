@@ -1,18 +1,20 @@
 package org.food.features.custom.service;
 
-import org.example.domain.food.custom.dto.CustomFilterCriteria;
-import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
-import org.example.domain.food.custom.dto.CustomFoodView;
+import java.util.UUID;
+import org.example.domain.food.shared.FoodCreateRequest;
+import org.example.domain.food.shared.FoodUpdateRequest;
+import org.example.domain.food.shared.FoodView;
+import org.food.features.custom.dto.CustomFilterCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CustomFoodService {
 
-  Page<CustomFoodView> getAll(String userToken, Pageable pageable , CustomFilterCriteria filterCriteria);
+  Page<FoodView> getAll(String userToken, Pageable pageable , CustomFilterCriteria filterCriteria);
 
-  CustomFoodView getById(String id, String userToken);
+  FoodView getById(UUID id, String userToken);
 
-  CustomFoodView create(CustomFoodRequestCreate dto, String userToken);
+  FoodView create(FoodCreateRequest dto, String userToken);
 
-  void delete(String id, String userToken);
+  void delete(UUID id, String userToken);
 }

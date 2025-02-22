@@ -46,19 +46,35 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+          <artifactId>flyway-core</artifactId>
+          <groupId>org.flywaydb</groupId>
+        </dependency>
+
+      <dependency>
+        <artifactId>flyway-mysql</artifactId>
+        <groupId>org.flywaydb</groupId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+          <artifactId>mysql-connector-j</artifactId>
+          <groupId>com.mysql</groupId>
+          <scope>runtime</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+          <groupId>org.springframework.boot</groupId>
         </dependency>
 
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.14.1</version>
+      </dependency>
     </dependencies>
 </project>

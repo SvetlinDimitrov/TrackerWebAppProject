@@ -1,7 +1,6 @@
 package org.record.features.storage.entity;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

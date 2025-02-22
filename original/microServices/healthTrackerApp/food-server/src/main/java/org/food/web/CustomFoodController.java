@@ -1,10 +1,11 @@
 package org.food.web;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.food.custom.dto.CustomFilterCriteria;
-import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
-import org.example.domain.food.custom.dto.CustomFoodView;
+import org.example.domain.food.shared.FoodCreateRequest;
+import org.example.domain.food.shared.FoodView;
+import org.food.features.custom.dto.CustomFilterCriteria;
 import org.food.features.custom.service.CustomFoodService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,23 +27,22 @@ public class CustomFoodController {
   private final CustomFoodService foodService;
 
   @GetMapping
-  public ResponseEntity<Page<CustomFoodView>> getAll(
+  public ResponseEntity<Page<FoodView>> getAll(
       @RequestHeader(name = "X-ViewUser") String userToken,
-      Pageable pageable,
-      CustomFilterCriteria filterCriteria
+      Pageable pageable, CustomFilterCriteria filterCriteria
   ) {
     return ResponseEntity.ok(foodService.getAll(userToken, pageable , filterCriteria));
   }
 
   @GetMapping(path = "/{id}")
-  public ResponseEntity<CustomFoodView> getById(
-      @RequestHeader(name = "X-ViewUser") String userToken, @PathVariable String id) {
+  public ResponseEntity<FoodView> getById(
+      @RequestHeader(name = "X-ViewUser") String userToken, @PathVariable UUID id) {
     return ResponseEntity.ok(foodService.getById(id, userToken));
   }
 
   @PostMapping
-  public ResponseEntity<CustomFoodView> create(
-      @Valid @RequestBody CustomFoodRequestCreate createCustomFood,
+  public ResponseEntity<FoodView> create(
+      @Valid @RequestBody FoodCreateRequest createCustomFood,
       @RequestHeader(name = "X-ViewUser") String userToken) {
     return ResponseEntity.ok(foodService.create(createCustomFood, userToken));
   }
@@ -50,7 +50,7 @@ public class CustomFoodController {
   @DeleteMapping(path = "{id}")
   public ResponseEntity<Void> delete(
       @RequestHeader(name = "X-ViewUser") String userToken,
-      @PathVariable(name = "id") String id) {
+      @PathVariable(name = "id") UUID id) {
     foodService.delete(id, userToken);
     return ResponseEntity.ok().build();
   }

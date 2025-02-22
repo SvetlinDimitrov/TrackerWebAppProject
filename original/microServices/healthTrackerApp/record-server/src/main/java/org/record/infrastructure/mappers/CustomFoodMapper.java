@@ -1,7 +1,5 @@
 package org.record.infrastructure.mappers;
 
-import org.example.domain.food.custom.dto.CustomFoodRequestCreate;
-import org.example.domain.food.custom.dto.CustomFoodView;
 import org.example.domain.food.custom.entity.CustomFoodEntity;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;

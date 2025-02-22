@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.domain.food.shared.dto.FoodView;
+import org.example.domain.food.shared.FoodView;
 
 @Data
 @NoArgsConstructor

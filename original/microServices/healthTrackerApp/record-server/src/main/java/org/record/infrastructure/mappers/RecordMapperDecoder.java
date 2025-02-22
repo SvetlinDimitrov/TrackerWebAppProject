@@ -2,8 +2,6 @@ package org.record.infrastructure.mappers;
 
 import java.util.List;
 import java.util.Map;
-import org.example.domain.food.shared.dto.FoodView;
-import org.example.domain.food.shared.dto.NutrientView;
 import org.example.domain.record.dtos.NutritionIntakeView;
 import org.example.domain.record.dtos.RecordView;
 import org.example.domain.storage.dto.StorageView;
