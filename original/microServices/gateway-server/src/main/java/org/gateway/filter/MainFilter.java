@@ -92,17 +92,24 @@ public abstract class MainFilter implements GlobalFilter {
     ServerHttpRequest request = exchange
         .getRequest()
         .mutate()
-        .header("X-ViewUser", new GsonWrapper().toJson(user))
+        .header("X-ViewUser", new GsonWrapper().toJson(user.get()))
         .build();
 
     return chain.filter(exchange.mutate().request(request).build());
   }
 
-  private boolean permissionMatchesPath(String path, HttpMethod method,
-      EndpointPermission permission) {
+  private boolean permissionMatchesPath(String path, HttpMethod method, EndpointPermission permission) {
     String fullPath = getBasePath().concat(permission.path());
 
-    String pattern = fullPath.replaceAll("\\{[^/]+}", "[a-fA-F0-9-]{36}");
+    // Define possible UUID patterns
+    String hyphenatedUuidPattern = "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
+    String nonHyphenatedUuidPattern = "[a-fA-F0-9]{24}";
+
+    // Combined pattern to match either hyphenated or non-hyphenated UUID
+    String combinedUuidPattern = String.format("(%s|%s)", hyphenatedUuidPattern, nonHyphenatedUuidPattern);
+
+    // Replace the path variable placeholder with the UUID pattern
+    String pattern = fullPath.replaceAll("\\{[^/]+}", combinedUuidPattern);
 
     return path.matches(pattern) && method == permission.method();
   }

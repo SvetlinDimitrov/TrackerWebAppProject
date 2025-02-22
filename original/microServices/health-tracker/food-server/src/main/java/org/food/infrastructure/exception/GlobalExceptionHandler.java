@@ -1,5 +1,8 @@
 package org.food.infrastructure.exception;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 import org.example.exceptions.throwable.BadRequestException;
@@ -77,5 +80,31 @@ public class GlobalExceptionHandler {
     problemDetail.setDetail(errorMessages);
 
     return new ResponseEntity<>(problemDetail, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(FeignException.class)
+  public ResponseEntity<ProblemDetail> handleFeignStatusException(FeignException e) {
+    HttpStatus status = HttpStatus.resolve(e.status());
+    String rawContent = e.contentUTF8();
+
+    String message = "An error occurred while processing your request.";
+
+    if (rawContent != null) {
+      try {
+        JsonObject json = JsonParser.parseString(rawContent).getAsJsonObject();
+        if (json.has("message")) {
+          message = json.get("message").getAsString();
+        }
+      } catch (Exception parseException) {
+        message = "Failed to parse error response.";
+      }
+    }
+
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+        status != null ? status : HttpStatus.INTERNAL_SERVER_ERROR, message);
+    problemDetail.setTitle("Feign Client Error");
+
+    return new ResponseEntity<>(problemDetail,
+        status != null ? status : HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

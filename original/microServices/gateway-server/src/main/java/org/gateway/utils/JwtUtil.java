@@ -44,13 +44,10 @@ public class JwtUtil {
     Jws<Claims> claimsJws = decodeToken(token);
     Claims claims = claimsJws.getBody();
 
-    String workoutStateStr = getClaimValue(claims, "workoutState", String.class);
-    WorkoutState workoutState =
-        workoutStateStr != null ? WorkoutState.valueOf(workoutStateStr) : null;
-    String genderStr = getClaimValue(claims, "gender", String.class);
-    Gender gender = genderStr != null ? Gender.valueOf(genderStr) : null;
-    String role = getClaimValue(claims, "role", String.class);
-    UserRole userRole = role != null ? UserRole.valueOf(role) : null;
+    WorkoutState workoutState = WorkoutState.valueOf(
+        getClaimValue(claims, "workoutState", String.class));
+    Gender gender = Gender.valueOf(getClaimValue(claims, "gender", String.class));
+    UserRole userRole = UserRole.valueOf(getClaimValue(claims, "role", String.class));
 
     return Optional.of(new UserView(
         getClaimValue(claims, "id", UUID.class),
@@ -94,6 +91,20 @@ public class JwtUtil {
   }
 
   private <T> T getClaimValue(Claims claims, String key, Class<T> clazz) {
-    return claims.containsKey(key) ? claims.get(key, clazz) : null;
+    if (!claims.containsKey(key)) {
+      return null;
+    }
+    Object claim = claims.get(key);
+
+    if (clazz == UUID.class && claim instanceof String) {
+      try {
+        // Only for UUID conversion
+        return clazz.cast(UUID.fromString((String) claim));
+      } catch (IllegalArgumentException e) {
+        log.error("Failed to convert claim '{}' to UUID: {}", key, e.getMessage());
+        return null;
+      }
+    }
+    return clazz.cast(claim);
   }
 }

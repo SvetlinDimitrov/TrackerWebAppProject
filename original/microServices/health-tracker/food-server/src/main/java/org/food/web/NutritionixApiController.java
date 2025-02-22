@@ -21,7 +21,7 @@ public class NutritionixApiController {
   private final NutritionixApiService service;
 
   @GetMapping(NutritionixApiControllerPaths.GET_COMMON_FOOD)
-  public ResponseEntity<List<FoodView>> getFoodBySearchCriteria(@PathVariable String term) {
+  public ResponseEntity<List<FoodView>> getFoodBySearchCriteria(@RequestParam String term) {
     return ResponseEntity.ok(service.getCommonFoodBySearchTerm(term));
   }
 
