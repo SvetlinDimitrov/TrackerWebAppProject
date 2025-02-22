@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.Gender;
-import org.example.domain.user.enums.UserDetails;
 import org.example.domain.user.enums.UserRole;
 import org.example.domain.user.enums.WorkoutState;
 import org.gateway.config.JwtConfig;

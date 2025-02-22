@@ -1,14 +1,19 @@
 package org.gateway.filter;
 
+import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.domain.shared.EndpointPermission;
+import org.example.domain.shared.HttpMethod;
+import org.example.domain.shared.UserAccess;
 import org.example.domain.user.dto.UserView;
 import org.example.util.GsonWrapper;
+import org.gateway.utils.HttpResponseUtil;
 import org.gateway.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -16,48 +21,70 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public abstract class MainFilter {
+public abstract class MainFilter implements GlobalFilter {
 
-  protected final GsonWrapper gson;
-  protected final JwtUtil jwtUtil;
+  protected JwtUtil jwtUtil;
 
-  protected Mono<Void> unauthorizedResponse(ServerWebExchange exchange) {
-    log.info("Unauthorized access attempt: {}", exchange.getRequest().getURI());
+  protected abstract List<EndpointPermission> getPermissions();
 
-    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+  @Override
+  public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    String path = getPath(exchange);
+    org.springframework.http.HttpMethod requestMethod = exchange.getRequest().getMethod();
 
-    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
-        "Your authorization token is either invalid or expired. Please provide a valid token.");
-    problemDetail.setTitle("Unauthorized");
+    if (!path.startsWith(getBasePath())) {
+      return chain.filter(exchange);
+    }
 
-    byte[] bytes = gson.toJson(problemDetail).getBytes();
-    return exchange.getResponse()
-        .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+    HttpMethod customMethod = HttpMethod.valueOf(requestMethod.name());
+
+    Optional<EndpointPermission> pathPermission = getPermissions().stream()
+        .filter(permission -> permissionMatchesPath(path, customMethod, permission))
+        .findFirst();
+
+    if (pathPermission.isEmpty()) {
+      return notFoundResponse(exchange);
+    }
+
+    EndpointPermission endpointPermission = pathPermission.get();
+
+    if (endpointPermission.access() == UserAccess.AUTH) {
+      return filterWithUserHeader(exchange, chain);
+    }
+
+    return chain.filter(exchange);
   }
 
-  protected Mono<Void> forbiddenResponse(ServerWebExchange exchange) {
+  protected abstract String getBasePath();
+
+  private Mono<Void> forbiddenResponse(ServerWebExchange exchange) {
     log.info("Forbidden access attempt: {}", exchange.getRequest().getURI());
 
-    exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-    exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+    ProblemDetail problemDetail = HttpResponseUtil.createProblemDetail(
+        HttpStatus.FORBIDDEN, "Forbidden",
+        "You are forbidden to perform this action."
+    );
 
-    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN,
-        "You are forbidden to perform this action.");
-    problemDetail.setTitle("Forbidden");
-
-    byte[] bytes = gson.toJson(problemDetail).getBytes();
-    return exchange.getResponse()
-        .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+    return HttpResponseUtil.writeJsonResponse(exchange, HttpStatus.FORBIDDEN, problemDetail);
   }
 
-  protected Mono<Void> filterWithUserHeader(ServerWebExchange exchange, GatewayFilterChain chain) {
+  private Mono<Void> notFoundResponse(ServerWebExchange exchange) {
+    log.info("Not Found access attempt: {}", exchange.getRequest().getURI());
+
+    ProblemDetail problemDetail = HttpResponseUtil.createProblemDetail(
+        HttpStatus.NOT_FOUND, "Not Found",
+        "The resource you are looking for might have been removed, had its name changed, or is temporarily unavailable."
+    );
+
+    return HttpResponseUtil.writeJsonResponse(exchange, HttpStatus.NOT_FOUND, problemDetail);
+  }
+
+  private Mono<Void> filterWithUserHeader(ServerWebExchange exchange, GatewayFilterChain chain) {
     Optional<UserView> user = jwtUtil.verifyAndExtractUser(exchange.getRequest().getHeaders());
 
     if (user.isEmpty()) {
-      return unauthorizedResponse(exchange);
+      return forbiddenResponse(exchange);
     }
 
     log.info("Filtering request with user header: {}", exchange.getRequest().getURI());
@@ -65,14 +92,27 @@ public abstract class MainFilter {
     ServerHttpRequest request = exchange
         .getRequest()
         .mutate()
-        .header("X-ViewUser", gson.toJson(user))
+        .header("X-ViewUser", new GsonWrapper().toJson(user))
         .build();
 
     return chain.filter(exchange.mutate().request(request).build());
   }
 
+  private boolean permissionMatchesPath(String path, HttpMethod method,
+      EndpointPermission permission) {
+    String fullPath = getBasePath().concat(permission.path());
 
-  protected String getPath(ServerWebExchange exchange) {
+    String pattern = fullPath.replaceAll("\\{[^/]+}", "[a-fA-F0-9-]{36}");
+
+    return path.matches(pattern) && method == permission.method();
+  }
+
+  private String getPath(ServerWebExchange exchange) {
     return exchange.getRequest().getURI().getPath();
+  }
+
+  @Autowired
+  public void setJwtUtil(JwtUtil jwtUtil) {
+    this.jwtUtil = jwtUtil;
   }
 }

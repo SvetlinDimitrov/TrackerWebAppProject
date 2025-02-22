@@ -8,6 +8,7 @@ import org.auth.features.user.services.UserService;
 import org.auth.infrastructure.security.dto.AuthenticationRequest;
 import org.auth.infrastructure.security.dto.AuthenticationResponse;
 import org.auth.infrastructure.security.services.JwtService;
+import org.example.domain.user.paths.AuthenticationControllerPaths;
 import org.example.exceptions.throwable.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(AuthenticationControllerPaths.BASE)
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -25,8 +26,8 @@ public class AuthenticationController {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
-  @PostMapping
-  public ResponseEntity<AuthenticationResponse> createAuthenticationToken(
+  @PostMapping(AuthenticationControllerPaths.LOGIN)
+  public ResponseEntity<AuthenticationResponse> create(
       @Valid @RequestBody AuthenticationRequest authenticationRequest
   ) {
     var user = userService.findByEmail(authenticationRequest.email());

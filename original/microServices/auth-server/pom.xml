@@ -39,32 +39,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <dependency>
-            <artifactId>flyway-core</artifactId>
-            <groupId>org.flywaydb</groupId>
-        </dependency>
-
-        <dependency>
-            <artifactId>flyway-mysql</artifactId>
-            <groupId>org.flywaydb</groupId>
-        </dependency>
-
-        <dependency>
-            <artifactId>mysql-connector-j</artifactId>
-            <groupId>com.mysql</groupId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
             <version>${passy.version}</version>
@@ -95,10 +69,12 @@
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>9.9.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
