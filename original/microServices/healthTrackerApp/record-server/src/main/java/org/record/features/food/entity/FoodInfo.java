@@ -1,4 +1,4 @@
-package org.food.features.custom.entity;
+package org.record.features.food.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,12 +14,14 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Embeddable
-public class Calories {
+public class FoodInfo {
 
+  @Column(name = "food_info")
+  private String info;
 
-  @Column(nullable = false, name = "calorie_amount")
-  private Double amount;
+  @Column(name = "food_large_info")
+  private String largeInfo;
 
-  @Column(nullable = false, name = "calorie_unit")
-  private String unit;
+  @Column(name = "food_picture")
+  private String picture;
 }

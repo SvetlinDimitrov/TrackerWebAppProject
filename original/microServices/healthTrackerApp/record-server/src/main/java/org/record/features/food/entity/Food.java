@@ -1,4 +1,4 @@
-package org.food.features.custom.entity;
+package org.record.features.food.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.example.domain.shared.BaseEntity;
+import org.record.features.meal.entity.Meal;
 
 @Getter
 @Setter
@@ -27,8 +29,8 @@ import org.example.domain.shared.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "custom_foods")
-public class CustomFood extends BaseEntity {
+@Table(name = "foods")
+public class Food extends BaseEntity {
 
   @Column(nullable = false)
   private String name;
@@ -42,12 +44,15 @@ public class CustomFood extends BaseEntity {
   @Column(columnDefinition = "BINARY(16)", nullable = false)
   private UUID userId;
 
+  @ManyToOne
+  private Meal meal;
+
   @OneToMany(
       mappedBy = "food",
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       fetch = FetchType.EAGER
   )
-  private List<ServingPortion> servingPortions = new ArrayList<>();
+  private List<Serving> servingPortions = new ArrayList<>();
 
   @OneToMany(
       mappedBy = "food",

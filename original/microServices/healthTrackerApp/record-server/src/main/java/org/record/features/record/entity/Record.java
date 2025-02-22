@@ -1,29 +1,45 @@
 package org.record.features.record.entity;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.record.features.storage.entity.Storage;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.ToString;
+import org.example.domain.shared.BaseEntity;
+import org.record.features.meal.entity.Meal;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document(collection = "records")
-public class Record implements Serializable {
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"meals"})
+@ToString(callSuper = true, exclude = {"meals"})
+@Entity
+@Table(name = "records")
+public class Record extends BaseEntity {
 
-  @Id
-  private String id;
-  private String name;
+  @Column(nullable = false)
   private UUID userId;
-  private LocalDateTime date;
-  private List<Storage> storage;
-  private BigDecimal dailyCalories = BigDecimal.ZERO;
+
+  @Column(nullable = false, unique = true)
+  private LocalDateTime date = LocalDateTime.now();
+
+  @Column(nullable = false , name = "daily_calories")
+  private Double dailyCalories;
+
+  @OneToMany(
+      mappedBy = "record",
+      cascade = CascadeType.REMOVE
+  )
+  private List<Meal> meals = new ArrayList<>();
 }

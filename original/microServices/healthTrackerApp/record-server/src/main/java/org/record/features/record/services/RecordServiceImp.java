@@ -2,20 +2,20 @@ package org.record.features.record.services;
 
 import static org.record.infrastructure.exception.ExceptionMessages.RECORD_NOT_FOUND;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.record.dtos.RecordView;
 import org.example.domain.user.dto.UserView;
 import org.example.exceptions.throwable.NotFoundException;
 import org.example.util.UserExtractor;
+import org.record.features.record.dto.RecordUpdateReqeust;
+import org.record.features.record.dto.RecordView;
 import org.record.features.record.entity.Record;
 import org.record.features.record.repository.RecordRepository;
+import org.record.features.record.repository.RecordSpecification;
 import org.record.features.record.utils.RecordUtils;
 import org.record.infrastructure.mappers.RecordMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,57 +25,56 @@ public class RecordServiceImp implements RecordService {
   private final RecordMapper recordMapper;
   private final RecordRepository repository;
 
-  public List<RecordView> getAll(String userToken) {
-
+  public Page<RecordView> getAll(String userToken, Pageable pageable) {
     UserView user = UserExtractor.get(userToken);
 
-    return repository
-        .findAllByUserId(user.id())
-        .stream()
-        .map(record -> recordMapper.toView(record, user))
-        .collect(Collectors.toList());
+    return repository.findAll(new RecordSpecification(user.id()), pageable)
+        .map(record -> recordMapper.toView(record, user));
   }
 
-  public RecordView getById(String recordId, String userToken) {
+  public RecordView getById(UUID recordId, String userToken) {
+    var user = UserExtractor.get(userToken);
 
-    UserView user = UserExtractor.get(userToken);
-    Record record = getRecordByIdAndUserId(recordId, userToken);
+    Record record = findByIdAndUserId(recordId, user.id());
 
     return recordMapper.toView(record, user);
   }
 
-  public void create(String userToken, String name) {
+  public RecordView create(String userToken) {
+    Record record = new Record();
     UserView user = UserExtractor.get(userToken);
 
-    Record record = new Record();
-
-    record.setDate(LocalDateTime.now());
-
-    if (name == null || name.isBlank()) {
-      record.setName("Default" + RecordUtils.generateRandomNumbers(4));
-    } else {
-      record.setName(name);
-    }
-
-    BigDecimal BMR = RecordUtils.getBmr(user);
-    BigDecimal caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
+    Double BMR = RecordUtils.getBmr(user);
+    Double caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
 
     record.setDailyCalories(caloriesPerDay);
     record.setUserId(user.id());
 
-    repository.save(record);
+    return recordMapper.toView(repository.save(record), user);
   }
 
-  public void delete(String recordId, String userToken) {
-    Record record = getRecordByIdAndUserId(recordId, userToken);
-
-    repository.deleteById(record.getId());
-  }
-
-  public Record getRecordByIdAndUserId(String recordId, String userToken) {
+  public void delete(UUID recordId, String userToken) {
     UUID userId = UserExtractor.get(userToken).id();
 
+    if (!repository.existsByIdAndUserId(recordId, userId)) {
+      throw new NotFoundException(RECORD_NOT_FOUND);
+    }
+
+    repository.deleteByIdAndUserId(recordId, userId);
+  }
+
+  @Override
+  public Record findByIdAndUserId(UUID recordId, UUID userId) {
     return repository.findByIdAndUserId(recordId, userId)
         .orElseThrow(() -> new NotFoundException(RECORD_NOT_FOUND));
+  }
+
+  public RecordView update(UUID id, String userToken, RecordUpdateReqeust dto) {
+    var user = UserExtractor.get(userToken);
+    var record = findByIdAndUserId(id, user.id());
+
+    recordMapper.update(record, dto);
+
+    return recordMapper.toView(repository.save(record), user);
   }
 }

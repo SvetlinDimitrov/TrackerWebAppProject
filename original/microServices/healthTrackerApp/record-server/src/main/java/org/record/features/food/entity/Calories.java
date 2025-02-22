@@ -1,4 +1,4 @@
-package org.food.features.custom.entity;
+package org.record.features.food.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

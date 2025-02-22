@@ -1,4 +1,4 @@
-package org.food.features.custom.entity;
+package org.record.features.food.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,5 +32,5 @@ public class Nutrient extends BaseEntity {
   private Double amount;
 
   @ManyToOne
-  private CustomFood food;
+  private Food food;
 }

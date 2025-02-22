@@ -5,6 +5,7 @@ public final class RecordPaths {
   public static final String GET_ALL = BASE;
   public static final String GET_BY_ID = BASE + "/{id}";
   public static final String CREATE = BASE;
+  public static final String UPDATE = BASE + "/{id}";
   public static final String DELETE = BASE + "/{id}";
 
   private RecordPaths() {}

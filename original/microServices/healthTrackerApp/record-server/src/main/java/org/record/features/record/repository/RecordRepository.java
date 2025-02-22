@@ -1,17 +1,21 @@
 package org.record.features.record.repository;
 
-import java.util.UUID;
+import java.util.Optional;
 import org.record.features.record.entity.Record;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import java.util.UUID;
 
 @Repository
-public interface RecordRepository extends MongoRepository<Record, String> {
-  Optional<Record> findByIdAndUserId(String recordId, UUID userId);
+public interface RecordRepository extends JpaRepository<Record, UUID>, JpaSpecificationExecutor<Record> {
 
-  List<Record> findAllByUserId(UUID id);
+  Optional<Record> findByIdAndUserId(UUID id, UUID userId);
+
+  boolean existsByIdAndUserId(UUID id, UUID userId);
+
+  void deleteByIdAndUserId(UUID id, UUID userId);
+
+  void deleteAllByUserId(UUID userId);
 }

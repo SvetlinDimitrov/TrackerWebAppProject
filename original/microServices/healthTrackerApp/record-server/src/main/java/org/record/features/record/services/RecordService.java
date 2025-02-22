@@ -1,15 +1,24 @@
 package org.record.features.record.services;
 
-import java.util.List;
-import org.example.domain.record.dtos.RecordView;
+import jakarta.validation.Valid;
+import java.util.UUID;
+import org.record.features.record.dto.RecordUpdateReqeust;
+import org.record.features.record.dto.RecordView;
+import org.record.features.record.entity.Record;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RecordService {
 
-  List<RecordView> getAll(String userToken);
+  Page<RecordView> getAll(String userToken, Pageable pageable);
 
-  RecordView getById(String recordId, String userToken);
+  RecordView getById(UUID recordId, String userToken);
 
-  void create(String userToken, String name);
+  RecordView create(String userToken);
 
-  void delete(String recordId, String userToken);
+  RecordView update(UUID id, String userToken, @Valid RecordUpdateReqeust dto);
+
+  void delete(UUID recordId, String userToken);
+
+  Record findByIdAndUserId(UUID recordId, UUID userId);
 }

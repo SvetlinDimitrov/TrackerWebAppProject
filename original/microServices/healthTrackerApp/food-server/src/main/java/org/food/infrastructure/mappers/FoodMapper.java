@@ -27,13 +27,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @DecoratedWith(FoodMapperDecoder.class)
 public interface FoodMapper {
 
-  @Mapping(target = "calories.calorieAmount", source = "calories.amount")
-  @Mapping(target = "calories.calorieUnit", source = "calories.unit")
   @Mapping(target = "servingPortions", ignore = true)
   CustomFood toEntity(FoodCreateRequest dto);
 
-  @Mapping(target = "calories.amount", source = "calories.calorieAmount")
-  @Mapping(target = "calories.unit", source = "calories.calorieUnit")
   @Mapping(target = "otherServing", ignore = true)
   @Mapping(target = "mainServing", ignore = true)
   FoodView toView(CustomFood entity);

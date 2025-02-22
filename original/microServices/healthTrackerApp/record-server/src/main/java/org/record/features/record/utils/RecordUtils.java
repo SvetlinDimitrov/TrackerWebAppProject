@@ -7,17 +7,17 @@ import org.example.domain.user.enums.Gender;
 
 public class RecordUtils {
 
-  public static BigDecimal getCaloriesPerDay(UserView user, BigDecimal BMR) {
+  public static Double getCaloriesPerDay(UserView user, Double BMR) {
     return switch (user.workoutState()) {
-      case SEDENTARY -> BMR.multiply(new BigDecimal("1.2"));
-      case LIGHTLY_ACTIVE -> BMR.multiply(new BigDecimal("1.375"));
-      case MODERATELY_ACTIVE -> BMR.multiply(new BigDecimal("1.55"));
-      case VERY_ACTIVE -> BMR.multiply(new BigDecimal("1.725"));
-      case SUPER_ACTIVE -> BMR.multiply(new BigDecimal("1.9"));
+      case SEDENTARY -> BMR * 1.2;
+      case LIGHTLY_ACTIVE -> BMR * 1.375;
+      case MODERATELY_ACTIVE -> BMR * 1.55;
+      case VERY_ACTIVE -> BMR * 1.725;
+      case SUPER_ACTIVE -> BMR * 1.9;
     };
   }
 
-  public static BigDecimal getBmr(UserView user) {
+  public static Double getBmr(UserView user) {
     BigDecimal BMR;
 
     if (Gender.MALE == user.gender()) {
@@ -33,7 +33,7 @@ public class RecordUtils {
           .subtract(new BigDecimal("4.330")
               .add(new BigDecimal(user.age())));
     }
-    return BMR;
+    return BMR.doubleValue();
   }
 
   public static String generateRandomNumbers(int num) {

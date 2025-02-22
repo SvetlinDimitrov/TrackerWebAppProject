@@ -1,14 +1,9 @@
 package org.record.infrastructure.kafka.service;
 
-import static org.record.infrastructure.exception.ExceptionMessages.INVALID_USER_TOKEN;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.user.dto.UserView;
-import org.example.exceptions.throwable.BadRequestException;
 import org.example.util.GsonWrapper;
+import org.example.util.UserExtractor;
 import org.record.features.record.entity.Record;
 import org.record.features.record.repository.RecordRepository;
 import org.record.features.record.utils.RecordUtils;
@@ -26,15 +21,11 @@ public class RecordKafkaService {
 
   @KafkaListener(topics = "USER_FIRST_CREATION", groupId = "group_user_creation_1", containerFactory = "kafkaListenerUserFirstCreation")
   public void recordFirstCreation(String userToken) {
-    UserView user = getUserId(userToken);
+    var record = new Record();
+    var user = UserExtractor.get(userToken);
 
-    Record record = new Record();
-    record.setDate(LocalDateTime.now());
-
-    record.setName("Default" + RecordUtils.generateRandomNumbers(4));
-
-    BigDecimal BMR = RecordUtils.getBmr(user);
-    BigDecimal caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
+    double BMR = RecordUtils.getBmr(user);
+    double caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
 
     record.setDailyCalories(caloriesPerDay);
     record.setUserId(user.id());
@@ -47,18 +38,8 @@ public class RecordKafkaService {
 
   @KafkaListener(topics = "USER_DELETION", groupId = "group_user_deletion_1", containerFactory = "kafkaListenerUserDeletion")
   public void deleteUser(String userToken) {
-    UserView user = getUserId(userToken);
+    UserView user = UserExtractor.get(userToken);
 
-    List<Record> records = recordRepository.findAllByUserId(user.id());
-
-    recordRepository.deleteAll(records);
-  }
-
-  private UserView getUserId(String userToken) {
-    try {
-      return GSON_WRAPPER.fromJson(userToken, UserView.class);
-    } catch (Exception e) {
-      throw new BadRequestException(INVALID_USER_TOKEN);
-    }
+    recordRepository.deleteAllByUserId(user.id());
   }
 }
