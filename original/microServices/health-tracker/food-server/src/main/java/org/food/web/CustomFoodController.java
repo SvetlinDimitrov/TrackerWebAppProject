@@ -37,7 +37,6 @@ public class CustomFoodController {
   }
 
   @GetMapping(CustomFoodControllerPaths.GET_BY_ID)
-  @PreAuthorize("hasRole('USER')")
   public ResponseEntity<OwnedFoodView> getById(
       @RequestHeader(name = "X-ViewUser") String userToken, @PathVariable UUID id) {
     return ResponseEntity.ok(foodService.getById(id, userToken));
