@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.services;
+package org.auth.infrastructure.config.security.services;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,9 +10,9 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.auth.features.user.entity.User;
-import org.auth.infrastructure.security.config.JwtConfig;
-import org.auth.infrastructure.security.dto.AccessTokenView;
-import org.auth.infrastructure.security.dto.AuthenticationResponse;
+import org.auth.infrastructure.config.security.config.JwtConfig;
+import org.auth.infrastructure.config.security.dto.AccessTokenView;
+import org.auth.infrastructure.config.security.dto.AuthenticationResponse;
 import org.springframework.stereotype.Service;
 
 @Slf4j

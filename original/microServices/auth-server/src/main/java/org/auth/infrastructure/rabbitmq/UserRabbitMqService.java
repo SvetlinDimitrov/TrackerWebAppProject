@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.auth.features.user.dto.UserCreateRequest;
 import org.auth.features.user.repository.UserRepository;
 import org.auth.infrastructure.mappers.UserMapper;
-import org.auth.infrastructure.security.services.UserDetailsServiceImpl;
+import org.auth.infrastructure.config.security.services.UserDetailsServiceImpl;
 import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.UserRole;
 import org.example.exceptions.throwable.ForbiddenException;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserRabbitmqService {
+public class UserRabbitMqService {
 
   private static final GsonWrapper GSON_WRAPPER = new GsonWrapper();
   private final AmqpTemplate amqpTemplate;

@@ -1,7 +1,7 @@
-package org.auth.infrastructure.security.services;
+package org.auth.infrastructure.config.security.services;
 
 import org.auth.features.user.entity.User;
-import org.auth.infrastructure.security.dto.AuthenticationResponse;
+import org.auth.infrastructure.config.security.dto.AuthenticationResponse;
 
 public interface JwtService {
 

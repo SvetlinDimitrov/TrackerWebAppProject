@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.dto;
+package org.auth.infrastructure.config.security.dto;
 
 import java.util.Collection;
 import java.util.List;

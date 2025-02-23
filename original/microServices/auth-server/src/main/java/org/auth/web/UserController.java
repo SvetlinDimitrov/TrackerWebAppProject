@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.auth.features.user.dto.UserCreateRequest;
 import org.auth.features.user.services.UserService;
-import org.auth.infrastructure.rabbitmq.UserRabbitmqService;
+import org.auth.infrastructure.rabbitmq.UserRabbitMqService;
 import org.example.domain.user.dto.UserEditRequest;
 import org.example.domain.user.dto.UserView;
 import org.example.domain.user.paths.UserControllerPaths;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService service;
-  private final UserRabbitmqService userRabbitmqService;
+  private final UserRabbitMqService userRabbitmqService;
 
   @PostMapping(UserControllerPaths.CREATE)
   public ResponseEntity<UserView> create(

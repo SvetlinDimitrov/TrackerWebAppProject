@@ -1,8 +1,8 @@
-package org.auth.infrastructure.security.services;
+package org.auth.infrastructure.config.security.services;
 
 import lombok.RequiredArgsConstructor;
 import org.auth.features.user.repository.UserRepository;
-import org.auth.infrastructure.security.dto.CustomUserDetails;
+import org.auth.infrastructure.config.security.dto.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

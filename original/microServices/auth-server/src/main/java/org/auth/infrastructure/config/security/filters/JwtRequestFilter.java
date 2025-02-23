@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.filters;
+package org.auth.infrastructure.config.security.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.auth.infrastructure.security.services.JwtService;
+import org.auth.infrastructure.config.security.services.JwtService;
 import org.example.util.GsonWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

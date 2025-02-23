@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.dto;
+package org.auth.infrastructure.config.security.dto;
 
 import jakarta.validation.constraints.Email;
 import org.auth.infrastructure.annotations.ValidPassword;

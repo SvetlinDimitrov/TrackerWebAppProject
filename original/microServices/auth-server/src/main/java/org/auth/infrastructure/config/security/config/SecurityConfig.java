@@ -1,16 +1,15 @@
-package org.auth.infrastructure.security.config;
+package org.auth.infrastructure.config.security.config;
 
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.auth.infrastructure.security.filters.JwtRequestFilter;
+import org.auth.infrastructure.config.security.filters.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,7 +37,6 @@ public class SecurityConfig {
       "/webjars/**",
       "/swagger-ui.html",
       "/api/v1/auth",
-
   };
   private final JwtRequestFilter jwtRequestFilter;
   private final AuthenticationProvider authenticationProvider;

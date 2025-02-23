@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.auth.features.user.entity.User;
 import org.auth.features.user.repository.UserRepository;
 import org.auth.infrastructure.mappers.UserMapper;
-import org.auth.infrastructure.security.services.UserDetailsServiceImpl;
+import org.auth.infrastructure.config.security.services.UserDetailsServiceImpl;
 import org.example.domain.user.dto.UserEditRequest;
 import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.UserRole;
