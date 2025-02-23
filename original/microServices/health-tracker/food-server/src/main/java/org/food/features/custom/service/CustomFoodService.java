@@ -19,4 +19,6 @@ public interface CustomFoodService {
   void delete(UUID id, String userToken);
 
   OwnedFoodView update(UUID id, FoodRequest request, String userToken);
+
+  void deleteAllByUserId(UUID userId);
 }

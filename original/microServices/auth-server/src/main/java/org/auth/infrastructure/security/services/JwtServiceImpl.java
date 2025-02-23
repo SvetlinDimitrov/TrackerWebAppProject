@@ -10,7 +10,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.auth.features.user.entity.User;
-import org.auth.infrastructure.security.config.security.JwtConfig;
+import org.auth.infrastructure.security.config.JwtConfig;
 import org.auth.infrastructure.security.dto.AccessTokenView;
 import org.auth.infrastructure.security.dto.AuthenticationResponse;
 import org.springframework.stereotype.Service;

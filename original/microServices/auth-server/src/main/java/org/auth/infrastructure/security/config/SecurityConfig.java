@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.config.security;
+package org.auth.infrastructure.security.config;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.config.security;
+package org.auth.infrastructure.security.config;
 
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

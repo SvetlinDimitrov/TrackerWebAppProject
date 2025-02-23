@@ -22,4 +22,8 @@ public interface RecordService {
   void delete(UUID recordId, String userToken);
 
   Record findByIdAndUserId(UUID recordId, UUID userId);
+
+  void deleteAllByUserId(UUID userId);
+
+  Record save(Record record);
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.auth.features.user.dto.UserCreateRequest;
 import org.auth.features.user.services.UserService;
+import org.auth.infrastructure.rabbitmq.UserRabbitmqService;
 import org.example.domain.user.dto.UserEditRequest;
 import org.example.domain.user.dto.UserView;
 import org.example.domain.user.paths.UserControllerPaths;
@@ -25,11 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService service;
+  private final UserRabbitmqService userRabbitmqService;
 
   @PostMapping(UserControllerPaths.CREATE)
   public ResponseEntity<UserView> create(
       @RequestBody @Valid UserCreateRequest registerUserDto) {
-    UserView createdUser = service.create(registerUserDto);
+    UserView createdUser = userRabbitmqService.create(registerUserDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
   }
 
@@ -51,7 +53,7 @@ public class UserController {
 
   @DeleteMapping(UserControllerPaths.DELETE)
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
-    service.delete(id);
+    userRabbitmqService.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

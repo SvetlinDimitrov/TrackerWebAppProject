@@ -1,6 +1,5 @@
 package org.record.features.record.services;
 
-import static org.record.infrastructure.exception.ExceptionMessages.RECORD_ALREADY_EXISTS;
 import static org.record.infrastructure.exception.ExceptionMessages.RECORD_NOT_FOUND;
 
 import java.util.UUID;
@@ -14,7 +13,6 @@ import org.record.features.record.dto.RecordView;
 import org.record.features.record.entity.Record;
 import org.record.features.record.repository.RecordRepository;
 import org.record.features.record.repository.RecordSpecification;
-import org.record.features.record.utils.RecordUtils;
 import org.record.infrastructure.mappers.RecordMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +67,15 @@ public class RecordServiceImp implements RecordService {
   public Record findByIdAndUserId(UUID recordId, UUID userId) {
     return repository.findByIdAndUserId(recordId, userId)
         .orElseThrow(() -> new NotFoundException(RECORD_NOT_FOUND , recordId));
+  }
+
+  @Transactional
+  public void deleteAllByUserId(UUID userId) {
+    repository.deleteAllByUserId(userId);
+  }
+
+  public Record save(Record record) {
+    return repository.save(record);
   }
 
   public RecordView update(UUID id, String userToken, RecordUpdateReqeust dto) {

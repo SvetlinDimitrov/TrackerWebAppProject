@@ -17,6 +17,7 @@ import org.food.infrastructure.mappers.FoodMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +61,11 @@ public class CustomFoodServiceImp implements CustomFoodService {
     repository.deleteById(id);
 
     return foodMapper.toView(repository.save(entity));
+  }
+
+  @Transactional
+  public void deleteAllByUserId(UUID userId) {
+    repository.deleteAllByUserId(userId);
   }
 
   public void delete(UUID id, String userToken) {

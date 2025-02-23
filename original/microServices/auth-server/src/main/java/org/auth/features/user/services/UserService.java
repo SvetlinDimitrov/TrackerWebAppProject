@@ -10,11 +10,7 @@ public interface UserService {
 
   UserView getById(UUID userId);
 
-  UserView create(UserCreateRequest userDto);
-
   UserView edit(UserEditRequest userDto, UUID userId);
-
-  void delete(UUID userId);
 
   User findByEmail(String email);
 

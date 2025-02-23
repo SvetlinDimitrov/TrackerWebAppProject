@@ -1,4 +1,4 @@
-package org.auth.infrastructure.security.config.security;
+package org.auth.infrastructure.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.util.GsonWrapper;

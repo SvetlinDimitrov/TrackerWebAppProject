@@ -6,7 +6,6 @@ import static org.auth.infrastructure.exceptions.ExceptionMessages.USER_NOT_FOUN
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.auth.features.user.dto.UserCreateRequest;
 import org.auth.features.user.entity.User;
 import org.auth.features.user.repository.UserRepository;
 import org.auth.infrastructure.mappers.UserMapper;
@@ -16,8 +15,6 @@ import org.example.domain.user.dto.UserView;
 import org.example.domain.user.enums.UserRole;
 import org.example.exceptions.throwable.ForbiddenException;
 import org.example.exceptions.throwable.NotFoundException;
-import org.example.util.GsonWrapper;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +23,6 @@ public class UserServiceImp implements UserService {
 
   private final UserRepository repository;
   private final UserMapper userMapper;
-  private final KafkaTemplate<String, String> kafkaTemplate;
-  private final GsonWrapper gson;
   private final UserRepository userRepository;
   private final UserDetailsServiceImpl userDetailsService;
 
@@ -39,16 +34,6 @@ public class UserServiceImp implements UserService {
         .orElseThrow();
   }
 
-  public UserView create(UserCreateRequest userDto) {
-    var userToSave = userMapper.toEntity(userDto);
-    var savedUser = repository.save(userToSave);
-
-    String token = gson.toJson(userMapper.toView(repository.save(savedUser)));
-    kafkaTemplate.send("USER_FIRST_CREATION", token);
-
-    return userMapper.toView(savedUser);
-  }
-
   public UserView edit(UserEditRequest userDto, UUID userId) {
     checkIfUserIsOwner(userId);
 
@@ -57,18 +42,6 @@ public class UserServiceImp implements UserService {
     userMapper.update(user, userDto);
 
     return userMapper.toView(repository.save(user));
-  }
-
-  public void delete(UUID userId) {
-    checkIfUserIsOwner(userId);
-
-    var user = findById(userId);
-
-    String token = gson.toJson(userMapper.toView(user));
-
-    kafkaTemplate.send("USER_DELETION", token);
-
-    repository.delete(user);
   }
 
   public User findByEmail(String email) {
