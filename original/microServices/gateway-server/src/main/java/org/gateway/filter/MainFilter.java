@@ -33,10 +33,6 @@ public abstract class MainFilter implements GlobalFilter {
     String path = getPath(exchange);
     org.springframework.http.HttpMethod requestMethod = exchange.getRequest().getMethod();
 
-    if (!path.startsWith(getBasePath())) {
-      return chain.filter(exchange);
-    }
-
     HttpMethod customMethod = HttpMethod.valueOf(requestMethod.name());
 
     Optional<EndpointPermission> pathPermission = getPermissions().stream()
@@ -44,7 +40,7 @@ public abstract class MainFilter implements GlobalFilter {
         .findFirst();
 
     if (pathPermission.isEmpty()) {
-      return notFoundResponse(exchange);
+      return chain.filter(exchange);
     }
 
     EndpointPermission endpointPermission = pathPermission.get();
@@ -69,17 +65,6 @@ public abstract class MainFilter implements GlobalFilter {
     return HttpResponseUtil.writeJsonResponse(exchange, HttpStatus.FORBIDDEN, problemDetail);
   }
 
-  private Mono<Void> notFoundResponse(ServerWebExchange exchange) {
-    log.info("Not Found access attempt: {}", exchange.getRequest().getURI());
-
-    ProblemDetail problemDetail = HttpResponseUtil.createProblemDetail(
-        HttpStatus.NOT_FOUND, "Not Found",
-        "The resource you are looking for might have been removed, had its name changed, or is temporarily unavailable."
-    );
-
-    return HttpResponseUtil.writeJsonResponse(exchange, HttpStatus.NOT_FOUND, problemDetail);
-  }
-
   private Mono<Void> filterWithUserHeader(ServerWebExchange exchange, GatewayFilterChain chain) {
     Optional<UserView> user = jwtUtil.verifyAndExtractUser(exchange.getRequest().getHeaders());
 
@@ -101,17 +86,18 @@ public abstract class MainFilter implements GlobalFilter {
   private boolean permissionMatchesPath(String path, HttpMethod method, EndpointPermission permission) {
     String fullPath = getBasePath().concat(permission.path());
 
-    // Define possible UUID patterns
+    String pattern = getPattern(fullPath);
+
+    return path.matches(pattern) && method == permission.method();
+  }
+
+  private String getPattern(String fullPath) {
     String hyphenatedUuidPattern = "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
     String nonHyphenatedUuidPattern = "[a-fA-F0-9]{24}";
 
-    // Combined pattern to match either hyphenated or non-hyphenated UUID
     String combinedUuidPattern = String.format("(%s|%s)", hyphenatedUuidPattern, nonHyphenatedUuidPattern);
 
-    // Replace the path variable placeholder with the UUID pattern
-    String pattern = fullPath.replaceAll("\\{[^/]+}", combinedUuidPattern);
-
-    return path.matches(pattern) && method == permission.method();
+    return fullPath.replaceAll("\\{[^/]+}", combinedUuidPattern);
   }
 
   private String getPath(ServerWebExchange exchange) {

@@ -20,7 +20,7 @@ import org.example.domain.shared.BaseEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "serving_portions")
-public class ServingPortion extends BaseEntity {
+public class Serving extends BaseEntity {
 
   @Column(nullable = false)
   private Double amount;

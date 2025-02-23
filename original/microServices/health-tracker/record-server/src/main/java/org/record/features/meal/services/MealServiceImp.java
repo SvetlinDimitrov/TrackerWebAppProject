@@ -63,7 +63,9 @@ public class MealServiceImp implements MealService{
   }
 
   public void delete(UUID mealId, String userToken) {
-    if (mealRepository.existsByIdAndUserId(mealId, UserExtractor.get(userToken).id())) {
+    var user = UserExtractor.get(userToken);
+
+    if (!mealRepository.existsByIdAndUserId(mealId, user.id())) {
       throw new NotFoundException(MEAL_NOT_FOUND, mealId);
     }
 

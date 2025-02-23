@@ -45,7 +45,7 @@ public class CustomFood extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       fetch = FetchType.EAGER
   )
-  private List<ServingPortion> servingPortions = new ArrayList<>();
+  private List<Serving> servingPortions = new ArrayList<>();
 
   @OneToMany(
       mappedBy = "food",

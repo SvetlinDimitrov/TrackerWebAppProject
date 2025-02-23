@@ -1,6 +1,8 @@
 package org.record.infrastructure.mappers;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.example.domain.food.shared.FoodRequest;
 import org.example.domain.food.shared.OwnedFoodView;
 import org.example.domain.food.shared.ServingRequest;
@@ -20,18 +22,19 @@ public abstract class FoodMapperDecoder implements FoodMapper {
   @Override
   public Food toEntity(FoodRequest dto) {
     var entity = delegate.toEntity(dto);
+    List<Serving> servingPortions = new ArrayList<>();
 
     entity.getNutrients()
         .forEach(nutrient -> nutrient.setFood(entity));
 
     var mainServing = toEntity(dto.mainServing(), entity);
     mainServing.setMain(true);
-
-    var servingPortions = new ArrayList<>(dto.otherServing()
-        .stream()
-        .map(servingRequest -> toEntity(servingRequest, entity))
-        .toList());
     servingPortions.add(mainServing);
+
+    Optional.ofNullable(dto.otherServing())
+        .ifPresent(servingRequests -> servingRequests
+            .forEach(servingRequest -> servingPortions.add(toEntity(servingRequest, entity)))
+        );
 
     entity.setServingPortions(servingPortions);
 

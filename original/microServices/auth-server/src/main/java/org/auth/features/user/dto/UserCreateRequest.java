@@ -25,9 +25,9 @@ public record UserCreateRequest(
     @ValidPassword(message = "Password must meet the complexity requirements")
     String password,
 
-    @DecimalMin(value = "5.0", message = "Weight must be at least 5 kg")
+    @DecimalMin(value = "5.0", message = "Weight must be at least 5 kilograms")
     @NotNull(message = "Weight cannot be null")
-    Double kg,
+    Double kilograms,
 
     @NotNull(message = "Workout state is required")
     WorkoutState workoutState,

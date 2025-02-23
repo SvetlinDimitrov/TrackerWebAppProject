@@ -8,10 +8,14 @@ import org.example.domain.food.shared.FoodRequest;
 import org.example.domain.food.shared.OwnedFoodView;
 import org.example.exceptions.throwable.NotFoundException;
 import org.example.util.UserExtractor;
+import org.record.features.food.dto.FoodFilter;
 import org.record.features.food.entity.Food;
 import org.record.features.food.repository.FoodRepository;
+import org.record.features.food.repository.FoodSpecification;
 import org.record.features.meal.services.MealService;
 import org.record.infrastructure.mappers.FoodMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,15 @@ public class FoodServiceImpl implements FoodService {
   private final MealService mealService;
   private final FoodMapper foodMapper;
   private final FoodRepository repository;
+
+  public Page<OwnedFoodView> getAll(UUID mealId, FoodFilter filter, Pageable pageable,
+      String userToken) {
+    var user = UserExtractor.get(userToken);
+
+    FoodSpecification specification = new FoodSpecification(mealId, user.id(), filter);
+
+    return repository.findAll(specification, pageable).map(foodMapper::toView);
+  }
 
   public OwnedFoodView get(UUID foodId, UUID mealId, String userToken) {
     var user = UserExtractor.get(userToken);
@@ -34,6 +47,7 @@ public class FoodServiceImpl implements FoodService {
 
     var food = foodMapper.toEntity(dto);
     food.setMeal(meal);
+    food.setUserId(userId);
 
     return foodMapper.toView(repository.save(food));
   }
@@ -45,6 +59,7 @@ public class FoodServiceImpl implements FoodService {
 
     Food entity = foodMapper.toEntity(dto);
     entity.setMeal(food.getMeal());
+    entity.setUserId(userId);
 
     repository.delete(food);
     return foodMapper.toView(repository.save(entity));

@@ -14,9 +14,10 @@ public class FoodControllerFilter extends MainFilter {
   @Override
   protected List<EndpointPermission> getPermissions() {
     return List.of(
+        new EndpointPermission(FoodControllerPaths.GET_ALL, UserAccess.AUTH, HttpMethod.GET),
         new EndpointPermission(FoodControllerPaths.GET_BY_ID, UserAccess.AUTH, HttpMethod.GET),
         new EndpointPermission(FoodControllerPaths.CREATE, UserAccess.AUTH, HttpMethod.POST),
-        new EndpointPermission(FoodControllerPaths.UPDATE, UserAccess.AUTH, HttpMethod.PATCH),
+        new EndpointPermission(FoodControllerPaths.UPDATE, UserAccess.AUTH, HttpMethod.PUT),
         new EndpointPermission(FoodControllerPaths.DELETE, UserAccess.AUTH, HttpMethod.DELETE)
     );
   }

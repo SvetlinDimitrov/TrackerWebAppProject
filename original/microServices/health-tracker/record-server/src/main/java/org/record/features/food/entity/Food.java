@@ -33,14 +33,14 @@ public class Food extends BaseEntity {
   @Column(nullable = false)
   private String name;
 
+  @Column(nullable = false)
+  private UUID userId;
+
   @Embedded
   private Calories calories;
 
   @Embedded
   private FoodInfo foodDetails;
-
-  @Column(columnDefinition = "BINARY(16)", nullable = false)
-  private UUID userId;
 
   @ManyToOne
   private Meal meal;

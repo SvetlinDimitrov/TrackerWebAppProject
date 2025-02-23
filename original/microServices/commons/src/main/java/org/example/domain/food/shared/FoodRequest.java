@@ -20,7 +20,6 @@ public record FoodRequest(
     ServingRequest mainServing,
 
     @Valid
-    @NotNull(message = "Food details are required")
     FoodInfoRequest foodDetails,
 
     @Valid

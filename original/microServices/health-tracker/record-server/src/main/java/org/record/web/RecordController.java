@@ -3,9 +3,10 @@ package org.record.web;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.example.domain.record.paths.RecordControllerPaths;
+import org.record.features.record.dto.RecordCreateRequest;
 import org.record.features.record.dto.RecordUpdateReqeust;
 import org.record.features.record.dto.RecordView;
-import org.example.domain.record.paths.RecordControllerPaths;
 import org.record.features.record.services.RecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,9 +42,10 @@ public class RecordController {
   }
 
   @PostMapping(RecordControllerPaths.CREATE)
-  public ResponseEntity<RecordView> create(@RequestHeader(name = "X-ViewUser") String userToken) {
+  public ResponseEntity<RecordView> create(@RequestHeader(name = "X-ViewUser") String userToken,
+      @RequestBody @Valid RecordCreateRequest dto) {
 
-    return ResponseEntity.ok(recordService.create(userToken));
+    return ResponseEntity.ok(recordService.create(dto, userToken));
   }
 
   @PatchMapping(RecordControllerPaths.UPDATE)
@@ -54,7 +56,8 @@ public class RecordController {
   }
 
   @DeleteMapping(RecordControllerPaths.DELETE)
-  public ResponseEntity<HttpStatus> delete(String userToken, @PathVariable UUID id) {
+  public ResponseEntity<HttpStatus> delete(@RequestHeader(name = "X-ViewUser") String userToken,
+      @PathVariable UUID id) {
     recordService.delete(id, userToken);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

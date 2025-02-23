@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.example.domain.food.shared.NutritionIntakeView;
-import org.record.features.record.dto.RecordView;
 import org.example.domain.user.dto.UserView;
 import org.record.features.food.entity.Food;
 import org.record.features.food.entity.Nutrient;
+import org.record.features.record.dto.RecordCreateRequest;
+import org.record.features.record.dto.RecordView;
 import org.record.features.record.entity.Record;
 import org.record.features.record.utils.MacronutrientCreator;
 import org.record.features.record.utils.MineralCreator;
+import org.record.features.record.utils.RecordUtils;
 import org.record.features.record.utils.VitaminCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,15 +24,29 @@ public abstract class RecordMapperDecoder implements RecordMapper {
   private RecordMapper delegate;
 
   @Override
+  public Record toEntity(RecordCreateRequest dto, UserView user) {
+    Record entity = delegate.toEntity(dto, user);
+
+    Double BMR = RecordUtils.getBmr(user);
+    Double caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
+
+    entity.setDailyCalories(caloriesPerDay);
+
+    return entity;
+  }
+
+  @Override
   public RecordView toView(Record record, UserView user) {
     var recordView = delegate.toView(record, user);
 
     double consumedCalories = 0;
 
     Map<String, NutritionIntakeView> nutritionMap = new HashMap<>();
-    setVitaminIntakes(recordView, nutritionMap);
-    setMineralsIntakes(recordView, nutritionMap);
-    setMacrosIntakes(recordView, nutritionMap);
+
+    MineralCreator.fillMinerals(nutritionMap, user.gender(), user.age());
+    VitaminCreator.fillVitamins(nutritionMap, user.gender(), user.age());
+    MacronutrientCreator.fillMacros(nutritionMap, record.getDailyCalories(), user.gender(),
+        user.age());
 
     List<Food> list = record.getMeals()
         .stream()
@@ -41,6 +57,10 @@ public abstract class RecordMapperDecoder implements RecordMapper {
       fillNutrientsMap(nutritionMap, food.getNutrients());
       consumedCalories += food.getCalories().getAmount();
     }
+
+    setVitaminIntakes(recordView, nutritionMap);
+    setMineralsIntakes(recordView, nutritionMap);
+    setMacrosIntakes(recordView, nutritionMap);
 
     recordView.setConsumedCalories(consumedCalories);
 

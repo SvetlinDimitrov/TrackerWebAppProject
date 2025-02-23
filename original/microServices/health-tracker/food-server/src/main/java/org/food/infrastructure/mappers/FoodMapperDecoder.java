@@ -2,12 +2,13 @@ package org.food.infrastructure.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.example.domain.food.shared.FoodRequest;
 import org.example.domain.food.shared.OwnedFoodView;
 import org.example.domain.food.shared.ServingRequest;
 import org.example.domain.food.shared.ServingView;
 import org.food.features.custom.entity.CustomFood;
-import org.food.features.custom.entity.ServingPortion;
+import org.food.features.custom.entity.Serving;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -19,19 +20,20 @@ public abstract class FoodMapperDecoder implements FoodMapper {
 
   @Override
   public CustomFood toEntity(FoodRequest dto) {
-    CustomFood entity = delegate.toEntity(dto);
+    var entity = delegate.toEntity(dto);
+    List<Serving> servingPortions = new ArrayList<>();
 
     entity.getNutrients()
         .forEach(nutrient -> nutrient.setFood(entity));
 
-    ServingPortion mainServing = toEntity(dto.mainServing(), entity);
+    var mainServing = toEntity(dto.mainServing(), entity);
     mainServing.setMain(true);
-
-    List<ServingPortion> servingPortions = new ArrayList<>(dto.otherServing()
-        .stream()
-        .map(serving -> toEntity(serving, entity))
-        .toList());
     servingPortions.add(mainServing);
+
+    Optional.ofNullable(dto.otherServing())
+        .ifPresent(servingRequests -> servingRequests
+            .forEach(servingRequest -> servingPortions.add(toEntity(servingRequest, entity)))
+        );
 
     entity.setServingPortions(servingPortions);
 
@@ -50,7 +52,7 @@ public abstract class FoodMapperDecoder implements FoodMapper {
 
     var mainServing = entity.getServingPortions()
         .stream()
-        .filter(ServingPortion::isMain)
+        .filter(Serving::isMain)
         .map(this::toDto)
         .findFirst()
         .orElseThrow();
@@ -71,8 +73,8 @@ public abstract class FoodMapperDecoder implements FoodMapper {
     this.delegate = delegate;
   }
 
-  private ServingPortion toEntity(ServingRequest dto, CustomFood food) {
-    ServingPortion entity = new ServingPortion();
+  private Serving toEntity(ServingRequest dto, CustomFood food) {
+    Serving entity = new Serving();
     entity.setAmount(dto.amount());
     entity.setServingWeight(dto.servingWeight());
     entity.setMetric(dto.metric());
@@ -81,7 +83,7 @@ public abstract class FoodMapperDecoder implements FoodMapper {
     return entity;
   }
 
-  private ServingView toDto(ServingPortion entity) {
+  private ServingView toDto(Serving entity) {
     return new ServingView(entity.getAmount(), entity.getServingWeight(), entity.getMetric());
   }
 }

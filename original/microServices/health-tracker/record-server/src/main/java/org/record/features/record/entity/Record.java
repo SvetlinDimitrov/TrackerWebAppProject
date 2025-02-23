@@ -5,7 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +31,8 @@ public class Record extends BaseEntity {
   @Column(nullable = false)
   private UUID userId;
 
-  @Column(nullable = false, unique = true)
-  private LocalDateTime date = LocalDateTime.now();
+  @Column(nullable = false)
+  private LocalDate date = LocalDate.now();
 
   @Column(nullable = false , name = "daily_calories")
   private Double dailyCalories;
