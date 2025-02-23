@@ -1,4 +1,4 @@
-package org.food.infrastructure.security;
+package org.food.infrastructure.config.security;
 
 import java.util.Collection;
 import org.example.domain.user.dto.UserView;

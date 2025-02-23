@@ -1,6 +1,8 @@
 package org.auth.infrastructure.config.security.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.exceptions.CustomExceptionHandler;
+import org.example.exceptions.GlobalExceptionHandler;
 import org.example.util.GsonWrapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,16 @@ public class ApplicationConfig {
   @Bean
   GsonWrapper gsonWrapper() {
     return new GsonWrapper();
+  }
+
+  @Bean
+  public CustomExceptionHandler customExceptionHandler() {
+    return new CustomExceptionHandler();
+  }
+
+  @Bean
+  public GlobalExceptionHandler globalExceptionHandler() {
+    return new GlobalExceptionHandler();
   }
 }
 

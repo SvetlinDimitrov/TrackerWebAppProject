@@ -1,4 +1,4 @@
-package org.record.infrastructure.exception;
+package org.example.exceptions;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

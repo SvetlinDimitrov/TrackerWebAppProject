@@ -1,4 +1,4 @@
-package org.record.infrastructure.exception;
+package org.example.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import java.util.Objects;
@@ -92,7 +92,6 @@ public class GlobalExceptionHandler {
       ServletRequestBindingException ex) {
     var problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
     problemDetail.setTitle("Request Binding Error");
-    problemDetail.setDetail(ex.getMessage());
 
     return new ResponseEntity<>(problemDetail, HttpStatus.BAD_REQUEST);
   }

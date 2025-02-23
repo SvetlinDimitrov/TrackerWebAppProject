@@ -1,4 +1,4 @@
-package org.auth.infrastructure.exceptions;
+package org.example.exceptions;
 
 import org.example.exceptions.throwable.BadRequestException;
 import org.example.exceptions.throwable.ForbiddenException;

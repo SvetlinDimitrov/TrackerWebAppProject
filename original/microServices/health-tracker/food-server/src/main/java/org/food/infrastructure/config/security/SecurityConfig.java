@@ -1,4 +1,4 @@
-package org.food.infrastructure.security;
+package org.food.infrastructure.config.security;
 
 import org.example.domain.food.paths.NutritionixApiControllerPaths;
 import org.springframework.context.annotation.Bean;
