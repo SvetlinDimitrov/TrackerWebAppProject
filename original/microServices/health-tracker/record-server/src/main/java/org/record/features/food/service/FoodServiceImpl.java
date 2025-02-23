@@ -4,8 +4,8 @@ import static org.record.infrastructure.exception.ExceptionMessages.FOOD_NOT_FOU
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.food.shared.FoodCreateRequest;
-import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.FoodRequest;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.example.exceptions.throwable.NotFoundException;
 import org.example.util.UserExtractor;
 import org.record.features.food.entity.Food;
@@ -23,12 +23,12 @@ public class FoodServiceImpl implements FoodService {
   private final FoodMapper foodMapper;
   private final FoodRepository repository;
 
-  public FoodView get(UUID foodId, UUID mealId, String userToken) {
+  public OwnedFoodView get(UUID foodId, UUID mealId, String userToken) {
     var user = UserExtractor.get(userToken);
     return foodMapper.toView(findByIdMealIdAndUserId(foodId, mealId, user.id()));
   }
 
-  public FoodView create(UUID mealId, FoodCreateRequest dto, String userToken) {
+  public OwnedFoodView create(UUID mealId, FoodRequest dto, String userToken) {
     var userId = UserExtractor.get(userToken).id();
     var meal = mealService.findByIdAndUserId(mealId, userId);
 
@@ -39,7 +39,7 @@ public class FoodServiceImpl implements FoodService {
   }
 
   @Transactional
-  public FoodView update(UUID mealId, UUID foodId, FoodCreateRequest dto, String userToken) {
+  public OwnedFoodView update(UUID mealId, UUID foodId, FoodRequest dto, String userToken) {
     var userId = UserExtractor.get(userToken).id();
     var food = findByIdMealIdAndUserId(foodId, mealId, userId);
 

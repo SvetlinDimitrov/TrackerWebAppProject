@@ -5,8 +5,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -39,7 +37,7 @@ public class Food extends BaseEntity {
   private Calories calories;
 
   @Embedded
-  private FoodInfo foodInfo;
+  private FoodInfo foodDetails;
 
   @Column(columnDefinition = "BINARY(16)", nullable = false)
   private UUID userId;

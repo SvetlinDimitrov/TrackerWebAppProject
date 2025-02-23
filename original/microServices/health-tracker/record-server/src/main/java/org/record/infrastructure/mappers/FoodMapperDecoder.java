@@ -1,9 +1,8 @@
 package org.record.infrastructure.mappers;
 
 import java.util.ArrayList;
-import java.util.List;
-import org.example.domain.food.shared.FoodCreateRequest;
-import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.FoodRequest;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.example.domain.food.shared.ServingRequest;
 import org.example.domain.food.shared.ServingView;
 import org.record.features.food.dto.FoodSimpleView;
@@ -19,15 +18,18 @@ public abstract class FoodMapperDecoder implements FoodMapper {
   private FoodMapper delegate;
 
   @Override
-  public Food toEntity(FoodCreateRequest dto) {
+  public Food toEntity(FoodRequest dto) {
     var entity = delegate.toEntity(dto);
 
-    Serving mainServing = toEntity(dto.mainServing());
+    entity.getNutrients()
+        .forEach(nutrient -> nutrient.setFood(entity));
+
+    var mainServing = toEntity(dto.mainServing(), entity);
     mainServing.setMain(true);
 
-    List<Serving> servingPortions = new ArrayList<>(dto.otherServing()
+    var servingPortions = new ArrayList<>(dto.otherServing()
         .stream()
-        .map(this::toEntity)
+        .map(servingRequest -> toEntity(servingRequest, entity))
         .toList());
     servingPortions.add(mainServing);
 
@@ -37,7 +39,7 @@ public abstract class FoodMapperDecoder implements FoodMapper {
   }
 
   @Override
-  public FoodView toView(Food entity) {
+  public OwnedFoodView toView(Food entity) {
     var foodView = delegate.toView(entity);
 
     var mainServingView = entity.getServingPortions()
@@ -53,7 +55,8 @@ public abstract class FoodMapperDecoder implements FoodMapper {
         .map(this::toView)
         .toList();
 
-    return new FoodView(
+    return new OwnedFoodView(
+        entity.getId(),
         foodView.name(),
         foodView.calories(),
         mainServingView,
@@ -89,11 +92,12 @@ public abstract class FoodMapperDecoder implements FoodMapper {
     );
   }
 
-  private Serving toEntity(ServingRequest dto) {
+  private Serving toEntity(ServingRequest dto , Food food) {
     var serving = new Serving();
     serving.setAmount(dto.amount());
     serving.setServingWeight(dto.servingWeight());
     serving.setMetric(dto.metric());
+    serving.setFood(food);
     return serving;
   }
 

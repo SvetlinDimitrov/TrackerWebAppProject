@@ -4,11 +4,13 @@ import static org.food.infrastructure.exception.ExceptionMessages.FOOD_NOT_FOUND
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.food.shared.FoodCreateRequest;
+import org.example.domain.food.shared.FoodRequest;
 import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.example.exceptions.throwable.NotFoundException;
 import org.example.util.UserExtractor;
 import org.food.features.custom.dto.CustomFilterCriteria;
+import org.food.features.custom.entity.CustomFood;
 import org.food.features.custom.repository.CustomFoodRepository;
 import org.food.features.custom.repository.specifications.CustomFoodSpecification;
 import org.food.infrastructure.mappers.FoodMapper;
@@ -23,7 +25,7 @@ public class CustomFoodServiceImp implements CustomFoodService {
   private final CustomFoodRepository repository;
   private final FoodMapper foodMapper;
 
-  public Page<FoodView> getAll(String userToken, Pageable pageable,
+  public Page<OwnedFoodView> getAll(String userToken, Pageable pageable,
       CustomFilterCriteria filterCriteria) {
     UUID userId = UserExtractor.get(userToken).id();
 
@@ -31,17 +33,13 @@ public class CustomFoodServiceImp implements CustomFoodService {
         .map(foodMapper::toView);
   }
 
-  public FoodView getById(UUID id, String userToken) {
+  public OwnedFoodView getById(UUID id, String userToken) {
     UUID userId = UserExtractor.get(userToken).id();
 
-    return repository
-        .findById(id)
-        .filter(customFood -> customFood.getUserId().equals(userId))
-        .map(foodMapper::toView)
-        .orElseThrow(() -> new NotFoundException(FOOD_NOT_FOUND, id));
+    return foodMapper.toView(findByIdAndUserId(id, userId));
   }
 
-  public FoodView create(FoodCreateRequest dto, String userToken) {
+  public OwnedFoodView create(FoodRequest dto, String userToken) {
     UUID userId = UserExtractor.get(userToken).id();
 
     var entity = foodMapper.toEntity(dto);
@@ -51,16 +49,35 @@ public class CustomFoodServiceImp implements CustomFoodService {
     return foodMapper.toView(repository.save(entity));
   }
 
+  public OwnedFoodView update(UUID id, FoodRequest request, String userToken) {
+    UUID userId = UserExtractor.get(userToken).id();
+
+    validateFoodExists(id, userId);
+
+    var entity = foodMapper.toEntity(request);
+    entity.setUserId(userId);
+
+    repository.deleteById(id);
+
+    return foodMapper.toView(repository.save(entity));
+  }
+
   public void delete(UUID id, String userToken) {
     UUID userId = UserExtractor.get(userToken).id();
 
-    repository
-        .findById(id)
-        .filter(customFood -> customFood.getUserId().equals(userId))
-        .ifPresentOrElse(
-            repository::delete,
-            () -> {
-              throw new NotFoundException(FOOD_NOT_FOUND, id);
-            });
+    validateFoodExists(id, userId);
+
+    repository.deleteById(id);
+  }
+
+  public CustomFood findByIdAndUserId(UUID id, UUID userId) {
+    return repository.findByIdAndUserId(id, userId)
+        .orElseThrow(() -> new NotFoundException(FOOD_NOT_FOUND, id));
+  }
+
+  private void validateFoodExists(UUID id, UUID userId) {
+    if (!repository.existsByIdAndUserId(id, userId)) {
+      throw new NotFoundException(FOOD_NOT_FOUND, id);
+    }
   }
 }

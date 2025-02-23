@@ -4,10 +4,11 @@ import java.util.List;
 import org.example.domain.food.enums.AllowedCalorieUnits;
 import org.example.domain.food.nutriox_api.FoodItem;
 import org.example.domain.food.shared.CalorieView;
-import org.example.domain.food.shared.FoodCreateRequest;
+import org.example.domain.food.shared.FoodRequest;
 import org.example.domain.food.shared.FoodInfoView;
 import org.example.domain.food.shared.FoodView;
 import org.example.domain.food.shared.NutritionView;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.example.domain.food.shared.ServingView;
 import org.food.features.custom.entity.CustomFood;
 import org.example.domain.food.mappers.FoodInfoMapper;
@@ -28,11 +29,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface FoodMapper {
 
   @Mapping(target = "servingPortions", ignore = true)
-  CustomFood toEntity(FoodCreateRequest dto);
+  CustomFood toEntity(FoodRequest dto);
 
   @Mapping(target = "otherServing", ignore = true)
   @Mapping(target = "mainServing", ignore = true)
-  FoodView toView(CustomFood entity);
+  OwnedFoodView toView(CustomFood entity);
 
   default FoodView toView(FoodItem item) {
     CalorieView calorieView = new CalorieView(

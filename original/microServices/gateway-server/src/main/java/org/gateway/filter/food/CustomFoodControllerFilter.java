@@ -18,6 +18,7 @@ public class CustomFoodControllerFilter extends MainFilter {
         new EndpointPermission(CustomFoodControllerPaths.GET_BY_ID, UserAccess.AUTH,
             HttpMethod.GET),
         new EndpointPermission(CustomFoodControllerPaths.CREATE, UserAccess.AUTH, HttpMethod.POST),
+        new EndpointPermission(CustomFoodControllerPaths.UPDATE, UserAccess.AUTH, HttpMethod.PUT),
         new EndpointPermission(CustomFoodControllerPaths.DELETE, UserAccess.AUTH, HttpMethod.DELETE)
     );
   }

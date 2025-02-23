@@ -1,16 +1,16 @@
 package org.record.features.food.service;
 
 import java.util.UUID;
-import org.example.domain.food.shared.FoodCreateRequest;
-import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.FoodRequest;
+import org.example.domain.food.shared.OwnedFoodView;
 
 public interface FoodService {
 
-  FoodView create(UUID mealId, FoodCreateRequest dto, String userToken);
+  OwnedFoodView create(UUID mealId, FoodRequest dto, String userToken);
 
   void delete(UUID mealId, UUID foodId, String userToken);
 
-  FoodView get(UUID foodId, UUID mealId, String userToken);
+  OwnedFoodView get(UUID foodId, UUID mealId, String userToken);
 
-  FoodView update(UUID mealId, UUID foodId, FoodCreateRequest dto, String userToken);
+  OwnedFoodView update(UUID mealId, UUID foodId, FoodRequest dto, String userToken);
 }

@@ -1,7 +1,7 @@
 package org.record.infrastructure.mappers;
 
-import org.example.domain.food.shared.FoodCreateRequest;
-import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.FoodRequest;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,11 +19,11 @@ import org.record.features.food.entity.Food;
 public interface FoodMapper {
 
   @Mapping(target = "servingPortions", ignore = true)
-  Food toEntity(FoodCreateRequest dto);
+  Food toEntity(FoodRequest dto);
 
   @Mapping(target = "mainServing", ignore = true)
   @Mapping(target = "otherServing", ignore = true)
-  FoodView toView(Food entity);
+  OwnedFoodView toView(Food entity);
 
   FoodSimpleView toSimpleView(Food entity);
 }

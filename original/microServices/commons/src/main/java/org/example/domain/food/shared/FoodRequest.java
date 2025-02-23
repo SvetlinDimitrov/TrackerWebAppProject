@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.hibernate.validator.constraints.Length;
 
-public record FoodCreateRequest(
+public record FoodRequest(
     @NotBlank(message = "Name is required")
     @Length(max = 500, message = "Name must be between 1 and 255 characters")
     String name,

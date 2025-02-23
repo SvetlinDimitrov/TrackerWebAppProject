@@ -3,8 +3,8 @@ package org.record.web;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.domain.food.shared.FoodCreateRequest;
-import org.example.domain.food.shared.FoodView;
+import org.example.domain.food.shared.FoodRequest;
+import org.example.domain.food.shared.OwnedFoodView;
 import org.example.domain.record.paths.FoodControllerPaths;
 import org.record.features.food.service.FoodService;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class FoodController {
   private final FoodService service;
 
   @GetMapping(FoodControllerPaths.GET_BY_ID)
-  public ResponseEntity<FoodView> get(
+  public ResponseEntity<OwnedFoodView> get(
       @PathVariable UUID mealId, @PathVariable UUID foodId,
       @RequestHeader("X-ViewUser") String userToken) {
     return new ResponseEntity<>(
@@ -36,8 +36,8 @@ public class FoodController {
   }
 
   @PostMapping(FoodControllerPaths.CREATE)
-  public ResponseEntity<FoodView> create(
-      @PathVariable UUID mealId, @RequestBody @Valid FoodCreateRequest dto,
+  public ResponseEntity<OwnedFoodView> create(
+      @PathVariable UUID mealId, @RequestBody @Valid FoodRequest dto,
       @RequestHeader("X-ViewUser") String userToken) {
     return new ResponseEntity<>(
         service.create(mealId, dto, userToken),
@@ -45,9 +45,9 @@ public class FoodController {
   }
 
   @PatchMapping(FoodControllerPaths.UPDATE)
-  public ResponseEntity<FoodView> update(
+  public ResponseEntity<OwnedFoodView> update(
       @PathVariable UUID mealId, @PathVariable UUID foodId,
-      @RequestBody @Valid FoodCreateRequest dto,
+      @RequestBody @Valid FoodRequest dto,
       @RequestHeader("X-ViewUser") String userToken) {
     return new ResponseEntity<>(
         service.update(mealId, foodId, dto, userToken),
