@@ -13,11 +13,9 @@ import org.springframework.stereotype.Repository;
 public interface FoodRepository extends JpaRepository<Food, UUID>, JpaSpecificationExecutor<Food> {
 
   @Query("SELECT f FROM Food f WHERE f.id = :foodId "
-      + "AND f.meal.id = :mealId "
-      + "AND f.userId = :userId")
-  Optional<Food> findByIdAndMealIdAndUserId(@Param("foodId") UUID foodId,
-      @Param("mealId") UUID mealId,
-      @Param("userId") UUID userId);
+      + "AND f.meal.id = :mealId")
+  Optional<Food> findByIdAndMealId(@Param("foodId") UUID foodId,
+      @Param("mealId") UUID mealId);
 
   @Query("SELECT CASE WHEN COUNT(f) > 0 "
       + "THEN TRUE ELSE FALSE END "
@@ -27,4 +25,6 @@ public interface FoodRepository extends JpaRepository<Food, UUID>, JpaSpecificat
   boolean existsByIdAndMealIdAndUserId(@Param("foodId") UUID foodId,
       @Param("mealId") UUID mealId,
       @Param("userId") UUID userId);
+
+  boolean existsByIdAndMealId(UUID foodId, UUID mealId);
 }

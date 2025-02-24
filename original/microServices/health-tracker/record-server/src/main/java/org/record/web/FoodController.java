@@ -12,14 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,46 +31,42 @@ public class FoodController {
 
   @GetMapping(FoodControllerPaths.GET_ALL)
   public ResponseEntity<Page<OwnedFoodView>> getAll(
-      @PathVariable UUID mealId, Pageable pageable, @Valid FoodFilter filter,
-      @RequestHeader("X-ViewUser") String userToken) {
+      @PathVariable UUID mealId, Pageable pageable, @Valid FoodFilter filter) {
     return new ResponseEntity<>(
-        service.getAll(mealId, filter, pageable, userToken),
+        service.getAll(mealId, filter, pageable),
         HttpStatus.OK);
   }
 
   @GetMapping(FoodControllerPaths.GET_BY_ID)
-  public ResponseEntity<OwnedFoodView> get(
-      @PathVariable UUID mealId, @PathVariable UUID foodId,
-      @RequestHeader("X-ViewUser") String userToken) {
+  @PreAuthorize("@foodEvaluator.isOwner(#mealId, #foodId) || hasRole('ADMIN')")
+  public ResponseEntity<OwnedFoodView> get(@PathVariable UUID mealId, @PathVariable UUID foodId) {
     return new ResponseEntity<>(
-        service.get(foodId, mealId, userToken),
+        service.get(foodId, mealId),
         HttpStatus.OK);
   }
 
   @PostMapping(FoodControllerPaths.CREATE)
-  public ResponseEntity<OwnedFoodView> create(
-      @PathVariable UUID mealId, @RequestBody @Valid FoodRequest dto,
-      @RequestHeader("X-ViewUser") String userToken) {
+  public ResponseEntity<OwnedFoodView> create(@PathVariable UUID mealId,
+      @RequestBody @Valid FoodRequest dto) {
     return new ResponseEntity<>(
-        service.create(mealId, dto, userToken),
+        service.create(mealId, dto),
         HttpStatus.CREATED);
   }
 
   @PutMapping(FoodControllerPaths.UPDATE)
-  public ResponseEntity<OwnedFoodView> update(
-      @PathVariable UUID mealId, @PathVariable UUID foodId,
-      @RequestBody @Valid FoodRequest dto,
-      @RequestHeader("X-ViewUser") String userToken) {
+  @PreAuthorize("@foodEvaluator.isOwner(#mealId, #foodId) || hasRole('ADMIN')")
+  public ResponseEntity<OwnedFoodView> update(@PathVariable UUID mealId, @PathVariable UUID foodId,
+      @RequestBody @Valid FoodRequest dto) {
     return new ResponseEntity<>(
-        service.update(mealId, foodId, dto, userToken),
+        service.update(mealId, foodId, dto),
         HttpStatus.OK);
   }
 
   @DeleteMapping(FoodControllerPaths.DELETE)
+  @PreAuthorize("@foodEvaluator.isOwner(#mealId, #foodId) || hasRole('ADMIN')")
   public ResponseEntity<Void> delete(
-      @PathVariable UUID mealId, @PathVariable UUID foodId,
-      @RequestHeader("X-ViewUser") String userToken) {
-    service.delete(mealId, foodId, userToken);
+      @PathVariable UUID mealId, @PathVariable UUID foodId) {
+    service.delete(mealId, foodId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,6 +37,13 @@ public class Record extends BaseEntity {
 
   @Column(nullable = false , name = "daily_calories")
   private Double dailyCalories;
+
+  @OneToOne(
+      mappedBy = "record",
+      cascade = {CascadeType.REMOVE, CascadeType.PERSIST},
+      orphanRemoval = true
+  )
+  private UserDetails userDetails;
 
   @OneToMany(
       mappedBy = "record",

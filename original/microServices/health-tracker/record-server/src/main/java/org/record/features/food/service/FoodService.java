@@ -9,13 +9,15 @@ import org.springframework.data.domain.Pageable;
 
 public interface FoodService {
 
-  OwnedFoodView create(UUID mealId, FoodRequest dto, String userToken);
+  OwnedFoodView create(UUID mealId, FoodRequest dto);
 
-  void delete(UUID mealId, UUID foodId, String userToken);
+  void delete(UUID mealId, UUID foodId);
 
-  OwnedFoodView get(UUID foodId, UUID mealId, String userToken);
+  OwnedFoodView get(UUID foodId, UUID mealId);
 
-  OwnedFoodView update(UUID mealId, UUID foodId, FoodRequest dto, String userToken);
+  OwnedFoodView update(UUID mealId, UUID foodId, FoodRequest dto);
 
-  Page<OwnedFoodView> getAll(UUID mealId, FoodFilter filter, Pageable pageable, String userToken);
+  Page<OwnedFoodView> getAll(UUID mealId, FoodFilter filter, Pageable pageable);
+
+  boolean isOwner(UUID mealId , UUID foodId, UUID userId);
 }

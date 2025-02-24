@@ -1,15 +1,15 @@
 package org.record.infrastructure.mappers;
 
-import org.mapstruct.Mapping;
-import org.record.features.record.dto.RecordCreateRequest;
-import org.record.features.record.dto.RecordUpdateReqeust;
-import org.record.features.record.dto.RecordView;
 import org.example.domain.user.dto.UserView;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.record.features.record.dto.RecordCreateRequest;
+import org.record.features.record.dto.RecordUpdateReqeust;
+import org.record.features.record.dto.RecordView;
 import org.record.features.record.entity.Record;
 
 @Mapper(
@@ -24,8 +24,7 @@ public interface RecordMapper {
   @Mapping(target = "userId", source = "user.id")
   Record toEntity(RecordCreateRequest dto , UserView user);
 
-  @Mapping(target = "id", source = "entity.id")
-  RecordView toView(Record entity  , UserView user);
+  RecordView toView(Record entity);
 
   void update(@MappingTarget Record entity, RecordUpdateReqeust dto);
 }

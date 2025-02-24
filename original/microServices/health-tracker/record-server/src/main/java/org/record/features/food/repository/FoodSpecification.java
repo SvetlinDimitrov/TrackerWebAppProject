@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.example.domain.user.dto.UserView;
+import org.example.domain.user.enums.UserRole;
 import org.record.features.food.dto.FoodFilter;
 import org.record.features.food.dto.NutritionFilter;
 import org.record.features.food.entity.Food;
@@ -21,7 +23,7 @@ import org.springframework.lang.NonNull;
 public class FoodSpecification implements Specification<Food> {
 
   private final UUID mealId;
-  private final UUID userId;
+  private final UserView user;
   private final FoodFilter foodFilter;
 
   @Override
@@ -30,12 +32,12 @@ public class FoodSpecification implements Specification<Food> {
       @NonNull CriteriaBuilder criteriaBuilder) {
     List<Predicate> predicates = new ArrayList<>();
 
-    if (mealId != null) {
-      predicates.add(criteriaBuilder.equal(root.get("meal").get("id"), mealId));
+    if(UserRole.ADMIN != user.role()) {
+      predicates.add(criteriaBuilder.equal(root.get("userId"), user.id()));
     }
 
-    if (userId != null) {
-      predicates.add(criteriaBuilder.equal(root.get("userId"), userId));
+    if (mealId != null) {
+      predicates.add(criteriaBuilder.equal(root.get("meal").get("id"), mealId));
     }
 
     if (foodFilter.name() != null && !foodFilter.name().isBlank()) {

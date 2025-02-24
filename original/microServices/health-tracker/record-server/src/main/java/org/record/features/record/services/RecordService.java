@@ -1,6 +1,5 @@
 package org.record.features.record.services;
 
-import jakarta.validation.Valid;
 import java.util.UUID;
 import org.record.features.record.dto.RecordCreateRequest;
 import org.record.features.record.dto.RecordUpdateReqeust;
@@ -11,19 +10,21 @@ import org.springframework.data.domain.Pageable;
 
 public interface RecordService {
 
-  Page<RecordView> getAll(String userToken, Pageable pageable);
+  Page<RecordView> getAll(Pageable pageable);
 
-  RecordView getById(UUID recordId, String userToken);
+  RecordView getById(UUID recordId);
 
-  RecordView create(RecordCreateRequest dto, String userToken);
+  RecordView create(RecordCreateRequest dto);
 
-  RecordView update(UUID id, String userToken, RecordUpdateReqeust dto);
+  RecordView update(UUID id, RecordUpdateReqeust dto);
 
-  void delete(UUID recordId, String userToken);
+  void delete(UUID recordId);
 
   Record findByIdAndUserId(UUID recordId, UUID userId);
 
   void deleteAllByUserId(UUID userId);
 
   Record save(Record record);
+
+  boolean isOwner(UUID recordId, UUID userId);
 }

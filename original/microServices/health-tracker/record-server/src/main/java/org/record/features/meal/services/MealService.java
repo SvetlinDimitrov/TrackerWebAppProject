@@ -11,17 +11,19 @@ import org.springframework.data.domain.Pageable;
 
 public interface MealService {
 
-  Page<MealView> getAll(UUID recordId, String userToken, Pageable pageable);
+  Page<MealView> getAll(UUID recordId, Pageable pageable);
 
-  MealView getById(UUID mealId, String userToken);
+  MealView getById(UUID mealId);
 
-  MealView create(UUID recordId, MealRequest dto, String userToken);
+  MealView create(UUID recordId, MealRequest dto);
 
-  MealView update(UUID mealId, MealRequest dto, String userToken);
+  MealView update(UUID mealId, MealRequest dto);
 
-  void delete(UUID mealId, String userToken);
+  void delete(UUID mealId);
 
   Meal findByIdAndUserId(UUID storageId, UUID userId);
 
   void createMultiple(Record record, List<MealRequest> dtos);
+
+  boolean isOwner(UUID mealId, UUID userId);
 }

@@ -8,9 +8,10 @@ import org.example.rabbitmq.RabbitMqUserQueues;
 import org.example.util.UserExtractor;
 import org.record.features.meal.dto.MealRequest;
 import org.record.features.meal.services.MealService;
-import org.record.features.record.entity.Record;
+import org.record.features.record.dto.RecordCreateRequest;
 import org.record.features.record.services.RecordService;
 import org.record.features.record.utils.RecordUtils;
+import org.record.infrastructure.mappers.RecordMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +22,15 @@ public class RecordConsumer {
 
   private final RecordService recordService;
   private final MealService mealService;
+  private final RecordMapper recordMapper;
 
   @RabbitListener(queues = RabbitMqUserQueues.RECORD_USER_CREATE)
   public void recordFirstCreation(String userToken) {
-    var record = new Record();
     var user = UserExtractor.get(userToken);
+    var record = recordMapper.toEntity(new RecordCreateRequest(null), user);
 
-    double BMR = RecordUtils.getBmr(user);
-    double caloriesPerDay = RecordUtils.getCaloriesPerDay(user, BMR);
+    double BMR = RecordUtils.getBmr(record.getUserDetails());
+    double caloriesPerDay = RecordUtils.getCaloriesPerDay(record.getUserDetails(), BMR);
 
     record.setDailyCalories(caloriesPerDay);
     record.setUserId(user.id());
