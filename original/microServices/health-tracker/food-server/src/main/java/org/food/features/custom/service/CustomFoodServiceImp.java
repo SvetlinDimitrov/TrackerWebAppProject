@@ -5,14 +5,13 @@ import static org.food.infrastructure.exception.ExceptionMessages.FOOD_NOT_FOUND
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.food.shared.FoodRequest;
-import org.example.domain.food.shared.FoodView;
 import org.example.domain.food.shared.OwnedFoodView;
 import org.example.exceptions.throwable.NotFoundException;
-import org.example.util.UserExtractor;
 import org.food.features.custom.dto.CustomFilterCriteria;
 import org.food.features.custom.entity.CustomFood;
 import org.food.features.custom.repository.CustomFoodRepository;
 import org.food.features.custom.repository.specifications.CustomFoodSpecification;
+import org.food.infrastructure.config.security.SecurityUtils;
 import org.food.infrastructure.mappers.FoodMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,41 +25,44 @@ public class CustomFoodServiceImp implements CustomFoodService {
   private final CustomFoodRepository repository;
   private final FoodMapper foodMapper;
 
-  public Page<OwnedFoodView> getAll(String userToken, Pageable pageable,
-      CustomFilterCriteria filterCriteria) {
-    UUID userId = UserExtractor.get(userToken).id();
+  public Page<OwnedFoodView> getAll(Pageable pageable, CustomFilterCriteria filterCriteria) {
+    var user = SecurityUtils.getCurrentLoggedInUser();
 
-    return repository.findAll(new CustomFoodSpecification(userId, filterCriteria), pageable)
+    return repository.findAll(new CustomFoodSpecification(user, filterCriteria), pageable)
         .map(foodMapper::toView);
   }
 
-  public OwnedFoodView getById(UUID id, String userToken) {
-    UUID userId = UserExtractor.get(userToken).id();
-
-    return foodMapper.toView(findByIdAndUserId(id, userId));
+  public OwnedFoodView getById(UUID id) {
+    return foodMapper.toView(findById(id));
   }
 
-  public OwnedFoodView create(FoodRequest dto, String userToken) {
-    UUID userId = UserExtractor.get(userToken).id();
+  public OwnedFoodView create(FoodRequest dto) {
+    var user = SecurityUtils.getCurrentLoggedInUser();
 
     var entity = foodMapper.toEntity(dto);
 
-    entity.setUserId(userId);
+    entity.setUserId(user.id());
 
     return foodMapper.toView(repository.save(entity));
   }
 
-  public OwnedFoodView update(UUID id, FoodRequest request, String userToken) {
-    UUID userId = UserExtractor.get(userToken).id();
-
-    validateFoodExists(id, userId);
+  public OwnedFoodView update(UUID id, FoodRequest request) {
+    var user = SecurityUtils.getCurrentLoggedInUser();
 
     var entity = foodMapper.toEntity(request);
-    entity.setUserId(userId);
+    entity.setUserId(user.id());
 
     repository.deleteById(id);
 
     return foodMapper.toView(repository.save(entity));
+  }
+
+  public void delete(UUID id) {
+    if (!repository.existsById(id)) {
+      throw new NotFoundException(FOOD_NOT_FOUND, id);
+    }
+
+    repository.deleteById(id);
   }
 
   @Transactional
@@ -68,22 +70,12 @@ public class CustomFoodServiceImp implements CustomFoodService {
     repository.deleteAllByUserId(userId);
   }
 
-  public void delete(UUID id, String userToken) {
-    UUID userId = UserExtractor.get(userToken).id();
-
-    validateFoodExists(id, userId);
-
-    repository.deleteById(id);
+  public boolean existsByUserIdAndFoodId(UUID id, UUID foodId) {
+    return repository.existsByIdAndUserId(foodId, id);
   }
 
-  public CustomFood findByIdAndUserId(UUID id, UUID userId) {
-    return repository.findByIdAndUserId(id, userId)
+  private CustomFood findById(UUID id) {
+    return repository.findById(id)
         .orElseThrow(() -> new NotFoundException(FOOD_NOT_FOUND, id));
-  }
-
-  private void validateFoodExists(UUID id, UUID userId) {
-    if (!repository.existsByIdAndUserId(id, userId)) {
-      throw new NotFoundException(FOOD_NOT_FOUND, id);
-    }
   }
 }

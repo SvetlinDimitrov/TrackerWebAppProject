@@ -9,16 +9,17 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomFoodService {
 
-  Page<OwnedFoodView> getAll(String userToken, Pageable pageable,
-      CustomFilterCriteria filterCriteria);
+  Page<OwnedFoodView> getAll(Pageable pageable, CustomFilterCriteria filterCriteria);
 
-  OwnedFoodView getById(UUID id, String userToken);
+  OwnedFoodView getById(UUID id);
 
-  OwnedFoodView create(FoodRequest dto, String userToken);
+  OwnedFoodView create(FoodRequest dto);
 
-  void delete(UUID id, String userToken);
+  void delete(UUID id);
 
-  OwnedFoodView update(UUID id, FoodRequest request, String userToken);
+  OwnedFoodView update(UUID id, FoodRequest request);
 
   void deleteAllByUserId(UUID userId);
+
+  boolean existsByUserIdAndFoodId(UUID id, UUID foodId);
 }
