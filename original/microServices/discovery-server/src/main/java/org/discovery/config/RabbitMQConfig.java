@@ -1,4 +1,4 @@
-package org.auth.infrastructure.rabbitmq;
+package org.discovery.config;
 
 import org.example.rabbitmq.RabbitMqUserQueues;
 import org.springframework.amqp.core.Queue;

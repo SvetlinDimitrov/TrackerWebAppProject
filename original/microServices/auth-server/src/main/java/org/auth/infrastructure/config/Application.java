@@ -1,6 +1,7 @@
-package org.auth.infrastructure.config.security.config;
+package org.auth.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
+import org.auth.infrastructure.config.security.services.UserDetailsServiceImpl;
 import org.example.exceptions.CustomExceptionHandler;
 import org.example.exceptions.GlobalExceptionHandler;
 import org.example.util.GsonWrapper;
@@ -14,22 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig {
+public class Application {
 
   private final UserDetailsService userDetailsService;
-
-  @Bean
-  public AuthenticationProvider authenticationProvider() {
-    var authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
-    return authProvider;
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
 
   @Bean
   GsonWrapper gsonWrapper() {
@@ -44,6 +32,19 @@ public class ApplicationConfig {
   @Bean
   public GlobalExceptionHandler globalExceptionHandler() {
     return new GlobalExceptionHandler();
+  }
+
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    var authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+    return authProvider;
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 }
 

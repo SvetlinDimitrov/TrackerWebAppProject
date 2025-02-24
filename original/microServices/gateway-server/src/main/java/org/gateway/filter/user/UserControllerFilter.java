@@ -18,7 +18,8 @@ public class UserControllerFilter extends MainFilter {
         new EndpointPermission(UserControllerPaths.ME, UserAccess.AUTH, HttpMethod.GET),
         new EndpointPermission(UserControllerPaths.GET_BY_ID, UserAccess.AUTH, HttpMethod.GET),
         new EndpointPermission(UserControllerPaths.EDIT, UserAccess.AUTH, HttpMethod.PATCH),
-        new EndpointPermission(UserControllerPaths.DELETE, UserAccess.AUTH, HttpMethod.DELETE)
+        new EndpointPermission(UserControllerPaths.DELETE, UserAccess.AUTH, HttpMethod.DELETE),
+        new EndpointPermission(UserControllerPaths.GET_ALL, UserAccess.AUTH, HttpMethod.GET)
     );
   }
 

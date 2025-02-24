@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserRabbitMqService {
+public class RabbitMqProducer {
 
   private static final GsonWrapper GSON_WRAPPER = new GsonWrapper();
   private final AmqpTemplate amqpTemplate;
